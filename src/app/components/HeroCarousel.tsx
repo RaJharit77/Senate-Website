@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";
+
+const GREEN = "#1a5c16";
+const RED = "#cc1111";
+const CYAN = "#5bc8de";
 
 const slides = [
   {
@@ -8,199 +12,234 @@ const slides = [
     date: "Avril 2026",
     title: "Campagne de dépistage gratuit du diabète au Sénat",
     excerpt:
-      "Le Sénat de Madagascar organise une campagne de sensibilisation et de dépistage gratuit du diabète pour le personnel et les citoyens, renforçant son engagement envers la santé publique.",
+      "Le Sénat de Madagascar organise une campagne de sensibilisation et de dépistage gratuit du diabète pour le personnel et les citoyens.",
     image:
-      "https://images.unsplash.com/photo-1764974012572-37fccd3483ef?w=1400&h=700&fit=crop&auto=format",
-    tag: "Initiative sociale",
+      "https://images.unsplash.com/photo-1764974012572-37fccd3483ef?w=1400&h=800&fit=crop&auto=format",
+    color: RED,
   },
   {
     id: 2,
-    category: "Droits des femmes",
+    category: "Droits de la Femme",
     date: "Mars 2026",
     title: "Célébration de la Journée internationale des droits de la femme",
     excerpt:
-      "Le Sénat honore les femmes sénatrices et le personnel féminin lors de la Journée internationale des droits de la femme, réaffirmant son engagement pour l'égalité.",
+      "Le Sénat honore les femmes sénatrices et le personnel féminin lors de la Journée internationale des droits de la femme.",
     image:
-      "https://images.unsplash.com/photo-1780396269429-e20eaa1a1cd2?w=1400&h=700&fit=crop&auto=format",
-    tag: "Égalité & Genre",
+      "https://images.unsplash.com/photo-1780396269429-e20eaa1a1cd2?w=1400&h=800&fit=crop&auto=format",
+    color: GREEN,
   },
   {
     id: 3,
     category: "Solidarité nationale",
     date: "Février 2026",
-    title: "Don du Président du Sénat aux victimes du cyclone Gezani",
+    title: "Don aux victimes du cyclone Gezani — Solidarité sénatoriale",
     excerpt:
-      "Le Président du Sénat par intérim exprime la solidarité nationale en apportant une aide d'urgence aux populations victimes du passage dévastateur du cyclone Gezani.",
+      "Le Président du Sénat par intérim exprime la solidarité nationale en apportant une aide d'urgence aux populations sinistrées.",
     image:
-      "https://images.unsplash.com/photo-1719849748001-d11361fe520c?w=1400&h=700&fit=crop&auto=format",
-    tag: "Action humanitaire",
+      "https://images.unsplash.com/photo-1719849748001-d11361fe520c?w=1400&h=800&fit=crop&auto=format",
+    color: CYAN,
   },
   {
     id: 4,
-    category: "Diplomatie parlementaire",
+    category: "Diplomatie Parlementaire",
     date: "Janvier 2026",
-    title: "Visite de courtoisie d'une délégation de l'Union Africaine",
+    title: "Visite de courtoisie de la délégation de l'Union Africaine",
     excerpt:
-      "Une délégation de haut rang de l'Union Africaine a été reçue au Sénat de Madagascar, renforçant les liens de coopération parlementaire sur le continent.",
+      "Une délégation de l'Union Africaine a été reçue au Sénat, renforçant les liens de coopération parlementaire continentale.",
     image:
-      "https://images.unsplash.com/photo-1762246433096-1814033d4679?w=1400&h=700&fit=crop&auto=format",
-    tag: "Relations internationales",
+      "https://images.unsplash.com/photo-1762246433096-1814033d4679?w=1400&h=800&fit=crop&auto=format",
+    color: GREEN,
   },
 ];
 
 export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
 
   const go = (idx: number) => {
-    if (animating) return;
-    setAnimating(true);
+    if (transitioning) return;
+    setTransitioning(true);
     setTimeout(() => {
       setCurrent((idx + slides.length) % slides.length);
-      setAnimating(false);
-    }, 300);
+      setTransitioning(false);
+    }, 350);
   };
 
   useEffect(() => {
-    const t = setInterval(() => go(current + 1), 6000);
+    const t = setInterval(() => go(current + 1), 6500);
     return () => clearInterval(t);
   }, [current]);
 
   const slide = slides[current];
 
   return (
-    <section className="relative overflow-hidden" style={{ height: "580px" }}>
-      {/* Background image */}
+    <section className="relative overflow-hidden" style={{ height: "clamp(480px, 60vh, 640px)" }}>
+      {/* Image */}
       <div
-        className="absolute inset-0 transition-opacity duration-700"
-        style={{ opacity: animating ? 0.6 : 1 }}
+        className="absolute inset-0 transition-opacity duration-500"
+        style={{ opacity: transitioning ? 0.5 : 1 }}
       >
         <img
           src={slide.image}
           alt={slide.title}
           className="w-full h-full object-cover"
         />
+        {/* Gradient overlay — deep green on the left */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to right, rgba(26,10,10,0.88) 0%, rgba(26,10,10,0.55) 55%, rgba(26,10,10,0.1) 100%)",
+              "linear-gradient(105deg, rgba(15,31,14,0.92) 0%, rgba(15,31,14,0.7) 45%, rgba(15,31,14,0.15) 100%)",
           }}
         />
       </div>
 
+      {/* Left accent stripe — logo colors */}
+      <div className="absolute left-0 top-0 bottom-0 flex flex-col" style={{ width: 5 }}>
+        <div className="flex-1" style={{ backgroundColor: GREEN }} />
+        <div className="flex-1" style={{ backgroundColor: RED }} />
+        <div className="flex-1" style={{ backgroundColor: CYAN }} />
+      </div>
+
       {/* Content */}
       <div
-        className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col justify-end pb-16"
-        style={{ transition: "opacity 0.4s", opacity: animating ? 0 : 1 }}
+        className="relative h-full max-w-7xl mx-auto px-8 sm:px-10 flex flex-col justify-center"
+        style={{
+          transition: "opacity 0.4s",
+          opacity: transitioning ? 0 : 1,
+        }}
       >
-        <div className="max-w-2xl">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="max-w-xl">
+          {/* Category badge */}
+          <div className="flex items-center gap-3 mb-5">
             <span
-              className="inline-block px-3 py-1 text-white rounded-sm"
+              className="inline-flex items-center px-3 py-1 rounded-sm text-white"
               style={{
-                fontSize: "0.7rem",
+                backgroundColor: slide.color,
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.68rem",
+                fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                fontFamily: "'Inter', sans-serif",
-                fontWeight: 600,
-                background: "#8b1a1a",
               }}
             >
-              {slide.tag}
+              {slide.category}
             </span>
             <span
-              className="flex items-center gap-1.5 text-white/60"
-              style={{ fontSize: "0.78rem", fontFamily: "'Inter', sans-serif" }}
+              className="flex items-center gap-1.5"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.75rem",
+                color: "rgba(255,255,255,0.55)",
+              }}
             >
               <Calendar size={12} />
               {slide.date}
             </span>
           </div>
 
+          {/* Title */}
           <h1
-            className="text-white mb-4"
+            className="text-white mb-5"
             style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(1.6rem, 3.5vw, 2.6rem)",
+              fontSize: "clamp(1.6rem, 3.2vw, 2.5rem)",
               fontWeight: 700,
-              lineHeight: 1.2,
+              lineHeight: 1.22,
               letterSpacing: "-0.01em",
             }}
           >
             {slide.title}
           </h1>
 
+          {/* Excerpt */}
           <p
-            className="text-white/75 mb-8"
+            className="mb-8"
             style={{
               fontFamily: "'Source Serif 4', serif",
               fontSize: "1rem",
-              lineHeight: 1.7,
-              maxWidth: "540px",
+              lineHeight: 1.72,
+              color: "rgba(255,255,255,0.7)",
+              maxWidth: 480,
             }}
           >
             {slide.excerpt}
           </p>
 
+          {/* CTA */}
           <a
             href="#"
-            className="inline-flex items-center gap-2 text-white border-b-2 pb-0.5 transition-colors hover:border-accent"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded transition-all hover:gap-4"
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "0.82rem",
+              fontSize: "0.8rem",
               fontWeight: 600,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              borderColor: "#c9932a",
+              backgroundColor: GREEN,
+              color: "#ffffff",
+              border: `2px solid ${GREEN}`,
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+              (e.currentTarget as HTMLElement).style.borderColor = CYAN;
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = GREEN;
+              (e.currentTarget as HTMLElement).style.borderColor = GREEN;
             }}
           >
-            Lire l'article
+            Lire l'article <ArrowRight size={14} />
           </a>
         </div>
       </div>
 
-      {/* Slide indicators */}
-      <div className="absolute bottom-6 right-6 flex items-center gap-3">
+      {/* Navigation controls */}
+      <div className="absolute bottom-8 left-8 sm:left-10 flex items-center gap-4">
         <button
           onClick={() => go(current - 1)}
-          className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+          className="w-9 h-9 rounded-full border flex items-center justify-center transition-all hover:bg-white/10"
+          style={{ borderColor: "rgba(255,255,255,0.3)", color: "rgba(255,255,255,0.7)" }}
         >
           <ChevronLeft size={16} />
         </button>
-        <div className="flex gap-1.5">
+        <div className="flex gap-2 items-center">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => go(i)}
-              className="transition-all rounded-full"
+              className="rounded-full transition-all"
               style={{
-                width: i === current ? 24 : 8,
+                width: i === current ? 28 : 8,
                 height: 8,
-                background: i === current ? "#c9932a" : "rgba(255,255,255,0.4)",
+                backgroundColor: i === current ? slides[i].color : "rgba(255,255,255,0.35)",
               }}
             />
           ))}
         </div>
         <button
           onClick={() => go(current + 1)}
-          className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+          className="w-9 h-9 rounded-full border flex items-center justify-center transition-all hover:bg-white/10"
+          style={{ borderColor: "rgba(255,255,255,0.3)", color: "rgba(255,255,255,0.7)" }}
         >
           <ChevronRight size={16} />
         </button>
       </div>
 
-      {/* Slide counter */}
+      {/* Slide number */}
       <div
-        className="absolute top-6 right-6 text-white/50"
+        className="absolute bottom-8 right-8"
         style={{
           fontFamily: "'Inter', sans-serif",
           fontSize: "0.75rem",
-          fontWeight: 500,
-          letterSpacing: "0.08em",
+          fontWeight: 600,
+          color: "rgba(255,255,255,0.4)",
+          letterSpacing: "0.1em",
         }}
       >
-        {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+        <span style={{ color: CYAN, fontSize: "1rem" }}>{String(current + 1).padStart(2, "0")}</span>
+        {" "}/{" "}
+        {String(slides.length).padStart(2, "0")}
       </div>
     </section>
   );

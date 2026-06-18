@@ -1,58 +1,63 @@
-import { User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-const senators = [
+const GREEN = "#1a5c16";
+const RED = "#cc1111";
+const CYAN = "#5bc8de";
+
+const leadership = [
   {
     name: "NDREMANJARY",
     firstName: "Hery Tahiry",
     role: "Président du Sénat par intérim",
     region: "Analamanga",
-    image:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&auto=format",
-    color: "#8b1a1a",
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=480&fit=crop&auto=format",
+    accentColor: GREEN,
   },
   {
     name: "RAKOTONDRABE",
     firstName: "Élisée",
     role: "1er Vice-Président",
     region: "Boeny",
-    image:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&auto=format",
-    color: "#5a3e6b",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=480&fit=crop&auto=format",
+    accentColor: RED,
   },
   {
     name: "RANDRIAMAHEFA",
     firstName: "Clarisse",
     role: "2ème Vice-Présidente",
     region: "Vakinankaratra",
-    image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&auto=format",
-    color: "#1a4a6b",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=480&fit=crop&auto=format",
+    accentColor: CYAN,
   },
   {
     name: "ANDRIAMANANTENA",
     firstName: "Patrick",
     role: "Questeur",
     region: "Haute Matsiatra",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&auto=format",
-    color: "#2d5a3d",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=480&fit=crop&auto=format",
+    accentColor: GREEN,
   },
 ];
 
 export function SenatorsSection() {
   return (
-    <section className="py-16 px-4 sm:px-6 bg-white">
+    <section className="py-16 px-4 sm:px-6" style={{ backgroundColor: "#f5f9f5" }}>
       <div className="max-w-7xl mx-auto">
         <div className="flex items-end justify-between mb-10">
           <div>
+            <div className="flex gap-1 mb-3" style={{ height: 3 }}>
+              <div className="w-8 rounded-full" style={{ backgroundColor: GREEN }} />
+              <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
+              <div className="w-4 rounded-full" style={{ backgroundColor: CYAN }} />
+            </div>
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.72rem",
-                fontWeight: 600,
+                fontSize: "0.7rem",
+                fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "#8b1a1a",
+                color: GREEN,
                 marginBottom: "0.5rem",
               }}
             >
@@ -61,103 +66,107 @@ export function SenatorsSection() {
             <h2
               style={{
                 fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+                fontSize: "clamp(1.5rem, 2.5vw, 2.1rem)",
                 fontWeight: 700,
-                color: "#1a1410",
+                color: "#0f1f0e",
                 lineHeight: 1.2,
               }}
             >
               Dirigeants &{" "}
-              <em style={{ fontWeight: 400, color: "#6b5e52" }}>
-                responsables
-              </em>
+              <em style={{ fontWeight: 400, color: RED }}>responsables</em>
             </h2>
           </div>
           <a
             href="#"
-            className="hidden sm:inline-flex items-center gap-1.5 text-primary border-b pb-0.5 hover:opacity-80 transition-opacity"
+            className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full transition-all hover:opacity-80"
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.78rem",
               fontWeight: 600,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              borderColor: "#8b1a1a",
+              backgroundColor: GREEN,
+              color: "#fff",
             }}
           >
-            Tous les sénateurs
+            Tous les sénateurs <ArrowRight size={13} />
           </a>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {senators.map((senator) => (
-            <div
-              key={senator.name}
-              className="group cursor-pointer"
-            >
+          {leadership.map((person) => (
+            <div key={person.name} className="group cursor-pointer">
+              {/* Photo */}
               <div
-                className="relative rounded-lg overflow-hidden mb-4"
+                className="relative rounded-2xl overflow-hidden mb-4"
                 style={{ aspectRatio: "3/4" }}
               >
                 <img
-                  src={senator.image}
-                  alt={`${senator.firstName} ${senator.name}`}
+                  src={person.image}
+                  alt={`${person.firstName} ${person.name}`}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                {/* Gradient overlay */}
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{
-                    background: `linear-gradient(to top, ${senator.color}cc 0%, transparent 60%)`,
+                    background: `linear-gradient(to top, ${person.accentColor}cc 0%, transparent 55%)`,
                   }}
                 />
+                {/* Region badge */}
                 <div
-                  className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform"
+                  className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{
+                    backgroundColor: person.accentColor,
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "0.62rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                  }}
                 >
-                  <span
-                    className="text-white"
-                    style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: "0.72rem",
-                      fontWeight: 600,
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    {senator.region}
-                  </span>
+                  {person.region}
                 </div>
               </div>
+
+              {/* Color accent bar */}
+              <div
+                className="h-0.5 rounded-full mb-3"
+                style={{ backgroundColor: person.accentColor, width: 36 }}
+              />
+
+              {/* Text */}
+              <p
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "0.72rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  color: person.accentColor,
+                  marginBottom: 2,
+                  textTransform: "uppercase",
+                }}
+              >
+                {person.role}
+              </p>
               <h3
                 style={{
                   fontFamily: "'Playfair Display', serif",
-                  fontSize: "0.95rem",
+                  fontSize: "1rem",
                   fontWeight: 700,
-                  color: "#1a1410",
-                  letterSpacing: "0.02em",
+                  color: "#0f1f0e",
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.2,
                 }}
               >
-                {senator.name}
+                {person.name}
               </h3>
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.78rem",
-                  color: "#6b5e52",
+                  color: "#4a6648",
                   marginTop: 2,
                 }}
               >
-                {senator.firstName}
-              </p>
-              <p
-                className="mt-1"
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.72rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
-                  color: "#8b1a1a",
-                }}
-              >
-                {senator.role}
+                {person.firstName}
               </p>
             </div>
           ))}

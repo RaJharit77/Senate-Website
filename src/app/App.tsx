@@ -1,6 +1,7 @@
 import "../styles/fonts.css";
 import { Header } from "./components/Header";
 import { HeroCarousel } from "./components/HeroCarousel";
+import { InfoStrip } from "./components/InfoStrip";
 import { NewsGrid } from "./components/NewsGrid";
 import { AboutSection } from "./components/AboutSection";
 import { ParliamentaryWork } from "./components/ParliamentaryWork";
@@ -16,6 +17,7 @@ export default function App() {
       <Header />
       <main>
         <HeroCarousel />
+        <InfoStrip />
         <NewsGrid />
         <AboutSection />
         <ParliamentaryWork />
