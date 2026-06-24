@@ -2,80 +2,76 @@
 
 :root {
   --font-size: 16px;
-  --background: #f5f9f5;
-  --foreground: #0f1f0e;
+  --background: #f8fafc;
+  /* gris très clair */
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #0f1f0e;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #0f1f0e;
-  --primary: #1a5c16;
+  --popover-foreground: #0f172a;
+  --primary: #0b6e9e;
+  /* bleu – remplace le vert */
   --primary-foreground: #ffffff;
-  --secondary: #eef5ee;
-  --secondary-foreground: #0f1f0e;
-  --muted: #e6f0e6;
-  --muted-foreground: #4a6648;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   --accent: #cc1111;
+  /* rouge conservé pour les accents forts */
   --accent-foreground: #ffffff;
   --destructive: #cc1111;
   --destructive-foreground: #ffffff;
-  --border: rgba(15, 31, 14, 0.1);
+  --border: rgba(15, 23, 42, 0.08);
   --input: transparent;
-  --input-background: #eef5ee;
-  --switch-background: #cbced4;
+  --input-background: #f1f5f9;
+  --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #1a5c16;
+  --ring: #0b6e9e;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #030213;
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0b6e9e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e2e8f0;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: rgba(15, 23, 42, 0.08);
+  --sidebar-ring: #0b6e9e;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+  --primary: #5bc8de;
+  --primary-foreground: #0f172a;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #cc1111;
+  --accent-foreground: #f8fafc;
+  --destructive: #cc1111;
+  --destructive-foreground: #f8fafc;
+  --border: rgba(248, 250, 252, 0.08);
+  --input: #1e293b;
+  --ring: #5bc8de;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #5bc8de;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgba(248, 250, 252, 0.08);
+  --sidebar-ring: #5bc8de;
 }
 
 @theme inline {
@@ -126,12 +122,15 @@
 
   body {
     @apply bg-background text-foreground;
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.10)),
+      url('https://senat.mg/wp-content/themes/senat13/images/fondpalais3.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
   }
-
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
 
   html {
     font-size: var(--font-size);
@@ -178,4 +177,22 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
+/* Pause l'animation au survol */
+.animate-scroll:hover {
+  animation-play-state: paused;
 }
