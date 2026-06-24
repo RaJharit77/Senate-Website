@@ -2,38 +2,42 @@ import { BookOpen, Users, Scale, Globe, Building2, FileText } from "lucide-react
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const GREEN = "#1a5c16";
-const RED = "#cc1111";
+const GREEN = "#5CE65C";
+const RED = "#FF2C2C";
 const CYAN = "#5bc8de";
 const WHITE = "#ffffff";
+const GREENDARK = "#008000";
 
 const leadership = [
   {
     name: "NDREMANJARY",
     firstName: "Hery Tahiry",
-    role: "Président du Sénat par intérim",
-    region: "Analamanga",
+    role: "Le Président du Sénat par intérim",
+    description: "Président",
     image: "https://senat.mg/wp-content/themes/senat13/images/NDREMANJARY.png",
     accentColor: CYAN,
     path: "/a-propos#bureau",
+    isPresident: true,
   },
   {
-    name: "Les Membres du Bureau",
-    firstName: "Tous les membres",
-    role: "Les Membres",
-    region: "Représentation nationale",
+    name: "Tous les Membres",
+    firstName: "Les sénateurs durant la deuxième législature du quatrième République",
+    role: "Les Membres du bureau",
+    description: "",
     image: "https://senat.mg/wp-content/themes/senat13/images/membres.jpg",
     accentColor: RED,
     path: "/a-propos#structures",
+    isPresident: false,
   },
   {
-    name: "Connaître le Sénat",
-    firstName: "Histoire & Missions",
+    name: "Histoire & Missions",
+    firstName: "Connaître le Sénat à travers les Républiques",
     role: "Découvrez l'institution",
-    region: "Sénat de Madagascar",
+    description: "Sénat de Madagascar",
     image: "https://senat.mg/wp-content/themes/senat13/images/historique.jpg",
     accentColor: GREEN,
     path: "/a-propos",
+    isPresident: false,
   },
 ];
 
@@ -59,7 +63,7 @@ export function AboutSection() {
           <div className="flex gap-1 mb-4" style={{ height: 3 }}>
             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
             <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-            <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+            <div className="w-4 rounded-full" style={{ backgroundColor: GREENDARK }} />
           </div>
           <h1
             style={{
@@ -270,7 +274,7 @@ export function AboutSection() {
           </div>
         </section>
 
-        {/* Nouvelle section : Bureau du Sénat (intégration de SenatorsSection) */}
+        {/* Nouvelle section : Bureau du Sénat */}
         <section id="bureau" className="mt-16">
           <motion.div
             initial="hidden"
@@ -283,7 +287,7 @@ export function AboutSection() {
                 <div className="flex gap-1 mb-3" style={{ height: 3 }}>
                   <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                   <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                  <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                  <div className="w-4 rounded-full" style={{ backgroundColor: GREENDARK }} />
                 </div>
                 <p
                   style={{
@@ -327,87 +331,113 @@ export function AboutSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {leadership.map((person) => (
-                <motion.div
-                  key={person.name}
-                  className="group cursor-pointer"
-                  variants={fadeUp}
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Link to={person.path} className="block h-full">
-                    <div
-                      className="relative rounded-2xl overflow-hidden mb-4"
-                      style={{ aspectRatio: "3/4" }}
-                    >
-                      <img
-                        src={person.image}
-                        alt={`${person.firstName} ${person.name}`}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+              {leadership.map((person) => {
+                const isPresident = person.isPresident || false;
+                return (
+                  <motion.div
+                    key={person.name}
+                    className="group cursor-pointer"
+                    variants={fadeUp}
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Link to={person.path} className="block h-full">
                       <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{
-                          background: `linear-gradient(to top, ${person.accentColor}cc 0%, transparent 55%)`,
-                        }}
-                      />
+                        className="relative rounded-2xl overflow-hidden mb-4"
+                        style={{ aspectRatio: "3/4" }}
+                      >
+                        <img
+                          src={person.image}
+                          alt={`${person.firstName} ${person.name}`}
+                          className="w-full h-full object-cover transition-transform duration-700"
+                          style={{
+                            transform: isPresident ? "scale(1.02)" : "scale(1)",
+                          }}
+                        />
+                        {/* Overlay blanc semi-transparent pour le président */}
+                        {isPresident && (
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              backgroundColor: "rgba(255,255,255,0.10)",
+                              mixBlendMode: "overlay",
+                            }}
+                          />
+                        )}
+                        <div
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          style={{
+                            background: `linear-gradient(to top, ${person.accentColor}cc 0%, transparent 55%)`,
+                          }}
+                        />
+                        <div
+                          className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          style={{
+                            backgroundColor: person.accentColor,
+                            fontFamily: "'Inter', sans-serif",
+                            fontSize: "0.62rem",
+                            fontWeight: 600,
+                            letterSpacing: "0.06em",
+                          }}
+                        >
+                          {person.description}
+                        </div>
+
+                        {/* Effet de zoom réduit pour le président */}
+                        {isPresident && (
+                          <div
+                            className="absolute inset-0 transition-transform duration-700 group-hover:scale-103"
+                            style={{
+                              background: `linear-gradient(to top, ${person.accentColor}44 0%, transparent 60%)`,
+                            }}
+                          />
+                        )}
+                      </div>
+
                       <div
-                        className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-0.5 rounded-full mb-3"
+                        style={{ backgroundColor: person.accentColor, width: 36 }}
+                      />
+
+                      <p
                         style={{
-                          backgroundColor: person.accentColor,
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "0.62rem",
+                          fontSize: "0.72rem",
                           fontWeight: 600,
                           letterSpacing: "0.06em",
+                          color: person.accentColor,
+                          marginBottom: 2,
+                          textTransform: "uppercase",
                         }}
                       >
-                        {person.region}
-                      </div>
-                    </div>
-
-                    <div
-                      className="h-0.5 rounded-full mb-3"
-                      style={{ backgroundColor: person.accentColor, width: 36 }}
-                    />
-
-                    <p
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "0.72rem",
-                        fontWeight: 600,
-                        letterSpacing: "0.06em",
-                        color: person.accentColor,
-                        marginBottom: 2,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {person.role}
-                    </p>
-                    <h3
-                      style={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: "1rem",
-                        fontWeight: 700,
-                        color: "#ffffff",
-                        letterSpacing: "0.01em",
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {person.name}
-                    </h3>
-                    <p
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "0.78rem",
-                        color: "rgba(255,255,255,0.6)",
-                        marginTop: 2,
-                      }}
-                    >
-                      {person.firstName}
-                    </p>
-                  </Link>
-                </motion.div>
-              ))}
+                        {person.role}
+                      </p>
+                      <h3
+                        style={{
+                          fontFamily: "'Playfair Display', serif",
+                          fontSize: "1rem",
+                          fontWeight: 700,
+                          color: "#ffffff",
+                          letterSpacing: "0.01em",
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        {person.name}
+                      </h3>
+                      <p
+                        style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: "0.78rem",
+                          color: "rgba(255,255,255,0.6)",
+                          marginTop: 2,
+                        }}
+                      >
+                        {person.firstName}
+                      </p>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </section>

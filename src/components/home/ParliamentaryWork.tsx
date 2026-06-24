@@ -5,7 +5,7 @@ import { FileText, Calendar, BookOpen, ArrowRight } from "lucide-react";
 
 const CYAN = "#5bc8de";
 const RED = "#cc1111";
-const GREEN = "#1a5c16";
+const GREEN = "#2e7d32"; // vert clair
 const WHITE = "#ffffff";
 
 const infoCards = [
@@ -14,11 +14,11 @@ const infoCards = [
     desc: "Ordre du jour des réunions parlementaires",
     image: "https://senat.mg/wp-content/themes/senat13/images/ordre-du-jour.jpg",
     path: "/travaux-parlementaires",
-    color: RED,
+    color: CYAN,
   },
   {
     label: "Travaux législatifs",
-    desc: "Textes en cours et adoptez par le Sénat",
+    desc: "Textes en cours et adoptés par le Sénat",
     image: "https://senat.mg/wp-content/themes/senat13/images/lois.jpg",
     path: "/travaux-parlementaires#legislatifs",
     color: CYAN,
@@ -53,7 +53,7 @@ const tabs = [
     color: CYAN,
     path: "/travaux-parlementaires",
     items: [
-      { ref: "Session ordinaire", title: "Ouverture de la session ordinaire de mai — Sénat de Madagascar", status: "Terminé", date: "2 Mai 2026", statusColor: "#6b5e52" },
+      { ref: "Session ordinaire", title: "Ouverture de la session ordinaire de mai — Sénat de Madagascar", status: "Terminé", date: "2 Mai 2026", statusColor: RED },
       { ref: "Comité mixte", title: "Réunion du comité mixte paritaire Assemblée Nationale – Sénat", status: "Planifié", date: "25 Juin 2026", statusColor: CYAN },
       { ref: "Session extraordinaire", title: "Convocation d'une session extraordinaire sur le budget rectificatif", status: "Planifié", date: "15 Juillet 2026", statusColor: CYAN },
       { ref: "Audition", title: "Audition du Premier ministre sur la situation économique nationale", status: "Planifié", date: "30 Juillet 2026", statusColor: CYAN },
@@ -134,91 +134,50 @@ export function ParliamentaryWork() {
           </h2>
         </motion.div>
 
-        {/* Première rangée : 3 cartes de l'InfoStrip */}
+        {/* Première rangée : 3 cartes verticales (3:4) avec overlay vert */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8 mb-16">
           {infoCards.map((item) => (
-            <motion.div key={item.label} variants={fadeUp} className="h-full">
-              <Link
-                to={item.path}
-                className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md ring-1 ring-white/15 transition-all duration-300 ease-out hover:-translate-y-2 hover:bg-white/15 hover:ring-white/30"
-                style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.18)" }}
-              >
-                <div className="relative h-56 sm:h-64 w-full overflow-hidden">
+            <motion.div
+              key={item.label}
+              variants={fadeUp}
+              className="group relative overflow-hidden rounded-2xl cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <Link to={item.path} className="block">
+                <div className="relative w-full" style={{ aspectRatio: "3/4" }}>
                   <img
                     src={item.image}
                     alt={item.label}
-                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.65) 100%)",
-                    }}
+                    className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-500"
+                    style={{ backgroundColor: GREEN }}
                   />
-                  <span
-                    className="absolute left-6 top-6 h-3 w-3 rounded-full"
-                    style={{ backgroundColor: item.color, boxShadow: `0 0 16px ${item.color}` }}
-                  />
-                </div>
-                <div className="flex flex-1 flex-col justify-between gap-5 px-8 py-8">
-                  <div>
-                    <p
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "1.4rem",
-                        fontWeight: 600,
-                        color: "#ffffff",
-                        marginBottom: 10,
-                        letterSpacing: "0.01em",
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {item.label}
-                    </p>
-                    <p
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "1rem",
-                        color: "rgba(255,255,255,0.65)",
-                        lineHeight: 1.55,
-                      }}
-                    >
-                      {item.desc}
-                    </p>
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                    <div className="transform transition-all duration-500 group-hover:-translate-y-2">
+                      <p className="text-sm font-bold uppercase tracking-wider" style={{ color: item.color }}>
+                        {item.label}
+                      </p>
+                      <h3 className="text-lg sm:text-xl font-semibold mt-1 leading-tight">
+                        {item.desc}
+                      </h3>
+                      <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 text-red-500">
+                        <span className="text-sm font-medium">Découvrir</span>
+                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </div>
+                    </div>
                   </div>
-                  <div
-                    className="flex items-center gap-2 text-base font-medium transition-all duration-300 group-hover:gap-3"
-                    style={{ color: item.color, fontFamily: "'Inter', sans-serif" }}
-                  >
-                    <span>Voir plus</span>
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    >
-                      <path
-                        d="M5 12h14M13 5l7 7-7 7"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
+                  <div className="absolute bottom-0 left-0 h-1 w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" style={{ backgroundColor: GREEN }} />
                 </div>
-                <div
-                  className="h-1 w-full origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100"
-                  style={{ backgroundColor: item.color }}
-                />
               </Link>
             </motion.div>
           ))}
         </div>
 
-        {/* Deuxième partie : onglets et listes (ancien ParliamentaryWork) */}
+        {/* Deuxième partie : onglets et listes */}
         <div className="grid lg:grid-cols-3 gap-12">
           <motion.div variants={fadeUp}>
             <div className="flex flex-col gap-2">
@@ -299,14 +258,11 @@ export function ParliamentaryWork() {
                         >
                           {item.ref}
                         </span>
+                        {/* Badge de statut avec couleur définie */}
                         <span
-                          className="px-2.5 py-0.5 rounded-full"
+                          className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold"
                           style={{
-                            fontSize: "0.65rem",
-                            fontFamily: "'Inter', sans-serif",
-                            fontWeight: 600,
-                            color: item.statusColor,
-                            backgroundColor: `${item.statusColor}25`,
+                            backgroundColor: item.statusColor,
                           }}
                         >
                           {item.status}
