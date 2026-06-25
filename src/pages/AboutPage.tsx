@@ -11,13 +11,13 @@ function getSectionFromHash(hash: string): SectionId | null {
 }
 
 const GREEN = "#1a5c16";
-const RED = "#cc1111";
+const RED = "#E83256";
 const CYAN = "#5bc8de";
 const GREEN_DARK = "#0f3a0c";
 const INK = "#1a1a1a";
 const MUTED = "#4a6648";
 const WHITE = "#ffffff";
-const GRAY = "#F7DCEF"
+const GRAY = "#F7DCEF";
 
 const abbreviations: { abbr: string; full: string }[] = [
     { abbr: "P", full: "Président" },
@@ -321,8 +321,8 @@ export default function AboutPage() {
                 {/* Structures */}
                 {(showAll || activeSection === "structures") && (
                 <section id="structures" className="mb-16">
-                    <DocCard title="Structures du Sénat" pillColor={GREEN}>
-                        <Divider color={RED}>I. Cabinets du Bureau Permanent</Divider>
+                    <DocCard title="Structures du Sénat" pillColor={RED}>
+                        <Divider color={GREEN}>I. Cabinets du Bureau Permanent</Divider>
                         <p style={{ ...pStyle, fontSize: "0.88rem", fontStyle: "italic", marginTop: "-0.5rem" }}>
                             Les Cabinets des membres du Bureau Permanent et les organes rattachés au Président du Sénat.
                         </p>
@@ -348,7 +348,7 @@ export default function AboutPage() {
                         <h3 style={subheadStyle}>Organes rattachés au Président du Sénat</h3>
                         <p style={pStyle}>Sont rattachés au Président du Sénat :</p>
                         <ul style={ulStyle}>
-                            <NamedItem name="L'Inspection Générale du Sénat" color={RED}>
+                            <NamedItem name="L'Inspection Générale du Sénat" color={GREEN_DARK}>
                                 organe rattaché directement au Président du Sénat. L'Inspecteur Général, sous l'autorité et
                                 le contrôle direct du Président, dirige et coordonne les missions de contrôle interne,
                                 d'inspection et d'audit de l'administration du Sénat. À ces missions de base s'ajoutent
@@ -358,7 +358,7 @@ export default function AboutPage() {
                                 auditeurs ayant rang de directeur, d'un service de traitement des doléances et de deux
                                 collaborateurs.
                             </NamedItem>
-                            <NamedItem name="La Personne Responsable des Marchés Publics" color={RED}>
+                            <NamedItem name="La Personne Responsable des Marchés Publics" color={GREEN_DARK}>
                                 constituée d'un bureau composé d'une Personne Responsable des Marchés Publics ayant rang de
                                 Directeur, d'une Unité de Gestion de la Passation des Marchés et d'un Secrétaire Particulier.
                                 Elle est l'autorité habilitée par l'autorité contractante à conduire la procédure de
@@ -366,7 +366,7 @@ export default function AboutPage() {
                                 titulaire, signe et approuve le marché, et représente l'autorité contractante durant toute
                                 la phase d'exécution.
                             </NamedItem>
-                            <NamedItem name="La Direction du Protocole" color={RED}>
+                            <NamedItem name="La Direction du Protocole" color={GREEN_DARK}>
                                 chargée de coordonner l'ordonnancement des cérémonies, de préparer et d'organiser les
                                 réceptions et audiences internes et externes, d'accomplir les formalités liées aux
                                 déplacements officiels des membres du Sénat, et de gérer les relations du Sénat avec les
@@ -374,20 +374,20 @@ export default function AboutPage() {
                                 Étiquettes, le Service des Relations Internationales et Interparlementaires et un Secrétaire
                                 Particulier.
                             </NamedItem>
-                            <NamedItem name="La Direction de la Sécurité" color={RED}>
+                            <NamedItem name="La Direction de la Sécurité" color={GREEN_DARK}>
                                 chargée d'assurer la sécurité des membres du Sénat, du Palais, de ses dépendances et de son
                                 parc de véhicules. Le Directeur de la Sécurité est assisté d'un adjoint ; deux Attachés de
                                 sécurité et un adjudant de compagnie, ayant rang de chef de Division, y sont rattachés. La
                                 Direction dispose d'un Service de Sécurité VIP, d'un Service de la Sécurité du Palais, d'un
                                 Service de Renseignements et d'un Secrétaire Particulier.
                             </NamedItem>
-                            <NamedItem name="L'Intendance du Palais" color={RED}>
+                            <NamedItem name="L'Intendance du Palais" color={GREEN_DARK}>
                                 l'Intendant du Palais, ayant rang de Directeur, assure la propreté extérieure du Palais et
                                 de ses dépendances, l'organisation matérielle des réceptions officielles et l'agencement des
                                 mobiliers et équipements, en collaboration avec les autres Directions du Sénat. Il est
                                 assisté d'un Adjoint.
                             </NamedItem>
-                            <NamedItem name="Les Antennes du Sénat aux chefs-lieux de Province" color={RED}>
+                            <NamedItem name="Les Antennes du Sénat aux chefs-lieux de Province" color={GREEN_DARK}>
                                 des Antennes Inter-Régionales instaurées aux chefs-lieux des Provinces représentent
                                 l'Administration du Sénat dans leur ressort respectif et coordonnent la mise en œuvre des
                                 missions du Sénat dans le domaine socio-économique et de la décentralisation, en mettant à
@@ -398,7 +398,7 @@ export default function AboutPage() {
                             </NamedItem>
                         </ul>
 
-                        <Divider color={GREEN_DARK}>II. Le Secrétariat Général</Divider>
+                        <Divider color={GREEN}>II. Le Secrétariat Général</Divider>
                         <p style={pStyle}>
                             Le Secrétaire Général, sous l'autorité et le contrôle du Président, dirige, coordonne et
                             supervise les activités des Services du Sénat. Il est chargé du contentieux et de la
@@ -414,7 +414,7 @@ export default function AboutPage() {
                         </p>
                         <p style={pStyle}>Le Secrétariat Général comprend :</p>
                         <ul style={ulStyle}>
-                            <NamedItem name="La Direction Administrative et des Ressources Humaines" color={GREEN}>
+                            <NamedItem name="La Direction Administrative et des Ressources Humaines" color={GREEN_DARK}>
                                 chargée de l'application, de la coordination et du suivi des décisions administratives
                                 prises par le Bureau Permanent, ainsi que du contrôle de l'effectivité des textes régissant
                                 le personnel. Elle élabore les textes particuliers relatifs au personnel et gère
@@ -423,24 +423,24 @@ export default function AboutPage() {
                                 du Personnel et de la Formation, un Service Médico-social, un Service des Affaires Générales
                                 et un Secrétariat Particulier.
                             </NamedItem>
-                            <NamedItem name="La Direction Financière" color={GREEN}>
+                            <NamedItem name="La Direction Financière" color={GREEN_DARK}>
                                 assure l'exécution des opérations financières et comptables du Sénat. Elle comprend un
                                 Service du Budget, un Service de la Solde et des Indemnités, un Service Transit, un Service
                                 de Validation et des Pensions et un Secrétariat Particulier.
                             </NamedItem>
-                            <NamedItem name="La Direction de la Législation et des Études" color={GREEN}>
+                            <NamedItem name="La Direction de la Législation et des Études" color={GREEN_DARK}>
                                 chargée de la préparation des travaux législatifs et de l'étude des textes soumis à l'examen
                                 et à l'adoption du Sénat. Elle comprend un Service de la Législation, un Service des Études
                                 et du Contentieux, un Service des Procès-verbaux et un Secrétariat Particulier.
                             </NamedItem>
-                            <NamedItem name="La Direction de la Décentralisation" color={GREEN}>
+                            <NamedItem name="La Direction de la Décentralisation" color={GREEN_DARK}>
                                 chargée de faciliter les relations des sénateurs avec les organes des Collectivités
                                 Territoriales Décentralisées et les organisations sociales et économiques, et d'appuyer
                                 l'action des antennes du Sénat dans les chefs-lieux de Province. Elle comprend un Service des
                                 Relations avec les Collectivités Territoriales Décentralisées, un Service de la Coopération
                                 Décentralisée, un Service de la Documentation et un Secrétariat Particulier.
                             </NamedItem>
-                            <NamedItem name="La Direction du Système d'Information et de la Communication" color={GREEN}>
+                            <NamedItem name="La Direction du Système d'Information et de la Communication" color={GREEN_DARK}>
                                 chargée de fournir les services requis en informatique et bureautique, de former et
                                 d'accompagner les utilisateurs des équipements, logiciels et systèmes informatiques, de
                                 promouvoir le rayonnement du Sénat et le rôle des Sénateurs auprès des Collectivités
@@ -450,7 +450,7 @@ export default function AboutPage() {
                                 Service de la Communication, un Service du Système d'Information et un Secrétariat
                                 Particulier.
                             </NamedItem>
-                            <NamedItem name="La Direction de la Logistique et du Patrimoine" color={GREEN}>
+                            <NamedItem name="La Direction de la Logistique et du Patrimoine" color={GREEN_DARK}>
                                 assure la gestion et l'entretien des immeubles, des biens meubles et des matériels du Sénat.
                                 Elle comprend un Service de Gestion du Patrimoine, un Service du Parc des Véhicules, un
                                 Service de la Comptabilité-Matière et un Secrétariat Particulier.
@@ -548,7 +548,7 @@ export default function AboutPage() {
                 {/* Textes de référence */}
                 {(showAll || activeSection === "textes") && (
                 <section id="textes">
-                    <DocCard title="Textes de référence" pillColor={GREEN_DARK}>
+                    <DocCard title="Textes de référence" pillColor={RED}>
                         <p style={pStyle}>Les textes régissant le Sénat :</p>
 
                         <h3 style={subheadStyle}>Les dispositions constitutionnelles</h3>

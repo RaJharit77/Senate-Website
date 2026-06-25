@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const GREEN = "#1a5c16";
-const RED = "#cc1111";
+const RED = "#E83256";
 const CYAN = "#5bc8de";
 const WHITE = "#ffffff";
+const EMERALD = "#5CE65C";
 
 const leadership = [
   {
     name: "NDREMANJARY",
-    firstName: "Hery Tahiry",
+    firstName: "Jean André",
     role: "Président du Sénat par intérim",
     description: "Président",
     image: "https://senat.mg/wp-content/themes/senat13/images/NDREMANJARY.png",
@@ -34,7 +35,7 @@ const leadership = [
     role: "Découvrez l'institution",
     description: "Sénat de Madagascar",
     image: "https://senat.mg/wp-content/themes/senat13/images/historique.jpg",
-    accentColor: GREEN,
+    accentColor: EMERALD,
     path: "/a-propos",
     isPresident: false,
   },
@@ -103,7 +104,7 @@ export function AboutSection() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
-                <Scale size={24} style={{ color: GREEN }} />
+                <Scale size={24} style={{ color: EMERALD }} />
               </div>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.5rem" }}>
                 Fonction législative
@@ -136,7 +137,7 @@ export function AboutSection() {
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
-                <BookOpen size={24} style={{ color: GREEN }} />
+                <BookOpen size={24} style={{ color: EMERALD }} />
               </div>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.5rem" }}>
                 Fonction consultative
@@ -164,8 +165,8 @@ export function AboutSection() {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 700, color: GREEN, marginBottom: "0.5rem" }}>
-                  <Building2 size={18} className="inline mr-2" style={{ color: GREEN }} />
+                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 700, color: EMERALD, marginBottom: "0.5rem" }}>
+                  <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
                   Cabinet du Président
                 </h4>
                 <p style={{ fontFamily: "'Source Serif 4', serif", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
@@ -194,8 +195,8 @@ export function AboutSection() {
                 </ul>
               </div>
               <div>
-                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 700, color: GREEN, marginBottom: "0.5rem" }}>
-                  <Building2 size={18} className="inline mr-2" style={{ color: GREEN }} />
+                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", fontWeight: 700, color: EMERALD, marginBottom: "0.5rem" }}>
+                  <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
                   Autres organes
                 </h4>
                 <ul style={{ fontFamily: "'Source Serif 4', serif", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, listStyle: "disc", paddingLeft: "1.2rem" }}>
@@ -224,8 +225,8 @@ export function AboutSection() {
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
-                <FileText size={24} style={{ color: GREEN }} />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${EMERALD}22` }}>
+                <FileText size={24} style={{ color: EMERALD }} />
               </div>
               <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.3rem" }}>
                 Dispositions constitutionnelles
@@ -259,8 +260,8 @@ export function AboutSection() {
               </ul>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
-                <FileText size={24} style={{ color: GREEN }} />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${EMERALD}22` }}>
+                <FileText size={24} style={{ color: EMERALD }} />
               </div>
               <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.3rem" }}>
                 Textes sur les services
