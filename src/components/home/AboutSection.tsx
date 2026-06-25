@@ -2,17 +2,16 @@ import { BookOpen, Users, Scale, Globe, Building2, FileText } from "lucide-react
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const GREEN = "#5CE65C";
-const RED = "#FF2C2C";
+const GREEN = "#1a5c16";
+const RED = "#cc1111";
 const CYAN = "#5bc8de";
 const WHITE = "#ffffff";
-const GREENDARK = "#008000";
 
 const leadership = [
   {
     name: "NDREMANJARY",
     firstName: "Hery Tahiry",
-    role: "Le Président du Sénat par intérim",
+    role: "Président du Sénat par intérim",
     description: "Président",
     image: "https://senat.mg/wp-content/themes/senat13/images/NDREMANJARY.png",
     accentColor: CYAN,
@@ -63,7 +62,7 @@ export function AboutSection() {
           <div className="flex gap-1 mb-4" style={{ height: 3 }}>
             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
             <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-            <div className="w-4 rounded-full" style={{ backgroundColor: GREENDARK }} />
+            <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
           </div>
           <h1
             style={{
@@ -88,7 +87,6 @@ export function AboutSection() {
             Découvrez l'histoire, la mission et l'organisation de la chambre haute du Parlement malgache.
           </p>
         </div>
-
         {/* Missions section */}
         <section id="missions" className="mb-16">
           <h2
@@ -274,7 +272,7 @@ export function AboutSection() {
           </div>
         </section>
 
-        {/* Nouvelle section : Bureau du Sénat */}
+        {/* Bureau du Sénat */}
         <section id="bureau" className="mt-16">
           <motion.div
             initial="hidden"
@@ -287,7 +285,7 @@ export function AboutSection() {
                 <div className="flex gap-1 mb-3" style={{ height: 3 }}>
                   <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                   <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                  <div className="w-4 rounded-full" style={{ backgroundColor: GREENDARK }} />
+                  <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
                 </div>
                 <p
                   style={{
@@ -354,7 +352,6 @@ export function AboutSection() {
                             transform: isPresident ? "scale(1.02)" : "scale(1)",
                           }}
                         />
-                        {/* Overlay blanc semi-transparent pour le président */}
                         {isPresident && (
                           <div
                             className="absolute inset-0"
@@ -383,7 +380,6 @@ export function AboutSection() {
                           {person.description}
                         </div>
 
-                        {/* Effet de zoom réduit pour le président */}
                         {isPresident && (
                           <div
                             className="absolute inset-0 transition-transform duration-700 group-hover:scale-103"
