@@ -1,13 +1,6 @@
-packages:
-  - '.'
 allowBuilds:
-  '@tailwindcss/oxide': true
-  esbuild: true
-supportedArchitectures:
-  os:
-    - linux
-  cpu:
-    - x64
-    - arm64
-  libc:
-    - glibc
+  sharp: true
+  unrs-resolver: true
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
