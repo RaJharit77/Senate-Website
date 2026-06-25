@@ -1,7 +1,7 @@
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 
 const GREEN = "#5CE65C";
-const RED = "#cc1111";
+const RED = "#FF2C2C";
 const CYAN = "#5bc8de";
 const WHITE = "#ffffff";
 const GREENDARK = "#008000";

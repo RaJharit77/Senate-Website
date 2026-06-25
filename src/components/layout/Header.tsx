@@ -120,7 +120,7 @@ export function Header() {
             <a
               href="#"
               className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.75rem", color: COLORS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              style={{ fontSize: "0.77rem", color: COLORS.black, letterSpacing: "0.03em", fontWeight: 500 }}
             >
               <FaFacebook size={14} />
               <span>Sénat Madagascar</span>
@@ -128,7 +128,7 @@ export function Header() {
             <a
               href="#"
               className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.75rem", color: COLORS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              style={{ fontSize: "0.77rem", color: COLORS.black, letterSpacing: "0.03em", fontWeight: 500 }}
             >
               <FaYoutube size={14} />
               <span>Chaîne officielle</span>
@@ -138,13 +138,13 @@ export function Header() {
             <a
               href="mailto:contact@senat.mg"
               className="hidden sm:block transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.75rem", color: COLORS.black, letterSpacing: "0.03em" }}
+              style={{ fontSize: "0.77rem", color: COLORS.black, letterSpacing: "0.03em" }}
             >
               contact@senat.mg
             </a>
             <div
               className="flex items-center gap-1"
-              style={{ fontSize: "0.75rem", color: COLORS.black }}
+              style={{ fontSize: "0.77rem", color: COLORS.black }}
             >
               <Phone size={14} />
               <span className="hidden sm:inline">+261 34 12 01 036</span>
