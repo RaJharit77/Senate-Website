@@ -45,7 +45,7 @@ export function Footer() {
       <div style={{ backgroundColor: NAV_BG }} className="py-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-5">
+            <Link to="/" className="flex items-center gap-3 mb-5">
               <img
                 src="https://senat.mg/wp-content/uploads/2025/03/cropped-senat-192x192.png"
                 alt="Sénat de Madagascar"
@@ -75,7 +75,7 @@ export function Footer() {
                   de Madagascar
                 </div>
               </div>
-            </div>
+            </Link>
 
             <p
               style={{
@@ -95,6 +95,8 @@ export function Footer() {
                 <a
                   key={label}
                   href="https://web.facebook.com/SenatdeMadagascar/?locale=fr_FR&_rdc=1&_rdr#"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full border flex items-center justify-center transition-all"
                   style={{ borderColor: "rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.5)" }}
                   onMouseEnter={(e) => {
@@ -115,6 +117,8 @@ export function Footer() {
                 <a
                   key={label}
                   href="https://www.youtube.com/@antenimierandoholona"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full border flex items-center justify-center transition-all"
                   style={{ borderColor: "rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.5)" }}
                   onMouseEnter={(e) => {
