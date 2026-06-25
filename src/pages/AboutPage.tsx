@@ -16,6 +16,8 @@ const CYAN = "#5bc8de";
 const GREEN_DARK = "#0f3a0c";
 const INK = "#1a1a1a";
 const MUTED = "#4a6648";
+const WHITE = "#ffffff";
+const GRAY = "#F7DCEF"
 
 const abbreviations: { abbr: string; full: string }[] = [
     { abbr: "P", full: "Président" },
@@ -82,7 +84,7 @@ const subheadStyle: CSSProperties = {
     fontFamily: "'Playfair Display', serif",
     fontSize: "1.25rem",
     fontWeight: 700,
-    color: INK,
+    color: RED,
     marginTop: "2rem",
     marginBottom: "1rem",
 };
@@ -187,9 +189,9 @@ function DocCard({
 }
 
 const sectionMeta: Record<SectionId, { label: string; color: string }> = {
-    missions: { label: "Missions et attributions", color: RED },
-    structures: { label: "Structures", color: GREEN },
-    textes: { label: "Textes de référence", color: GREEN_DARK },
+    missions: { label: "Missions et attributions", color: GRAY },
+    structures: { label: "Structures", color: GRAY },
+    textes: { label: "Textes de référence", color: GRAY },
 };
 
 export default function AboutPage() {
@@ -221,7 +223,7 @@ export default function AboutPage() {
                             fontFamily: "'Playfair Display', serif",
                             fontSize: "clamp(2rem, 4vw, 3rem)",
                             fontWeight: 700,
-                            color: "#ffffff",
+                            color: WHITE,
                             lineHeight: 1.2,
                         }}
                     >
