@@ -6,3 +6,4 @@ export const INK = "#1a1a1a";
 export const MUTED = "#4a6648";
 export const WHITE = "#ffffff";
 export const NAV_BG = "#1e293b";
+export const GREENDARK = "#008000";
