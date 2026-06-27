@@ -41,16 +41,16 @@ const navItems = [
     label: "Travaux Parlementaires",
     path: "/parliamentary-proceddings",
     children: [
-      { label: "Travaux législatifs", path: "/travaux-parlementaires#legislatifs" },
+      { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
     ],
   },
   {
     label: "International",
     path: "/international",
     children: [
-      { label: "Activités du Président", path: "/international#president" },
-      { label: "Activités des Sénateurs", path: "/international#senateurs" },
-      { label: "Groupe Interparlementaire d'amitié", path: "/international#groupe" },
+      { label: "Activités du Président", path: "/international/presidents-activities" },
+      { label: "Activités des Sénateurs", path: "/international/senators-activities" },
+      { label: "Groupe Interparlementaire d'amitié", path: "/international/inter-parliamentary-friendship-group" },
     ],
   },
   { label: "Espace Presse", path: "/press-area" },
@@ -77,7 +77,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Fermer la recherche en cliquant à l'extérieur
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
@@ -93,7 +92,6 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [searchOpen]);
 
-  // Focus sur l'input quand la recherche s'ouvre
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -109,10 +107,8 @@ export function Header() {
     }
   };
 
-  // Fonction utilitaire pour vérifier si un lien est actif (gère les ancres)
   const isActive = (path: string) => {
     if (path.includes("#")) {
-      // Pour les ancres, on compare la partie avant le #
       const basePath = path.split("#")[0];
       return pathname === basePath;
     }
@@ -235,9 +231,11 @@ export function Header() {
             <Image
               src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
               alt="République de Madagascar"
-              width={80}
-              height={80}
-              style={{ height: 80, width: "auto", objectFit: "contain", opacity: 0.9 }}
+              width={120}
+              height={120}
+              className="h-auto w-auto object-contain"
+              priority
+              quality={100}
             />
           </div>
 
@@ -285,7 +283,7 @@ export function Header() {
               )}
             </div>
 
-            {/* Version mobile : bouton pour ouvrir la recherche */}
+            {/* Version mobile */}
             <button
               className="lg:hidden p-2"
               onClick={() => {
@@ -409,7 +407,6 @@ export function Header() {
                 </Link>
               )}
 
-              {/* Dropdown */}
               {item.children && openMenu === item.label && (
                 <div
                   className="absolute top-full left-0 z-50 py-2 shadow-xl rounded-b-lg overflow-hidden"

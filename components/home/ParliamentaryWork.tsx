@@ -11,19 +11,44 @@ const RED = "#cc1111";
 const GREEN = "#2e7d32";
 const WHITE = "#ffffff";
 
+// Map des noms d'icônes vers les composants
+const iconMap = {
+  FileText,
+  Calendar,
+  BookOpen,
+};
+
+// Types
+interface WorkItem {
+  ref: string;
+  title: string;
+  status: string;
+  date: string;
+  statusColor: string;
+}
+
+interface TabData {
+  id: string;
+  iconName: keyof typeof iconMap;
+  label: string;
+  color: string;
+  path: string;
+  items: WorkItem[];
+}
+
 const infoCards = [
   {
     label: "Calendrier",
     desc: "Ordre du jour des réunions parlementaires",
     image: "https://senat.mg/wp-content/themes/senat13/images/ordre-du-jour.jpg",
-    path: "/travaux-parlementaires",
+    path: "/agenda",
     color: CYAN,
   },
   {
-    label: "Travaux législatifs",
+    label: "Textes et Lois",
     desc: "Textes en cours et adoptés par le Sénat",
     image: "https://senat.mg/wp-content/themes/senat13/images/lois.jpg",
-    path: "/travaux-parlementaires#legislatifs",
+    path: "/parliamentary-proceedings/legislative-proceedings",
     color: CYAN,
   },
   {
@@ -32,48 +57,6 @@ const infoCards = [
     image: "https://senat.mg/wp-content/themes/senat13/images/international.jpg",
     path: "/international",
     color: CYAN,
-  },
-];
-
-const tabs = [
-  {
-    id: "legislation",
-    icon: FileText,
-    label: "Travaux législatifs",
-    color: CYAN,
-    path: "/travaux-parlementaires#legislatifs",
-    items: [
-      { ref: "Loi n° 2026-012", title: "Loi portant sur l'organisation de l'administration territoriale décentralisée", status: "Adopté", date: "14 Juin 2026", statusColor: "#16a34a" },
-      { ref: "Loi n° 2026-009", title: "Loi de finances rectificative pour l'exercice 2026", status: "En examen", date: "02 Juin 2026", statusColor: CYAN },
-      { ref: "Loi n° 2026-007", title: "Loi portant réforme du code électoral malagasy", status: "Adopté", date: "20 Mai 2026", statusColor: "#16a34a" },
-      { ref: "Loi n° 2026-004", title: "Loi relative à la protection de l'environnement marin", status: "Adopté", date: "8 Avril 2026", statusColor: "#16a34a" },
-    ],
-  },
-  {
-    id: "calendar",
-    icon: Calendar,
-    label: "Calendrier parlementaire",
-    color: CYAN,
-    path: "/travaux-parlementaires",
-    items: [
-      { ref: "Session ordinaire", title: "Ouverture de la session ordinaire de mai — Sénat de Madagascar", status: "Terminé", date: "2 Mai 2026", statusColor: RED },
-      { ref: "Comité mixte", title: "Réunion du comité mixte paritaire Assemblée Nationale – Sénat", status: "Planifié", date: "25 Juin 2026", statusColor: CYAN },
-      { ref: "Session extraordinaire", title: "Convocation d'une session extraordinaire sur le budget rectificatif", status: "Planifié", date: "15 Juillet 2026", statusColor: CYAN },
-      { ref: "Audition", title: "Audition du Premier ministre sur la situation économique nationale", status: "Planifié", date: "30 Juillet 2026", statusColor: CYAN },
-    ],
-  },
-  {
-    id: "texts",
-    icon: BookOpen,
-    label: "Textes de référence",
-    color: CYAN,
-    path: "/about/textes",
-    items: [
-      { ref: "Constitution", title: "Constitution de la IVème République de Madagascar — 2010", status: "En vigueur", date: "11 Déc. 2010", statusColor: "#16a34a" },
-      { ref: "Règlement intérieur", title: "Règlement intérieur du Sénat — Édition révisée 2022", status: "En vigueur", date: "Janv. 2022", statusColor: "#16a34a" },
-      { ref: "Loi organique", title: "Loi organique n° 2012-006 relative au Sénat de Madagascar", status: "En vigueur", date: "Mars 2012", statusColor: "#16a34a" },
-      { ref: "Charte APF", title: "Charte de la démocratie — Assemblée Parlementaire de la Francophonie", status: "Ratifié", date: "Fév. 2018", statusColor: "#16a34a" },
-    ],
   },
 ];
 
@@ -90,9 +73,9 @@ const staggerContainer = {
   },
 };
 
-export function ParliamentaryWork() {
-  const [activeTab, setActiveTab] = useState("legislation");
-  const active = tabs.find((t) => t.id === activeTab)!;
+export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
+  const [activeTab, setActiveTab] = useState(tabsData[0]?.id || "legislation");
+  const active = tabsData.find((t) => t.id === activeTab)!;
 
   return (
     <motion.section
@@ -121,7 +104,7 @@ export function ParliamentaryWork() {
               marginBottom: "0.5rem",
             }}
           >
-            Travaux Parlementaires
+            Textes et Lois
           </p>
           <h2
             style={{
@@ -137,7 +120,7 @@ export function ParliamentaryWork() {
           </h2>
         </motion.div>
 
-        {/* Première rangée : 3 cartes verticales (3:4) avec overlay vert */}
+        {/* Cartes d'information (statiques) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8 mb-16">
           {infoCards.map((item) => (
             <motion.div
@@ -181,28 +164,31 @@ export function ParliamentaryWork() {
           ))}
         </div>
 
-        {/* Deuxième partie : onglets et listes */}
+        {/* Onglets et listes dynamiques (via tabsData) */}
         <div className="grid lg:grid-cols-3 gap-12">
           <motion.div variants={fadeUp}>
             <div className="flex flex-col gap-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all hover:scale-[1.02]"
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "0.84rem",
-                    fontWeight: activeTab === tab.id ? 600 : 400,
-                    backgroundColor: activeTab === tab.id ? tab.color : "rgba(255,255,255,0.05)",
-                    color: activeTab === tab.id ? "#000000" : "rgba(255,255,255,0.7)",
-                    border: `1.5px solid ${activeTab === tab.id ? tab.color : "rgba(255,255,255,0.15)"}`,
-                  }}
-                >
-                  <tab.icon size={15} />
-                  {tab.label}
-                </button>
-              ))}
+              {tabsData.map((tab) => {
+                const TabIcon = iconMap[tab.iconName] || FileText;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all hover:scale-[1.02]"
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "0.84rem",
+                      fontWeight: activeTab === tab.id ? 600 : 400,
+                      backgroundColor: activeTab === tab.id ? tab.color : "rgba(255,255,255,0.05)",
+                      color: activeTab === tab.id ? "#000000" : "rgba(255,255,255,0.7)",
+                      border: `1.5px solid ${activeTab === tab.id ? tab.color : "rgba(255,255,255,0.15)"}`,
+                    }}
+                  >
+                    <TabIcon size={15} />
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
 
             <Link

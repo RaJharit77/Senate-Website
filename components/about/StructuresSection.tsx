@@ -1,6 +1,6 @@
-// components/about/StructuresSection.tsx
 import Image from "next/image";
-import { DocCard, Divider, pStyle, subheadStyle, ulStyle, NamedItem, GREEN, RED, GREEN_DARK, INK, MUTED } from "./AboutStyles";
+import { DocCard, Divider, pStyle, subheadStyle, ulStyle, NamedItem } from "./AboutStyles";
+import { GREEN, GREEN_DARK, INK, MUTED, RED } from "@/utils/colors";
 
 const abbreviations: { abbr: string; full: string }[] = [
     { abbr: "P", full: "Président" },

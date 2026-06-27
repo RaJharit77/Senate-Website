@@ -1,0 +1,73 @@
+import { getPostsByCategorySlug, getMedia } from "@/lib/api";
+import { resolvePostImage } from "@/lib/extractImage";
+import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
+import type { SimpleActivityItem } from "@/components/international/SimpleActivityGrid";
+import type { ActivityCategory } from "@/lib/api";
+import { GREEN, RED, WHITE } from "@/utils/colors";
+import type { WpPost } from "@/lib/types";
+
+function formatDate(dateStr: string) {
+    return new Date(dateStr).toLocaleDateString("fr-FR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
+export default async function InterParliamentaryFriendshipGroupPage() {
+    let raw: WpPost[] = [];
+    try {
+        raw = (await getPostsByCategorySlug("groupe-amitie", {
+            per_page: 100,
+            _embed: true,
+            status: "publish",
+        })) as WpPost[];
+    } catch (err) {
+        console.error("[InterParliamentaryFriendshipGroupPage] Failed to load activities:", err);
+        raw = [];
+    }
+
+    // Transformer les posts en items pour la grille simplifiée
+    const items: SimpleActivityItem[] = await Promise.all(
+        raw.map(async (post) => {
+            const imageUrl = await resolvePostImage(post, getMedia);
+            return {
+                id: post.id,
+                title: post.title.rendered,
+                date: formatDate(post.date),
+                dateValue: new Date(post.date).getTime(),
+                imageUrl,
+                link: post.link || "",
+                category: "delegation" as ActivityCategory, // valeur par défaut pour le type
+            };
+        })
+    );
+
+    return (
+        <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
+            <div className="max-w-7xl mx-auto">
+                <div className="mb-12">
+                    <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                        <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                        <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
+                        <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                    </div>
+                    <h1
+                        className="text-4xl font-bold text-white"
+                        style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                        Groupe Interparlementaire d&apos;Amitié
+                    </h1>
+                    <p
+                        className="text-lg mt-2 max-w-2xl text-white/50"
+                        style={{ fontFamily: "'Source Serif 4', serif" }}
+                    >
+                        Retrouvez ici les activités du Groupe Interparlementaire d&apos;Amitié du Sénat.
+                    </p>
+                </div>
+
+                <SimpleActivityGrid items={items} />
+            </div>
+        </div>
+    );
+}

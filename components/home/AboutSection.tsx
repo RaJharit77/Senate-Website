@@ -16,30 +16,30 @@ const leadership = [
     name: "NDREMANJARY",
     firstName: "Jean André",
     role: "Président du Sénat par intérim",
-    description: "Président",
+    description: "Le Président",
     image: "https://senat.mg/wp-content/themes/senat13/images/NDREMANJARY.png",
     accentColor: CYAN,
-    path: "/a-propos#bureau",
+    path: "/about/president",
     isPresident: true,
   },
   {
     name: "Tous les Membres",
     firstName: "Les sénateurs durant la deuxième législature du quatrième République",
     role: "Les Membres du bureau",
-    description: "",
+    description: "Les Membres",
     image: "https://senat.mg/wp-content/themes/senat13/images/membres.jpg",
     accentColor: RED,
-    path: "/a-propos#structures",
+    path: "/about/structures",
     isPresident: false,
   },
   {
     name: "Histoire & Missions",
     firstName: "Connaître le Sénat à travers les Républiques",
     role: "Découvrez l'institution",
-    description: "Sénat de Madagascar",
+    description: "Histoire du Sénat",
     image: "https://senat.mg/wp-content/themes/senat13/images/historique.jpg",
     accentColor: EMERALD,
-    path: "/a-propos",
+    path: "/historic",
     isPresident: false,
   },
 ];
@@ -303,7 +303,7 @@ export function AboutSection() {
                     marginBottom: "0.5rem",
                   }}
                 >
-                  Bureau du Sénat
+                  Le Sénat de Madagascar
                 </p>
                 <h2
                   style={{
@@ -315,7 +315,7 @@ export function AboutSection() {
                   }}
                 >
                   Dirigeants &{" "}
-                  <em style={{ fontWeight: 400, color: RED }}>responsables</em>
+                  <em style={{ fontWeight: 400, color: RED }}>Histoires</em>
                 </h2>
               </div>
               <Link

@@ -1,5 +1,5 @@
-// components/about/MissionSection.tsx
-import { DocCard, Divider, pStyle, subheadStyle, GREEN, RED } from "./AboutStyles";
+import { GREEN, RED } from "@/utils/colors";
+import { DocCard, Divider, pStyle, subheadStyle } from "./AboutStyles";
 
 export function MissionSection() {
     return (

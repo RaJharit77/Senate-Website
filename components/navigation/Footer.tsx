@@ -4,11 +4,7 @@ import Link from "next/link";
 import { Mail, MapPin, ArrowRight } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
-
-const GREEN = "#1a5c16";
-const RED = "#cc1111";
-const CYAN = "#5bc8de";
-const NAV_BG = "#1e293b";
+import { CYAN, GREEN, NAV_BG, RED } from "@/utils/colors";
 
 const footerLinks = [
   {
@@ -16,8 +12,8 @@ const footerLinks = [
     color: CYAN,
     links: [
       { label: "À propos du Sénat", path: "/about" },
-      { label: "Historique", path: "/historique" },
-      { label: "Missions et attributions", path: "/mission-and-responsibilities"},
+      { label: "Historique", path: "/historic" },
+      { label: "Missions et attributions", path: "/about/mission-and-responsibilities"},
       { label: "Structures", path: "/about/structures" },
       { label: "Textes de référence", path: "/about/reference-texts" },
     ],
@@ -26,9 +22,9 @@ const footerLinks = [
     title: "Travaux",
     color: RED,
     links: [
-      { label: "Travaux législatifs", path: "/travaux-parlementaires#legislatifs" },
-      { label: "Calendrier parlementaire", path: "/travaux-parlementaires" },
-      { label: "Textes adoptés", path: "/travaux-parlementaires" },
+      { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
+      { label: "Calendrier parlementaire", path: "/parliamentary-proceedings" },
+      { label: "Textes adoptés", path: "/parliamentary-proceedings" },
     ],
   },
   {
@@ -36,7 +32,7 @@ const footerLinks = [
     color: CYAN,
     links: [
       { label: "Relations internationales", path: "/international" },
-      { label: "Groupe d'amitié", path: "/international#groupe" },
+      { label: "Groupe d'amitié", path: "/international/inter-parliamentary-friendship-group" },
       { label: "Coopération APF", path: "/international" },
       { label: "Espace Presse", path: "/espace-presse" },
     ],

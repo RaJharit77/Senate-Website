@@ -1,6 +1,15 @@
+import type { WpCategory, WpPost } from "@/lib/types";
+
 const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
 
 type Params = Record<string, string | number | boolean>;
+
+class WpApiError extends Error {
+    constructor(message: string, public status?: number, public url?: string) {
+        super(message);
+        this.name = "WpApiError";
+    }
+}
 
 async function fetchAPI<T>(endpoint: string, params: Params = {}): Promise<T> {
     const url = new URL(`${API_BASE}${endpoint}`);
@@ -9,17 +18,75 @@ async function fetchAPI<T>(endpoint: string, params: Params = {}): Promise<T> {
             url.searchParams.set(key, String(value));
         }
     });
-    const res = await fetch(url.toString(), {
-        headers: { "User-Agent": "Next.js" },
-        next: { revalidate: 3600 }, // 1 hour
-    });
-    if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-    return res.json();
+
+    let res: Response;
+    try {
+        res = await fetch(url.toString(), {
+            // Le User-Agent "Next.js" peut être bloqué/filtré par certains
+            // hébergeurs ou plugins de sécurité WordPress (Wordfence, CDN, etc.),
+            // alors qu'un UA de navigateur passe. On aligne sur ce qui fonctionne
+            // en curl pour éviter les réponses vides/HTML silencieuses.
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
+                Accept: "application/json",
+            },
+            next: { revalidate: 3600 }, // 1 hour
+        });
+    } catch (err) {
+        // Erreur réseau (DNS, timeout, connexion refusée...)
+        console.error(`[fetchAPI] Network error for ${url.toString()}:`, err);
+        throw new WpApiError(
+            `Network error while fetching ${url.toString()}`,
+            undefined,
+            url.toString()
+        );
+    }
+
+    if (!res.ok) {
+        // On lit le corps pour logguer un message utile (souvent une page
+        // d'erreur HTML ou un message WP), sans jamais laisser planter le process.
+        const bodyPreview = await res.text().catch(() => "<unreadable body>");
+        console.error(
+            `[fetchAPI] HTTP ${res.status} for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`
+        );
+        throw new WpApiError(
+            `Failed to fetch ${url.toString()}: ${res.status}`,
+            res.status,
+            url.toString()
+        );
+    }
+
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+        // Symptôme classique d'un blocage silencieux : on reçoit du 200 OK
+        // mais avec une page HTML (challenge anti-bot, maintenance, etc.)
+        const bodyPreview = await res.text().catch(() => "<unreadable body>");
+        console.error(
+            `[fetchAPI] Unexpected content-type "${contentType}" for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`
+        );
+        throw new WpApiError(
+            `Unexpected non-JSON response from ${url.toString()}`,
+            res.status,
+            url.toString()
+        );
+    }
+
+    try {
+        return (await res.json()) as T;
+    } catch (err) {
+        console.error(`[fetchAPI] JSON parse error for ${url.toString()}:`, err);
+        throw new WpApiError(
+            `Invalid JSON from ${url.toString()}`,
+            res.status,
+            url.toString()
+        );
+    }
 }
 
 // ----- Posts (default) -----
 export function getPosts(params: Params = {}) {
-    return fetchAPI<unknown[]>("/posts", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/posts", { _embed: true, ...params });
 }
 
 export function getPostsByCategory(categoryId: number, params: Params = {}) {
@@ -28,33 +95,47 @@ export function getPostsByCategory(categoryId: number, params: Params = {}) {
 
 // ----- Custom Post Types -----
 export function getActualite(params: Params = {}) {
-    return fetchAPI<unknown[]>("/actualite", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/actualite", { _embed: true, ...params });
 }
 
 export function getAlaune(params: Params = {}) {
-    return fetchAPI<unknown[]>("/alaune", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/alaune", { _embed: true, ...params });
 }
 
 export function getInternational(params: Params = {}) {
-    return fetchAPI<unknown[]>("/international", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/international", { _embed: true, ...params });
+}
+
+// CPT "audience" : visites de courtoisie, audiences accordées par le
+// Président du Sénat (cf. https://senat.mg/activites-du-president/).
+export function getAudiences(params: Params = {}) {
+    return fetchAPI<WpPost[]>("/audience", { _embed: true, ...params });
+}
+
+// CPT "delegation" (slug supposé) : accueil de délégations parlementaires
+// étrangères. L'endpoint peut ne pas exister selon l'environnement WP ;
+// on neutralise l'erreur au point d'appel (cf. getPresidentActivities)
+// pour ne pas casser le rendu de la page si le CPT diffère ou est vide.
+export function getDelegations(params: Params = {}) {
+    return fetchAPI<WpPost[]>("/delegation", { _embed: true, ...params });
 }
 
 export function getRepubliqueI(params: Params = {}) {
-    return fetchAPI<unknown[]>("/republiquei", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/republiquei", { _embed: true, ...params });
 }
 export function getRepubliqueII(params: Params = {}) {
-    return fetchAPI<unknown[]>("/republiqueii", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/republiqueii", { _embed: true, ...params });
 }
 export function getRepubliqueIII(params: Params = {}) {
-    return fetchAPI<unknown[]>("/republiqueiii", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/republiqueiii", { _embed: true, ...params });
 }
 export function getRepubliqueIV(params: Params = {}) {
-    return fetchAPI<unknown[]>("/republiqueiv", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/republiqueiv", { _embed: true, ...params });
 }
 
 // ----- Pages -----
 export function getPages(params: Params = {}) {
-    return fetchAPI<unknown[]>("/pages", { _embed: true, ...params });
+    return fetchAPI<WpPost[]>("/pages", { _embed: true, ...params });
 }
 
 export function getPageBySlug(slug: string) {
@@ -82,19 +163,148 @@ export function getMedia(id: number) {
 
 export async function getPartners() {
     try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const data = await fetchAPI<any[]>("/partenaires", { per_page: 20, _embed: true });
+        const data = await fetchAPI<Array<{
+            title?: { rendered?: string };
+            acf?: { abbreviation?: string };
+            _embedded?: { ["wp:featuredmedia"]?: Array<{ source_url?: string }> };
+        }>>("/partenaires", { per_page: 20, _embed: true });
         return data.map((item) => ({
             name: item.title?.rendered || "Partenaire",
             abbr: item.acf?.abbreviation || "P",
             logo: item._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
         }));
-    } catch {
-        // Si l'endpoint n'existe pas, retourner un tableau vide
+    } catch (err) {
+        // Si l'endpoint n'existe pas (ou erreur réseau/parsing), on logge
+        // pour garder une trace, mais on retourne un tableau vide pour ne
+        // pas casser le rendu de la page d'accueil.
+        console.error("[getPartners] Failed to load partners:", err);
         return [];
     }
 }
 
 export function getBureau() {
     return fetchAPI("/bureau", { _embed: true });
+}
+
+// Récupérer une catégorie par son slug
+export async function getCategoryBySlug(slug: string): Promise<WpCategory | null> {
+    const data = await fetchAPI<WpCategory[]>("/categories", { slug });
+    if (!Array.isArray(data) || data.length === 0) {
+        console.warn(`[getCategoryBySlug] No category found for slug "${slug}"`);
+        return null;
+    }
+    return data[0];
+}
+
+// Récupérer une catégorie par son ID (si besoin)
+export async function getCategoryById(id: number) {
+    return fetchAPI<unknown>(`/categories/${id}`);
+}
+
+// Récupérer les posts d'une catégorie identifiée par son slug
+// (plus robuste qu'un ID en dur : l'ID d'une catégorie peut changer
+// d'un environnement WordPress à l'autre, le slug est stable).
+export async function getPostsByCategorySlug(slug: string, params: Params = {}) {
+    const category = await getCategoryBySlug(slug);
+    if (!category) {
+        console.warn(`[getPostsByCategorySlug] "${slug}" → catégorie introuvable, retour []`);
+        return [];
+    }
+    console.log(`[getPostsByCategorySlug] "${slug}" → category id=${category.id}, count=${category.count}`);
+    const posts = await getPostsByCategory(category.id, params);
+    console.log(`[getPostsByCategorySlug] "${slug}" (id=${category.id}) → ${posts.length} posts trouvés`);
+    return posts;
+}
+
+// Récupère les articles du custom post type "international" pour une
+// catégorie donnée (alternative à getPostsByCategorySlug si le contenu
+// est stocké dans le CPT "international" plutôt que dans les posts standards).
+export async function getInternationalByCategorySlug(slug: string, params: Params = {}) {
+    const category = await getCategoryBySlug(slug);
+    if (!category) return [];
+    return fetchAPI<WpPost[]>(`/international`, {
+        categories: category.id,
+        _embed: true,
+        ...params,
+    });
+}
+
+// ----- Républiques (textes constitutionnels) -----
+// Agrège les 4 post-types "republiquei" à "republiqueiv" en une seule liste,
+// triée du plus récent au plus ancien. Utile pour la page "Textes et Lois"
+// qui doit présenter l'historique constitutionnel.
+export async function getAllRepubliques(params: Params = {}) {
+    const results = await Promise.allSettled([
+        getRepubliqueI(params),
+        getRepubliqueII(params),
+        getRepubliqueIII(params),
+        getRepubliqueIV(params),
+    ]);
+
+    results.forEach((r, i) => {
+        if (r.status === "rejected") {
+            console.error(`[getAllRepubliques] republique${i + 1} failed:`, r.reason);
+        }
+    });
+
+    return results
+        .filter((r): r is PromiseFulfilledResult<WpPost[]> => r.status === "fulfilled")
+        .flatMap((r) => r.value)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export async function getInternationalByType(type: string, params: Params = {}) {
+    const items = await getInternational({ per_page: 50, _embed: true, ...params });
+    return items.filter((item) => (item.acf as Record<string, unknown>)?.type === type);
+}
+
+// ----- Activités du Président : agrégation des 3 CPT -----
+// Sur senat.mg, "Activités du Président" agrège trois custom post types
+// distincts (et non un champ ACF "type" sur un seul CPT) :
+//   - "audience"     → Audiences
+//   - "delegation"   → Accueil des délégations parlementaires étrangères
+//   - "international"→ Déplacements à l'étranger
+// Chaque CPT est interrogé indépendamment et les échecs sont neutralisés
+// (Promise.allSettled) : si un endpoint n'existe pas encore côté WP
+// (ex. "delegation" n'a peut-être pas été créé), on retourne simplement un
+// tableau vide pour ce groupe plutôt que de casser toute la page.
+export type ActivityCategory = "audience" | "delegation" | "international";
+
+export interface PresidentActivity {
+    id: number;
+    category: ActivityCategory;
+    post: WpPost;
+}
+
+export async function getPresidentActivities(): Promise<PresidentActivity[]> {
+    const [audiences, delegations, deplacements] = await Promise.allSettled([
+        getAudiences({ per_page: 100 }),
+        getDelegations({ per_page: 100 }),
+        getInternational({ per_page: 100 }),
+    ]);
+
+    const items: PresidentActivity[] = [];
+
+    if (audiences.status === "fulfilled") {
+        items.push(...audiences.value.map((post) => ({ id: post.id, category: "audience" as const, post })));
+    } else {
+        console.error("[getPresidentActivities] CPT 'audience' failed:", audiences.reason);
+    }
+
+    if (delegations.status === "fulfilled") {
+        items.push(...delegations.value.map((post) => ({ id: post.id, category: "delegation" as const, post })));
+    } else {
+        console.warn(
+            "[getPresidentActivities] CPT 'delegation' indisponible (endpoint absent ou vide) :",
+            delegations.reason
+        );
+    }
+
+    if (deplacements.status === "fulfilled") {
+        items.push(...deplacements.value.map((post) => ({ id: post.id, category: "international" as const, post })));
+    } else {
+        console.error("[getPresidentActivities] CPT 'international' failed:", deplacements.reason);
+    }
+
+    return items.sort((a, b) => new Date(b.post.date).getTime() - new Date(a.post.date).getTime());
 }

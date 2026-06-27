@@ -1,4 +1,5 @@
-import { DocCard, pStyle, subheadStyle, ulStyle, liStyle, Bullet, GREEN, RED } from "./AboutStyles";
+import { GREEN, RED } from "@/utils/colors";
+import { DocCard, pStyle, subheadStyle, ulStyle, liStyle, Bullet } from "./AboutStyles";
 
 export function TextesSection() {
     return (

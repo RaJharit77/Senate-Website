@@ -1,6 +1,6 @@
 import { StructuresSection } from "@/components/about/StructuresSection";
 import Link from "next/link";
-import { GREEN, RED, WHITE } from "@/components/about/AboutStyles";
+import { GREEN, RED, WHITE } from "@/utils/colors";
 
 export default function StructuresPage() {
     return (

@@ -1,7 +1,17 @@
+export interface WpCategory {
+    id: number;
+    count: number;
+    name: string;
+    slug: string;
+    parent: number;
+}
+
 export interface WpPost {
     id: number;
     date: string;
     slug: string;
+    link?: string;
+    featured_media?: number;
     title: {
         rendered: string;
     };
