@@ -1,9 +1,5 @@
+import { CYAN, GREEN, GREENDARK, RED, WHITE } from "@/utils/colors";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
-
-const GREEN = "#5CE65C";
-const RED = "#FF2C2C";
-const CYAN = "#5bc8de";
-const GREENDARK = "#008000";
 
 export default function ContactPage() {
     return (
@@ -11,7 +7,7 @@ export default function ContactPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
-                        <div className="w-8 rounded-full" style={{ backgroundColor: "#ffffff" }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                         <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-4 rounded-full" style={{ backgroundColor: GREENDARK }} />
                     </div>
