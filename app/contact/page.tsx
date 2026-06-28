@@ -1,5 +1,6 @@
-import { CYAN, GREEN, GREENDARK, RED, WHITE } from "@/utils/colors";
+import { CYAN, EMERALD, GREENDARK, RED, WHITE } from "@/utils/colors";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
+import ContactForm from "@/components/contact/ContactForm";
 
 export default function ContactPage() {
     return (
@@ -24,27 +25,7 @@ export default function ContactPage() {
                         <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
                             Envoyez-nous un message
                         </h2>
-                        <form>
-                            <div className="mb-4">
-                                <label className="block text-white/80 text-sm font-semibold mb-1">Votre nom</label>
-                                <input type="text" className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50" placeholder="Nom complet" />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-white/80 text-sm font-semibold mb-1">Votre e-mail</label>
-                                <input type="email" className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50" placeholder="email@exemple.com" />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-white/80 text-sm font-semibold mb-1">Objet</label>
-                                <input type="text" className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50" placeholder="Sujet de votre message" />
-                            </div>
-                            <div className="mb-6">
-                                <label className="block text-white/80 text-sm font-semibold mb-1">Votre message</label>
-                                <textarea className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50 min-h-[120px]" placeholder="Écrivez votre message ici..." />
-                            </div>
-                            <button type="submit" className="w-full py-3 rounded-lg bg-[#008000] text-white font-semibold transition-all hover:opacity-80 hover:scale-105">
-                                Envoyer
-                            </button>
-                        </form>
+                        <ContactForm />
                     </div>
 
                     <div>
@@ -53,8 +34,8 @@ export default function ContactPage() {
                         </h2>
                         <div className="space-y-6">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${GREEN}22` }}>
-                                    <MapPin size={22} style={{ color: GREEN }} />
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${EMERALD}22` }}>
+                                    <MapPin size={22} style={{ color: EMERALD }} />
                                 </div>
                                 <div>
                                     <p className="text-white/80 font-semibold text-sm">Adresse</p>
@@ -80,8 +61,8 @@ export default function ContactPage() {
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${GREEN}22` }}>
-                                    <Clock size={22} style={{ color: GREEN }} />
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${EMERALD}22` }}>
+                                    <Clock size={22} style={{ color: EMERALD }} />
                                 </div>
                                 <div>
                                     <p className="text-white/80 font-semibold text-sm">Horaires</p>

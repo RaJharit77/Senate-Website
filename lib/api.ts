@@ -186,6 +186,94 @@ export function getBureau() {
     return fetchAPI("/bureau", { _embed: true });
 }
 
+// ----- Contact Form 7 -----
+// Le endpoint CF7 n'utilise pas fetchAPI() car il ne tape pas vers
+// API_BASE (/wp-json/wp/v2) mais vers /wp-json/contact-form-7/v1, et il
+// attend du multipart/form-data (pas de JSON en entrée). On le garde donc
+// séparé, mais toujours dans ce fichier "api" pour centraliser tous les
+// appels réseau côté WordPress.
+
+const WP_ROOT = (process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2").replace(
+    /\/wp-json\/wp\/v2\/?$/,
+    ""
+);
+
+// Identifiants imposés par le shortcode CF7 généré dans WordPress.
+// Ils sont stables pour un formulaire donné et n'ont pas besoin d'être
+// dynamiques côté client.
+const CF7_FORM_ID = 263;
+const CF7_VERSION = "5.9.5";
+const CF7_LOCALE = "fr_FR";
+const CF7_UNIT_TAG = "wpcf7-f263-p149-o1";
+const CF7_CONTAINER_POST = 149;
+
+export interface ContactFormFields {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+}
+
+export interface ContactFormResult {
+    status: "mail_sent" | "validation_failed" | "spam" | "aborted" | "mail_failed" | string;
+    message: string;
+    invalidFields?: Record<string, string>;
+}
+
+export async function submitContactForm(
+    fields: ContactFormFields
+): Promise<ContactFormResult> {
+    const url = `${WP_ROOT}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`;
+
+    const formData = new FormData();
+    formData.set("_wpcf7", String(CF7_FORM_ID));
+    formData.set("_wpcf7_version", CF7_VERSION);
+    formData.set("_wpcf7_locale", CF7_LOCALE);
+    formData.set("_wpcf7_unit_tag", CF7_UNIT_TAG);
+    formData.set("_wpcf7_container_post", String(CF7_CONTAINER_POST));
+    formData.set("your-name", fields.name);
+    formData.set("your-email", fields.email);
+    formData.set("your-subject", fields.subject);
+    formData.set("your-message", fields.message);
+
+    let res: Response;
+    try {
+        res = await fetch(url, {
+            method: "POST",
+            body: formData,
+            headers: {
+                Accept: "application/json",
+            },
+        });
+    } catch (err) {
+        console.error("[submitContactForm] Network error:", err);
+        throw new WpApiError("Network error while submitting contact form", undefined, url);
+    }
+
+    let data: {
+        status?: string;
+        message?: string;
+        invalid_fields?: Array<{ field: string; message: string }>;
+    };
+    try {
+        data = await res.json();
+    } catch (err) {
+        console.error("[submitContactForm] JSON parse error:", err);
+        throw new WpApiError("Invalid JSON from contact form endpoint", res.status, url);
+    }
+
+    const invalidFields = data.invalid_fields?.reduce<Record<string, string>>((acc, f) => {
+        acc[f.field] = f.message;
+        return acc;
+    }, {});
+
+    return {
+        status: data.status || "mail_failed",
+        message: data.message || "Une erreur est survenue.",
+        invalidFields,
+    };
+}
+
 // Récupérer une catégorie par son slug
 export async function getCategoryBySlug(slug: string): Promise<WpCategory | null> {
     const data = await fetchAPI<WpCategory[]>("/categories", { slug });
