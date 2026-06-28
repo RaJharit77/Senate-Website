@@ -83,7 +83,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           fill
           className="object-cover hero-image"
           priority
-          unoptimized={!isValidImage} // Pour les images data: ne pas optimiser
+          unoptimized={!isValidImage}
         />
         <div
           className="absolute inset-0"
@@ -139,9 +139,8 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
               letterSpacing: "-0.02em",
               textShadow: "0 2px 20px rgba(0,0,0,0.3)",
             }}
-          >
-            {slide.title}
-          </h1>
+            dangerouslySetInnerHTML={{ __html: slide.title }}
+          />
 
           <p
             className="mb-8"
