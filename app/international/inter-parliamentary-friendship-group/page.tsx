@@ -27,7 +27,6 @@ export default async function InterParliamentaryFriendshipGroupPage() {
         raw = [];
     }
 
-    // Transformer les posts en items pour la grille simplifiée
     const items: SimpleActivityItem[] = await Promise.all(
         raw.map(async (post) => {
             const imageUrl = await resolvePostImage(post, getMedia);
@@ -38,7 +37,7 @@ export default async function InterParliamentaryFriendshipGroupPage() {
                 dateValue: new Date(post.date).getTime(),
                 imageUrl,
                 link: post.link || "",
-                category: "delegation" as ActivityCategory, // valeur par défaut pour le type
+                category: "delegation" as ActivityCategory,
             };
         })
     );

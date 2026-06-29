@@ -12,10 +12,6 @@ function formatDate(dateStr: string) {
 }
 
 export default async function PresidentsActivitiesPage() {
-    // getPresidentActivities() interroge en parallèle les 3 CPT
-    // (audience, delegation, international) et neutralise individuellement
-    // les échecs : si un endpoint est absent ou vide, l'agrégat continue
-    // de fonctionner avec les CPT disponibles (cf. lib/api.ts).
     let activities: Awaited<ReturnType<typeof getPresidentActivities>> = [];
     try {
         activities = await getPresidentActivities();
