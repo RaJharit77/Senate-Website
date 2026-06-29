@@ -5,20 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { FileText, Calendar, BookOpen, ArrowRight } from "lucide-react";
+import { CYAN, EMERALD, GREEN, RED, WHITE } from "@/utils/colors";
 
-const CYAN = "#5bc8de";
-const RED = "#cc1111";
-const GREEN = "#2e7d32";
-const WHITE = "#ffffff";
-
-// Map des noms d'icônes vers les composants
 const iconMap = {
   FileText,
   Calendar,
   BookOpen,
 };
 
-// Types
 interface WorkItem {
   ref: string;
   title: string;
@@ -53,7 +47,7 @@ const infoCards = [
   },
   {
     label: "International",
-    desc: "Diplomatie Parlementaire",
+    desc: "Diplomatie et activités parlementaire du sénat",
     image: "https://senat.mg/wp-content/themes/senat13/images/international.jpg",
     path: "/international",
     color: CYAN,
@@ -86,16 +80,15 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
       variants={staggerContainer}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Titre de la section */}
         <motion.div variants={fadeUp} className="mb-12">
           <div className="flex gap-1 mb-4" style={{ height: 3 }}>
             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-            <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-            <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+            <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+            <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
           </div>
           <p
             style={{
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "0.7rem",
               fontWeight: 700,
               letterSpacing: "0.14em",
@@ -104,11 +97,11 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
               marginBottom: "0.5rem",
             }}
           >
-            Textes et Lois
+            Travaux Parlementaires
           </p>
           <h2
             style={{
-              fontFamily: "'Playfair Display', serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
               fontWeight: 700,
               color: "#ffffff",
@@ -116,7 +109,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
             }}
           >
             L&apos;activité législative{" "}
-            <em style={{ fontWeight: 400, color: RED }}>du Sénat</em>
+            <em style={{ fontWeight: 700, color: WHITE }}>du Sénat</em>
           </h2>
         </motion.div>
 
@@ -143,12 +136,13 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                     className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-500"
                     style={{ backgroundColor: GREEN }}
                   />
+                  {/* Conteneur du texte aligné en bas */}
                   <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <div className="transform transition-all duration-500 group-hover:-translate-y-2">
+                    <div className="w-full space-y-1">
                       <p className="text-sm font-bold uppercase tracking-wider" style={{ color: item.color }}>
                         {item.label}
                       </p>
-                      <h3 className="text-lg sm:text-xl font-semibold mt-1 leading-tight">
+                      <h3 className="text-lg sm:text-xl font-semibold leading-tight">
                         {item.desc}
                       </h3>
                       <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 text-red-500">
@@ -176,7 +170,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                     onClick={() => setActiveTab(tab.id)}
                     className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all hover:scale-[1.02]"
                     style={{
-                      fontFamily: "'Inter', sans-serif",
+                      fontFamily: "'Poppins', sans-serif",
                       fontSize: "0.84rem",
                       fontWeight: activeTab === tab.id ? 600 : 400,
                       backgroundColor: activeTab === tab.id ? tab.color : "rgba(255,255,255,0.05)",
@@ -195,7 +189,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
               href={active.path}
               className="inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-full transition-all hover:opacity-80 hover:scale-105"
               style={{
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.78rem",
                 fontWeight: 600,
                 backgroundColor: active.color,
@@ -238,7 +232,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                       <div className="flex items-center gap-3 flex-wrap mb-2">
                         <span
                           style={{
-                            fontFamily: "'Inter', sans-serif",
+                            fontFamily: "'Poppins', sans-serif",
                             fontSize: "0.65rem",
                             fontWeight: 700,
                             letterSpacing: "0.08em",
@@ -259,7 +253,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                       </div>
                       <h4
                         style={{
-                          fontFamily: "'Playfair Display', serif",
+                          fontFamily: "'Poppins', sans-serif",
                           fontSize: "0.95rem",
                           fontWeight: 600,
                           color: "#ffffff",
@@ -271,7 +265,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                       </h4>
                       <span
                         style={{
-                          fontFamily: "'Inter', sans-serif",
+                          fontFamily: "'Poppins', sans-serif",
                           fontSize: "0.7rem",
                           color: "rgba(255,255,255,0.5)",
                         }}
@@ -288,6 +282,11 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                 ))}
               </motion.div>
             </AnimatePresence>
+            <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: 10 }}>
+              <div className="flex-1" style={{ backgroundColor: WHITE }} />
+              <div className="flex-1" style={{ backgroundColor: RED }} />
+              <div className="flex-1" style={{ backgroundColor: EMERALD }} />
+            </div>
           </div>
         </div>
       </div>

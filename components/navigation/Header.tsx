@@ -36,7 +36,7 @@ const navItems = [
       { label: "Textes de référence", path: "/about/reference-texts" },
     ],
   },
-  { label: "Historique", path: "/historique" },
+  { label: "Historique", path: "/historical" },
   {
     label: "Travaux Parlementaires",
     path: "/parliamentary-proceddings",
@@ -123,7 +123,6 @@ export function Header() {
         boxShadow: isScrolled ? "0 4px 30px rgba(0,0,0,0.3)" : "none",
       }}
     >
-      {/* Top utility bar – cyan */}
       <div style={{ backgroundColor: COLORS.cyan }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-2">
           <div className="flex items-center gap-5">
@@ -177,7 +176,7 @@ export function Header() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-4">
-          <Link href="/" className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-4 shrink-0">
             <Image
               src="https://senat.mg/wp-content/themes/senat13/images/logo-senat.png"
               alt="Sénat de Madagascar"
@@ -203,7 +202,7 @@ export function Header() {
                   fontFamily: "'Playfair Display', serif",
                   fontWeight: 600,
                   fontSize: "1.1rem",
-                  color: COLORS.red,
+                  color: COLORS.green,
                   lineHeight: 1.2,
                   letterSpacing: "0.01em",
                 }}
@@ -213,12 +212,16 @@ export function Header() {
               <div
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "clamp(0.45rem, 0.6rem, 0.7rem)",
+                  fontSize: "clamp(0.45rem, 0.55rem, 0.65rem)",
                   letterSpacing: "0.14em",
                   color: COLORS.textMuted,
                   textTransform: "uppercase",
                   fontWeight: 500,
                   marginTop: 2,
+                  maxWidth: "120px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
                 className="hidden sm:block"
               >
@@ -227,7 +230,7 @@ export function Header() {
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center justify-between gap-4">
+          <div className="hidden lg:flex items-center justify-between gap-4 shrink-0">
             <Image
               src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
               alt="République de Madagascar"
@@ -241,7 +244,7 @@ export function Header() {
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
             {/* Barre de recherche */}
-            <div className="hidden lg:flex items-center relative">
+            <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center">
                   <input
@@ -250,9 +253,8 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Rechercher…"
-                    className="px-4 py-2 rounded-full border focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                    className="px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                     style={{
-                      borderColor: COLORS.border,
                       fontSize: "0.85rem",
                       color: COLORS.text,
                       backgroundColor: "rgba(255,255,255,0.9)",
@@ -270,9 +272,8 @@ export function Header() {
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex items-center gap-2 px-5 py-3 rounded-full border transition-all hover:border-primary"
+                  className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-cyan-400 transition-all hover:border-cyan-500"
                   style={{
-                    borderColor: COLORS.border,
                     fontSize: "0.85rem",
                     color: COLORS.textMuted,
                   }}
@@ -317,9 +318,9 @@ export function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher…"
-                className="flex-1 px-4 py-2 rounded-full border focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="flex-1 px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 style={{
-                  borderColor: COLORS.border,
+                  borderColor: COLORS.cyan,
                   fontSize: "0.9rem",
                   color: COLORS.text,
                   backgroundColor: "white",
@@ -355,7 +356,7 @@ export function Header() {
           backdropFilter: isScrolled ? "blur(8px)" : "none",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center">
           {navItems.map((item) => (
             <div
               key={item.label}
@@ -450,61 +451,63 @@ export function Header() {
       </nav>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden border-t"
-          style={{ backgroundColor: COLORS.white, borderColor: COLORS.border }}
-        >
-          {navItems.map((item) => (
-            <div key={item.label} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-              {item.children ? (
-                <>
-                  <button
-                    className="w-full text-left px-5 py-4 flex items-center justify-between"
-                    style={{ fontSize: "0.95rem", fontWeight: 500, color: COLORS.text }}
-                    onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
+      {
+        mobileOpen && (
+          <div
+            className="lg:hidden border-t"
+            style={{ backgroundColor: COLORS.white, borderColor: COLORS.border }}
+          >
+            {navItems.map((item) => (
+              <div key={item.label} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                {item.children ? (
+                  <>
+                    <button
+                      className="w-full text-left px-5 py-4 flex items-center justify-between"
+                      style={{ fontSize: "0.95rem", fontWeight: 500, color: COLORS.text }}
+                      onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
+                    >
+                      {item.label}
+                      <ChevronDown
+                        size={14}
+                        style={{ color: COLORS.cyan }}
+                        className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    {item.children && openMenu === item.label && (
+                      <div style={{ backgroundColor: "#f1f5f9" }} className="pb-2">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.label}
+                            href={child.path}
+                            className="block px-8 py-2"
+                            style={{ fontSize: "0.88rem", color: COLORS.cyan }}
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    href={item.path}
+                    className="block px-5 py-4"
+                    style={{
+                      fontSize: "0.95rem",
+                      fontWeight: isActive(item.path) ? 600 : 500,
+                      color: isActive(item.path) ? COLORS.cyan : COLORS.text,
+                    }}
+                    onClick={() => setMobileOpen(false)}
                   >
                     {item.label}
-                    <ChevronDown
-                      size={14}
-                      style={{ color: COLORS.cyan }}
-                      className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {item.children && openMenu === item.label && (
-                    <div style={{ backgroundColor: "#f1f5f9" }} className="pb-2">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          href={child.path}
-                          className="block px-8 py-2"
-                          style={{ fontSize: "0.88rem", color: COLORS.cyan }}
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <Link
-                  href={item.path}
-                  className="block px-5 py-4"
-                  style={{
-                    fontSize: "0.95rem",
-                    fontWeight: isActive(item.path) ? 600 : 500,
-                    color: isActive(item.path) ? COLORS.cyan : COLORS.text,
-                  }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </header>
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </header >
   );
 }

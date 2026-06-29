@@ -4,13 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
 
-const GREEN = "#1a5c16";
-const RED = "#cc1111";
-const CYAN = "#5bc8de";
-const WHITE = "#ffffff";
-
-// Image de remplacement si l'URL est vide ou invalide (SVG encodé)
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
 
@@ -107,7 +102,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
               className="inline-flex items-center px-3 py-1 rounded-sm text-white"
               style={{
                 backgroundColor: slide.color,
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.7rem",
                 fontWeight: 700,
                 letterSpacing: "0.12em",
@@ -119,9 +114,9 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
             <span
               className="flex items-center gap-1.5"
               style={{
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.8rem",
-                color: "rgba(255,255,255,0.55)",
+                color: GRAY,
               }}
             >
               <Calendar size={14} />
@@ -132,7 +127,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           <h1
             className="text-white mb-5"
             style={{
-              fontFamily: "'Playfair Display', serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "clamp(1.8rem, 3vw, 3rem)",
               fontWeight: 700,
               lineHeight: 1.15,
@@ -145,10 +140,10 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           <p
             className="mb-8"
             style={{
-              fontFamily: "'Source Serif 4', serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "1rem",
               lineHeight: 1.7,
-              color: "rgba(255,255,255,0.7)",
+              color: GRAY,
               maxWidth: 560,
               textShadow: "0 1px 12px rgba(0,0,0,0.2)",
             }}
@@ -160,7 +155,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
             href={slide.link || "#"}
             className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded transition-all hover:gap-4"
             style={{
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "0.85rem",
               fontWeight: 600,
               letterSpacing: "0.06em",
@@ -221,7 +216,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
       <div
         className="absolute bottom-12 right-8"
         style={{
-          fontFamily: "'Inter', sans-serif",
+          fontFamily: "'Poppins', sans-serif",
           fontSize: "0.85rem",
           fontWeight: 600,
           color: "rgba(255,255,255,0.4)",
@@ -236,7 +231,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
       <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: 10 }}>
         <div className="flex-1" style={{ backgroundColor: WHITE }} />
         <div className="flex-1" style={{ backgroundColor: RED }} />
-        <div className="flex-1" style={{ backgroundColor: GREEN }} />
+        <div className="flex-1" style={{ backgroundColor: EMERALD }} />
       </div>
 
       <style>{`

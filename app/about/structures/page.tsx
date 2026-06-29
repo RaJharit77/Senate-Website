@@ -1,6 +1,6 @@
 import { StructuresSection } from "@/components/about/StructuresSection";
 import Link from "next/link";
-import { GREEN, RED, WHITE } from "@/utils/colors";
+import { EMERALD,  RED, WHITE } from "@/utils/colors";
 
 export default function StructuresPage() {
     return (
@@ -9,19 +9,19 @@ export default function StructuresPage() {
                 <div className="mb-6">
                     <Link
                         href="/about"
-                        className="text-white/50 hover:text-white transition-colors text-sm"
+                        className="text-cyan-400 font-semibold hover:text-white transition-colors text-sm"
                     >
                         À propos
                     </Link>
-                    <span className="text-white/30 mx-2">/</span>
+                    <span className="text-gray-300 mx-2">/</span>
                     <span className="text-cyan-400 text-sm font-semibold">Structures</span>
                 </div>
 
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
                     <h1
                         style={{

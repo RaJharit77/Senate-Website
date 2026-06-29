@@ -7,7 +7,6 @@ export default function AboutPage() {
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto">
-                {/* Page Title */}
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />

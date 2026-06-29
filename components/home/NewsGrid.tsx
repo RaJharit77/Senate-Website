@@ -4,13 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Calendar, Globe2, Users, Heart, GraduationCap, Sparkles, type LucideIcon } from "lucide-react";
+import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
 
-const RED = "#cc1111";
-const CYAN = "#5bc8de";
-const GREEN = "#1a5c16";
-const WHITE = "#ffffff";
-
-// Placeholder SVG (data URI)
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
 
@@ -105,7 +100,7 @@ function FeaturedCard({ article }: { article: Article }) {
             <h3
               className="text-white mb-3 text-3xl font-bold leading-tight"
               style={{
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "'Poppins', sans-serif",
               }}
             >
               {article.title}
@@ -113,7 +108,7 @@ function FeaturedCard({ article }: { article: Article }) {
             <p
               className="text-white/70 text-base line-clamp-2 mb-4"
               style={{
-                fontFamily: "'Source Serif 4', serif",
+                fontFamily: "'Poppins', sans-serif",
               }}
             >
               {article.excerpt}
@@ -121,7 +116,7 @@ function FeaturedCard({ article }: { article: Article }) {
             <div
               className="inline-flex items-center gap-2 text-white border-b-2 pb-1 transition-all hover:gap-4 group-hover:border-cyan-400"
               style={{
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.8rem",
                 fontWeight: 600,
                 letterSpacing: "0.06em",
@@ -179,7 +174,7 @@ function CompactCard({ article }: { article: Article }) {
           <h4
             className="text-white text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
             style={{
-              fontFamily: "'Playfair Display', serif",
+              fontFamily: "'Poppins', serif",
             }}
           >
             {article.title}
@@ -187,7 +182,7 @@ function CompactCard({ article }: { article: Article }) {
           <div
             className="mt-2 inline-flex items-center gap-1 text-white/50 text-xs transition-all hover:gap-2 group-hover:text-cyan-400"
             style={{
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
             }}
           >
             Lire
@@ -216,13 +211,13 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
           <div>
             <div className="flex gap-1.5 mb-3">
               <div className="h-1 rounded-full w-8" style={{ backgroundColor: WHITE }} />
-              <div className="h-1 rounded-full w-4" style={{ backgroundColor: RED }} />
-              <div className="h-1 rounded-full w-4" style={{ backgroundColor: GREEN }} />
+              <div className="h-1 rounded-full w-8" style={{ backgroundColor: RED }} />
+              <div className="h-1 rounded-full w-8" style={{ backgroundColor: EMERALD }} />
             </div>
             <p
               className="text-xs font-bold uppercase tracking-widest"
               style={{
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 color: CYAN,
                 marginBottom: "0.5rem",
               }}
@@ -237,8 +232,7 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
                 lineHeight: 1.15,
               }}
             >
-              Dernières nouvelles{" "}
-              <em style={{ fontWeight: 400, color: RED }}>& événements</em>
+              À la une
             </h2>
           </div>
           <Link
@@ -283,6 +277,12 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
           <div className="w-6 h-0.5 rounded-full bg-cyan-400/20" />
           <div className="w-6 h-0.5 rounded-full bg-cyan-400/20" />
         </motion.div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: 10 }}>
+        <div className="flex-1" style={{ backgroundColor: WHITE }} />
+        <div className="flex-1" style={{ backgroundColor: RED }} />
+        <div className="flex-1" style={{ backgroundColor: EMERALD }} />
       </div>
 
       <style>{`

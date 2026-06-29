@@ -1,27 +1,32 @@
 "use client";
 
+import { CYAN } from "@/utils/colors";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-const CYAN = "#5bc8de";
-
 const partners = [
     { name: "Assemblée Nationale", abbr: "AN", logo: "https://senat.mg/wp-content/themes/senat13/images/An.png" },
+    { name: "Primature", abbr: "Prim", logo: "https://senat.mg/wp-content/themes/senat13/images/logo-primature-fond-transparent-vf-300x300.png" },
+    { name: "République de Madagascar", abbr: "Rpp", logo: "https://senat.mg/wp-content/themes/senat13/images/Rpp.png" },
     { name: "Haute Cour Constitutionnelle", abbr: "HCC", logo: "https://senat.mg/wp-content/themes/senat13/images/hcc.jpg" },
     { name: "Parlement Panafricain", abbr: "PAP", logo: "https://senat.mg/wp-content/themes/senat13/images/Parlement_panafricain_embl%C3%A8me.jpg" },
-    { name: "Union Inter-Parlementaire", abbr: "UIP", logo: "https://senat.mg/wp-content/themes/senat13/images/logo_ipu_en.png" },
     { name: "Assemblée Parlementaire de la Francophonie", abbr: "APF", logo: "https://senat.mg/wp-content/themes/senat13/images/Assembl%C3%A9e-parlementaire-de-la-francophonie_Vignette.jpg" },
+    { name: "EISA", abbr: "EISA", logo: "https://senat.mg/wp-content/themes/senat13/images/eisalogo.png" },
+    { name: "CN Legis", abbr: "CN Legis", logo: "https://senat.mg/wp-content/themes/senat13/images/cnlegis.png" },
+    { name: "ECES", abbr: "ECES", logo: "https://senat.mg/wp-content/themes/senat13/images/logo_ECES_French_New.png" },
     { name: "Friedrich Ebert Stiftung", abbr: "FES", logo: "https://senat.mg/wp-content/themes/senat13/images/Logo_Friedrich_Ebert_Stiftung.svg_.png" },
+    { name: "Union Inter-Parlementaire", abbr: "UIP", logo: "https://senat.mg/wp-content/themes/senat13/images/logo_ipu_en.png" },
+    { name: "Union Africaine", abbr: "UA", logo: "https://senat.mg/wp-content/themes/senat13/images/logo-mua.png" }
 ];
 
-const loopedPartners = [...partners, ...partners, ...partners];
+const loopedPartners = [...partners, ...partners];
 
 export function PartnersBand() {
     return (
         <div
             className="py-12 px-4 sm:px-6 overflow-hidden backdrop-blur-sm relative"
             style={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backgroundColor: "rgba(0, 0, 0, 0.2)", // fond plus clair
                 borderBottom: "1px solid rgba(255,255,255,0.05)",
                 borderTop: "1px solid rgba(255,255,255,0.05)",
             }}
@@ -40,13 +45,9 @@ export function PartnersBand() {
 
             <div className="max-w-7xl mx-auto relative z-10">
                 <p
-                    className="text-center mb-8"
+                    className="text-center mb-8 text-lg font-bold uppercase tracking-widest"
                     style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "0.68rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.16em",
-                        textTransform: "uppercase",
+                        fontFamily: "'Poppins', sans-serif",
                         color: CYAN,
                         textShadow: "0 2px 10px rgba(0,0,0,0.5)",
                     }}
@@ -55,12 +56,12 @@ export function PartnersBand() {
                 </p>
                 <div className="relative w-full overflow-hidden">
                     <motion.div
-                        className="flex gap-6"
+                        className="flex gap-8"
                         animate={{
-                            x: ["0%", "-33.33%"],
+                            x: ["0%", "-50%"],
                         }}
                         transition={{
-                            duration: 30,
+                            duration: 40,
                             ease: "linear",
                             repeat: Infinity,
                         }}
@@ -70,22 +71,22 @@ export function PartnersBand() {
                             <a
                                 key={`${p.abbr}-${index}`}
                                 href="#"
-                                className="flex items-center gap-3 px-5 py-3 rounded-xl border transition-all hover:shadow-md shrink-0 relative card-shine"
+                                className="flex items-center gap-3 px-6 py-4 rounded-xl border transition-all hover:shadow-md shrink-0 relative card-shine"
                                 style={{
-                                    borderColor: "rgba(255,255,255,0.06)",
-                                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                    borderColor: "rgba(255,255,255,0.1)",
+                                    backgroundColor: "rgba(255, 255, 255, 0.12)",
                                     boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
                                     backdropFilter: "blur(4px)",
                                 }}
                                 onMouseEnter={(e) => {
                                     (e.currentTarget as HTMLElement).style.borderColor = CYAN;
                                     (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px rgba(91,200,222,0.2)`;
-                                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+                                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255, 255, 255, 0.2)";
                                 }}
                                 onMouseLeave={(e) => {
-                                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)";
+                                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)";
                                     (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)";
-                                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+                                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255, 255, 255, 0.12)";
                                 }}
                             >
                                 <span className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden">
@@ -95,13 +96,13 @@ export function PartnersBand() {
                                         transform: "skewX(-20deg)",
                                     }} />
                                 </span>
-                                <div className="relative h-10 w-auto min-w-[40px]">
+                                <div className="relative h-20 w-auto min-w-[80px]">
                                     <Image
                                         src={p.logo}
                                         alt={p.name}
                                         fill
                                         className="object-contain relative z-10"
-                                        sizes="(max-width: 768px) 40px, 60px"
+                                        sizes="(max-width: 768px) 80px, 100px"
                                     />
                                 </div>
                             </a>

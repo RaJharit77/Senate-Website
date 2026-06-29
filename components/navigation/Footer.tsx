@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Mail, MapPin, ArrowRight } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
-import { CYAN, GREEN, NAV_BG, RED } from "@/utils/colors";
+import { CYAN, EMERALD, NAV_BG, RED, WHITE } from "@/utils/colors";
 
 const footerLinks = [
   {
@@ -151,9 +151,9 @@ export function Footer() {
             </div>
 
             <div className="flex rounded overflow-hidden" style={{ width: 60, height: 16 }}>
-              <div style={{ flex: 1, backgroundColor: "#ffffff" }} />
+              <div style={{ flex: 1, backgroundColor: WHITE }} />
               <div style={{ flex: 1, backgroundColor: RED }} />
-              <div style={{ flex: 1, backgroundColor: GREEN }} />
+              <div style={{ flex: 1, backgroundColor: EMERALD }} />
             </div>
           </div>
 

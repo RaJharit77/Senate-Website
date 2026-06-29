@@ -129,8 +129,8 @@ export default async function HomePage() {
   return (
     <>
       <HeroCarousel slides={slides} />
-      <AboutSection />
       <NewsGrid articles={articles} />
+      <AboutSection />
       <ParliamentaryWork tabsData={tabsData} />
       <PartnersBand />
     </>

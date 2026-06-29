@@ -1,7 +1,7 @@
 import { getPresidentActivities, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import { PresidentActivitiesFeed, type ActivityItem } from "@/components/international/PresidentActivitiesFeed";
-import { GREEN, RED, WHITE } from "@/utils/colors";
+import { EMERALD, RED, WHITE } from "@/utils/colors";
 
 function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString("fr-FR", {
@@ -44,8 +44,8 @@ export default async function PresidentsActivitiesPage() {
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
                     <h1
                         className="text-4xl font-bold text-white"

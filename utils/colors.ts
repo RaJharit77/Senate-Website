@@ -8,3 +8,4 @@ export const WHITE = "#ffffff";
 export const NAV_BG = "#1e293b";
 export const GREENDARK = "#008000";
 export const EMERALD = "#5CE65C";
+export const GRAY = "#E0E0E0";

@@ -3,7 +3,7 @@ import { resolvePostImage } from "@/lib/extractImage";
 import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
 import type { SimpleActivityItem } from "@/components/international/SimpleActivityGrid";
 import type { ActivityCategory } from "@/lib/api";
-import { GREEN, RED, WHITE } from "@/utils/colors";
+import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
 
 function formatDate(dateStr: string) {
@@ -49,8 +49,8 @@ export default async function InterParliamentaryFriendshipGroupPage() {
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
                     <h1
                         className="text-4xl font-bold text-white"

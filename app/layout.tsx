@@ -1,26 +1,15 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display, Source_Serif_4 } from 'next/font/google';
+import { Poppins, Inter } from 'next/font/google';
 import '../styles/globals.css';
 import { Header } from '@/components/navigation/Header';
 import { Footer } from '@/components/navigation/Footer';
 
-const inter = Inter({
-  variable: '--font-inter',
+const poppins = Poppins({
   subsets: ['latin'],
-  display: 'swap',
+  weight: ['400', '700'],
 });
 
-const playfair = Playfair_Display({
-  variable: '--font-playfair',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-const sourceSerif = Source_Serif_4({
-  variable: '--font-source-serif',
-  subsets: ['latin'],
-  display: 'swap',
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Antenimierandoholona - Site web du Sénat de Madagasar',
@@ -38,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${inter.variable} ${playfair.variable} ${sourceSerif.variable} h-full antialiased`}
+      className={`${poppins.className} ${inter.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Header />

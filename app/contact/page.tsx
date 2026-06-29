@@ -1,4 +1,4 @@
-import { CYAN, EMERALD, GREENDARK, RED, WHITE } from "@/utils/colors";
+import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
 
@@ -9,8 +9,8 @@ export default function ContactPage() {
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: GREENDARK }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
                     <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
                         Contact
