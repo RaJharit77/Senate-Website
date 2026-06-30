@@ -45,13 +45,13 @@ export default async function PresidentsActivitiesPage() {
                     </div>
                     <h1
                         className="text-4xl font-bold text-white"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Activités du Président
                     </h1>
                     <p
                         className="text-lg mt-2 max-w-2xl text-white/50"
-                        style={{ fontFamily: "'Source Serif 4', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Audiences, accueil de délégations parlementaires étrangères et déplacements à
                         l&apos;étranger du Président du Sénat.

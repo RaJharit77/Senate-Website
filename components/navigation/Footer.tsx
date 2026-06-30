@@ -5,39 +5,7 @@ import { Mail, MapPin, ArrowRight } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { CYAN, EMERALD, NAV_BG, RED, WHITE } from "@/utils/colors";
-
-const footerLinks = [
-  {
-    title: "Institution",
-    color: CYAN,
-    links: [
-      { label: "À propos du Sénat", path: "/about" },
-      { label: "Historique", path: "/historic" },
-      { label: "Missions et attributions", path: "/about/mission-and-responsibilities"},
-      { label: "Structures", path: "/about/structures" },
-      { label: "Textes de référence", path: "/about/reference-texts" },
-    ],
-  },
-  {
-    title: "Travaux",
-    color: RED,
-    links: [
-      { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
-      { label: "Calendrier parlementaire", path: "/parliamentary-proceedings" },
-      { label: "Textes adoptés", path: "/parliamentary-proceedings" },
-    ],
-  },
-  {
-    title: "International",
-    color: CYAN,
-    links: [
-      { label: "Relations internationales", path: "/international" },
-      { label: "Groupe d'amitié", path: "/international/inter-parliamentary-friendship-group" },
-      { label: "Coopération APF", path: "/international" },
-      { label: "Espace Presse", path: "/espace-presse" },
-    ],
-  },
-];
+import { footerLinks } from "@/utils/footerLinks";
 
 export function Footer() {
   return (
@@ -56,10 +24,10 @@ export function Footer() {
               <div>
                 <div
                   style={{
-                    fontFamily: "'Playfair Display', serif",
+                    fontFamily: "'Poppins', sans-serif",
                     fontWeight: 700,
                     fontSize: "1.25rem",
-                    color: "#ffffff",
+                    color: WHITE,
                     lineHeight: 1,
                   }}
                 >
@@ -67,10 +35,10 @@ export function Footer() {
                 </div>
                 <div
                   style={{
-                    fontFamily: "'Playfair Display', serif",
+                    fontFamily: "'Poppins', sans-serif",
                     fontWeight: 600,
                     fontSize: "0.85rem",
-                    color: "#ffffff",
+                    color: WHITE,
                     lineHeight: 1.2,
                   }}
                 >
@@ -81,7 +49,7 @@ export function Footer() {
 
             <p
               style={{
-                fontFamily: "'Source Serif 4', serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.88rem",
                 lineHeight: 1.75,
                 color: "rgba(255,255,255,0.5)",
@@ -93,7 +61,7 @@ export function Footer() {
             </p>
 
             <div className="flex gap-2.5 mb-6">
-              <a
+              <Link
                 href="https://web.facebook.com/SenatdeMadagascar"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -111,8 +79,8 @@ export function Footer() {
                 }}
               >
                 <FaFacebook size={15} />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="https://www.youtube.com/@antenimierandoholona"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -130,8 +98,8 @@ export function Footer() {
                 }}
               >
                 <FaYoutube size={15} />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className="w-10 h-10 rounded-full border flex items-center justify-center transition-all"
                 style={{ borderColor: "rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.5)" }}
@@ -147,7 +115,7 @@ export function Footer() {
                 }}
               >
                 <Mail size={15} />
-              </a>
+              </Link>
             </div>
 
             <div className="flex rounded overflow-hidden" style={{ width: 60, height: 16 }}>
@@ -161,7 +129,7 @@ export function Footer() {
             <div key={col.title}>
               <h4
                 style={{
-                  fontFamily: "'Inter', sans-serif",
+                  fontFamily: "'Poppins', sans-serif",
                   fontSize: "0.68rem",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -179,12 +147,12 @@ export function Footer() {
                       href={link.path}
                       className="flex items-center gap-1.5 transition-all group"
                       style={{
-                        fontFamily: "'Inter', sans-serif",
+                        fontFamily: "'Poppins', sans-serif",
                         fontSize: "0.82rem",
                         color: "rgba(255,255,255,0.42)",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.color = "#ffffff";
+                        (e.currentTarget as HTMLElement).style.color = WHITE;
                         (e.currentTarget as HTMLElement).style.transform = "translateX(4px)";
                       }}
                       onMouseLeave={(e) => {
@@ -211,7 +179,7 @@ export function Footer() {
               href="mailto:contact@senat.mg"
               className="flex items-center gap-2 transition-all"
               style={{
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.76rem",
                 color: "rgba(255,255,255,0.38)",
               }}
@@ -230,7 +198,7 @@ export function Footer() {
             <div
               className="flex items-center gap-2"
               style={{
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.76rem",
                 color: "rgba(255,255,255,0.38)",
               }}
@@ -241,7 +209,7 @@ export function Footer() {
           </div>
           <p
             style={{
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "0.7rem",
               color: "rgba(255,255,255,0.22)",
               letterSpacing: "0.04em",

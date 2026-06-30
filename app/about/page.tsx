@@ -1,7 +1,7 @@
 import { MissionSection } from "@/components/about/MissionSection";
 import { StructuresSection } from "@/components/about/StructuresSection";
 import { TextesSection } from "@/components/about/TextesSection";
-import { GREEN, RED, WHITE } from "@/utils/colors";
+import { EMERALD, RED, WHITE } from "@/utils/colors";
 
 export default function AboutPage() {
     return (
@@ -11,14 +11,14 @@ export default function AboutPage() {
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                         <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                        <div className="w-4 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
                     <h1
                         style={{
                             fontFamily: "'Playfair Display', serif",
                             fontSize: "clamp(2rem, 4vw, 3rem)",
                             fontWeight: 700,
-                            color: "#ffffff",
+                            color: WHITE,
                             lineHeight: 1.2,
                         }}
                     >
@@ -26,7 +26,7 @@ export default function AboutPage() {
                     </h1>
                     <p
                         style={{
-                            fontFamily: "'Source Serif 4', serif",
+                            fontFamily: "'Poppins', sans-serif",
                             fontSize: "1.1rem",
                             color: "rgba(255,255,255,0.5)",
                             marginTop: "0.5rem",
@@ -37,7 +37,6 @@ export default function AboutPage() {
                     </p>
                 </div>
 
-                {/* Trois sections */}
                 <div className="space-y-16">
                     <MissionSection />
                     <StructuresSection />

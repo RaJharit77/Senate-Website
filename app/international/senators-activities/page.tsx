@@ -17,7 +17,7 @@ function formatDate(dateStr: string) {
 const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> = {
     "audience_sen": "audience",
     "deplacement_sen": "international",
-    // Ajoutez "delegation_sen" si une catégorie spécifique existe pour les délégations
+    "delegation_sen": "delegation"
 };
 
 export default async function SenatorsActivitiesPage() {
@@ -59,7 +59,6 @@ export default async function SenatorsActivitiesPage() {
         }
     }
 
-    // Trier par date décroissante
     items.sort((a, b) => b.dateValue - a.dateValue);
 
     return (
@@ -73,13 +72,13 @@ export default async function SenatorsActivitiesPage() {
                     </div>
                     <h1
                         className="text-4xl font-bold text-white"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Activités des Sénateurs
                     </h1>
                     <p
                         className="text-lg mt-2 max-w-2xl text-white/50"
-                        style={{ fontFamily: "'Source Serif 4', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Audiences, accueil de délégations et déplacements à l&apos;étranger des Sénateurs.
                     </p>

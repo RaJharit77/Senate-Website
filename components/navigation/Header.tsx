@@ -6,24 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Menu, X, Search, Phone } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
-
-const COLORS = {
-  green: "#1a5c16",
-  greenDark: "#123d0f",
-  greenLight: "#eef5ee",
-  red: "#cc1111",
-  redLight: "#fff0f0",
-  cyan: "#5bc8de",
-  cyanLight: "#e8f8fc",
-  white: "#ffffff",
-  offWhite: "#f5f9f5",
-  text: "#0f172a",
-  textMuted: "#64748b",
-  border: "rgba(15,23,42,0.08)",
-  navBg: "#1e293b",
-  navHover: "#334155",
-  black: "#000000",
-};
+import { COLOURS } from "@/utils/colours";
+import { WHITE } from "@/utils/colors";
 
 const navItems = [
   { label: "Accueil", path: "/" },
@@ -123,41 +107,41 @@ export function Header() {
         boxShadow: isScrolled ? "0 4px 30px rgba(0,0,0,0.3)" : "none",
       }}
     >
-      <div style={{ backgroundColor: COLORS.cyan }}>
+      <div style={{ backgroundColor: COLOURS.cyan }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-2">
           <div className="flex items-center gap-5">
-            <a
+            <Link
               href="https://web.facebook.com/SenatdeMadagascar"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.77rem", color: COLORS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              style={{ fontSize: "0.77rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
             >
               <FaFacebook size={14} />
               <span>Sénat Madagascar</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://www.youtube.com/@antenimierandoholona"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.77rem", color: COLORS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              style={{ fontSize: "0.77rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
             >
               <FaYoutube size={14} />
               <span>Chaîne officielle</span>
-            </a>
+            </Link>
           </div>
           <div className="flex items-center gap-4">
-            <a
-              href="mailto:contact@senat.mg"
+            <Link
+              href="/contact"
               className="hidden sm:block transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.77rem", color: COLORS.black, letterSpacing: "0.03em" }}
+              style={{ fontSize: "0.77rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
               contact@senat.mg
-            </a>
+            </Link>
             <div
               className="flex items-center gap-1"
-              style={{ fontSize: "0.77rem", color: COLORS.black }}
+              style={{ fontSize: "0.77rem", color: COLOURS.black }}
             >
               <Phone size={14} />
               <span className="hidden sm:inline">+261 34 12 01 036</span>
@@ -170,8 +154,8 @@ export function Header() {
       <div
         className="transition-colors duration-300"
         style={{
-          backgroundColor: isScrolled ? "rgba(255,255,255,0.92)" : "#ffffff",
-          borderBottom: `3px solid ${COLORS.navBg}`,
+          backgroundColor: isScrolled ? "rgba(255,255,255,0.92)" : WHITE,
+          borderBottom: `3px solid ${COLOURS.navBg}`,
           backdropFilter: isScrolled ? "blur(8px)" : "none",
         }}
       >
@@ -186,43 +170,20 @@ export function Header() {
             />
             <div>
               <div
-                style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontWeight: 700,
-                  fontSize: "1.9rem",
-                  color: COLORS.green,
-                  lineHeight: 1,
-                  letterSpacing: "-0.01em",
-                }}
+                className="font-bold text-[1.9rem] leading-none tracking-tight"
+                style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
               >
                 Sénat
               </div>
               <div
-                style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontWeight: 600,
-                  fontSize: "1.1rem",
-                  color: COLORS.green,
-                  lineHeight: 1.2,
-                  letterSpacing: "0.01em",
-                }}
+                className="font-semibold text-[1.1rem] leading-tight tracking-wide"
+                style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
               >
                 de Madagascar
               </div>
               <div
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "clamp(0.4rem, 0.5rem, 0.65rem)",
-                  letterSpacing: "0.14em",
-                  color: COLORS.textMuted,
-                  textTransform: "uppercase",
-                  fontWeight: 500,
-                  marginTop: 2,
-                  maxWidth: "100px",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
+                className="font-medium uppercase tracking-widest text-gray-500 truncate max-w-[100px] sm:max-w-[160px] lg:max-w-[200px] text-[0.45rem] sm:text-[0.55rem] lg:text-[0.65rem]"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 République de Madagascar
               </div>
@@ -255,7 +216,7 @@ export function Header() {
                     className="px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                     style={{
                       fontSize: "0.85rem",
-                      color: COLORS.text,
+                      color: COLOURS.text,
                       backgroundColor: "rgba(255,255,255,0.9)",
                       width: "220px",
                     }}
@@ -263,7 +224,7 @@ export function Header() {
                   <button
                     type="submit"
                     className="ml-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    style={{ color: COLORS.textMuted }}
+                    style={{ color: COLOURS.textMuted }}
                   >
                     <Search size={18} />
                   </button>
@@ -274,7 +235,7 @@ export function Header() {
                   className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-cyan-400 transition-all hover:border-cyan-500"
                   style={{
                     fontSize: "0.85rem",
-                    color: COLORS.textMuted,
+                    color: COLOURS.textMuted,
                   }}
                 >
                   <Search size={16} />
@@ -292,7 +253,7 @@ export function Header() {
                   setTimeout(() => searchInputRef.current?.focus(), 100);
                 }
               }}
-              style={{ color: COLORS.green }}
+              style={{ color: COLOURS.cyan }}
             >
               <Search size={22} />
             </button>
@@ -300,7 +261,7 @@ export function Header() {
             <button
               className="lg:hidden p-2"
               onClick={() => setMobileOpen(!mobileOpen)}
-              style={{ color: COLORS.green }}
+              style={{ color: COLOURS.cyan }}
             >
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -319,15 +280,15 @@ export function Header() {
                 placeholder="Rechercher…"
                 className="flex-1 px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 style={{
-                  borderColor: COLORS.cyan,
+                  borderColor: COLOURS.cyan,
                   fontSize: "0.9rem",
-                  color: COLORS.text,
+                  color: COLOURS.text,
                   backgroundColor: "white",
                 }}
               />
               <button
                 type="submit"
-                className="p-2 rounded-full bg-cyan-500 text-white hover:bg-cyan-600 transition-colors"
+                className="p-2 rounUded-full bg-cyan-500 text-white hover:bg-cyan-600 transition-colors"
               >
                 <Search size={18} />
               </button>
@@ -350,7 +311,7 @@ export function Header() {
       <nav
         className="hidden lg:block transition-colors duration-300"
         style={{
-          backgroundColor: isScrolled ? "rgba(30,41,59,0.95)" : COLORS.navBg,
+          backgroundColor: isScrolled ? "rgba(30,41,59,0.95)" : COLOURS.navBg,
           padding: "4px 0",
           backdropFilter: isScrolled ? "blur(8px)" : "none",
         }}
@@ -367,12 +328,12 @@ export function Header() {
                 <button
                   className="flex items-center gap-1 px-5 py-4 transition-colors relative"
                   style={{
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "'Poppins', sans-serif",
                     fontSize: "0.9rem",
                     fontWeight: 500,
                     letterSpacing: "0.02em",
-                    color: isActive(item.path) ? COLORS.white : "rgba(255,255,255,0.8)",
-                    backgroundColor: isActive(item.path) ? COLORS.navHover : "transparent",
+                    color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
+                    backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
                   }}
                 >
                   {item.label}
@@ -380,7 +341,7 @@ export function Header() {
                   {isActive(item.path) && (
                     <span
                       className="absolute bottom-0 left-0 right-0 h-0.5"
-                      style={{ backgroundColor: COLORS.cyan }}
+                      style={{ backgroundColor: COLOURS.cyan }}
                     />
                   )}
                 </button>
@@ -389,19 +350,19 @@ export function Header() {
                   href={item.path}
                   className="flex items-center gap-1 px-5 py-4 transition-colors relative"
                   style={{
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "'Poppins', sans-serif",
                     fontSize: "0.9rem",
                     fontWeight: 500,
                     letterSpacing: "0.02em",
-                    color: isActive(item.path) ? COLORS.white : "rgba(255,255,255,0.8)",
-                    backgroundColor: isActive(item.path) ? COLORS.navHover : "transparent",
+                    color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
+                    backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
                   }}
                 >
                   {item.label}
                   {isActive(item.path) && (
                     <span
                       className="absolute bottom-0 left-0 right-0 h-0.5"
-                      style={{ backgroundColor: COLORS.cyan }}
+                      style={{ backgroundColor: COLOURS.cyan }}
                     />
                   )}
                 </Link>
@@ -412,9 +373,9 @@ export function Header() {
                   className="absolute top-full left-0 z-50 py-2 shadow-xl rounded-b-lg overflow-hidden"
                   style={{
                     minWidth: 250,
-                    backgroundColor: COLORS.white,
-                    border: `1px solid ${COLORS.border}`,
-                    borderTop: `3px solid ${COLORS.cyan}`,
+                    backgroundColor: COLOURS.white,
+                    border: `1px solid ${COLOURS.border}`,
+                    borderTop: `3px solid ${COLOURS.cyan}`,
                   }}
                 >
                   {item.children.map((child) => (
@@ -423,20 +384,20 @@ export function Header() {
                       href={child.path}
                       className="flex items-center px-5 py-3 transition-colors"
                       style={{
-                        fontFamily: "'Inter', sans-serif",
+                        fontFamily: "'Poppins', sans-serif",
                         fontSize: "0.85rem",
-                        color: COLORS.text,
+                        color: COLOURS.text,
                         borderLeft: "3px solid transparent",
                       }}
                       onMouseEnter={(e) => {
                         (e.currentTarget as HTMLElement).style.backgroundColor = "#f1f5f9";
-                        (e.currentTarget as HTMLElement).style.borderLeftColor = COLORS.cyan;
-                        (e.currentTarget as HTMLElement).style.color = COLORS.cyan;
+                        (e.currentTarget as HTMLElement).style.borderLeftColor = COLOURS.cyan;
+                        (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
                         (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
-                        (e.currentTarget as HTMLElement).style.color = COLORS.text;
+                        (e.currentTarget as HTMLElement).style.color = COLOURS.text;
                       }}
                     >
                       {child.label}
@@ -454,21 +415,21 @@ export function Header() {
         mobileOpen && (
           <div
             className="lg:hidden border-t"
-            style={{ backgroundColor: COLORS.white, borderColor: COLORS.border }}
+            style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
           >
             {navItems.map((item) => (
-              <div key={item.label} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+              <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
                 {item.children ? (
                   <>
                     <button
                       className="w-full text-left px-5 py-4 flex items-center justify-between"
-                      style={{ fontSize: "0.95rem", fontWeight: 500, color: COLORS.text }}
+                      style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
                       onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
                     >
                       {item.label}
                       <ChevronDown
                         size={14}
-                        style={{ color: COLORS.cyan }}
+                        style={{ color: COLOURS.cyan }}
                         className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
                       />
                     </button>
@@ -479,7 +440,7 @@ export function Header() {
                             key={child.label}
                             href={child.path}
                             className="block px-8 py-2"
-                            style={{ fontSize: "0.88rem", color: COLORS.cyan }}
+                            style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
                             onClick={() => setMobileOpen(false)}
                           >
                             {child.label}
@@ -495,7 +456,7 @@ export function Header() {
                     style={{
                       fontSize: "0.95rem",
                       fontWeight: isActive(item.path) ? 600 : 500,
-                      color: isActive(item.path) ? COLORS.cyan : COLORS.text,
+                      color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
                     }}
                     onClick={() => setMobileOpen(false)}
                   >

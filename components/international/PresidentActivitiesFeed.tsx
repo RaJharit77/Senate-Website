@@ -53,7 +53,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
                 {item.imageUrl ? (
                     <Image
                         src={item.imageUrl}
-                        alt=""
+                        alt="activity card"
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
@@ -95,7 +95,7 @@ function SectionDivider({ label }: { label: string }) {
     return (
         <div className="my-8 flex items-center gap-4">
             <hr className="flex-1 border-t border-white/20" />
-            <h2 className="whitespace-nowrap text-lg font-semibold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2 className="whitespace-nowrap text-lg font-semibold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                 {label}
             </h2>
             <hr className="flex-1 border-t border-white/20" />

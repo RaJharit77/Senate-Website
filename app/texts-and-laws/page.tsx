@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Scale, FileText, Calendar, ChevronRight } from "lucide-react";
 import { getPostsByCategorySlug, getAllRepubliques } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
-import { CYAN, GREEN, RED, WHITE } from "@/utils/colors";
+import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
 
 function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString("fr-FR", {
@@ -36,19 +36,18 @@ export default async function TextAndLawsPage() {
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
-                {/* En-tête */}
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-4 rounded-full" style={{ backgroundColor: GREEN }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
                     <h1
                         style={{
-                            fontFamily: "'Playfair Display', serif",
+                            fontFamily: "'Poppins', sans-serif",
                             fontSize: "clamp(2rem, 4vw, 3rem)",
                             fontWeight: 700,
-                            color: "#ffffff",
+                            color: WHITE,
                             lineHeight: 1.2,
                         }}
                     >
@@ -56,7 +55,7 @@ export default async function TextAndLawsPage() {
                     </h1>
                     <p
                         style={{
-                            fontFamily: "'Source Serif 4', serif",
+                            fontFamily: "'Poppins', sans-serif",
                             fontSize: "1.1rem",
                             color: "rgba(255,255,255,0.5)",
                             marginTop: "0.5rem",
@@ -75,7 +74,7 @@ export default async function TextAndLawsPage() {
                             <FileText size={22} style={{ color: WHITE }} />
                             <h2
                                 className="text-2xl font-semibold text-white"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
+                                style={{ fontFamily: "'Poppins', sans-serif" }}
                             >
                                 ADOPTÉS
                             </h2>
@@ -141,7 +140,7 @@ export default async function TextAndLawsPage() {
                             <Scale size={22} style={{ color: WHITE }} />
                             <h2
                                 className="text-2xl font-semibold text-white"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
+                                style={{ fontFamily: "'Poppins', sans-serif" }}
                             >
                                 Textes constitutionnels
                             </h2>

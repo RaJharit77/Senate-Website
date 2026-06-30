@@ -1,0 +1,18 @@
+export const COLOURS = {
+    green: "#1a5c16",
+    greenDark: "#123d0f",
+    greenLight: "#eef5ee",
+    red: "#cc1111",
+    redLight: "#fff0f0",
+    cyan: "#5bc8de",
+    cyanLight: "#e8f8fc",
+    white: "#ffffff",
+    offWhite: "#f5f9f5",
+    text: "#0f172a",
+    textMuted: "#64748b",
+    border: "rgba(15,23,42,0.08)",
+    navBg: "#1e293b",
+    navHover: "#334155",
+    black: "#000000",
+    navMob: "#0f172a",
+};

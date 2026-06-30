@@ -53,13 +53,13 @@ export default async function InterParliamentaryFriendshipGroupPage() {
                     </div>
                     <h1
                         className="text-4xl font-bold text-white"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Groupe Interparlementaire d&apos;Amitié
                     </h1>
                     <p
                         className="text-lg mt-2 max-w-2xl text-white/50"
-                        style={{ fontFamily: "'Source Serif 4', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Retrouvez ici les activités du Groupe Interparlementaire d&apos;Amitié du Sénat.
                     </p>

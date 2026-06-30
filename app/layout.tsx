@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
-        <FloatingSocialBar />  
+        <FloatingSocialBar /> 
         <Footer />
       </body>
     </html>

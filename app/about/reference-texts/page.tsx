@@ -25,7 +25,7 @@ export default function TextesPage() {
                     </div>
                     <h1
                         style={{
-                            fontFamily: "'Playfair Display', serif",
+                            fontFamily: "'Poppins', sans-serif",
                             fontSize: "clamp(2rem, 4vw, 3rem)",
                             fontWeight: 700,
                             color: "#ffffff",

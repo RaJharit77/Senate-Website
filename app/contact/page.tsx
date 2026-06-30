@@ -12,24 +12,24 @@ export default function ContactPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Contact
                     </h1>
-                    <p className="text-white/50 text-lg mt-2 max-w-2xl" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                    <p className="text-white/50 text-lg mt-2 max-w-2xl" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         N&apos;hésitez pas à nous contacter pour toute question ou demande d&apos;information.
                     </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-12">
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                        <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                        <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
                             Envoyez-nous un message
                         </h2>
                         <ContactForm />
                     </div>
 
                     <div>
-                        <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                        <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
                             Coordonnées
                         </h2>
                         <div className="space-y-6">

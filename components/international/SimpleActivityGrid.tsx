@@ -29,7 +29,7 @@ function ActivityCard({ item }: { item: SimpleActivityItem }) {
                 {item.imageUrl ? (
                     <Image
                         src={item.imageUrl}
-                        alt=""
+                        alt="activity grid"
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover object-center transition-transform duration-700 group-hover:scale-110"

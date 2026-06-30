@@ -20,7 +20,6 @@ interface Slide {
   link?: string;
 }
 
-// Fonction pour tronquer l'excerpt
 function truncateExcerpt(text: string, maxLength: number = 120): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + "…";
@@ -51,8 +50,6 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
   if (!slides.length) return null;
 
   const slide = slides[current];
-  // Vérifier si l'URL est valide (non vide, commence par http ou data,
-  // et n'est pas l'ancienne image par défaut du thème WP qui n'existe plus)
   const isValidImage =
     !!slide.image &&
     slide.image.trim() !== "" &&
@@ -78,6 +75,8 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           fill
           className="object-cover hero-image"
           priority
+          quality={90}
+          sizes="(max-width: 768px) 100vw, 50vw"
           unoptimized={!isValidImage}
         />
         <div
@@ -181,7 +180,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         </div>
       </div>
 
-      {/* Contrôles de navigation */}
+      {/* Navigation controls */}
       <div className="absolute bottom-12 left-8 sm:left-10 flex items-center gap-4">
         <button
           onClick={() => go(current - 1)}

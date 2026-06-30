@@ -2,7 +2,7 @@ import { GREEN, INK, RED } from "@/utils/colors";
 import { type CSSProperties, type ReactNode } from "react";
 
 export const pStyle: CSSProperties = {
-    fontFamily: "'Source Serif 4', serif",
+    fontFamily: "'Poppins', sans-serif",
     fontSize: "1.02rem",
     lineHeight: 1.85,
     color: INK,
@@ -10,7 +10,7 @@ export const pStyle: CSSProperties = {
 };
 
 export const subheadStyle: CSSProperties = {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "'Poppins', sans-serif",
     fontSize: "1.25rem",
     fontWeight: 700,
     color: RED,
@@ -66,7 +66,7 @@ export function Divider({ children, color = RED }: { children: string; color?: s
             <span className="flex-1 h-px" style={{ backgroundColor: "rgba(22,36,20,0.18)" }} />
             <span
                 style={{
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "'Poppins', sans-serif",
                     fontSize: "0.78rem",
                     fontWeight: 700,
                     letterSpacing: "0.16em",
@@ -101,7 +101,7 @@ export function DocCard({
                     <h2
                         className="text-center"
                         style={{
-                            fontFamily: "'Playfair Display', serif",
+                            fontFamily: "'Poppins', sans-serif",
                             fontSize: "1.35rem",
                             fontWeight: 700,
                             color: "#ffffff",

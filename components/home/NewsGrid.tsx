@@ -242,7 +242,7 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
             <h2
               className="text-white font-bold"
               style={{
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
                 lineHeight: 1.15,
               }}
@@ -251,10 +251,10 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
             </h2>
           </div>
           <Link
-            href="/espace-presse"
+            href="/press-area"
             className="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg"
             style={{
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: "0.8rem",
               fontWeight: 600,
               letterSpacing: "0.05em",

@@ -206,7 +206,7 @@ export function StructuresSection() {
                 <figcaption
                     className="text-center mt-3"
                     style={{
-                        fontFamily: "'Inter', sans-serif",
+                        fontFamily: "'Poppins', sans-serif",
                         fontSize: "0.78rem",
                         color: MUTED,
                         fontStyle: "italic",
@@ -228,7 +228,7 @@ export function StructuresSection() {
                                 className="text-left py-3 px-4 font-semibold border-b"
                                 style={{
                                     color: GREEN,
-                                    fontFamily: "'Inter', sans-serif",
+                                    fontFamily: "'Poppins', sans-serif",
                                     borderColor: "rgba(22,36,20,0.12)",
                                 }}
                             >
@@ -238,7 +238,7 @@ export function StructuresSection() {
                                 className="text-left py-3 px-4 font-semibold border-b"
                                 style={{
                                     color: GREEN,
-                                    fontFamily: "'Inter', sans-serif",
+                                    fontFamily: "'Poppins', sans-serif",
                                     borderColor: "rgba(22,36,20,0.12)",
                                 }}
                             >
@@ -259,7 +259,7 @@ export function StructuresSection() {
                                     className="py-2.5 px-4 font-mono font-bold border-r"
                                     style={{
                                         color: GREEN,
-                                        fontFamily: "'Inter', sans-serif",
+                                        fontFamily: "'Poppins', sans-serif",
                                         borderColor: "rgba(22,36,20,0.06)",
                                     }}
                                 >
@@ -268,7 +268,7 @@ export function StructuresSection() {
                                 <td
                                     className="py-2.5 px-4"
                                     style={{
-                                        fontFamily: "'Source Serif 4', serif",
+                                        fontFamily: "'Poppins', sans-serif",
                                         color: INK,
                                     }}
                                 >

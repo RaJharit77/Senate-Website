@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaFacebook, FaYoutube } from "react-icons/fa";
-import { Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { socialLinks } from "@/utils/socialLinks";
 
 export function FloatingSocialBar() {
     const [visible, setVisible] = useState(false);
@@ -15,27 +14,6 @@ export function FloatingSocialBar() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-    const socialLinks = [
-        {
-            icon: FaFacebook,
-            href: "https://web.facebook.com/SenatdeMadagascar",
-            label: "Facebook",
-            color: "#1877F2",
-        },
-        {
-            icon: FaYoutube,
-            href: "https://www.youtube.com/@antenimierandoholona",
-            label: "YouTube",
-            color: "#FF0000",
-        },
-        {
-            icon: Mail,
-            href: "mailto:contact@senat.mg",
-            label: "Email",
-            color: "#5bc8de",
-        },
-    ];
 
     return (
         <AnimatePresence>
