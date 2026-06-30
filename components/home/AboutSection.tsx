@@ -14,7 +14,7 @@ const leadership = [
     description: "Le Président",
     image: "https://senat.mg/wp-content/themes/senat13/images/NDREMANJARY.png",
     accentColor: CYAN,
-    path: "/about/president",
+    path: "/",
     isPresident: true,
   },
   {
