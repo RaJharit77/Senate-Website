@@ -212,18 +212,17 @@ export function Header() {
               <div
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "clamp(0.45rem, 0.55rem, 0.65rem)",
+                  fontSize: "clamp(0.4rem, 0.5rem, 0.65rem)",
                   letterSpacing: "0.14em",
                   color: COLORS.textMuted,
                   textTransform: "uppercase",
                   fontWeight: 500,
                   marginTop: 2,
-                  maxWidth: "120px",
+                  maxWidth: "100px",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}
-                className="hidden sm:block"
               >
                 République de Madagascar
               </div>

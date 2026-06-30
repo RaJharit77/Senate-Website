@@ -57,8 +57,17 @@ function FeaturedCard({ article }: { article: Article }) {
     <motion.article
       className="group relative rounded-2xl overflow-hidden cursor-pointer"
       variants={scaleIn}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      initial="hidden"
+      whileInView="visible"
+      animate={{ y: [0, -6, 0] }}
+      transition={{
+        y: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+      }}
+      whileHover={{
+        scale: 1.02,
+        y: 0,
+        transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+      }}
     >
       <Link href={article.link || "#"} className="block">
         <div className="relative" style={{ aspectRatio: "3/2" }}>
@@ -76,10 +85,16 @@ function FeaturedCard({ article }: { article: Article }) {
             }}
           />
 
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-red-500/90 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles size={12} />
+          <motion.div
+            className="absolute top-4 left-4 px-3 py-1 rounded-full bg-red-500/90 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 z-10"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, type: "spring", stiffness: 300 }}
+            whileHover={{ scale: 1.1 }}
+          >
+            <Sparkles size={12} className="animate-pulse" />
             À la une
-          </div>
+          </motion.div>
 
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <div className="flex items-center gap-3 mb-3">
