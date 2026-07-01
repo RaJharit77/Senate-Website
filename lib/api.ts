@@ -396,3 +396,75 @@ export async function getPresidentActivities(): Promise<PresidentActivity[]> {
 
     return items.sort((a, b) => new Date(b.post.date).getTime() - new Date(a.post.date).getTime());
 }
+
+
+// Actus
+export async function getActualitesWithPagination(page: number = 1, perPage: number = 6): Promise<{
+    items: WpPost[];
+    total: number;
+    totalPages: number;
+}> {
+    const url = new URL(`${API_BASE}/actualite`);
+    url.searchParams.set('per_page', String(perPage));
+    url.searchParams.set('page', String(page));
+    url.searchParams.set('_embed', 'true');
+
+    const res = await fetch(url.toString(), {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)',
+            Accept: 'application/json',
+        },
+    });
+
+    if (!res.ok) {
+        throw new Error(`Failed to fetch actualites: ${res.status}`);
+    }
+
+    const total = parseInt(res.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '0', 10);
+    const items = await res.json();
+
+    return { items, total, totalPages };
+}
+
+export async function getPostBySlug(slug: string, type: "alaune" | "actualite" = "alaune") {
+    const data = await fetchAPI<WpPost[]>(`/${type}`, { slug, _embed: true });
+    return data[0] || null;
+}
+
+export async function getPostBySlugNoCache(slug: string): Promise<WpPost | null> {
+    console.log('[getPostBySlugNoCache] slug reçu :', slug);
+
+    const endpoints = ['alaune', 'actualite'];
+    for (const type of endpoints) {
+        try {
+            const url = new URL(`${API_BASE}/${type}`);
+            url.searchParams.set('slug', slug);
+            url.searchParams.set('_embed', 'true');
+            console.log(`[getPostBySlugNoCache] requête ${type} :`, url.toString());
+
+            const res = await fetch(url.toString(), {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)',
+                    Accept: 'application/json',
+                },
+                cache: 'no-store',
+            });
+
+            if (!res.ok) {
+                console.log(`[getPostBySlugNoCache] ${type} status :`, res.status);
+                continue;
+            }
+
+            const data = await res.json();
+            console.log(`[getPostBySlugNoCache] ${type} trouvés :`, data.length);
+            if (data.length > 0) {
+                return data[0];
+            }
+        } catch (err) {
+            console.error(`[getPostBySlugNoCache] Erreur sur ${type} :`, err);
+        }
+    }
+
+    return null;
+}
