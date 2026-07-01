@@ -1,19 +1,20 @@
-import { getRepubliqueI, getRepubliqueII, getRepubliqueIII, getRepubliqueIV } from "@/lib/api";
-import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
-import { RED, CYAN, WHITE, EMERALD } from "@/utils/colors";
-import type { WpPost } from "@/lib/types";
-import { HistoryTabs } from "@/components/history/HistoryTabs";
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import {
+    getRepubliqueI,
+    getRepubliqueII,
+    getRepubliqueIII,
+    getRepubliqueIV,
+} from "@/lib/api";
+import type { WpPost } from "@/lib/types";
+import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
+import { RED, WHITE, EMERALD, CYAN } from "@/utils/colors";
+import { HistoryTabs } from "@/components/history/HistoryTabs";
+import type { TabConfig } from "@/components/history/HistoryTabs";
 
 type TabId = "premiere" | "deuxieme" | "troisieme" | "quatrieme" | "transition";
-
-interface TabConfig {
-    id: TabId;
-    label: string;
-    color: string;
-    period: string;
-    intro: string;
-}
 
 const TABS: TabConfig[] = [
     {
@@ -28,28 +29,28 @@ const TABS: TabConfig[] = [
         label: "Deuxième République",
         color: RED,
         period: "1975 – 1991",
-        intro: "Pendant la Deuxième République, le Sénat est supprimé au profit d'un Parlement monocaméral.",
+        intro: "Pendant la Deuxième République, le Sénat est supprimé au profit d'un Parlement monocaméral : l'Assemblée Nationale concentre l'essentiel du pouvoir législatif.",
     },
     {
         id: "troisieme",
         label: "Troisième République",
         color: RED,
         period: "1992 – 2009",
-        intro: "Pendant la Troisième République, le système bicaméral est réhabilité, mais le Sénat ne redevient effectif qu'en mai 2001.",
+        intro: "Pendant la Troisième République, le système bicaméral est réhabilité par la Constitution de 1992, mais le Sénat ne redevient effectif qu'en mai 2001.",
     },
     {
         id: "quatrieme",
         label: "Quatrième République",
         color: EMERALD,
         period: "depuis 2014",
-        intro: "Pendant la Quatrième République, le Sénat reprend ses fonctions avec un mandat ramené à cinq ans.",
+        intro: "Pendant la Quatrième République, le Sénat reprend ses fonctions aux côtés de l'Assemblée Nationale, avec un mandat sénatorial ramené à cinq ans.",
     },
     {
         id: "transition",
         label: "Période Transitoire",
         color: CYAN,
         period: "1972–1975 · 1991–1992 · 2009–2014",
-        intro: "Durant les périodes transitoires, le Sénat est suspendu et remplacé par des organes consultatifs.",
+        intro: "Durant les périodes transitoires, le Sénat est suspendu et remplacé par des organes consultatifs (CNPD, CRES, puis Conseil Supérieur de la Transition) le temps de la mise en place de nouvelles institutions.",
     },
 ];
 
@@ -60,11 +61,9 @@ const REPUBLIC_FETCHERS: Record<Exclude<TabId, "transition">, () => Promise<WpPo
     quatrieme: getRepubliqueIV,
 };
 
-// Image du Palais du Sénat (fixe, comme sur le site officiel)
 const HERO_IMAGE = "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg";
 
 type ContentMap = Record<TabId, string>;
-
 const EMPTY_CONTENT: ContentMap = {
     premiere: "",
     deuxieme: "",
@@ -73,34 +72,56 @@ const EMPTY_CONTENT: ContentMap = {
     transition: "",
 };
 
-export default async function HistoryPage() {
-    // Récupérer les données des 4 républiques
-    const ids: Exclude<TabId, "transition">[] = ["premiere", "deuxieme", "troisieme", "quatrieme"];
-    const results = await Promise.allSettled(ids.map((id) => REPUBLIC_FETCHERS[id]()));
+export default function HistoryPage() {
+    const [contents, setContents] = useState<ContentMap>(EMPTY_CONTENT);
+    const [loading, setLoading] = useState(true);
 
-    const contents: ContentMap = { ...EMPTY_CONTENT };
-    const transitionParts: string[] = [];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const ids: Exclude<TabId, "transition">[] = [
+                    "premiere", "deuxieme", "troisieme", "quatrieme",
+                ];
+                const results = await Promise.allSettled(
+                    ids.map((id) => REPUBLIC_FETCHERS[id]())
+                );
 
-    results.forEach((result, index) => {
-        const id = ids[index];
-        if (result.status === "fulfilled" && result.value[0]) {
-            const rawHtml = result.value[0].content.rendered;
-            const { before, transition } = splitTransitionBlock(rawHtml);
-            if (transition) transitionParts.push(transition);
-            contents[id] = stripLeadingH2(before);
-        } else if (result.status === "rejected") {
-            console.error(`Erreur chargement ${id}:`, result.reason);
-        }
-    });
+                const next: ContentMap = { ...EMPTY_CONTENT };
+                const transitionParts: string[] = [];
 
-    contents.transition = transitionParts
-        .map((block) => stripLeadingH2(block))
-        .join('<hr class="my-8 border-white/10" />');
+                results.forEach((result, index) => {
+                    const id = ids[index];
+                    if (result.status === "fulfilled" && result.value[0]) {
+                        const rawHtml = result.value[0].content.rendered;
+                        const { before, transition } = splitTransitionBlock(rawHtml);
+                        if (transition) transitionParts.push(transition);
+                        next[id] = stripLeadingH2(before);
+                    } else if (result.status === "rejected") {
+                        console.error(`[HistoryPage] Erreur chargement ${id}:`, result.reason);
+                    }
+                });
+
+                // Regroupe les blocs transitoires des différents CPT dans un
+                // seul onglet dédié, séparés par une ligne de séparation.
+                next.transition = transitionParts
+                    .map((block) => stripLeadingH2(block))
+                    .join('<hr class="history-hr" />');
+
+                setContents(next);
+            } catch (error) {
+                console.error("[HistoryPage] Erreur chargement:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
-                {/* En-tête */}
+
+                {/* ── Titre principal ───────────────────────────────── */}
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
@@ -115,9 +136,19 @@ export default async function HistoryPage() {
                     </h1>
                 </div>
 
-                {/* Bloc héroïque : image du Palais + description */}
+                {/* ── Bloc hero ─────────────────────────────────────── */}
+                {/*
+                 * Deux usages de next/image :
+                 * 1. fill + object-cover : fond flouté à faible opacité (ambiance).
+                 * 2. fill + object-contain dans un conteneur aspect-[4/3] :
+                 *    l'image principale bien visible.
+                 *    IMPORTANT : on utilise aspect-[4/3] (syntaxe arbitraire
+                 *    Tailwind avec crochets), PAS aspect-4/3 qui n'existe pas
+                 *    dans Tailwind et donnerait une hauteur de 0px.
+                 */}
                 <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 mb-12 overflow-hidden">
-                    <div className="absolute inset-0 opacity-10">
+                    {/* Fond flouté */}
+                    <div className="absolute inset-0 opacity-20">
                         <Image
                             src={HERO_IMAGE}
                             alt=""
@@ -127,6 +158,7 @@ export default async function HistoryPage() {
                             quality={30}
                         />
                     </div>
+
                     <div className="relative z-10">
                         <h2
                             className="text-white text-2xl font-bold text-center mb-6"
@@ -134,29 +166,40 @@ export default async function HistoryPage() {
                         >
                             Le Sénat à travers les Républiques
                         </h2>
+
+                        {/* Image principale — conteneur avec hauteur définie */}
                         <div className="flex justify-center">
-                            <div className="relative w-full max-w-2xl aspect-4/3 rounded-xl shadow-2xl overflow-hidden">
+                            <div
+                                className="relative w-full max-w-4xl aspect-4/3 rounded-xl shadow-2xl overflow-hidden"
+                                style={{ minHeight: 300 }}
+                            >
                                 <Image
                                     src={HERO_IMAGE}
-                                    alt="Le Sénat de Madagascar"
+                                    alt="Le Sénat de Madagascar à travers les Républiques"
                                     fill
-                                    className="object-cover"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-contain"
+                                    sizes="(max-width: 768px) 100vw, 896px"
                                     quality={90}
                                     priority
                                 />
                             </div>
                         </div>
+
                         <p
-                            className="text-white/80 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed"
+                            className="text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed"
                             style={{ fontFamily: "'Source Serif 4', serif" }}
                         >
-                            Le Sénat a été mis en place au lendemain de la naissance de la République Malgache, le 14 octobre 1958 ; plus précisément après l&apos;adoption de la Constitution du 29 avril 1959. Cependant, il a été mis en veilleuse pendant près de 30 ans pour ne réapparaître qu&apos;en mai 2001. Formant le Parlement avec l&apos;Assemblée Nationale, le Sénat est actuellement dans la deuxième législature de la Quatrième République.
+                            Le Sénat a été mis en place au lendemain de la naissance de la République
+                            Malgache, le 14 octobre 1958 ; plus précisément après l&apos;adoption de
+                            la Constitution du 29 avril 1959. Cependant, il a été mis en veilleuse
+                            pendant près de 30 ans pour ne réapparaître qu&apos;en mai 2001. Formant
+                            le Parlement avec l&apos;Assemblée Nationale, le Sénat est actuellement
+                            dans la deuxième législature de la Quatrième République.
                         </p>
                     </div>
                 </div>
 
-                <HistoryTabs tabs={TABS} contents={contents} />
+                <HistoryTabs tabs={TABS} contents={contents} loading={loading} />
             </div>
         </div>
     );
