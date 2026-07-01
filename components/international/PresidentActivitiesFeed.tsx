@@ -79,9 +79,8 @@ function ActivityCard({ item }: { item: ActivityItem }) {
                 <h4
                     className="text-base font-semibold leading-snug text-gray-900 line-clamp-2"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                    {item.title}
-                </h4>
+                    dangerouslySetInnerHTML={{ __html: item.title }}
+                />
                 <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
                     <Calendar size={14} />
                     <span>{item.date}</span>
@@ -131,11 +130,10 @@ function Pagination({
                     key={p}
                     onClick={() => onChange(p)}
                     aria-current={p === currentPage ? "page" : undefined}
-                    className={`min-w-[2.25rem] rounded-lg px-3 py-2 text-sm font-medium transition ${
-                        p === currentPage
-                            ? "bg-cyan-500 text-white shadow-lg"
-                            : "bg-white/10 text-white/70 hover:bg-white/20"
-                    }`}
+                    className={`min-w-[2.25rem] rounded-lg px-3 py-2 text-sm font-medium transition ${p === currentPage
+                        ? "bg-cyan-500 text-white shadow-lg"
+                        : "bg-white/10 text-white/70 hover:bg-white/20"
+                        }`}
                 >
                     {p}
                 </button>
@@ -233,11 +231,10 @@ export function PresidentActivitiesFeed({ items }: { items: ActivityItem[] }) {
                     <button
                         key={f.id}
                         onClick={() => handleFilterChange(f.id)}
-                        className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                            filter === f.id
-                                ? "bg-cyan-500 text-white shadow-lg"
-                                : "bg-white/10 text-white/70 hover:bg-white/20"
-                        }`}
+                        className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${filter === f.id
+                            ? "bg-cyan-500 text-white shadow-lg"
+                            : "bg-white/10 text-white/70 hover:bg-white/20"
+                            }`}
                     >
                         {f.label}
                     </button>
