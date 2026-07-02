@@ -11,6 +11,21 @@ import { getPosts } from "@/lib/api";
 
 export const dynamic = 'force-dynamic';
 
+const cleanText = (text: string): string => {
+    if (!text) return "";
+    return text
+        .replace(/&rsquo;/g, "'")
+        .replace(/&quot;/g, '"')
+        .replace(/&nbsp;/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&#8211;/g, "–")
+        .replace(/&#8217;/g, "'")
+        .replace(/&#8220;/g, '"')
+        .replace(/&#8221;/g, '"')
+        .replace(/&amp;#8211;/g, "–")
+        .replace(/&amp;#8217;/g, "'");
+};
+
 async function getPostBySlug(slug: string) {
     const posts = await getPosts({ slug, _embed: true });
     return posts.length > 0 ? posts[0] : null;
@@ -31,11 +46,8 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
         year: "numeric",
     });
 
-    const cleanTitle = post.title.rendered
-        .replace(/&rsquo;/g, "'")
-        .replace(/&quot;/g, '"')
-        .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&");
+    // Nettoyage complet du titre avec la fonction cleanText
+    const cleanTitle = cleanText(post.title.rendered);
 
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">

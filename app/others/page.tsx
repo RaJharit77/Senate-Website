@@ -24,6 +24,7 @@ import {
 
 type CategoryType = "tous" | "video" | "divers" | "autre" | "publication";
 
+// Nettoyage des entités HTML
 const cleanText = (text: string): string => {
     if (!text) return "";
     return text
@@ -37,6 +38,21 @@ const cleanText = (text: string): string => {
         .replace(/&#8221;/g, '"')
         .replace(/&amp;#8211;/g, "–")
         .replace(/&amp;#8217;/g, "'");
+};
+
+// Extraction de la vignette YouTube depuis le contenu HTML
+const getYouTubeThumbnail = (html: string): string | null => {
+    if (!html) return null;
+    // YouTube embed (iframe)
+    const match = html.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+    if (match) return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
+    // YouTube watch URL
+    const match2 = html.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+    if (match2) return `https://img.youtube.com/vi/${match2[1]}/hqdefault.jpg`;
+    // youtu.be
+    const match3 = html.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    if (match3) return `https://img.youtube.com/vi/${match3[1]}/hqdefault.jpg`;
+    return null;
 };
 
 export default function OtherPage() {
@@ -161,7 +177,7 @@ export default function OtherPage() {
                             placeholder="Rechercher..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-56 bg-white/5 border-white/10 text-white placeholder-gray-300 focus:ring-cyan-400/50"
+                            className="w-56 bg-white/5 border-white/10 text-white placeholder-cyan-400 focus:ring-cyan-400/50"
                         />
                         <Button type="submit" variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                             <Search className="w-4 h-4 mr-2" />
@@ -189,7 +205,11 @@ export default function OtherPage() {
                     <>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedPosts.map((post) => {
-                                const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
+                                // Récupérer l’image à la une, sinon la vignette YouTube
+                                const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
+                                const youtubeThumb = getYouTubeThumbnail(post.content.rendered);
+                                const imageUrl = featuredImage || youtubeThumb || null;
+
                                 const date = new Date(post.date).toLocaleDateString("fr-FR", {
                                     day: "numeric",
                                     month: "long",

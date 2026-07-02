@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
         hostname: 'senat.mg',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        port: '',
+        pathname: '/vi/**',
+      },
     ],
     qualities: [100, 75],
   },
