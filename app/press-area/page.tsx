@@ -205,7 +205,7 @@ export default function PressPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1 className="text-white text-4xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h1 className="text-white text-4xl font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Espace de Presse
                     </h1>
                     <p className="text-gray-300 text-lg mt-2 max-w-2xl">
@@ -213,7 +213,6 @@ export default function PressPage() {
                     </p>
                 </div>
 
-                {/* Barre de recherche commune */}
                 <form onSubmit={handleSearch} className="flex gap-3 mb-8 max-w-md">
                     <input
                         type="text"
@@ -256,7 +255,6 @@ export default function PressPage() {
                     )}
                 </section>
 
-                {/* Section Toutes les actualités */}
                 <section className="mb-12">
                     <h2
                         className="text-2xl font-bold mb-6 flex items-center gap-3"
@@ -286,7 +284,6 @@ export default function PressPage() {
                     )}
                 </section>
 
-                {/* Pagination commune */}
                 {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
                         <button
