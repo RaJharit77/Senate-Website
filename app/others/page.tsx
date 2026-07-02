@@ -129,7 +129,7 @@ export default function OtherPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1 className="text-white text-4xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h1 className="text-white text-4xl font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Autres activités
                     </h1>
                     <p className="text-gray-300 text-lg mt-2 max-w-2xl">
@@ -137,7 +137,6 @@ export default function OtherPage() {
                     </p>
                 </div>
 
-                {/* Filtres et recherche */}
                 <div className="flex flex-wrap items-center gap-4 mb-8">
                     <div className="flex gap-2">
                         {(["tous", "video", "divers", "autre", "publication"] as const).map((cat) => (
