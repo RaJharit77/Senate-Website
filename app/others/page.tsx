@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { getPostsByCategory } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { Calendar, Search, Download } from "lucide-react";
+import { Calendar, Search, Download, PlayCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { WpPost } from "@/lib/types";
@@ -23,6 +23,21 @@ import {
 } from "@/components/ui/pagination";
 
 type CategoryType = "tous" | "video" | "divers" | "autre" | "publication";
+
+const cleanText = (text: string): string => {
+    if (!text) return "";
+    return text
+        .replace(/&rsquo;/g, "'")
+        .replace(/&quot;/g, '"')
+        .replace(/&nbsp;/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&#8211;/g, "–")
+        .replace(/&#8217;/g, "'")
+        .replace(/&#8220;/g, '"')
+        .replace(/&#8221;/g, '"')
+        .replace(/&amp;#8211;/g, "–")
+        .replace(/&amp;#8217;/g, "'");
+};
 
 export default function OtherPage() {
     const [allPosts, setAllPosts] = useState<WpPost[]>([]);
@@ -80,9 +95,9 @@ export default function OtherPage() {
         const term = searchTerm.trim().toLowerCase();
         return filteredByCategory.filter(
             (post) =>
-                post.title.rendered.toLowerCase().includes(term) ||
-                post.excerpt?.rendered?.toLowerCase().includes(term) ||
-                post.content.rendered.toLowerCase().includes(term)
+                cleanText(post.title.rendered).toLowerCase().includes(term) ||
+                cleanText(post.excerpt?.rendered || "").toLowerCase().includes(term) ||
+                cleanText(post.content.rendered).toLowerCase().includes(term)
         );
     }, [filteredByCategory, searchTerm]);
 
@@ -122,6 +137,7 @@ export default function OtherPage() {
                     </p>
                 </div>
 
+                {/* Filtres et recherche */}
                 <div className="flex flex-wrap items-center gap-4 mb-8">
                     <div className="flex gap-2">
                         {(["tous", "video", "divers", "autre", "publication"] as const).map((cat) => (
@@ -180,11 +196,7 @@ export default function OtherPage() {
                                     month: "long",
                                     year: "numeric",
                                 });
-                                const cleanTitle = post.title.rendered
-                                    .replace(/&rsquo;/g, "'")
-                                    .replace(/&quot;/g, '"')
-                                    .replace(/&nbsp;/g, " ")
-                                    .replace(/&amp;/g, "&");
+                                const cleanTitle = cleanText(post.title.rendered);
 
                                 const category = post.categories?.includes(32)
                                     ? "Vidéo"
@@ -195,6 +207,7 @@ export default function OtherPage() {
                                             : "Autre";
 
                                 const downloadLink = (post.acf as any)?.file || (post.acf as any)?.download_link || null;
+                                const isVideo = category === "Vidéo";
 
                                 return (
                                     <Card
@@ -210,6 +223,11 @@ export default function OtherPage() {
                                                     className="object-cover"
                                                     sizes="(max-width: 768px) 100vw, 50vw"
                                                 />
+                                                {isVideo && (
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                                        <PlayCircle className="w-16 h-16 text-white/80 drop-shadow-lg" />
+                                                    </div>
+                                                )}
                                             </div>
                                         ) : (
                                             <div className="w-full aspect-video bg-white/5 flex items-center justify-center">
@@ -231,11 +249,7 @@ export default function OtherPage() {
                                                 <p
                                                     className="text-gray-300 text-sm line-clamp-3 flex-1"
                                                     dangerouslySetInnerHTML={{
-                                                        __html: post.excerpt.rendered
-                                                            .replace(/&rsquo;/g, "'")
-                                                            .replace(/&quot;/g, '"')
-                                                            .replace(/&nbsp;/g, " ")
-                                                            .replace(/&amp;/g, "&"),
+                                                        __html: cleanText(post.excerpt.rendered),
                                                     }}
                                                 />
                                             )}
