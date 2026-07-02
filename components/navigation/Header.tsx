@@ -38,7 +38,7 @@ const navItems = [
     ],
   },
   { label: "Espace Presse", path: "/press-area" },
-  { label: "Autres", path: "/other" },
+  { label: "Autres", path: "/others" },
   { label: "Contact", path: "/contact" },
 ];
 

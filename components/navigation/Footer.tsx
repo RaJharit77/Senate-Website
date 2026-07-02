@@ -181,14 +181,14 @@ export function Footer() {
               style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.76rem",
-                color: "rgba(255,255,255,0.38)",
+                color: "rgba(255,255,255,0.40)",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.color = CYAN;
                 (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.38)";
+                (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.40)";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
               }}
             >
@@ -200,7 +200,7 @@ export function Footer() {
               style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.76rem",
-                color: "rgba(255,255,255,0.38)",
+                color: "rgba(255,255,255,0.40)",
               }}
             >
               <MapPin size={13} />
@@ -211,7 +211,7 @@ export function Footer() {
             style={{
               fontFamily: "'Poppins', sans-serif",
               fontSize: "0.7rem",
-              color: "rgba(255,255,255,0.22)",
+              color: "rgba(255,255,255,0.40)",
               letterSpacing: "0.04em",
             }}
           >
