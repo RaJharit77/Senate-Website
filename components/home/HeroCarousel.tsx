@@ -5,6 +5,8 @@ import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
@@ -97,24 +99,19 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
       >
         <div className="max-w-2xl">
           <div className="flex items-center gap-3 mb-5">
-            <span
-              className="inline-flex items-center px-3 py-1 rounded-sm text-white"
+            <Badge
+              className="px-3 py-1 rounded-sm text-white font-bold tracking-widest uppercase text-[0.7rem]"
               style={{
                 backgroundColor: slide.color,
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: "0.7rem",
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
+                border: "none",
               }}
             >
               {slide.category}
-            </span>
+            </Badge>
             <span
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 text-sm"
               style={{
                 fontFamily: "'Poppins', sans-serif",
-                fontSize: "0.8rem",
                 color: GRAY,
               }}
             >
@@ -137,58 +134,57 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           />
 
           <p
-            className="mb-8"
+            className="mb-8 max-w-[560px] text-base leading-relaxed"
             style={{
               fontFamily: "'Poppins', sans-serif",
-              fontSize: "1rem",
-              lineHeight: 1.7,
               color: GRAY,
-              maxWidth: 560,
               textShadow: "0 1px 12px rgba(0,0,0,0.2)",
             }}
           >
             {truncatedExcerpt}
           </p>
 
-          <Link
-            href={slide.link || "#"}
-            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded transition-all hover:gap-4"
+          <Button
+            asChild
+            className="group inline-flex items-center gap-2.5 px-7 py-5 rounded-lg transition-all hover:gap-4 font-semibold uppercase tracking-wide text-[0.85rem]"
             style={{
-              fontFamily: "'Poppins', sans-serif",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
               backgroundColor: GREEN,
-              color: "#ffffff",
               border: `2px solid ${GREEN}`,
               boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+              color: "white",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
-              (e.currentTarget as HTMLElement).style.borderColor = CYAN;
-              (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 30px rgba(91,200,222,0.4)";
+              const btn = e.currentTarget;
+              btn.style.backgroundColor = EMERALD;
+              btn.style.borderColor = EMERALD;
+              btn.style.boxShadow = "0 4px 30px rgba(91,200,222,0.4)";
+              btn.style.color = "black";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = GREEN;
-              (e.currentTarget as HTMLElement).style.borderColor = GREEN;
-              (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 20px rgba(0,0,0,0.3)";
+              const btn = e.currentTarget;
+              btn.style.backgroundColor = GREEN;
+              btn.style.borderColor = GREEN;
+              btn.style.boxShadow = "0 4px 20px rgba(0,0,0,0.3)";
+              btn.style.color = "white";
             }}
           >
-            Lire l&apos;article <ArrowRight size={16} />
-          </Link>
+            <Link href={slide.link || "/"} className="flex items-center gap-2.5">
+              Lire l&apos;article <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
         </div>
       </div>
 
-      {/* Navigation controls */}
       <div className="absolute bottom-12 left-8 sm:left-10 flex items-center gap-4">
-        <button
+        <Button
+          variant="outline"
+          size="icon"
+          className="w-10 h-10 rounded-full border-2 border-white/50 bg-transparent text-white/70 hover:bg-white/10 hover:text-white backdrop-blur-sm transition-all"
           onClick={() => go(current - 1)}
-          className="w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:bg-white/10"
-          style={{ borderColor: "rgba(255,255,255,0.3)", color: "rgba(255,255,255,0.7)" }}
         >
           <ChevronLeft size={18} />
-        </button>
+        </Button>
+
         <div className="flex gap-2 items-center">
           {slides.map((_, i) => (
             <button
@@ -203,26 +199,27 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
             />
           ))}
         </div>
-        <button
+
+        <Button
+          variant="outline"
+          size="icon"
+          className="w-10 h-10 rounded-full border-2 border-white/50 bg-transparent text-white/70 hover:bg-white/10 hover:text-white backdrop-blur-sm transition-all"
           onClick={() => go(current + 1)}
-          className="w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:bg-white/10"
-          style={{ borderColor: "rgba(255,255,255,0.3)", color: "rgba(255,255,255,0.7)" }}
         >
           <ChevronRight size={18} />
-        </button>
+        </Button>
       </div>
 
       <div
-        className="absolute bottom-12 right-8"
+        className="absolute bottom-12 right-8 text-sm font-semibold tracking-wide"
         style={{
           fontFamily: "'Poppins', sans-serif",
-          fontSize: "0.85rem",
-          fontWeight: 600,
           color: "rgba(255,255,255,0.4)",
-          letterSpacing: "0.1em",
         }}
       >
-        <span style={{ color: CYAN, fontSize: "1.1rem" }}>{String(current + 1).padStart(2, "0")}</span>
+        <span style={{ color: CYAN, fontSize: "1.1rem" }}>
+          {String(current + 1).padStart(2, "0")}
+        </span>
         {" / "}
         {String(slides.length).padStart(2, "0")}
       </div>
