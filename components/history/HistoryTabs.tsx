@@ -23,9 +23,88 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];
     const activeContent = contents[activeTab] ?? "";
 
+    // ── CONFIGURATION TAILWIND CORRIGÉE ──
+    const tailwindWPStyles = `
+        text-gray-300 font-poppins leading-relaxed w-full
+
+        /* 1. Ligne Principale : Remplacement de Flex par CSS Grid pour des espacements (gaps) parfaits. 
+           Fini les marges négatives et les cartes qui se chevauchent ! */
+        [&_.row]:grid [&_.row]:grid-cols-1 md:[&_.row]:grid-cols-12 [&_.row]:gap-6 [&_.row]:w-full [&_.row]:my-8 [&_.row]:items-stretch
+        /* Sécurité : Tout élément direct d'une ligne sans classe "col-" prendra 100% de la largeur */
+        [&_.row>*:not([class*="col-"])]:col-span-1 md:[&_.row>*:not([class*="col-"])]:col-span-12
+
+        /* 2. Base des Colonnes : Adapté pour s'intégrer au comportement CSS Grid */
+        [&_[class*="col-"]]:flex [&_[class*="col-"]]:flex-col [&_[class*="col-"]]:justify-center [&_[class*="col-"]]:items-center
+
+        /* 3. Grille Mathématique Stricte (Mapping Grid CSS) */
+        md:[&_.col-md-12]:col-span-12
+        md:[&_.col-md-11]:col-span-11
+        md:[&_.col-md-10]:col-span-10
+        md:[&_.col-md-9]:col-span-9
+        md:[&_.col-md-8]:col-span-8
+        md:[&_.col-md-7]:col-span-7
+        md:[&_.col-md-6]:col-span-6
+        md:[&_.col-md-5]:col-span-5
+        md:[&_.col-md-4]:col-span-4
+        md:[&_.col-md-3]:col-span-3
+        md:[&_.col-md-2]:col-span-2
+        md:[&_.col-md-1]:col-span-1
+
+        /* 4. Titres au Centre et Descriptions Horizontales (Justifiées) */
+        [&_h1]:!text-center [&_h2]:!text-center [&_h3]:!text-center [&_h4]:!text-center
+        [&_[class*="col-"]:not(:has(.rounded-circle))_p]:!text-justify [&_[class*="col-"]:not(:has(.rounded-circle))_p]:!w-full [&_[class*="col-"]:not(:has(.rounded-circle))_p]:!max-w-none
+
+        /* 5. Photos & Sénateurs : Style "Carte" avec contenu centré UNIQUEMENT s'il y a un portrait */
+        [&_[class*="col-"]:has(.rounded-circle)]:text-center [&_[class*="col-"]:has(.rounded-circle)_p]:!text-center
+        [&_[class*="col-"]:has(.rounded-circle)]:bg-white/5 [&_[class*="col-"]:has(.rounded-circle)]:rounded-3xl [&_[class*="col-"]:has(.rounded-circle)]:p-6 [&_[class*="col-"]:has(.rounded-circle)]:border [&_[class*="col-"]:has(.rounded-circle)]:border-white/5 [&_[class*="col-"]:has(.rounded-circle)]:transition-all [&_[class*="col-"]:has(.rounded-circle)]:relative
+        hover:[&_[class*="col-"]:has(.rounded-circle)]:bg-white/10 hover:[&_[class*="col-"]:has(.rounded-circle)]:border-white/10 hover:[&_[class*="col-"]:has(.rounded-circle)]:z-10
+
+        /* 6. Images Alignées Horizontalement : Cadrage strict au centre horizontal */
+        [&_[class*="col-"]:has(>img:not(.rounded-circle))]:!flex-row [&_[class*="col-"]:has(>img:not(.rounded-circle))]:!justify-center [&_[class*="col-"]:has(>img:not(.rounded-circle))]:!items-center
+        [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:object-contain
+        [&_[class*="col-md-1"]_img:not(.rounded-circle)]:!w-full [&_[class*="col-md-1"]_img:not(.rounded-circle)]:!max-w-[45px]
+        [&_[class*="col-md-2"]_img:not(.rounded-circle)]:!w-full [&_[class*="col-md-2"]_img:not(.rounded-circle)]:!max-w-[65px]
+
+        /* 7. Normalisation des Portraits Ronds */
+        [&_.rounded-circle]:!rounded-full [&_.rounded-circle]:!w-32 [&_.rounded-circle]:!h-32 [&_.rounded-circle]:!object-cover [&_.rounded-circle]:!block [&_.rounded-circle]:!mx-auto [&_.rounded-circle]:mb-4 [&_.rounded-circle]:shadow-lg [&_.rounded-circle]:border-2 [&_.rounded-circle]:border-white/10 [&_.rounded-circle]:transition-all [&_.rounded-circle]:duration-300 hover:[&_.rounded-circle]:scale-105 hover:[&_.rounded-circle]:border-white/30
+        /* Sécurité si l'image WordPress est entourée d'un lien cliquable */
+        [&_a:has(.rounded-circle)]:!block [&_a:has(.rounded-circle)]:!w-full
+
+        /* 8. Hiérarchie Typographique Globale */
+        [&_h1]:text-white [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-3xl [&_h1]:font-bold
+        [&_h2]:text-white [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-wide
+        [&_h3]:text-white [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-xl [&_h3]:font-semibold
+        [&_h4]:text-cyan-400 [&_h4]:mt-4 [&_h4]:mb-2 [&_h4]:text-base [&_h4]:font-semibold
+        [&_strong]:text-white [&_strong]:font-semibold
+        [&_a]:text-cyan-400 hover:[&_a]:text-cyan-300 [&_a]:transition-colors [&_a]:underline [&_a]:underline-offset-4
+        [&_p]:mb-4 [&_p]:leading-relaxed
+
+        /* Style spécifique des textes sous les portraits ronds. 
+           (Correction : Utilisation de :has() sur le parent pour outrepasser la limite du combinateur '~' si une balise <a> encapsule l'image) */
+        [&_[class*="col-"]:has(.rounded-circle)_h2]:!mt-2 [&_[class*="col-"]:has(.rounded-circle)_h2]:!text-[15px] [&_[class*="col-"]:has(.rounded-circle)_h2]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h2]:!mx-auto
+        [&_[class*="col-"]:has(.rounded-circle)_h3]:!mt-2 [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-[15px] [&_[class*="col-"]:has(.rounded-circle)_h3]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h3]:!mx-auto
+        [&_[class*="col-"]:has(.rounded-circle)_h4]:!mt-1 [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-sm [&_[class*="col-"]:has(.rounded-circle)_h4]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-white/70 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mx-auto
+        [&_[class*="col-"]:has(.rounded-circle)_p]:!mt-1 [&_[class*="col-"]:has(.rounded-circle)_p]:!text-sm [&_[class*="col-"]:has(.rounded-circle)_p]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_p]:!text-white/60 [&_[class*="col-"]:has(.rounded-circle)_p]:!mx-auto [&_[class*="col-"]:has(.rounded-circle)_p]:leading-tight
+
+        /* 9. Éléments Séparateurs et Listes */
+        [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-6 [&_li]:mb-2 [&_li]:text-gray-300 [&_li]:pl-1
+        [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-6 [&_li]:mb-2 [&_li]:text-gray-300 [&_li]:pl-1
+        [&_hr]:border-none [&_hr]:border-t [&_hr]:border-white/10 [&_hr]:my-10
+        [&_.history-hr]:border-none [&_.history-hr]:border-t [&_.history-hr]:border-white/10 [&_.history-hr]:my-10
+
+        /* 10. Média Généraux (Organigrammes complets) */
+        [&_figure]:flex [&_figure]:justify-center [&_figure]:my-10 [&_figure]:w-full
+        [&_figure_img]:w-full [&_figure_img]:max-w-[900px] [&_figure_img]:h-auto [&_figure_img]:object-contain [&_figure_img]:rounded-2xl [&_figure_img]:shadow-2xl [&_figure_img]:border [&_figure_img]:border-white/5
+        [&_p>img]:max-w-full [&_p>img]:h-auto [&_p>img]:rounded-xl [&_p>img]:block [&_p>img]:mx-auto [&_p>img]:my-6
+        
+        /* 11. Badges et Boutons (Correction du chevauchement du badge rouge) */
+        [&_.bg-danger]:!bg-red-500/20 [&_.bg-danger]:text-red-300 [&_.bg-danger]:border [&_.bg-danger]:border-red-500/30 [&_.bg-danger]:px-5 [&_.bg-danger]:py-2 [&_.bg-danger]:rounded-full [&_.bg-danger]:!block [&_.bg-danger]:!w-fit [&_.bg-danger]:mx-auto [&_.bg-danger]:my-6 [&_.bg-danger]:font-semibold [&_.bg-danger]:text-sm [&_.bg-danger]:tracking-wide [&_.bg-danger]:!text-center
+        [&_.text-center]:!text-center [&_.text-center_p]:!text-center
+    `;
+
     return (
         <div>
-            {/* Onglets */}
+            {/* Menu de sélection des Républiques */}
             <div className="flex flex-wrap gap-3 mb-10">
                 {tabs.map((tab) => (
                     <button
@@ -49,7 +128,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                 ))}
             </div>
 
-            {/* Contenu animé */}
+            {/* Conteneur principal avec animation */}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={activeTab}
@@ -57,12 +136,12 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10"
+                    className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/10 shadow-2xl overflow-hidden"
                 >
-                    {/* En-tête de l'onglet */}
-                    <div className="mb-6">
+                    {/* Badge de la période historique */}
+                    <div className="mb-8 flex flex-col items-start gap-2">
                         <h3
-                            className="text-2xl font-bold"
+                            className="text-3xl font-bold tracking-tight"
                             style={{
                                 color: activeConfig.color,
                                 fontFamily: "'Poppins', sans-serif",
@@ -71,29 +150,33 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                             {activeConfig.label}
                         </h3>
                         <span
-                            className="inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase"
+                            className="px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase"
                             style={{
                                 backgroundColor: `${activeConfig.color}26`,
                                 color: activeConfig.color,
+                                border: `1px solid ${activeConfig.color}40`,
                             }}
                         >
                             {activeConfig.period}
                         </span>
                     </div>
 
-                    {/* Phrase contextuelle */}
+                    {/* Texte d'introduction contextuel */}
                     <p
-                        className="text-white/70 text-base mb-8 italic"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
+                        className="text-white/80 text-lg mb-10 italic leading-relaxed border-l-4 pl-4"
+                        style={{
+                            fontFamily: "'Poppins', sans-serif",
+                            borderColor: activeConfig.color
+                        }}
                     >
                         {activeConfig.intro}
                     </p>
 
-                    {/* Corps du contenu WordPress */}
+                    {/* Rendu dynamique du HTML WP injecté */}
                     {loading ? (
-                        <div className="flex items-center gap-3 text-white/50">
+                        <div className="flex items-center gap-4 text-white/60 py-12 justify-center">
                             <svg
-                                className="animate-spin h-5 w-5"
+                                className="animate-spin h-8 w-8"
                                 fill="none"
                                 viewBox="0 0 24 24"
                             >
@@ -111,166 +194,20 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                                     d="M4 12a8 8 0 018-8v8z"
                                 />
                             </svg>
-                            <span>Chargement…</span>
+                            <span className="text-lg animate-pulse">Chargement des données historiques...</span>
                         </div>
                     ) : activeContent ? (
                         <div
-                            className="history-content"
+                            className={tailwindWPStyles}
                             dangerouslySetInnerHTML={{ __html: activeContent }}
                         />
                     ) : (
-                        <p className="text-white/40 italic">
+                        <p className="text-white/40 italic py-12 text-center">
                             Aucun contenu disponible pour cette section.
                         </p>
                     )}
                 </motion.div>
             </AnimatePresence>
-
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                .history-content {
-                    color: #d1d5db;
-                    font-family: 'Poppins', sans-serif;
-                    line-height: 1.75;
-                }
-                .history-content h1,.history-content h2,.history-content h3,
-                .history-content h4,.history-content h5 {
-                    color: #ffffff;
-                    font-family: 'Poppins', sans-serif;
-                    margin-top: 2rem;
-                    margin-bottom: 0.75rem;
-                }
-                .history-content h2 { font-size: 1.5rem; font-weight: 700; }
-                .history-content h3 { font-size: 1.25rem; font-weight: 600; }
-                .history-content h4,.history-content h5 { font-size: 1rem; font-weight: 600; color: #e5e7eb; }
-                .history-content strong { color: #ffffff; }
-                .history-content a { color: #5bc8de; transition: color 0.2s; }
-                .history-content a:hover { color: #93e1ed; }
-                .history-content p { margin-bottom: 0.75rem; }
-                .history-content ul { list-style: disc; padding-left: 1.5rem; }
-                .history-content ol { list-style: decimal; padding-left: 1.5rem; }
-                .history-content li { margin-bottom: 0.35rem; color: #d1d5db; }
-                .history-content hr,.history-hr {
-                    border: none;
-                    border-top: 1px solid rgba(255,255,255,0.1);
-                    margin: 2.5rem 0;
-                }
-
-                /* ── Images illustratives (palais, documents, photos de groupe) ── */
-                /* Grandes : pleine largeur, sans plafond de hauteur */
-                .history-content figure {
-                    display: flex;
-                    justify-content: center;
-                    margin: 2rem 0;
-                }
-                .history-content figure img {
-                    width: 100%;
-                    max-width: 900px;
-                    height: auto;
-                    max-height: none;
-                    object-fit: contain;
-                    border-radius: 0.875rem;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-                    display: block;
-                }
-                .history-content p > img,.history-content > img {
-                    max-width: 100%;
-                    height: auto;
-                    border-radius: 0.75rem;
-                    display: block;
-                    margin: 1.5rem auto;
-                }
-
-                /* ── Grilles Bootstrap recréées en flex ── */
-                .history-content .row {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 1.25rem;
-                    justify-content: center;
-                    align-items: center;
-                    margin: 1.5rem 0;
-                }
-                .history-content [class*="col-md-5"],
-                .history-content [class*="col-md-3"] {
-                    flex: 1 1 200px; max-width: 260px; text-align: center;
-                }
-                .history-content [class*="col-lg-4"] {
-                    flex: 1 1 180px; max-width: 240px; text-align: center;
-                }
-                .history-content [class*="col-lg-6"],
-                .history-content [class*="col-md-6"] {
-                    flex: 1 1 220px; max-width: 300px; text-align: center;
-                }
-                /* Colonne flèche : petite, centrée verticalement */
-                .history-content [class*="col-md-2"],
-                .history-content [class*="col-md-1"] {
-                    flex: 0 0 auto; width: 48px;
-                    display: flex; align-items: center; justify-content: center; padding: 0;
-                }
-                .history-content [class*="col-md-2"] img,
-                .history-content [class*="col-md-1"] img {
-                    width: 32px !important; height: auto !important;
-                    max-height: none !important; border-radius: 0 !important;
-                    box-shadow: none !important; margin: 0 !important;
-                    object-fit: contain;
-                    filter: invert(1) brightness(0.7);
-                }
-                /* Ligne pleine largeur */
-                .history-content [class*="col-md-12"] {
-                    flex: 1 1 100%; text-align: center;
-                }
-
-                /* ── Portraits ronds (sénateurs) ── */
-                /* Taille fixe 180px, override explicite pour ne pas hériter
-                   du style "grande image" des figures ci-dessus */
-                .history-content .rounded-circle {
-                    border-radius: 50% !important;
-                    width: 180px !important; height: 180px !important;
-                    max-width: 180px !important; max-height: 180px !important;
-                    object-fit: cover !important;
-                    display: block; margin: 0 auto 0.75rem;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-                    border: 3px solid rgba(255,255,255,0.1);
-                }
-                .history-content .rounded-circle + h4,
-                .history-content .rounded-circle + h3 {
-                    font-size: 0.9rem; font-weight: 600; color: #ffffff;
-                    margin-top: 0; margin-bottom: 0.25rem;
-                }
-                .history-content .rounded-circle + h4 + p,
-                .history-content .rounded-circle + h3 + p {
-                    font-size: 0.8rem; color: rgba(255,255,255,0.55); margin: 0;
-                }
-
-                /* ── Classes Bootstrap visuelles ── */
-                .history-content .bg-danger {
-                    background-color: rgba(232,50,86,0.85); color: #ffffff;
-                    padding: 0.5rem 1.25rem; border-radius: 0.5rem;
-                    display: inline-block; margin: 1.5rem 0 0.75rem;
-                    font-weight: 700; font-size: 1rem; letter-spacing: 0.02em;
-                }
-                .history-content .text-center { text-align: center; }
-                .history-content .img-fluid { max-width: 100%; height: auto; }
-                .history-content .img-thumbnail {
-                    padding: 3px; background: rgba(255,255,255,0.06); border-radius: 50%;
-                }
-
-                /* ── Responsive mobile ── */
-                @media (max-width: 640px) {
-                    .history-content .row { gap: 1rem; }
-                    .history-content [class*="col-md-5"],
-                    .history-content [class*="col-lg-4"],
-                    .history-content [class*="col-lg-6"],
-                    .history-content [class*="col-md-6"] {
-                        flex: 1 1 140px; max-width: 160px;
-                    }
-                    .history-content .rounded-circle {
-                        width: 120px !important; height: 120px !important;
-                        max-width: 120px !important; max-height: 120px !important;
-                    }
-                    .history-content figure img { max-width: 100%; }
-                }
-            ` }} />
         </div>
     );
 }

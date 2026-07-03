@@ -121,7 +121,6 @@ export default function HistoryPage() {
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
 
-                {/* ── Titre principal ───────────────────────────────── */}
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
@@ -136,18 +135,7 @@ export default function HistoryPage() {
                     </h1>
                 </div>
 
-                {/* ── Bloc hero ─────────────────────────────────────── */}
-                {/*
-                 * Deux usages de next/image :
-                 * 1. fill + object-cover : fond flouté à faible opacité (ambiance).
-                 * 2. fill + object-contain dans un conteneur aspect-[4/3] :
-                 *    l'image principale bien visible.
-                 *    IMPORTANT : on utilise aspect-[4/3] (syntaxe arbitraire
-                 *    Tailwind avec crochets), PAS aspect-4/3 qui n'existe pas
-                 *    dans Tailwind et donnerait une hauteur de 0px.
-                 */}
                 <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 mb-12 overflow-hidden">
-                    {/* Fond flouté */}
                     <div className="absolute inset-0 opacity-20">
                         <Image
                             src={HERO_IMAGE}
@@ -167,10 +155,9 @@ export default function HistoryPage() {
                             Le Sénat à travers les Républiques
                         </h2>
 
-                        {/* Image principale — conteneur avec hauteur définie */}
                         <div className="flex justify-center">
                             <div
-                                className="relative w-full max-w-4xl aspect-4/3 rounded-xl shadow-2xl overflow-hidden"
+                                className="relative w-full max-w-4xl aspect-[4/3] rounded-xl shadow-2xl overflow-hidden"
                                 style={{ minHeight: 300 }}
                             >
                                 <Image

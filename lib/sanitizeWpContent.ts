@@ -83,5 +83,13 @@ export function extractAllImages(html: string | undefined | null): string[] {
  */
 export function stripLeadingH2(html: string): string {
     if (!html) return "";
-    return html.replace(/^\s*<h2\b[^>]*>[\s\S]*?<\/h2>\s*/i, "").trim();
+    // Tolère les commentaires Gutenberg (<!-- wp:heading -->, <!-- /wp:heading -->)
+    // et les espaces qui précèdent/suivent le <h2>, sinon celui-ci n'est jamais
+    // retiré quand WordPress les inclut et le titre apparaît en double.
+    return html
+        .replace(
+            /^(?:\s*<!--\s*\/?wp:[\w-]+(?:\s*\{[^}]*\})?\s*-->\s*)*\s*<h2\b[^>]*>[\s\S]*?<\/h2>\s*(?:<!--\s*\/wp:[\w-]+\s*-->\s*)*/i,
+            ""
+        )
+        .trim();
 }
