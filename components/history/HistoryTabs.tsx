@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface TabConfig {
@@ -34,29 +34,21 @@ function generateSlug(name: string): string {
  * qui ont une image avec la classe .rounded-circle.
  */
 function addSenatorLinks(html: string): string {
-    if (!html) return html;
+    // Sécurité pour éviter les erreurs côté serveur (SSR) dans Next.js
+    if (!html || typeof document === "undefined") return html;
 
-    // On parcourt toutes les colonnes qui contiennent un .rounded-circle
-    // et on transforme les noms (h3, h4, p) en liens.
     const container = document.createElement("div");
     container.innerHTML = html;
 
     const columns = container.querySelectorAll('[class*="col-"]:has(.rounded-circle)');
     columns.forEach((col) => {
-        // On cherche le nom du sénateur : généralement un h3 ou h4 ou p qui suit directement l'image
-        const nameElement = col.querySelector("h3, h4, p:not(:has(strong))");
-        if (nameElement) {
-            const name = nameElement.textContent?.trim();
-            if (name) {
-                const slug = generateSlug(name);
-                // On transforme l'élément en lien
-                const link = document.createElement("a");
-                link.href = `/historical/${slug}`;
-                link.className = "text-cyan-300 hover:text-cyan-200 transition-colors";
-                link.textContent = name;
-                nameElement.innerHTML = "";
-                nameElement.appendChild(link);
-            }
+        // On cherche le nom du sénateur : généralement un h3 ou h4
+        const titleEl = col.querySelector("h3, h4");
+        if (titleEl && titleEl.textContent) {
+            const name = titleEl.textContent.trim();
+            const slug = generateSlug(name);
+            // On enveloppe le nom dans un lien
+            titleEl.innerHTML = `<a href="/senateur/${slug}" class="hover:text-cyan-300 transition-colors cursor-pointer">${name}</a>`;
         }
     });
 
@@ -65,28 +57,36 @@ function addSenatorLinks(html: string): string {
 
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const [activeTab, setActiveTab] = useState(tabs[0]?.id ?? "");
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];
-    let activeContent = contents[activeTab] ?? "";
+    const rawContent = contents[activeTab] ?? "";
 
-    // Application des liens si on est sur l'onglet "Quatrième République"
-    if (activeTab === "quatrieme") {
-        activeContent = addSenatorLinks(activeContent);
-    }
+    // On applique la fonction des liens uniquement côté client une fois monté
+    const activeContent = mounted ? addSenatorLinks(rawContent) : rawContent;
 
-    // La configuration Tailwind est identique à la version précédente
-    // Je la reprends en entier pour être complet.
+    // ── CONFIGURATION TAILWIND CORRIGÉE AVEC ESPACEMENT ──
     const tailwindWPStyles = `
         text-gray-300 font-poppins leading-relaxed w-full
 
-        [&_.row]:!flex [&_.row]:!flex-wrap [&_.row]:!justify-center [&_.row]:!items-center [&_.row]:!gap-6 [&_.row]:!w-full [&_.row]:!my-8
+        /* 1. LIGNE PRINCIPALE : Flexbox centré.
+           Utilisation de gap-12 (48px) pour reproduire l'espacement large de votre maquette. */
+        [&_.row]:!flex [&_.row]:!flex-wrap [&_.row]:!justify-center [&_.row]:!items-center [&_.row]:!gap-12 [&_.row]:!w-full [&_.row]:!my-12
 
+        /* 2. COLONNES CLASSIQUES (Texte) : S'adaptent responsivement. */
         [&_[class*="col-"]:not(:has(.rounded-circle)):not(:has(img))]:!w-full
         md:[&_.col-md-12:not(:has(.rounded-circle)):not(:has(img))]:!w-full
         md:[&_.col-md-10:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(83.33%-1.5rem)]
         md:[&_.col-md-8:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(66.66%-1.5rem)]
         md:[&_.col-md-6:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(50%-1.5rem)]
 
+        /* =========================================================
+           3. CARTES DES SÉNATEURS (Taille fixe et Espacées)
+           ========================================================= */
         [&_[class*="col-"]:has(.rounded-circle)]:!w-[160px] 
         sm:[&_[class*="col-"]:has(.rounded-circle)]:!w-[200px]
         md:[&_[class*="col-"]:has(.rounded-circle)]:!w-[220px]
@@ -96,7 +96,8 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         [&_[class*="col-"]:has(.rounded-circle)]:!rounded-[2rem]
         [&_[class*="col-"]:has(.rounded-circle)]:!border
         [&_[class*="col-"]:has(.rounded-circle)]:!border-white/10
-        [&_[class*="col-"]:has(.rounded-circle)]:!p-4
+        /* Padding augmenté à p-6 pour bien aérer le contenu de chaque carte */
+        [&_[class*="col-"]:has(.rounded-circle)]:!p-6
         
         [&_[class*="col-"]:has(.rounded-circle)]:!flex
         [&_[class*="col-"]:has(.rounded-circle)]:!flex-col
@@ -110,16 +111,21 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         hover:[&_[class*="col-"]:has(.rounded-circle)]:!bg-white/10
         hover:[&_[class*="col-"]:has(.rounded-circle)]:!z-10
 
-        [&_.rounded-circle]:!rounded-full [&_.rounded-circle]:!w-16 [&_.rounded-circle]:!h-16 md:[&_.rounded-circle]:!w-20 md:[&_.rounded-circle]:!h-20 [&_.rounded-circle]:!object-cover
-        [&_.rounded-circle]:!block [&_.rounded-circle]:!mx-auto [&_.rounded-circle]:!mb-2 [&_.rounded-circle]:!shrink-0 [&_.rounded-circle]:!shadow-lg [&_.rounded-circle]:!border-2 [&_.rounded-circle]:!border-white/20
+        /* Image Profile : L'image est légèrement agrandie pour équilibrer le grand espacement */
+        [&_.rounded-circle]:!rounded-full [&_.rounded-circle]:!w-16 [&_.rounded-circle]:!h-16 md:[&_.rounded-circle]:!w-24 md:[&_.rounded-circle]:!h-24 [&_.rounded-circle]:!object-cover
+        [&_.rounded-circle]:!block [&_.rounded-circle]:!mx-auto [&_.rounded-circle]:!mb-4 [&_.rounded-circle]:!shrink-0 [&_.rounded-circle]:!shadow-lg [&_.rounded-circle]:!border-2 [&_.rounded-circle]:!border-white/20
 
+        /* Typo Profile */
         [&_[class*="col-"]:has(.rounded-circle)_h2], 
         [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-sm md:[&_[class*="col-"]:has(.rounded-circle)_h3]:!text-[15px] [&_[class*="col-"]:has(.rounded-circle)_h3]:!font-bold [&_[class*="col-"]:has(.rounded-circle)_h3]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h3]:!mt-0 [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-white [&_[class*="col-"]:has(.rounded-circle)_h3]:!line-clamp-2
         
-        [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-xs md:[&_[class*="col-"]:has(.rounded-circle)_h4]:!text-sm [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-cyan-400 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mt-0 [&_[class*="col-"]:has(.rounded-circle)_h4]:!line-clamp-2
+        [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-xs md:[&_[class*="col-"]:has(.rounded-circle)_h4]:!text-sm [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-cyan-400 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mb-2 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mt-0 [&_[class*="col-"]:has(.rounded-circle)_h4]:!line-clamp-2
         
         [&_[class*="col-"]:has(.rounded-circle)_p]:!text-[10px] md:[&_[class*="col-"]:has(.rounded-circle)_p]:!text-[11px] [&_[class*="col-"]:has(.rounded-circle)_p]:!text-white/60 [&_[class*="col-"]:has(.rounded-circle)_p]:!mb-0 [&_[class*="col-"]:has(.rounded-circle)_p]:!line-clamp-2 [&_[class*="col-"]:has(.rounded-circle)_p]:!leading-tight
 
+        /* =========================================================
+           4. FLÈCHE VERTE DE SÉPARATION (Entre les profils)
+           ========================================================= */
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!w-auto
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!flex
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!justify-center
@@ -127,14 +133,19 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!px-2
 
         [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle)]:!rounded-xl
+        /* ========================================================= */
 
+        /* 5. Titres Globaux */
         [&_h1]:!text-center [&_h1]:!text-3xl [&_h1]:!font-bold [&_h1]:!text-white [&_h1]:!mb-6
         [&_h2:not([class*="col-"]_h2)]:!text-center [&_h2:not([class*="col-"]_h2)]:!text-2xl [&_h2:not([class*="col-"]_h2)]:!text-white [&_h2:not([class*="col-"]_h2)]:!mb-4
         
+        /* 6. Paragraphes descriptifs */
         [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!text-justify [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!w-full [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!mb-4
 
+        /* 7. Boutons et Badges */
         [&_.bg-danger]:!bg-red-500/20 [&_.bg-danger]:!text-red-300 [&_.bg-danger]:!border [&_.bg-danger]:!border-red-500/30 [&_.bg-danger]:!px-6 [&_.bg-danger]:!py-2 [&_.bg-danger]:!rounded-full [&_.bg-danger]:!block [&_.bg-danger]:!w-fit [&_.bg-danger]:!mx-auto [&_.bg-danger]:!my-6 [&_.bg-danger]:!font-bold [&_.bg-danger]:!text-sm [&_.bg-danger]:!text-center
 
+        /* 8. Listes */
         [&_ul]:!list-disc [&_ul]:!pl-6 [&_ul]:!mb-6 [&_li]:!mb-2 [&_li]:!text-gray-300
     `;
 
