@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import { Header } from '@/components/navigation/Header';
 import { Footer } from '@/components/navigation/Footer';
 import { FloatingSocialBar } from '@/components/navigation/common/FloatingSocialBar';
+import Chatbot from '@/components/chatbot/Chatbot';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -33,7 +34,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
-        <FloatingSocialBar /> 
+        <Chatbot />
+        <FloatingSocialBar />
         <Footer />
       </body>
     </html>
