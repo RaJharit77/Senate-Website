@@ -11,7 +11,7 @@ class WpApiError extends Error {
     }
 }
 
-async function fetchAPI<T>(endpoint: string, params: Params = {}): Promise<T> {
+async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolean = false): Promise<T> {
     const url = new URL(`${API_BASE}${endpoint}`);
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -43,13 +43,14 @@ async function fetchAPI<T>(endpoint: string, params: Params = {}): Promise<T> {
         );
     }
 
+
     if (!res.ok) {
-        // On lit le corps pour logguer un message utile (souvent une page
-        // d'erreur HTML ou un message WP), sans jamais laisser planter le process.
         const bodyPreview = await res.text().catch(() => "<unreadable body>");
-        console.error(
-            `[fetchAPI] HTTP ${res.status} for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`
-        );
+        if (!silent) {
+            console.error(
+                `[fetchAPI] HTTP ${res.status} for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`
+            );
+        }
         throw new WpApiError(
             `Failed to fetch ${url.toString()}: ${res.status}`,
             res.status,
@@ -158,7 +159,7 @@ export function search(query: string) {
 
 // ----- Media (optional) -----
 export function getMedia(id: number) {
-    return fetchAPI(`/media/${id}`);
+    return fetchAPI(`/media/${id}`, {}, true);
 }
 
 export async function getPartners() {

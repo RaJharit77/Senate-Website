@@ -46,16 +46,42 @@ export default async function HomePage() {
     })
   );
 
-  // ---- News (actualités) ----
+  // ---- News (actualités et à la une) ----
+  let alauneForGrid: WpPost[] = [];
+  try {
+    alauneForGrid = (await getAlaune({ per_page: 7, _embed: true })) as WpPost[];
+  } catch (err) {
+    console.error("[HomePage] Failed to load alaune for grid:", err);
+    alauneForGrid = [];
+  }
+
+  const featuredArticles = await Promise.all(
+    alauneForGrid.map(async (item: WpPost, index: number) => {
+      const imageUrl = await resolvePostImage(item, getMedia);
+      return {
+        id: item.id,
+        category: getAcfString(item, "categorie", "Actualité"),
+        categoryColor: "#cc1111", // couleur rouge pour "À la une"
+        date: formatDate(item.date),
+        title: item.title?.rendered || "Sans titre",
+        excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
+        image: imageUrl,
+        featured: true,
+        link: `/actualite/${item.slug}`,
+      };
+    })
+  );
+
+  // ---- Articles "Actualités" pour la colonne latérale ----
   let actualiteData: WpPost[] = [];
   try {
-    actualiteData = (await getActualite({ per_page: 6, _embed: true })) as WpPost[];
+    actualiteData = (await getActualite({ per_page: 10, _embed: true })) as WpPost[];
   } catch (err) {
     console.error("[HomePage] Failed to load actualités:", err);
     actualiteData = [];
   }
 
-  const articles = await Promise.all(
+  const sideArticles = await Promise.all(
     actualiteData.map(async (item: WpPost, index: number) => {
       const imageUrl = await resolvePostImage(item, getMedia);
       return {
@@ -66,16 +92,15 @@ export default async function HomePage() {
         title: item.title?.rendered || "Sans titre",
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
         image: imageUrl,
-        featured: index === 0,
+        featured: false,
         link: `/actualite/${item.slug}`,
       };
     })
   );
 
   // ---- Travaux parlementaires ----
-  // IDs des catégories (à adapter selon votre site)
-  const CAT_LOIS = 42; // "Travaux législatifs"
-  const CAT_CALENDRIER = 43; // "Calendrier"
+  const CAT_LOIS = 42;
+  const CAT_CALENDRIER = 43;
 
   const loisData = (await getPostsByCategory(CAT_LOIS, { per_page: 4, _embed: true }).catch((err) => {
     console.error("[HomePage] Failed to load 'Travaux législatifs' (cat 42):", err);
@@ -129,7 +154,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroCarousel slides={slides} />
-      <NewsGrid articles={articles} />
+      <NewsGrid featuredArticles={featuredArticles} sideArticles={sideArticles} />
       <AboutSection />
       <ParliamentaryWork tabsData={tabsData} />
       <PartnersBand />

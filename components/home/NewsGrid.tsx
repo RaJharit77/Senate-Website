@@ -1,10 +1,16 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import gsap from "gsap";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Calendar, Globe2, Users, Heart, GraduationCap, Sparkles, type LucideIcon } from "lucide-react";
 import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
@@ -30,17 +36,13 @@ interface Article {
   link?: string;
 }
 
-const fadeUp = {
+// ─── Animations framer-motion typées ──────────────────────
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
-};
-
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -48,34 +50,75 @@ const staggerContainer = {
   },
 };
 
-function FeaturedCard({ article }: { article: Article }) {
+// ─── Carrousel principal (articles "À la une") ────────────
+function FeaturedCarousel({ articles }: { articles: Article[] }) {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const textRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const total = articles.length;
+  const article = articles[current];
+
+  useEffect(() => {
+    if (total === 0) return;
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrent((prev) => (prev + 1) % total);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [total]);
+
+  useEffect(() => {
+    if (textRef.current) {
+      const tl = gsap.timeline();
+      tl.fromTo(
+        textRef.current.querySelectorAll(".animate-text"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, stagger: 0.15, duration: 0.6, ease: "power2.out" }
+      );
+    }
+  }, [current]);
+
+  if (total === 0) return null;
+
   const Icon = iconMap[article.category] || Sparkles;
   const imageSrc = article.image && article.image.trim() !== "" ? article.image : PLACEHOLDER_IMAGE;
   const isValidImage = imageSrc.startsWith("http") || imageSrc.startsWith("data");
 
+  const goTo = (index: number) => {
+    if (index === current) return;
+    setDirection(index > current ? 1 : -1);
+    setCurrent(index);
+  };
+
+  const goPrev = () => {
+    setDirection(-1);
+    setCurrent((prev) => (prev - 1 + total) % total);
+  };
+
+  const goNext = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev + 1) % total);
+  };
+
   return (
-    <motion.article
-      className="group relative rounded-2xl overflow-hidden cursor-pointer"
-      variants={scaleIn}
-      initial="hidden"
-      whileInView="visible"
-      animate={{ y: [0, -6, 0] }}
-      transition={{
-        y: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
-      }}
-      whileHover={{
-        scale: 1.02,
-        y: 0,
-        transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-      }}
-    >
-      <Link href={article.link || "#"} className="block">
-        <div className="relative" style={{ aspectRatio: "3/2" }}>
+    <div className="relative w-full rounded-2xl overflow-hidden" ref={carouselRef}>
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={current}
+          custom={direction}
+          initial={{ opacity: 0, x: direction * 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -direction * 50 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="relative aspect-[3/2]"
+        >
           <Image
             src={imageSrc}
             alt={article.title}
             fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            className="object-cover"
             unoptimized={!isValidImage}
           />
           <div
@@ -86,50 +129,46 @@ function FeaturedCard({ article }: { article: Article }) {
           />
 
           <motion.div
-            className="absolute top-4 left-4 px-3 py-1 rounded-full bg-red-500/90 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 z-10"
+            className="absolute top-4 left-4 z-10"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring", stiffness: 300 }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.05 }}
           >
-            <Sparkles size={12} className="animate-pulse" />
-            À la une
+            <Badge className="flex items-center gap-1.5 text-white text-xs font-bold uppercase tracking-wider bg-red-500/90 backdrop-blur-sm border-none">
+              <Sparkles size={12} className="animate-pulse" />
+              À la une
+            </Badge>
           </motion.div>
 
-          <div className="absolute bottom-0 left-0 right-0 p-8">
+          <div ref={textRef} className="absolute bottom-0 left-0 right-0 p-8">
             <div className="flex items-center gap-3 mb-3">
-              <span
-                className="px-3 py-1 rounded-full text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 backdrop-blur-sm"
-                style={{
-                  backgroundColor: `${article.categoryColor}cc`,
-                }}
+              <Badge
+                className="flex items-center gap-1.5 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-sm border-none"
+                style={{ backgroundColor: `${article.categoryColor}cc` }}
               >
                 <Icon size={14} />
                 {article.category}
-              </span>
+              </Badge>
               <span className="flex items-center gap-1.5 text-white/60 text-sm">
                 <Calendar size={14} />
                 {article.date}
               </span>
             </div>
             <h3
-              className="text-white mb-3 text-3xl font-bold leading-tight"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-              }}
+              className="animate-text text-white mb-3 text-3xl font-bold leading-tight"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {article.title}
             </h3>
             <p
-              className="text-white/70 text-base line-clamp-2 mb-4"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-              }}
+              className="animate-text text-white/70 text-base line-clamp-2 mb-4"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {article.excerpt}
             </p>
             <div
-              className="inline-flex items-center gap-2 text-white border-b-2 pb-1 transition-all hover:gap-4 group-hover:border-cyan-400"
+              className="animate-text inline-flex items-center gap-2 text-white border-b-2 pb-1 transition-all hover:gap-4 group"
               style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.8rem",
@@ -139,13 +178,41 @@ function FeaturedCard({ article }: { article: Article }) {
                 borderColor: article.categoryColor,
               }}
             >
-              Lire l&apos;article
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              <Link href={article.link || "#"} className="flex items-center gap-2">
+                Lire l&apos;article
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              </Link>
             </div>
           </div>
-        </div>
-      </Link>
-    </motion.article>
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {articles.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-white w-6" : "bg-white/40 hover:bg-white/60"}`}
+            aria-label={`Aller à la slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      <button
+        onClick={goPrev}
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition"
+        aria-label="Précédent"
+      >
+        <IoMdArrowDropleft />
+      </button>
+      <button
+        onClick={goNext}
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition"
+        aria-label="Suivant"
+      >
+        <IoMdArrowDropright />
+      </button>
+    </div>
   );
 }
 
@@ -156,66 +223,69 @@ function CompactCard({ article }: { article: Article }) {
 
   return (
     <motion.article
-      className="group flex gap-4 rounded-2xl p-4 cursor-pointer transition-all backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
+      className="group"
       variants={fadeUp}
       whileHover={{ scale: 1.02, x: 4 }}
       transition={{ duration: 0.3 }}
     >
-      <Link href={article.link || "#"} className="flex gap-4 w-full">
-        <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 100, height: 100 }}>
-          <Image
-            src={imageSrc}
-            alt={article.title}
-            width={100}
-            height={100}
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            unoptimized={!isValidImage}
-          />
-        </div>
-        <div className="flex flex-col justify-center min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className="text-[0.6rem] font-bold uppercase tracking-wider flex items-center gap-1"
-              style={{ color: article.categoryColor }}
+      <Card className="flex gap-4 rounded-2xl p-4 cursor-pointer transition-all backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20">
+        <Link href={article.link || "#"} className="flex gap-4 w-full">
+          <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 100, height: 100 }}>
+            <Image
+              src={imageSrc}
+              alt={article.title}
+              width={100}
+              height={100}
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              unoptimized={!isValidImage}
+            />
+          </div>
+          <CardContent className="flex flex-col justify-center min-w-0 flex-1 p-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span
+                className="text-[0.6rem] font-bold uppercase tracking-wider flex items-center gap-1"
+                style={{ color: article.categoryColor }}
+              >
+                <Icon size={12} />
+                {article.category}
+              </span>
+              <span className="text-white/40 text-[0.6rem] flex items-center gap-1">
+                <Calendar size={10} />
+                {article.date}
+              </span>
+            </div>
+            <h4
+              className="text-white text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
+              style={{ fontFamily: "'Poppins', serif" }}
             >
-              <Icon size={12} />
-              {article.category}
-            </span>
-            <span className="text-white/40 text-[0.6rem] flex items-center gap-1">
-              <Calendar size={10} />
-              {article.date}
-            </span>
-          </div>
-          <h4
-            className="text-white text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
-            style={{
-              fontFamily: "'Poppins', serif",
-            }}
-          >
-            {article.title}
-          </h4>
-          <div
-            className="mt-2 inline-flex items-center gap-1 text-white/50 text-xs transition-all hover:gap-2 group-hover:text-cyan-400"
-            style={{
-              fontFamily: "'Poppins', sans-serif",
-            }}
-          >
-            Lire
-            <ArrowRight size={10} className="transition-transform group-hover:translate-x-1" />
-          </div>
-        </div>
-      </Link>
+              {article.title}
+            </h4>
+            <div
+              className="mt-2 inline-flex items-center gap-1 text-white/50 text-xs transition-all hover:gap-2 group-hover:text-cyan-400"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              Lire
+              <ArrowRight size={10} className="transition-transform group-hover:translate-x-1" />
+            </div>
+          </CardContent>
+        </Link>
+      </Card>
     </motion.article>
   );
 }
 
-export function NewsGrid({ articles }: { articles: Article[] }) {
-  const featured = articles.find((a) => a.featured) || articles[0];
-  const others = articles.filter((a) => a.id !== featured.id);
+interface NewsGridProps {
+  featuredArticles: Article[];   
+  sideArticles: Article[];
+}
+
+export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
+  const carouselArticles = featuredArticles.slice(0, 7);
+  const sideList = sideArticles.slice(0, 10);
 
   return (
     <motion.section
-      className="py-20 px-4 sm:px-6 bg-black/30 backdrop-blur-sm"
+      className="relative py-20 px-4 sm:px-6 bg-black/30 backdrop-blur-sm"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}
@@ -231,11 +301,7 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
             </div>
             <p
               className="text-xs font-bold uppercase tracking-widest"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                color: CYAN,
-                marginBottom: "0.5rem",
-              }}
+              style={{ fontFamily: "'Poppins', sans-serif", color: CYAN, marginBottom: "0.5rem" }}
             >
               Actualités du Sénat
             </p>
@@ -250,40 +316,47 @@ export function NewsGrid({ articles }: { articles: Article[] }) {
               À la une
             </h2>
           </div>
-          <Link
-            href="/press-area"
-            className="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg"
+          <Button
+            asChild
+            className="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg text-[0.8rem] font-semibold tracking-wide"
             style={{
-              fontFamily: "'Poppins', sans-serif",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              letterSpacing: "0.05em",
               backgroundColor: CYAN,
               color: "#0f172a",
               boxShadow: "0 4px 20px rgba(91,200,222,0.3)",
             }}
           >
-            Toutes les actualités <ArrowRight size={14} />
-          </Link>
+            <Link href="/press-area">
+              Toutes les actualités <ArrowRight size={14} />
+            </Link>
+          </Button>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Colonne principale : carrousel "À la une" */}
           <div className="lg:col-span-2">
-            <FeaturedCard article={featured} />
+            {carouselArticles.length === 0 ? (
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 text-center text-white/50">
+                Aucun article à la une pour le moment.
+              </div>
+            ) : (
+              <FeaturedCarousel articles={carouselArticles} />
+            )}
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 h-full">
+            <Card className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 h-full">
               <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
                 <span className="w-1 h-4 rounded-full bg-cyan-400"></span>
                 À ne pas manquer
               </h4>
               <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-custom">
-                {others.map((a) => (
-                  <CompactCard key={a.id} article={a} />
-                ))}
+                {sideList.length === 0 ? (
+                  <p className="text-white/30 text-sm">Aucune actualité récente.</p>
+                ) : (
+                  sideList.map((a) => <CompactCard key={a.id} article={a} />)
+                )}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
 
