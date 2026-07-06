@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { socialLinks } from "@/utils/socialLinks";
+import Link from "next/link";
 
 export function FloatingSocialBar() {
     const [visible, setVisible] = useState(false);
@@ -26,7 +27,7 @@ export function FloatingSocialBar() {
                     className="fixed left-3 top-1/2 z-50 flex -translate-y-1/2 flex-col items-center gap-2 sm:gap-3"
                 >
                     {socialLinks.map((link) => (
-                        <a
+                        <Link
                             key={link.label}
                             href={link.href}
                             target="_blank"
@@ -47,9 +48,9 @@ export function FloatingSocialBar() {
                                 e.currentTarget.style.color = "rgba(255,255,255,0.7)";
                             }}
                         >
-                            <link.icon size={16} className="sm:h-5 sm:w-5" />
+                            <link.icon size={18} className="sm:h-6 sm:w-6" />
                             <span className="sr-only">{link.label}</span>
-                        </a>
+                        </Link>
                     ))}
                     <div className="mt-1 h-8 w-px bg-linear-to-b from-cyan-400/50 to-transparent sm:h-12" />
                 </motion.aside>
