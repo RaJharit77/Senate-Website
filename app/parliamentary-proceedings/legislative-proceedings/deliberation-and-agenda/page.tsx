@@ -30,11 +30,9 @@ export default async function DeliberationPage() {
     );
 
     if (postsWithTable.length === 0) {
-        // Si aucun tableau, on peut afficher un message ou rediriger vers la page des travaux législatifs
         redirect("/parliamentary-proceedings/legislative-proceedings");
     }
 
-    // Rediriger vers le premier article (le plus ancien)
     const firstPost = postsWithTable[0];
     redirect(`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${firstPost.slug}`);
 }

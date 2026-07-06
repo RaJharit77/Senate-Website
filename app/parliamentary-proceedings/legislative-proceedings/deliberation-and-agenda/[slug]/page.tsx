@@ -62,7 +62,7 @@ export default async function DeliberationArticlePage({
                     </Link>
                     <h1
                         className="text-white text-4xl md:text-5xl font-bold tracking-tight"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Délibérations et ordres du jour
                     </h1>
