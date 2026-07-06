@@ -46,7 +46,7 @@ export default async function LegislativeProceedingsPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Travaux législatifs
                     </h1>
                     <p className="text-white/60 text-lg mt-2 max-w-2xl leading-relaxed">
@@ -97,7 +97,7 @@ export default async function LegislativeProceedingsPage() {
                                 Délibérations
                             </h2>
                             <Link
-                                href="/parliamentary-proceedings/legislative-proceedings/deliberation"
+                                href={`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${deliberationPost.slug}`}
                                 className="text-sm text-cyan-300 hover:text-cyan-200 transition flex items-center gap-1"
                             >
                                 Voir en plein écran <ChevronRight className="w-4 h-4" />
