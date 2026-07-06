@@ -17,7 +17,6 @@ export function PartnersBand() {
                 borderTop: "1px solid rgba(255,255,255,0.05)",
             }}
         >
-            {/* Effets de fond */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div
                     className="absolute inset-0 opacity-30"
@@ -69,7 +68,7 @@ export function PartnersBand() {
                                 style={{
                                     backgroundColor: "rgba(255, 255, 255, 0.08)",
                                     backdropFilter: "blur(4px)",
-                                    border: "none", // ✅ Suppression de la bordure
+                                    border: "none",
                                     boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
                                 }}
                                 whileHover={{
@@ -80,7 +79,6 @@ export function PartnersBand() {
                                 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                {/* Effet de brillance (optionnel) */}
                                 <span className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden">
                                     <span
                                         className="absolute inset-0 -translate-x-full animate-shine"
