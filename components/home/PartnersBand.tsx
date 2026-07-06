@@ -42,7 +42,7 @@ export function PartnersBand() {
                 </p>
                 <div className="relative w-full overflow-hidden">
                     <motion.div
-                        className="flex gap-8"
+                        className="flex gap-6"
                         animate={{
                             x: ["0%", "-50%"],
                         }}
@@ -54,25 +54,22 @@ export function PartnersBand() {
                         style={{ width: "max-content" }}
                     >
                         {loopedPartners.map((p, index) => (
-                            <a
+                            <motion.a
                                 key={`${p.abbr}-${index}`}
-                                href="#"
-                                className="flex items-center gap-3 px-6 py-4 rounded-xl border transition-all hover:shadow-md shrink-0 relative card-shine"
+                                href="/"
+                                className="flex items-center gap-3 px-8 py-4 rounded-xl border transition-all hover:shadow-md shrink-0 relative card-shine"
                                 style={{
                                     borderColor: "rgba(255,255,255,0.1)",
                                     backgroundColor: "rgba(255, 255, 255, 0.12)",
                                     boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
                                     backdropFilter: "blur(4px)",
                                 }}
-                                onMouseEnter={(e) => {
-                                    (e.currentTarget as HTMLElement).style.borderColor = CYAN;
-                                    (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px rgba(91,200,222,0.2)`;
-                                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-                                }}
-                                onMouseLeave={(e) => {
-                                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)";
-                                    (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)";
-                                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+                                whileHover={{
+                                    scale: 1.1,
+                                    borderColor: CYAN,
+                                    backgroundColor: "rgba(255, 255, 255, 0.25)",
+                                    boxShadow: "0 8px 40px rgba(91,200,222,0.3)",
+                                    transition: { duration: 0.2 },
                                 }}
                             >
                                 <span className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden">
@@ -82,22 +79,23 @@ export function PartnersBand() {
                                         transform: "skewX(-20deg)",
                                     }} />
                                 </span>
-                                <div className="relative h-20 w-auto min-w-[80px]">
+                                <div className="relative h-20 w-auto min-w-[100px]">
                                     <Image
                                         src={p.logo}
                                         alt={p.name}
                                         fill
                                         className="object-contain relative z-10"
-                                        sizes="(max-width: 768px) 80px, 100px"
+                                        sizes="(max-width: 768px) 80px, 120px"
                                     />
                                 </div>
-                            </a>
+                            </motion.a>
                         ))}
                     </motion.div>
                 </div>
             </div>
 
-            <style>{`
+            <style>
+                {`
                 @keyframes rotateGlow {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
@@ -116,7 +114,8 @@ export function PartnersBand() {
                 .card-shine {
                     transition: all 0.3s ease;
                 }
-            `}</style>
+            `}
+            </style>
         </div>
     );
 }
