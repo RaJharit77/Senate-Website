@@ -72,7 +72,7 @@ export function ClientDeliberationList({
             href={`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${currentPost.slug}`}
             className="text-sm text-cyan-300 hover:text-cyan-200 transition flex items-center gap-1"
           >
-            Voir en détail <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-5 h-5" />
           </Link>
         </div>
         <Card className="bg-white/5 backdrop-blur-md rounded-3xl border-white/10 shadow-2xl overflow-hidden">
