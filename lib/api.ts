@@ -469,3 +469,7 @@ export async function getPostBySlugNoCache(slug: string): Promise<WpPost | null>
 
     return null;
 }
+
+export function getCategoriesByParent(parentId: number, params: Params = {}) {
+    return fetchAPI<WpCategory[]>("/categories", { parent: parentId, ...params });
+}
