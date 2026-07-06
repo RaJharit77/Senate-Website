@@ -71,7 +71,7 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
                                 <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                                 <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                             </div>
-                            <h1 className="text-white text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+                            <h1 className="text-white text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
                                 {cleanTitle}
                             </h1>
                             <div className="flex items-center gap-3 mt-3 text-gray-400 text-sm">
