@@ -6,15 +6,19 @@ import { getAlaune, getActualite } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Image from "next/image";
-import { Calendar, Search } from "lucide-react";
+import { Calendar, Search, ImageIcon } from "lucide-react";
 import Link from "next/link";
+import { extractFirstImageFromContent } from "@/lib/extractImage";
 
 interface ExtendedPost extends WpPost {
     isFeatured: boolean;
 }
 
 function ArticleCard({ post }: { post: ExtendedPost }) {
-    const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
+    const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+    const contentImage = extractFirstImageFromContent(post.content?.rendered);
+    const imageUrl = featuredImage || contentImage || null;
+
     const date = new Date(post.date).toLocaleDateString("fr-FR", {
         day: "numeric",
         month: "long",
@@ -27,9 +31,9 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-shadow"
+            className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col h-full"
         >
-            {imageUrl && (
+            {imageUrl ? (
                 <div className="relative w-full aspect-video overflow-hidden">
                     <Image
                         src={imageUrl}
@@ -44,8 +48,18 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
                         </span>
                     )}
                 </div>
+            ) : (
+                // Placeholder quand aucune image n'est disponible
+                <div className="relative w-full aspect-video bg-white/5 flex items-center justify-center">
+                    <ImageIcon className="w-16 h-16 text-white/20" />
+                    {post.isFeatured && (
+                        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
+                            À la une
+                        </span>
+                    )}
+                </div>
             )}
-            <div className="p-5">
+            <div className="p-5 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                     <Calendar size={14} />
                     <span>{date}</span>
@@ -55,13 +69,13 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
                 </h3>
                 {post.excerpt?.rendered && (
                     <p
-                        className="text-gray-300 text-sm line-clamp-3"
+                        className="text-gray-300 text-sm line-clamp-3 flex-1"
                         dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
                     />
                 )}
                 <Link
                     href={`/press-area/news/${post.slug}`}
-                    className="inline-block mt-4 text-cyan-300 hover:text-cyan-200 text-sm font-medium transition"
+                    className="inline-block mt-4 text-cyan-300 hover:text-cyan-200 text-sm font-medium transition self-start"
                 >
                     Lire la suite →
                 </Link>
@@ -76,10 +90,8 @@ export default function PressPage() {
     const [loadingFeatured, setLoadingFeatured] = useState(true);
     const [loadingRegular, setLoadingRegular] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-
-    // Pagination commune
     const [currentPage, setCurrentPage] = useState(1);
-    const perPage = 6; // 6 cartes par section par page
+    const perPage = 6;
 
     useEffect(() => {
         const loadData = async () => {
@@ -91,12 +103,13 @@ export default function PressPage() {
                     getActualite({ per_page: 100 }),
                 ]);
 
-                const featuredIds = new Set(alaune.map(p => p.id));
-                const featured = alaune.map(post => ({ ...post, isFeatured: true }));
+                // On s'assure que les données sont des tableaux
+                const featured = (alaune || []).map(post => ({ ...post, isFeatured: true }));
                 featured.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setFeaturedPosts(featured);
 
-                const regular = actualite
+                const featuredIds = new Set((alaune || []).map(p => p.id));
+                const regular = (actualite || [])
                     .filter(post => !featuredIds.has(post.id))
                     .map(post => ({ ...post, isFeatured: false }));
                 regular.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -111,7 +124,6 @@ export default function PressPage() {
         loadData();
     }, []);
 
-    // Filtrage commun (recherche)
     const filteredFeatured = useMemo(() => {
         if (!searchTerm.trim()) return featuredPosts;
         const term = searchTerm.trim().toLowerCase();
@@ -134,12 +146,10 @@ export default function PressPage() {
         );
     }, [regularPosts, searchTerm]);
 
-    // Nombre de pages pour chaque section
     const featuredTotalPages = Math.ceil(filteredFeatured.length / perPage);
     const regularTotalPages = Math.ceil(filteredRegular.length / perPage);
-    const totalPages = Math.max(featuredTotalPages, regularTotalPages); // La pagination commune est basée sur le max
+    const totalPages = Math.max(featuredTotalPages, regularTotalPages);
 
-    // Découpage des données selon la page courante
     const paginatedFeatured = filteredFeatured.slice(
         (currentPage - 1) * perPage,
         currentPage * perPage
@@ -149,9 +159,8 @@ export default function PressPage() {
         currentPage * perPage
     );
 
-    // Fonction pour générer les numéros de pages à afficher (max 7)
     const getPageNumbers = (): Array<number | string> => {
-        const delta = 3; // nombre de pages de chaque côté de la page courante
+        const delta = 3;
         const range: number[] = [];
         const rangeWithDots: Array<number | string> = [];
         let l: number | undefined;
@@ -239,13 +248,18 @@ export default function PressPage() {
                     >
                         <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
                         À la une
+                        {!loadingFeatured && (
+                            <span className="text-sm font-normal text-gray-400 ml-2">
+                                ({filteredFeatured.length} article{filteredFeatured.length > 1 ? 's' : ''})
+                            </span>
+                        )}
                     </h2>
                     {loadingFeatured ? (
                         <div className="flex justify-center py-12">
                             <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
                         </div>
                     ) : paginatedFeatured.length === 0 ? (
-                        <p className="text-gray-400">Aucun article à la une.</p>
+                        <p className="text-gray-400">Aucun article à la une correspondant à votre recherche.</p>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedFeatured.map((post) => (
@@ -274,7 +288,7 @@ export default function PressPage() {
                             <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
                         </div>
                     ) : paginatedRegular.length === 0 ? (
-                        <p className="text-gray-400">Aucune actualité.</p>
+                        <p className="text-gray-400">Aucune actualité correspondant à votre recherche.</p>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedRegular.map((post) => (
