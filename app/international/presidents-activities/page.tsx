@@ -2,14 +2,7 @@ import { getPresidentActivities, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import { PresidentActivitiesFeed, type ActivityItem } from "@/components/international/PresidentActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
+import { formatDate } from "@/utils/utility";
 
 export default async function PresidentsActivitiesPage() {
     let activities: Awaited<ReturnType<typeof getPresidentActivities>> = [];

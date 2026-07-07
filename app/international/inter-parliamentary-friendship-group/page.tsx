@@ -5,14 +5,7 @@ import type { SimpleActivityItem } from "@/components/international/SimpleActivi
 import type { ActivityCategory } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
-
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
+import { formatDate } from "@/utils/utility";
 
 export default async function InterParliamentaryFriendshipGroupPage() {
     let raw: WpPost[] = [];

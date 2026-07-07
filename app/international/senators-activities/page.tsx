@@ -4,16 +4,8 @@ import { ActivitiesFeed } from "@/components/international/ActivitiesFeed";
 import type { ActivityItem } from "@/components/international/ActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
+import { formatDate } from "@/utils/utility";
 
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
-
-// Mapping des slugs de catégories des sénateurs vers les catégories attendues par le composant
 const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> = {
     "audience_sen": "audience",
     "deplacement_sen": "international",
