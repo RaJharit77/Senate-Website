@@ -3,27 +3,14 @@ import { Scale, FileText, Calendar, ChevronRight } from "lucide-react";
 import { getPostsByCategorySlug, getAllRepubliques } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
 import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
-
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
-
-function stripHtml(html: string | undefined): string {
-    return html ? html.replace(/<[^>]+>/g, "").trim() : "";
-}
+import { formatDate } from "@/utils/utility";
 
 export default async function TextAndLawsPage() {
-    // Lois adoptées (posts de la catégorie "textes-et-lois")
     const posts = (await getPostsByCategorySlug("textes-et-lois", {
         per_page: 50,
         _embed: true,
     }).catch(() => [])) as WpPost[];
 
-    // Textes constitutionnels (Ière à IVème République)
     const republiquesRaw = (await getAllRepubliques({
         per_page: 20,
         _embed: true,
@@ -67,7 +54,6 @@ export default async function TextAndLawsPage() {
                     </p>
                 </div>
 
-                {/* Lois adoptées - tableau */}
                 {posts.length > 0 && (
                     <section className="mb-16">
                         <div className="flex items-center gap-3 mb-6">
@@ -133,7 +119,6 @@ export default async function TextAndLawsPage() {
                     </section>
                 )}
 
-                {/* Textes constitutionnels */}
                 {republiques.length > 0 && (
                     <section>
                         <div className="flex items-center gap-3 mb-6">
