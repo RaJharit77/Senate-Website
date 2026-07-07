@@ -6,22 +6,12 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DeliberationTable } from "@/components/parliamentary/DeliberationTable";
+import { cleanText } from "@/utils/utility";
 
 export const dynamic = "force-dynamic";
 
 const CAT_ORDRE_JOUR = 11;
 const CAT_DELIBERATION = 53;
-
-function cleanText(text: string): string {
-    if (!text) return "";
-    return text
-        .replace(/&rsquo;/g, "'")
-        .replace(/&quot;/g, '"')
-        .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&")
-        .replace(/&#8211;/g, "–")
-        .replace(/&#8217;/g, "'");
-}
 
 async function getPostBySlug(slug: string) {
     const posts = await getPosts({ slug, _embed: true });
