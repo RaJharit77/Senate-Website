@@ -112,7 +112,7 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -direction * 50 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative aspect-[3/2]"
+          className="relative aspect-3/2"
         >
           <Image
             src={imageSrc}
