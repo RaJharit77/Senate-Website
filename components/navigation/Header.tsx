@@ -48,10 +48,18 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateTime, setDateTime] = useState(new Date());
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDateTime(new Date());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,6 +107,18 @@ export function Header() {
     return pathname === path;
   };
 
+  const formattedDate = dateTime.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const formattedTime = dateTime.toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
     <header
       className="sticky top-0 z-50 transition-shadow duration-300"
@@ -131,6 +151,20 @@ export function Header() {
               <span>Chaîne officielle</span>
             </Link>
           </div>
+
+          <div className="flex items-center gap-4">
+            <div
+              className="hidden sm:flex items-center gap-1 whitespace-nowrap"
+              style={{ fontSize: "0.77rem", color: COLOURS.black }}
+            >
+              <span>•</span>
+              <span>
+                {formattedDate} - {formattedTime}
+              </span>
+              <span>•</span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-4">
             <Link
               href="/contact"
@@ -150,7 +184,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Logo band */}
       <div
         className="transition-colors duration-300"
         style={{
@@ -288,7 +321,7 @@ export function Header() {
               />
               <button
                 type="submit"
-                className="p-2 rounUded-full bg-cyan-500 text-white hover:bg-cyan-600 transition-colors"
+                className="p-2 rounded-full bg-cyan-500 text-white hover:bg-cyan-600 transition-colors"
               >
                 <Search size={18} />
               </button>
