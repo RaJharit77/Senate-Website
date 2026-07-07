@@ -22,7 +22,7 @@ function cleanText(text: string): string {
 interface ClientDeliberationListProps {
   posts: any[];
   initialIndex?: number;
-  useRouterNavigation?: boolean; // Si true, utilise router.push pour changer l'URL
+  useRouterNavigation?: boolean;
 }
 
 export function ClientDeliberationList({
@@ -35,6 +35,7 @@ export function ClientDeliberationList({
   const total = posts.length;
   const currentPost = posts[currentIndex];
   const cleanTitle = cleanText(currentPost.title.rendered);
+  const hasTable = currentPost.content.rendered.includes("<table");
 
   const handlePrev = () => {
     if (currentIndex > 0) {
@@ -77,7 +78,14 @@ export function ClientDeliberationList({
         </div>
         <Card className="bg-white/5 backdrop-blur-md rounded-3xl border-white/10 shadow-2xl overflow-hidden">
           <CardContent className="p-4 md:p-8">
-            <DeliberationTable tableHtml={currentPost.content.rendered} showPagination={true} />
+            {hasTable ? (
+              <DeliberationTable tableHtml={currentPost.content.rendered} showPagination={true} />
+            ) : (
+              <div
+                className="prose prose-invert max-w-none text-white/80 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-cyan-300 [&_em]:text-cyan-200"
+                dangerouslySetInnerHTML={{ __html: currentPost.content.rendered }}
+              />
+            )}
           </CardContent>
         </Card>
       </div>

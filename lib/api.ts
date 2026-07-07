@@ -473,3 +473,45 @@ export async function getPostBySlugNoCache(slug: string): Promise<WpPost | null>
 export function getCategoriesByParent(parentId: number, params: Params = {}) {
     return fetchAPI<WpCategory[]>("/categories", { parent: parentId, ...params });
 }
+
+export async function getAllRelevantPosts() {
+    const [ordreJourPosts, deliberationPosts, loisAdoptees] = await Promise.all([
+        getPostsByCategory(11, { per_page: 100, _embed: true }).catch(() => []),
+        getPostsByCategory(53, { per_page: 1, _embed: true }).catch(() => []),
+        getPostsByCategory(14, { per_page: 100, _embed: true }).catch(() => []),
+    ]);
+
+    const allPosts = [...ordreJourPosts, ...loisAdoptees];
+    const deliberationSlug = "deliberation";
+    const hasDeliberation = allPosts.some((p) => p.slug === deliberationSlug);
+    if (deliberationPosts.length > 0 && !hasDeliberation) {
+        allPosts.push(deliberationPosts[0]);
+    }
+
+    allPosts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return allPosts;
+}
+
+/**
+ * Récupère tous les articles pertinents pour les pages "Délibérations et ordres du jour"
+ * (catégories 11, 53 et 14), triés du plus ancien au plus récent.
+ */
+export async function getDeliberationPosts(params: Params = {}) {
+    const categories = [11, 53, 14];
+    const results = await Promise.allSettled(
+        categories.map(cat =>
+            getPostsByCategory(cat, { per_page: 100, _embed: true, ...params }).catch(() => [])
+        )
+    );
+
+    const allPosts = results
+        .filter((r): r is PromiseFulfilledResult<WpPost[]> => r.status === 'fulfilled')
+        .flatMap(r => r.value);
+
+    const unique = allPosts.filter(
+        (post, index, self) => index === self.findIndex(p => p.id === post.id)
+    );
+
+    unique.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return unique;
+}

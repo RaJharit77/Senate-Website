@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
 
 interface DeliberationTableProps {
     tableHtml: string;
-    showPagination?: boolean; // true pour paginer les lignes, false pour tout afficher
+    showPagination?: boolean;
 }
 
 export function DeliberationTable({ tableHtml, showPagination = true }: DeliberationTableProps) {
