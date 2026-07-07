@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import {
     getRepubliqueI,
     getRepubliqueII,
@@ -13,8 +15,7 @@ import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
 import { RED, WHITE, EMERALD, CYAN } from "@/utils/colors";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 import type { TabConfig } from "@/components/history/HistoryTabs";
-
-type TabId = "premiere" | "deuxieme" | "troisieme" | "quatrieme" | "transition";
+import { TabId } from "@/types/TabId";
 
 const TABS: TabConfig[] = [
     {
@@ -129,7 +130,7 @@ export default function HistoryPage() {
                     </div>
                     <h1
                         className="text-white text-4xl font-bold"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         Histoire du Sénat de Madagascar
                     </h1>
@@ -157,7 +158,7 @@ export default function HistoryPage() {
 
                         <div className="flex justify-center">
                             <div
-                                className="relative w-full max-w-4xl aspect-[4/3] rounded-xl shadow-2xl overflow-hidden"
+                                className="relative w-full max-w-4xl aspect-4/3 rounded-xl shadow-2xl overflow-hidden"
                                 style={{ minHeight: 300 }}
                             >
                                 <Image
@@ -174,7 +175,7 @@ export default function HistoryPage() {
 
                         <p
                             className="text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed"
-                            style={{ fontFamily: "'Source Serif 4', serif" }}
+                            style={{ fontFamily: "'Poppins', sans-serif" }}
                         >
                             Le Sénat a été mis en place au lendemain de la naissance de la République
                             Malgache, le 14 octobre 1958 ; plus précisément après l&apos;adoption de
@@ -183,6 +184,16 @@ export default function HistoryPage() {
                             le Parlement avec l&apos;Assemblée Nationale, le Sénat est actuellement
                             dans la deuxième législature de la Quatrième République.
                         </p>
+
+                        <div className="flex justify-center mt-8">
+                            <Link
+                                href="/historical/history"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white font-medium transition-colors shadow-lg hover:shadow-cyan-500/30"
+                            >
+                                Découvrir l&apos;histoire complète
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
 

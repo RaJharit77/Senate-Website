@@ -1,0 +1,1 @@
+export type TabId = "premiere" | "deuxieme" | "troisieme" | "quatrieme" | "transition";

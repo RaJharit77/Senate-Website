@@ -8,10 +8,8 @@ import { getPageBySlug } from "@/lib/api";
 
 export const dynamic = 'force-dynamic';
 
-export default async function SenatorProfilePage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
-
-    const page = await getPageBySlug(slug);
+export default async function HistoricalStoryPage() {
+    const page = await getPageBySlug("historique-2");
 
     if (!page) {
         notFound();
@@ -31,7 +29,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
 
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
                 <Button
                     variant="ghost"
                     className="text-gray-400 hover:text-white hover:bg-white/10 mb-6"
@@ -39,7 +37,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
                 >
                     <Link href="/historical" className="inline-flex items-center gap-2">
                         <ArrowLeft className="w-4 h-4" />
-                        Retour à l&apos;historique
+                        Retour à l&apos;histoire
                     </Link>
                 </Button>
 
@@ -62,7 +60,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
 
                         <div
                             className="prose prose-lg prose-invert max-w-none text-gray-300
-                                [&_p]:text-gray-300
+                                [&_p]:text-gray-300 [&_p]:mb-4
                                 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-white
                                 [&_a]:text-cyan-300 [&_a:hover]:text-cyan-200
                                 [&_figure]:flex [&_figure]:flex-col [&_figure]:items-center [&_figure]:justify-start
@@ -74,12 +72,24 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
                                 [&_img]:max-w-full [&_img]:h-auto [&_img]:max-h-[500px] [&_img]:object-contain
                                 [&_img]:transition-all [&_img]:duration-200 [&_img]:hover:scale-105
                                 [&_img]:hover:shadow-[0_20px_50px_rgba(0,0,0,0.7)]
-                                [&_ul]:list-disc [&_ul]:pl-6
-                                [&_ol]:list-decimal [&_ol]:pl-6
-                                [&_li]:text-gray-300 [&_li]:mb-1"
+                                [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4
+                                [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4
+                                [&_li]:text-gray-300 [&_li]:mb-1
+                                [&_hr]:border-white/10 [&_hr]:my-8"
                             style={{ fontFamily: "'Poppins', sans-serif" }}
                             dangerouslySetInnerHTML={{ __html: page.content.rendered }}
                         />
+
+                        <div className="mt-8 flex justify-center">
+                            <Button
+                                asChild
+                                className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8 py-3 rounded-full transition shadow-lg hover:shadow-emerald-500/30"
+                            >
+                                <Link href="/historical">
+                                    Explorer les républiques
+                                </Link>
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

@@ -1,0 +1,1 @@
+export type CategoryType = "tous" | "video" | "divers" | "autres" | "publication";

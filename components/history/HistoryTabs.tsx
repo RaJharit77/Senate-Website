@@ -85,7 +85,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         md:[&_.col-md-6:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(50%-1.5rem)]
 
         /* =========================================================
-           3. CARTES DES SÉNATEURS (Taille fixe et Espacées)
+            3. CARTES DES SÉNATEURS (Taille fixe et Espacées)
            ========================================================= */
         [&_[class*="col-"]:has(.rounded-circle)]:!w-[160px] 
         sm:[&_[class*="col-"]:has(.rounded-circle)]:!w-[200px]
@@ -124,7 +124,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         [&_[class*="col-"]:has(.rounded-circle)_p]:!text-[10px] md:[&_[class*="col-"]:has(.rounded-circle)_p]:!text-[11px] [&_[class*="col-"]:has(.rounded-circle)_p]:!text-white/60 [&_[class*="col-"]:has(.rounded-circle)_p]:!mb-0 [&_[class*="col-"]:has(.rounded-circle)_p]:!line-clamp-2 [&_[class*="col-"]:has(.rounded-circle)_p]:!leading-tight
 
         /* =========================================================
-           4. FLÈCHE VERTE DE SÉPARATION (Entre les profils)
+            4. FLÈCHE VERTE DE SÉPARATION (Entre les profils)
            ========================================================= */
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!w-auto
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!flex
