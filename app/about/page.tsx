@@ -1,9 +1,16 @@
 import { MissionSection } from "@/components/about/MissionSection";
 import { StructuresSection } from "@/components/about/StructuresSection";
 import { TextesSection } from "@/components/about/TextesSection";
+import { getPageBySlug } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+    const [missionPage, structuresPage, textesPage] = await Promise.all([
+        getPageBySlug("nature-et-missions-2"),
+        getPageBySlug("structures"),
+        getPageBySlug("textes-de-reference"),
+    ]);
+
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto">
@@ -38,9 +45,9 @@ export default function AboutPage() {
                 </div>
 
                 <div className="space-y-16">
-                    <MissionSection />
-                    <StructuresSection />
-                    <TextesSection />
+                    {missionPage && <MissionSection html={missionPage.content.rendered} />}
+                    {structuresPage && <StructuresSection html={structuresPage.content.rendered} />}
+                    {textesPage && <TextesSection html={textesPage.content.rendered} />}
                 </div>
             </div>
         </div>
