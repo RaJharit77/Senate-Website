@@ -47,9 +47,9 @@ function ActivityCard({ item }: { item: ActivityItem }) {
             href={item.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+            className="group relative flex flex-col overflow-hidden rounded-2xl bg-transparent border border-gray-600 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
         >
-            <div className="relative aspect-4/3 w-full overflow-hidden bg-gray-100">
+            <div className="relative aspect-4/3 w-full overflow-hidden bg-transparent">
                 {item.imageUrl ? (
                     <Image
                         src={item.imageUrl}
@@ -77,11 +77,11 @@ function ActivityCard({ item }: { item: ActivityItem }) {
             </div>
             <div className="flex flex-1 flex-col gap-1 p-4">
                 <h4
-                    className="text-base font-semibold leading-snug text-gray-900 line-clamp-2"
+                    className="text-base font-semibold leading-snug text-gray-100 line-clamp-2"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                     dangerouslySetInnerHTML={{ __html: item.title }}
                 />
-                <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                <div className="flex items-center gap-1 text-xs text-gray-200 mt-1">
                     <Calendar size={14} />
                     <span>{item.date}</span>
                 </div>
