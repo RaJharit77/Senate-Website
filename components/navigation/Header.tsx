@@ -256,15 +256,17 @@ export function Header() {
           </Link>
 
           <div className="hidden lg:flex items-center justify-between gap-4 shrink-0">
-            <Image
-              src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
-              alt="République de Madagascar"
-              width={120}
-              height={120}
-              className="h-auto w-auto object-contain"
-              priority
-              quality={100}
-            />
+            <Link href="/visit">
+              <Image
+                src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
+                alt="République de Madagascar"
+                width={120}
+                height={120}
+                className="h-auto w-auto object-contain"
+                priority
+                quality={100}
+              />
+            </Link>
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
