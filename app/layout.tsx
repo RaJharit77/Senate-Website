@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Poppins, Inter } from 'next/font/google';
+import { Poppins, Inter, Geist } from 'next/font/google';
 import '../styles/globals.css';
 import { Header } from '@/components/navigation/Header';
 import { Footer } from '@/components/navigation/Footer';
 import { FloatingSocialBar } from '@/components/navigation/common/FloatingSocialBar';
 import Chatbot from '@/components/chatbot/Chatbot';
+import { cn } from "@/lib/utils";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -12,6 +13,8 @@ const poppins = Poppins({
 });
 
 const inter = Inter({ subsets: ['latin'] });
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'Antenimierandoholona - Site web du Sénat de Madagasar',
@@ -28,8 +31,8 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="fr"
-      className={`${poppins.className} ${inter.className} h-full antialiased`}
+      lang="en"
+      className={cn("h-full", "antialiased", poppins.className, inter.className, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Header />
