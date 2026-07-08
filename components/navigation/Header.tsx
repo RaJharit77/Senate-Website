@@ -256,7 +256,7 @@ export function Header() {
           </Link>
 
           <div className="hidden lg:flex items-center justify-between gap-4 shrink-0">
-            <Link href="/visit">
+            <Link href="/" className="flex items-center gap-4">
               <Image
                 src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
                 alt="République de Madagascar"
@@ -269,7 +269,7 @@ export function Header() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4" ref={searchContainerRef}>
+          <div className="flex items-center gap-4" ref={searchContainerRef}>j
             {/* Barre de recherche desktop */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
