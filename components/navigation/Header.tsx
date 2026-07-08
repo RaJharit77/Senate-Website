@@ -3,11 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Phone } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { COLOURS } from "@/utils/colours";
 import { WHITE } from "@/utils/colors";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Accueil", path: "/" },
@@ -49,6 +52,7 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateTime, setDateTime] = useState(new Date());
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -119,6 +123,13 @@ export function Header() {
     minute: "2-digit",
   });
 
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setDateTime(date);
+      setCalendarOpen(false);
+    }
+  };
+
   return (
     <header
       className="sticky top-0 z-50 transition-shadow duration-300"
@@ -152,16 +163,37 @@ export function Header() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div
-              className="hidden sm:flex items-center gap-1 whitespace-nowrap"
-              style={{ fontSize: "0.77rem", color: COLOURS.black }}
-            >
-              <span>•</span>
-              <span>
-                {formattedDate} - {formattedTime}
-              </span>
-              <span>•</span>
+          {/* Calendrier déroulant avec Popover */}
+          <div className="flex items-center gap-2">
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hidden sm:flex items-center gap-2 text-black hover:text-gray-900 hover:bg-transparent"
+                  style={{ fontSize: "0.77rem", padding: "2px 8px", height: "auto" }}
+                >
+                  <CalendarIcon size={14} />
+                  <span className="whitespace-nowrap">
+                    {formattedDate} - {formattedTime}
+                  </span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="center">
+                <Calendar
+                  mode="single"
+                  selected={dateTime}
+                  onSelect={handleDateSelect}
+                  locale={{ code: "fr" }}
+                />
+              </PopoverContent>
+            </Popover>
+
+            {/* Version mobile : affichage compact */}
+            <div className="sm:hidden flex items-center gap-1 text-black text-[0.7rem]">
+              <CalendarIcon size={12} />
+              <span>{formattedDate}</span>
+              <span className="text-black/60">{formattedTime}</span>
             </div>
           </div>
 
@@ -236,7 +268,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
-            {/* Barre de recherche */}
+            {/* Barre de recherche desktop */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center">
@@ -277,7 +309,7 @@ export function Header() {
               )}
             </div>
 
-            {/* Version mobile */}
+            {/* Boutons mobile */}
             <button
               className="lg:hidden p-2"
               onClick={() => {
@@ -301,7 +333,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* Champ de recherche mobile */}
+        {/* Recherche mobile */}
         {searchOpen && (
           <div className="lg:hidden px-4 py-2 bg-white/90 backdrop-blur-sm border-t border-gray-200">
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
@@ -340,7 +372,7 @@ export function Header() {
         )}
       </div>
 
-      {/* Navigation bar – gris foncé */}
+      {/* Navigation principale */}
       <nav
         className="hidden lg:block transition-colors duration-300"
         style={{
@@ -443,64 +475,62 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
-      {
-        mobileOpen && (
-          <div
-            className="lg:hidden border-t"
-            style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
-          >
-            {navItems.map((item) => (
-              <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
-                {item.children ? (
-                  <>
-                    <button
-                      className="w-full text-left px-5 py-4 flex items-center justify-between"
-                      style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
-                      onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
-                    >
-                      {item.label}
-                      <ChevronDown
-                        size={14}
-                        style={{ color: COLOURS.cyan }}
-                        className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                    {item.children && openMenu === item.label && (
-                      <div style={{ backgroundColor: "#f1f5f9" }} className="pb-2">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.label}
-                            href={child.path}
-                            className="block px-8 py-2"
-                            style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    href={item.path}
-                    className="block px-5 py-4"
-                    style={{
-                      fontSize: "0.95rem",
-                      fontWeight: isActive(item.path) ? 600 : 500,
-                      color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
-                    }}
-                    onClick={() => setMobileOpen(false)}
+      {/* Menu mobile */}
+      {mobileOpen && (
+        <div
+          className="lg:hidden border-t"
+          style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
+        >
+          {navItems.map((item) => (
+            <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
+              {item.children ? (
+                <>
+                  <button
+                    className="w-full text-left px-5 py-4 flex items-center justify-between"
+                    style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
+                    onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
                   >
                     {item.label}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-        )
-      }
-    </header >
+                    <ChevronDown
+                      size={14}
+                      style={{ color: COLOURS.cyan }}
+                      className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  {item.children && openMenu === item.label && (
+                    <div style={{ backgroundColor: "#f1f5f9" }} className="pb-2">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.label}
+                          href={child.path}
+                          className="block px-8 py-2"
+                          style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  href={item.path}
+                  className="block px-5 py-4"
+                  style={{
+                    fontSize: "0.95rem",
+                    fontWeight: isActive(item.path) ? 600 : 500,
+                    color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
+                  }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </header>
   );
 }
