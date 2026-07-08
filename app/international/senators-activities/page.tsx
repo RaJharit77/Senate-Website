@@ -13,13 +13,13 @@ const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> 
 };
 
 export default async function SenatorsActivitiesPage() {
-    // Récupérer les articles pour chaque catégorie
+    // Récupération des articles pour chaque catégorie
     const slugs = Object.keys(CATEGORY_MAP);
     const results = await Promise.allSettled(
         slugs.map((slug) => getPostsByCategorySlug(slug, { per_page: 100, _embed: true }))
     );
 
-    // Construire la liste d'activités
+    // Construction de la liste d'activités
     const items: ActivityItem[] = [];
 
     for (let i = 0; i < results.length; i++) {
@@ -29,7 +29,7 @@ export default async function SenatorsActivitiesPage() {
             const category = CATEGORY_MAP[slug];
             const posts = result.value as WpPost[];
 
-            // Résoudre les images en parallèle pour chaque post
+            // Résolution des images en parallèle pour chaque post
             const postsWithImages = await Promise.all(
                 posts.map(async (post) => ({
                     post,
