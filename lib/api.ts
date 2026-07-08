@@ -493,9 +493,9 @@ export async function getAllRelevantPosts() {
 }
 
 /**
- * Récupère tous les articles pertinents pour les pages "Délibérations et ordres du jour"
- * (catégories 11, 53 et 14), triés du plus ancien au plus récent.
- */
+*   Récupère tous les articles pertinents pour les pages "Délibérations et ordres du jour"
+    (catégories 11, 53 et 14), triés du plus ancien au plus récent.
+*/
 export async function getDeliberationPosts(params: Params = {}) {
     const categories = [11, 53, 14];
     const results = await Promise.allSettled(

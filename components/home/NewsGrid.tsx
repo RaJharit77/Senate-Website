@@ -6,7 +6,7 @@ import gsap from "gsap";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Calendar, Globe2, Users, Heart, GraduationCap, Sparkles, type LucideIcon } from "lucide-react";
-import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
+import { CYAN, EMERALD, MARINA, RED, WHITE } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -244,19 +244,22 @@ function CompactCard({ article }: { article: Article }) {
             <div className="flex items-center gap-2 mb-1">
               <span
                 className="text-[0.6rem] font-bold uppercase tracking-wider flex items-center gap-1"
-                style={{ color: article.categoryColor }}
+                style={{ color: CYAN }}
               >
                 <Icon size={12} />
                 {article.category}
               </span>
-              <span className="text-white/40 text-[0.6rem] flex items-center gap-1">
+              <span
+                className="text-[0.6rem] flex items-center gap-1"
+                style={{ color: `${CYAN}99` }}
+              >
                 <Calendar size={10} />
                 {article.date}
               </span>
             </div>
             <h4
               className="text-white text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
-              style={{ fontFamily: "'Poppins', serif" }}
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {article.title}
             </h4>
@@ -275,7 +278,7 @@ function CompactCard({ article }: { article: Article }) {
 }
 
 interface NewsGridProps {
-  featuredArticles: Article[];   
+  featuredArticles: Article[];
   sideArticles: Article[];
 }
 
@@ -321,7 +324,7 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
             className="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg text-[0.8rem] font-semibold tracking-wide"
             style={{
               backgroundColor: CYAN,
-              color: "#0f172a",
+              color: MARINA,
               boxShadow: "0 4px 20px rgba(91,200,222,0.3)",
             }}
           >
@@ -332,7 +335,6 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Colonne principale : carrousel "À la une" */}
           <div className="lg:col-span-2">
             {carouselArticles.length === 0 ? (
               <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 text-center text-white/50">
