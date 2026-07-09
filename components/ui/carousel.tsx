@@ -95,12 +95,17 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return
-    onSelect(api)
+    // Avoid calling setState synchronously inside an effect to prevent
+    // cascading renders. Schedule the initial selection check asynchronously.
+    const t = window.setTimeout(() => onSelect(api), 0)
+
     api.on("reInit", onSelect)
     api.on("select", onSelect)
 
     return () => {
+      window.clearTimeout(t)
       api?.off("select", onSelect)
+      api?.off("reInit", onSelect)
     }
   }, [api, onSelect])
 

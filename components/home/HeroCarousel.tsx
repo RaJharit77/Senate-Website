@@ -77,7 +77,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           fill
           className="object-cover hero-image"
           priority
-          quality={90}
+          quality={100}
           sizes="(max-width: 768px) 100vw, 50vw"
           unoptimized={!isValidImage}
         />

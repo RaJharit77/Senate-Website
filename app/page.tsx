@@ -6,10 +6,9 @@ import { PartnersBand } from "@/components/home/PartnersBand";
 import { getAlaune, getActualite, getPostsByCategory, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import type { WpPost } from "@/lib/types";
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
-}
+import { formatDate } from "@/utils/utility";
+import { GREENS, REDS, SKY_BLUE } from "@/utils/colors";
+import { CAT_CALENDRIER, CAT_LOIS } from "@/constants/constants";
 
 function getAcfString(item: WpPost, key: string, fallback: string): string {
   const acf = item.acf as Record<string, unknown> | undefined;
@@ -40,7 +39,7 @@ export default async function HomePage() {
         title: item.title?.rendered || "Sans titre",
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
         image: imageUrl,
-        color: "#cc1111",
+        color: REDS,
         link: `/actualite/${item.slug}`,
       };
     })
@@ -61,13 +60,14 @@ export default async function HomePage() {
       return {
         id: item.id,
         category: getAcfString(item, "categorie", "Actualité"),
-        categoryColor: "#cc1111", // couleur rouge pour "À la une"
+        categoryColor: REDS,
         date: formatDate(item.date),
         title: item.title?.rendered || "Sans titre",
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
         image: imageUrl,
         featured: true,
         link: `/actualite/${item.slug}`,
+        index: index, // Add the index property here
       };
     })
   );
@@ -87,7 +87,7 @@ export default async function HomePage() {
       return {
         id: item.id,
         category: getAcfString(item, "categorie", "Actualité"),
-        categoryColor: index === 0 ? "#1a5c16" : "#5bc8de",
+        categoryColor: index === 0 ? REDS : GREENS,
         date: formatDate(item.date),
         title: item.title?.rendered || "Sans titre",
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
@@ -97,10 +97,6 @@ export default async function HomePage() {
       };
     })
   );
-
-  // ---- Travaux parlementaires ----
-  const CAT_LOIS = 42;
-  const CAT_CALENDRIER = 43;
 
   const loisData = (await getPostsByCategory(CAT_LOIS, { per_page: 4, _embed: true }).catch((err) => {
     console.error("[HomePage] Failed to load 'Travaux législatifs' (cat 42):", err);
@@ -117,35 +113,35 @@ export default async function HomePage() {
       id: "legislation",
       iconName: "FileText" as const,
       label: "Travaux législatifs",
-      color: "#5bc8de",
+      color: SKY_BLUE,
       path: "/parliamentary-proceedings",
       items: loisData.map((item: WpPost) => ({
         ref: getAcfString(item, "reference", item.title?.rendered || "Réf. inconnue"),
         title: item.title?.rendered || "Sans titre",
         status: getAcfString(item, "statut", "En cours"),
         date: formatDate(item.date),
-        statusColor: getAcfString(item, "statut", "") === "Adopté" ? "#16a34a" : "#5bc8de",
+        statusColor: getAcfString(item, "statut", "") === "Adopté" ? REDS : GREENS,
       })),
     },
     {
       id: "calendar",
       iconName: "Calendar" as const,
       label: "Calendrier parlementaire",
-      color: "#5bc8de",
+      color: SKY_BLUE,
       path: "/agenda",
       items: calendrierData.map((item: WpPost) => ({
         ref: getAcfString(item, "type", "Session"),
         title: item.title?.rendered || "Sans titre",
         status: getAcfString(item, "statut", "Planifié"),
         date: formatDate(item.date),
-        statusColor: getAcfString(item, "statut", "") === "Terminé" ? "#cc1111" : "#5bc8de",
+        statusColor: getAcfString(item, "statut", "") === "Terminé" ? REDS : SKY_BLUE,
       })),
     },
     {
       id: "texts",
       iconName: "BookOpen" as const,
       label: "Textes de référence",
-      color: "#5bc8de",
+      color: SKY_BLUE,
       path: "/about/reference-texts",
       items: [],
     },

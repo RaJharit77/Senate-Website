@@ -67,7 +67,7 @@ export function AboutSection() {
               fontFamily: "'Poppins', sans-serif",
               fontSize: "clamp(2rem, 4vw, 3rem)",
               fontWeight: 700,
-              color: "#ffffff",
+              color: WHITE,
               lineHeight: 1.2,
             }}
           >

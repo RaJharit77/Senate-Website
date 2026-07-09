@@ -49,7 +49,7 @@ export function PartnersBand() {
 
                 <div className="relative w-full overflow-hidden">
                     <motion.div
-                        className="flex gap-8"
+                        className="flex gap-4"
                         animate={{
                             x: ["0%", "-50%"],
                         }}
@@ -68,8 +68,9 @@ export function PartnersBand() {
                                 style={{
                                     backgroundColor: "rgba(255, 255, 255, 0.08)",
                                     backdropFilter: "blur(4px)",
-                                    border: "none",
-                                    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+                                    border: "none",          
+                                    boxShadow: "none",       
+                                    outline: "none",
                                 }}
                                 whileHover={{
                                     scale: 1.12,
