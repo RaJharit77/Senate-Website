@@ -12,13 +12,11 @@ import { extractFirstImageFromContent } from "@/lib/extractImage";
 
 interface ExtendedPost extends WpPost {
     isFeatured: boolean;
+    imageUrl: string | null;
 }
 
 function ArticleCard({ post }: { post: ExtendedPost }) {
-    const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
-    const contentImage = extractFirstImageFromContent(post.content?.rendered);
-    const imageUrl = featuredImage || contentImage || null;
-
+    const { imageUrl, isFeatured } = post;
     const date = new Date(post.date).toLocaleDateString("fr-FR", {
         day: "numeric",
         month: "long",
@@ -31,34 +29,28 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col h-full"
+            className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col"
         >
-            {imageUrl ? (
-                <div className="relative w-full aspect-video overflow-hidden">
+            <div className="relative w-full aspect-video overflow-hidden bg-white/5">
+                {imageUrl ? (
                     <Image
                         src={imageUrl}
                         alt={cleanTitle}
                         fill
-                        className="object-cover"
+                        className="object-cover object-center"
                         sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                    {post.isFeatured && (
-                        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
-                            À la une
-                        </span>
-                    )}
-                </div>
-            ) : (
-                // Placeholder quand aucune image n'est disponible
-                <div className="relative w-full aspect-video bg-white/5 flex items-center justify-center">
-                    <ImageIcon className="w-16 h-16 text-white/20" />
-                    {post.isFeatured && (
-                        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
-                            À la une
-                        </span>
-                    )}
-                </div>
-            )}
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                        <ImageIcon size={48} strokeWidth={1} />
+                    </div>
+                )}
+                {isFeatured && (
+                    <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-10">
+                        À la une
+                    </span>
+                )}
+            </div>
             <div className="p-5 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                     <Calendar size={14} />
@@ -90,8 +82,24 @@ export default function PressPage() {
     const [loadingFeatured, setLoadingFeatured] = useState(true);
     const [loadingRegular, setLoadingRegular] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 6;
+
+    const enrichWithImage = (post: WpPost, isFeatured: boolean): ExtendedPost => {
+        let imageUrl: string | null = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
+
+        if (!imageUrl) {
+            const fromContent = extractFirstImageFromContent(post.content?.rendered);
+            if (fromContent) imageUrl = fromContent;
+            else {
+                const fromExcerpt = extractFirstImageFromContent(post.excerpt?.rendered);
+                if (fromExcerpt) imageUrl = fromExcerpt;
+            }
+        }
+
+        return { ...post, isFeatured, imageUrl };
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -103,15 +111,15 @@ export default function PressPage() {
                     getActualite({ per_page: 100 }),
                 ]);
 
-                // On s'assure que les données sont des tableaux
-                const featured = (alaune || []).map(post => ({ ...post, isFeatured: true }));
+                const featuredIds = new Set(alaune.map(p => p.id));
+
+                const featured = alaune.map(post => enrichWithImage(post, true));
                 featured.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setFeaturedPosts(featured);
 
-                const featuredIds = new Set((alaune || []).map(p => p.id));
-                const regular = (actualite || [])
+                const regular = actualite
                     .filter(post => !featuredIds.has(post.id))
-                    .map(post => ({ ...post, isFeatured: false }));
+                    .map(post => enrichWithImage(post, false));
                 regular.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setRegularPosts(regular);
             } catch (error) {
@@ -248,18 +256,13 @@ export default function PressPage() {
                     >
                         <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
                         À la une
-                        {!loadingFeatured && (
-                            <span className="text-sm font-normal text-gray-400 ml-2">
-                                ({filteredFeatured.length} article{filteredFeatured.length > 1 ? 's' : ''})
-                            </span>
-                        )}
                     </h2>
                     {loadingFeatured ? (
                         <div className="flex justify-center py-12">
                             <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
                         </div>
                     ) : paginatedFeatured.length === 0 ? (
-                        <p className="text-gray-400">Aucun article à la une correspondant à votre recherche.</p>
+                        <p className="text-gray-400">Aucun article à la une.</p>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedFeatured.map((post) => (
@@ -288,7 +291,7 @@ export default function PressPage() {
                             <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
                         </div>
                     ) : paginatedRegular.length === 0 ? (
-                        <p className="text-gray-400">Aucune actualité correspondant à votre recherche.</p>
+                        <p className="text-gray-400">Aucune actualité.</p>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedRegular.map((post) => (
