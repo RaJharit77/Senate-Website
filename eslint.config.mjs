@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import pkg from "./package.json" with { type: "json" };
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -8,13 +9,13 @@ const eslintConfig = defineConfig([
   {
     settings: {
       react: {
-        version: "19.2.7", // Version exacte présente dans votre package.json
+        version: pkg.dependencies?.react || "19.0.0",
       },
     },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
+    // Default ignores of eslint-config-next: are too broad and ignore too many files that should be linted.
     ".next/**",
     "out/**",
     "build/**",

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://senat.mg/wp-json/wp/v2';
+const BASE_URL = process.env.WP_API_URL || 'https://senat.mg/wp-json/wp/v2';
 
 // Récupérer les articles (actualités)
 export async function getPosts(perPage = 10) {

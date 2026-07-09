@@ -1,0 +1,16 @@
+{
+    "extends": "next/core-web-vitals",
+    "rules": {
+        "react/display-name": "off"
+    },
+    "overrides": [
+        {
+            "files": [
+                "app/**/*.tsx"
+            ],
+            "rules": {
+                "react/display-name": "off"
+            }
+        }
+    ]
+}

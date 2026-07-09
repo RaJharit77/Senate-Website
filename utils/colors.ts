@@ -9,4 +9,8 @@ export const NAV_BG = "#1e293b";
 export const GREENDARK = "#008000";
 export const EMERALD = "#5CE65C";
 export const GRAY = "#E0E0E0";
+// New colors
 export const MARINA = "#0f172a";
+export const REDS = "#cc1111";
+export const SKY_BLUE = "#5bc8de";
+export const GREENS = "#16a34a";

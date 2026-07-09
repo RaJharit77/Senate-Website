@@ -1,4 +1,7 @@
+import { CF7_CONTAINER_POST, CF7_FORM_ID, CF7_LOCALE, CF7_UNIT_TAG, CF7_VERSION } from "@/constants/constants";
 import type { WpCategory, WpPost } from "@/lib/types";
+import { ContactFormFields, ContactFormResult, WP_ROOT } from "@/types/contactType";
+import { PresidentActivity } from "@/types/internationalType";
 
 const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
 
@@ -89,7 +92,7 @@ async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolea
 export function getPosts(params: Params = {}) {
     return fetchAPI<WpPost[]>("/posts", { _embed: true, ...params });
 }
-
+// ---- Posts by category ----
 export function getPostsByCategory(categoryId: number, params: Params = {}) {
     return getPosts({ categories: categoryId, ...params });
 }
@@ -99,10 +102,12 @@ export function getActualite(params: Params = {}) {
     return fetchAPI<WpPost[]>("/actualite", { _embed: true, ...params });
 }
 
+// À la une
 export function getAlaune(params: Params = {}) {
     return fetchAPI<WpPost[]>("/alaune", { _embed: true, ...params });
 }
 
+// International
 export function getInternational(params: Params = {}) {
     return fetchAPI<WpPost[]>("/international", { _embed: true, ...params });
 }
@@ -121,6 +126,7 @@ export function getDelegations(params: Params = {}) {
     return fetchAPI<WpPost[]>("/delegation", { _embed: true, ...params });
 }
 
+// Historical
 export function getRepubliqueI(params: Params = {}) {
     return fetchAPI<WpPost[]>("/republiquei", { _embed: true, ...params });
 }
@@ -132,6 +138,9 @@ export function getRepubliqueIII(params: Params = {}) {
 }
 export function getRepubliqueIV(params: Params = {}) {
     return fetchAPI<WpPost[]>("/republiqueiv", { _embed: true, ...params });
+}
+export function getRepubliqueV(params: Params = {}){
+    return fetchAPI<WpPost[]>("/republiquev", {_embed: true, ...params});
 }
 
 // ----- Pages -----
@@ -162,6 +171,7 @@ export function getMedia(id: number) {
     return fetchAPI(`/media/${id}`, {}, true);
 }
 
+// Partners
 export async function getPartners() {
     try {
         const data = await fetchAPI<Array<{
@@ -183,6 +193,7 @@ export async function getPartners() {
     }
 }
 
+// Office
 export function getBureau() {
     return fetchAPI("/bureau", { _embed: true });
 }
@@ -193,34 +204,6 @@ export function getBureau() {
 // attend du multipart/form-data (pas de JSON en entrée). On le garde donc
 // séparé, mais toujours dans ce fichier "api" pour centraliser tous les
 // appels réseau côté WordPress.
-
-const WP_ROOT = (process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2").replace(
-    /\/wp-json\/wp\/v2\/?$/,
-    ""
-);
-
-// Identifiants imposés par le shortcode CF7 généré dans WordPress.
-// Ils sont stables pour un formulaire donné et n'ont pas besoin d'être
-// dynamiques côté client.
-const CF7_FORM_ID = 263;
-const CF7_VERSION = "5.9.5";
-const CF7_LOCALE = "fr_FR";
-const CF7_UNIT_TAG = "wpcf7-f263-p149-o1";
-const CF7_CONTAINER_POST = 149;
-
-export interface ContactFormFields {
-    name: string;
-    email: string;
-    subject: string;
-    message: string;
-}
-
-export interface ContactFormResult {
-    status: "mail_sent" | "validation_failed" | "spam" | "aborted" | "mail_failed" | string;
-    message: string;
-    invalidFields?: Record<string, string>;
-}
-
 export async function submitContactForm(
     fields: ContactFormFields
 ): Promise<ContactFormResult> {
@@ -342,27 +325,10 @@ export async function getAllRepubliques(params: Params = {}) {
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
+// International
 export async function getInternationalByType(type: string, params: Params = {}) {
     const items = await getInternational({ per_page: 50, _embed: true, ...params });
     return items.filter((item) => (item.acf as Record<string, unknown>)?.type === type);
-}
-
-// ----- Activités du Président : agrégation des 3 CPT -----
-// Sur senat.mg, "Activités du Président" agrège trois custom post types
-// distincts (et non un champ ACF "type" sur un seul CPT) :
-//   - "audience"     → Audiences
-//   - "delegation"   → Accueil des délégations parlementaires étrangères
-//   - "international"→ Déplacements à l'étranger
-// Chaque CPT est interrogé indépendamment et les échecs sont neutralisés
-// (Promise.allSettled) : si un endpoint n'existe pas encore côté WP
-// (ex. "delegation" n'a peut-être pas été créé), on retourne simplement un
-// tableau vide pour ce groupe plutôt que de casser toute la page.
-export type ActivityCategory = "audience" | "delegation" | "international";
-
-export interface PresidentActivity {
-    id: number;
-    category: ActivityCategory;
-    post: WpPost;
 }
 
 export async function getPresidentActivities(): Promise<PresidentActivity[]> {
@@ -470,10 +436,12 @@ export async function getPostBySlugNoCache(slug: string): Promise<WpPost | null>
     return null;
 }
 
+// Categories by parent
 export function getCategoriesByParent(parentId: number, params: Params = {}) {
     return fetchAPI<WpCategory[]>("/categories", { parent: parentId, ...params });
 }
 
+// Relevant Posts
 export async function getAllRelevantPosts() {
     const [ordreJourPosts, deliberationPosts, loisAdoptees] = await Promise.all([
         getPostsByCategory(11, { per_page: 100, _embed: true }).catch(() => []),
