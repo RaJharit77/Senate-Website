@@ -1,7 +1,6 @@
 import { getPageBySlug } from "@/lib/api";
-import { EMERALD, RED, WHITE } from "@/utils/colors";
+import { EMERALD, RED, WHITE, GREEN } from "@/utils/colors";
 import { DocCard, Divider } from "@/components/about/AboutStyles";
-import { GREEN } from "@/utils/colors";
 import Link from "next/link";
 
 export default async function MissionsPage() {
@@ -25,7 +24,7 @@ export default async function MissionsPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: "#ffffff", lineHeight: 1.2 }}>
+                    <h1 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: WHITE, lineHeight: 1.2 }}>
                         Missions et attributions
                     </h1>
                 </div>

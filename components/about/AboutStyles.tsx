@@ -1,4 +1,4 @@
-import { GREEN, INK, RED } from "@/utils/colors";
+import { EMERALD, INK, RED } from "@/utils/colors";
 import { type CSSProperties, type ReactNode } from "react";
 
 export const pStyle: CSSProperties = {
@@ -45,7 +45,7 @@ export function Bullet({ color }: { color: string }) {
 
 export function NamedItem({
     name,
-    color = GREEN,
+    color = EMERALD,
     children,
 }: {
     name: string;

@@ -23,7 +23,7 @@ export default async function PresidentMessagePage() {
                     </div>
                     <h1
                         className="text-white text-4xl font-bold"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         {page.title.rendered}
                     </h1>
@@ -50,7 +50,7 @@ export default async function PresidentMessagePage() {
                         <div className="md:w-2/3 p-6 md:p-8 flex flex-col justify-center">
                             <h2
                                 className="text-3xl font-bold text-white mb-1"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
+                                style={{ fontFamily: "'Poppins', sans-serif" }}
                             >
                                 {name}
                             </h2>
