@@ -4,11 +4,13 @@ import { TextesSection } from "@/components/about/TextesSection";
 import { getPageBySlug } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AboutPage() {
     const [missionPage, structuresPage, textesPage] = await Promise.all([
-        getPageBySlug("nature-et-missions-2"),
-        getPageBySlug("structures"),
-        getPageBySlug("textes-de-reference"),
+        getPageBySlug("nature-et-missions-2").catch(() => null),
+        getPageBySlug("structures").catch(() => null),
+        getPageBySlug("textes-de-reference").catch(() => null),
     ]);
 
     return (
