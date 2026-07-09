@@ -2,27 +2,29 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { ActivityCategory } from "@/lib/api";
 import { Calendar } from "lucide-react";
 
 export interface SimpleActivityItem {
     id: number;
+    slug: string;         
     title: string;
     date: string;
     dateValue: number;
     imageUrl: string;
-    link: string;
+    link: string;          
     category: ActivityCategory;
 }
 
 const PER_PAGE = 9;
 
 function ActivityCard({ item }: { item: SimpleActivityItem }) {
+    const href = `/international/inter-parliamentary-friendship-group/${item.slug}`;
+
     return (
-        <a
-            href={item.link}
-            target="_blank"
-            rel="noopener noreferrer"
+        <Link
+            href={href}
             className="group relative flex flex-col overflow-hidden rounded-2xl bg-transparent border border-gray-600 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
         >
             <div className="relative aspect-4/3 w-full overflow-hidden bg-transparent">
@@ -62,7 +64,7 @@ function ActivityCard({ item }: { item: SimpleActivityItem }) {
                     <span>{item.date}</span>
                 </div>
             </div>
-        </a>
+        </Link>
     );
 }
 

@@ -1,7 +1,6 @@
 import { getPostsByCategorySlug, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
-import { ActivitiesFeed } from "@/components/international/ActivitiesFeed";
-import type { ActivityItem } from "@/components/international/ActivitiesFeed";
+import { ActivitiesFeed, type ActivityItem } from "@/components/international/ActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
@@ -13,13 +12,11 @@ const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> 
 };
 
 export default async function SenatorsActivitiesPage() {
-    // Récupération des articles pour chaque catégorie
     const slugs = Object.keys(CATEGORY_MAP);
     const results = await Promise.allSettled(
         slugs.map((slug) => getPostsByCategorySlug(slug, { per_page: 100, _embed: true }))
     );
 
-    // Construction de la liste d'activités
     const items: ActivityItem[] = [];
 
     for (let i = 0; i < results.length; i++) {
@@ -29,7 +26,6 @@ export default async function SenatorsActivitiesPage() {
             const category = CATEGORY_MAP[slug];
             const posts = result.value as WpPost[];
 
-            // Résolution des images en parallèle pour chaque post
             const postsWithImages = await Promise.all(
                 posts.map(async (post) => ({
                     post,
@@ -40,6 +36,7 @@ export default async function SenatorsActivitiesPage() {
             for (const { post, imageUrl } of postsWithImages) {
                 items.push({
                     id: post.id,
+                    slug: post.slug,                
                     category,
                     title: post.title.rendered,
                     date: formatDate(post.date),
@@ -62,20 +59,13 @@ export default async function SenatorsActivitiesPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1
-                        className="text-4xl font-bold text-white"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
+                    <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Activités des Sénateurs
                     </h1>
-                    <p
-                        className="text-lg mt-2 max-w-2xl text-white/50"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
+                    <p className="text-lg mt-2 max-w-2xl text-white/50" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Audiences, accueil de délégations et déplacements à l&apos;étranger des Sénateurs.
                     </p>
                 </div>
-
                 <ActivitiesFeed items={items} />
             </div>
         </div>

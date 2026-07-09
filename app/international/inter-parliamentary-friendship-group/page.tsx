@@ -8,23 +8,30 @@ import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
 
 export default async function InterParliamentaryFriendshipGroupPage() {
-    let raw: WpPost[] = [];
-    try {
-        raw = (await getPostsByCategorySlug("groupe-amitie", {
-            per_page: 100,
-            _embed: true,
-            status: "publish",
-        })) as WpPost[];
-    } catch (err) {
-        console.error("[InterParliamentaryFriendshipGroupPage] Failed to load activities:", err);
-        raw = [];
+    const slugs = ["groupe-amitie", "groupe-interparlementaire-damitie"];
+    let allPosts: WpPost[] = [];
+
+    for (const slug of slugs) {
+        try {
+            const posts = (await getPostsByCategorySlug(slug, {
+                per_page: 100,
+                _embed: true,
+                status: "publish",
+            })) as WpPost[];
+            allPosts = allPosts.concat(posts);
+        } catch (err) {
+            console.error(`[InterParliamentaryFriendshipGroupPage] Failed to load posts for slug ${slug}:`, err);
+        }
     }
 
+    const uniquePosts = Array.from(new Map(allPosts.map(p => [p.id, p])).values());
+
     const items: SimpleActivityItem[] = await Promise.all(
-        raw.map(async (post) => {
+        uniquePosts.map(async (post) => {
             const imageUrl = await resolvePostImage(post, getMedia);
             return {
                 id: post.id,
+                slug: post.slug,              
                 title: post.title.rendered,
                 date: formatDate(post.date),
                 dateValue: new Date(post.date).getTime(),

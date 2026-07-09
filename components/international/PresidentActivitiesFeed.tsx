@@ -2,11 +2,13 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { ActivityCategory } from "@/lib/api";
 import { Calendar } from "lucide-react";
 
 export interface ActivityItem {
     id: number;
+    slug: string
     category: ActivityCategory;
     title: string;
     date: string;
@@ -43,10 +45,8 @@ const PER_PAGE = 6;
 
 function ActivityCard({ item }: { item: ActivityItem }) {
     return (
-        <a
-            href={item.link}
-            target="_blank"
-            rel="noopener noreferrer"
+        <Link
+            href={`/international/presidents-activities/${item.slug}`}
             className="group relative flex flex-col overflow-hidden rounded-2xl bg-transparent border border-gray-600 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
         >
             <div className="relative aspect-4/3 w-full overflow-hidden bg-transparent">
@@ -86,7 +86,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
                     <span>{item.date}</span>
                 </div>
             </div>
-        </a>
+        </Link>
     );
 }
 

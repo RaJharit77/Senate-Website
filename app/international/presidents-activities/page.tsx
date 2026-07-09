@@ -5,18 +5,14 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 
 export default async function PresidentsActivitiesPage() {
-    let activities: Awaited<ReturnType<typeof getPresidentActivities>> = [];
-    try {
-        activities = await getPresidentActivities();
-    } catch (err) {
-        console.error("[PresidentsActivitiesPage] Failed to load activities:", err);
-    }
+    let activities = await getPresidentActivities().catch(() => []);
 
     const items: ActivityItem[] = await Promise.all(
         activities.map(async ({ id, category, post }) => {
             const imageUrl = await resolvePostImage(post, getMedia);
             return {
                 id,
+                slug: post.slug,                     
                 category,
                 title: post.title?.rendered || "Sans titre",
                 date: formatDate(post.date),
@@ -36,21 +32,13 @@ export default async function PresidentsActivitiesPage() {
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1
-                        className="text-4xl font-bold text-white"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
+                    <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         Activités du Président
                     </h1>
-                    <p
-                        className="text-lg mt-2 max-w-2xl text-white/50"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
-                        Audiences, accueil de délégations parlementaires étrangères et déplacements à
-                        l&apos;étranger du Président du Sénat.
+                    <p className="text-lg mt-2 max-w-2xl text-white/50" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                        Audiences, accueil de délégations parlementaires étrangères et déplacements à l&apos;étranger du Président du Sénat.
                     </p>
                 </div>
-
                 <PresidentActivitiesFeed items={items} />
             </div>
         </div>
