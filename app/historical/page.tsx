@@ -15,7 +15,7 @@ import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
 import { RED, WHITE, EMERALD, CYAN } from "@/utils/colors";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 import type { TabConfig } from "@/components/history/HistoryTabs";
-import { TabId } from "@/types/TabId";
+import { TabId } from "@/types/tabId";
 
 const TABS: TabConfig[] = [
     {
@@ -140,7 +140,7 @@ export default function HistoryPage() {
                     <div className="absolute inset-0 opacity-20">
                         <Image
                             src={HERO_IMAGE}
-                            alt=""
+                            alt="Senate Structures"
                             fill
                             className="object-cover"
                             sizes="100vw"

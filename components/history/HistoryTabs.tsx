@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface TabConfig {
@@ -57,11 +57,7 @@ function addSenatorLinks(html: string): string {
 
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const [activeTab, setActiveTab] = useState(tabs[0]?.id ?? "");
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const mounted = typeof document !== "undefined";
 
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];
     const rawContent = contents[activeTab] ?? "";
@@ -69,7 +65,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
     // On applique la fonction des liens uniquement côté client une fois monté
     const activeContent = mounted ? addSenatorLinks(rawContent) : rawContent;
 
-    // ── CONFIGURATION TAILWIND CORRIGÉE AVEC ESPACEMENT ──
+    // ── CONFIGURATION TAILWIND AVEC ESPACEMENT ──
     const tailwindWPStyles = `
         text-gray-300 font-poppins leading-relaxed w-full
 

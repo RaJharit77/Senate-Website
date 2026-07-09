@@ -6,8 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
 import type { WpPost } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
-
-const CAT_ORDRE_JOUR = 11;
+import { CAT_ORDRE_JOUR } from "@/constants/constants";
 
 export default async function AgendaArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

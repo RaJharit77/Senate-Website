@@ -18,8 +18,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-
-const ITEMS_PER_PAGE = 6;
+import { ITEMS_PER_PAGE } from "@/constants/constants";
 
 export function AgendaClient({ items, pageTitle }: { items: WpPost[]; pageTitle: string }) {
     const [searchTerm, setSearchTerm] = useState("");

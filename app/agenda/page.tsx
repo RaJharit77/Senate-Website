@@ -1,8 +1,7 @@
 import { AgendaClient } from "@/components/agenda/AgendaClient";
+import { CAT_ORDRE_JOUR } from "@/constants/constants";
 import { getPostsByCategory, getPageBySlug } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
-
-const CAT_ORDRE_JOUR = 11;
 
 export default async function AgendaPage() {
     const page = await getPageBySlug("ordre-du-jour").catch(() => null);
