@@ -7,10 +7,7 @@ import { FloatingSocialBar } from '@/components/navigation/common/FloatingSocial
 import Chatbot from '@/components/chatbot/Chatbot';
 import { cn } from "@/lib/utils";
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
+const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
 
 const inter = Inter({ subsets: ['latin'] });
 
