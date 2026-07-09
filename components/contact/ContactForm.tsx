@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { submitContactForm, type ContactFormResult } from "@/lib/api";
+import { submitContactForm } from "@/lib/api";
+import { ContactFormResult } from "@/types/contactType";
 
 interface FormState {
     name: string;
