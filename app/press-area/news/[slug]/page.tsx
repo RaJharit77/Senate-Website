@@ -44,7 +44,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </div>
                     <h1
                         className="text-white text-3xl md:text-4xl font-bold"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         {post.title.rendered}
                     </h1>

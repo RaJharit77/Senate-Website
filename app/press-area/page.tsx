@@ -9,6 +9,7 @@ import Image from "next/image";
 import { Calendar, Search, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { extractFirstImageFromContent } from "@/lib/extractImage";
+import { MdArrowRightAlt } from "react-icons/md";
 
 interface ExtendedPost extends WpPost {
     isFeatured: boolean;
@@ -69,7 +70,7 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
                     href={`/press-area/news/${post.slug}`}
                     className="inline-block mt-4 text-cyan-300 hover:text-cyan-200 text-sm font-medium transition self-start"
                 >
-                    Lire la suite →
+                    Lire la suite <MdArrowRightAlt />
                 </Link>
             </div>
         </motion.div>
@@ -236,7 +237,7 @@ export default function PressPage() {
                         placeholder="Rechercher dans toutes les actualités..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition"
+                        className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition"
                         style={{ fontFamily: "'Poppins', sans-serif" }}
                     />
                     <button
