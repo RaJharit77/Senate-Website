@@ -269,7 +269,7 @@ export function Header() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4" ref={searchContainerRef}>j
+          <div className="flex items-center gap-4" ref={searchContainerRef}>
             {/* Barre de recherche desktop */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
