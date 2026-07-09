@@ -54,7 +54,7 @@ export default async function DeliberationArticlePage({
                     </Button>
                     <h1
                         className="text-white text-4xl md:text-5xl font-bold tracking-tight"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         {cleanTitle}
                     </h1>

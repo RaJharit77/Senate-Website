@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
 
@@ -10,26 +10,24 @@ interface DeliberationTableProps {
 }
 
 export function DeliberationTable({ tableHtml, showPagination = true }: DeliberationTableProps) {
-    const [rows, setRows] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [showAll, setShowAll] = useState(false);
     const rowsPerPage = 6;
 
-    useEffect(() => {
-        if (typeof window === "undefined") return;
+    const rows = useMemo(() => {
+        if (typeof window === "undefined") return [];
         const parser = new DOMParser();
         const doc = parser.parseFromString(tableHtml, "text/html");
         const table = doc.querySelector("table");
         if (!table) {
-            setRows([]);
-            return;
+            return [];
         }
         const tbody = table.querySelector("tbody");
         const allRows = tbody
             ? tbody.querySelectorAll("tr")
             : table.querySelectorAll("tr:not(:first-child)");
         const rowStrings = Array.from(allRows).map((tr) => tr.outerHTML);
-        setRows(rowStrings);
+        return rowStrings;
     }, [tableHtml]);
 
     const totalRows = rows.length;

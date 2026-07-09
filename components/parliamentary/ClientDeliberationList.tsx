@@ -7,20 +7,14 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { DeliberationTable } from "./DeliberationTable";
-
-function cleanText(text: string): string {
-  if (!text) return "";
-  return text
-    .replace(/&rsquo;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#8211;/g, "–")
-    .replace(/&#8217;/g, "'");
-}
+import { cleanText } from "@/utils/utility";
 
 interface ClientDeliberationListProps {
-  posts: any[];
+  posts: Array<{
+    title: { rendered: string };
+    content: { rendered: string };
+    slug: string;
+  }>;
   initialIndex?: number;
   useRouterNavigation?: boolean;
 }

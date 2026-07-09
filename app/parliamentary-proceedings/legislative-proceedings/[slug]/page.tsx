@@ -7,11 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DeliberationTable } from "@/components/parliamentary/DeliberationTable";
 import { cleanText } from "@/utils/utility";
+import { CAT_DELIBERATION, CAT_ORDRE_JOUR } from "@/constants/constants";
 
 export const dynamic = "force-dynamic";
-
-const CAT_ORDRE_JOUR = 11;
-const CAT_DELIBERATION = 53;
 
 async function getPostBySlug(slug: string) {
     const posts = await getPosts({ slug, _embed: true });
@@ -88,7 +86,7 @@ export default async function DeliberationArticlePage({
                     </Button>
                     <h1
                         className="text-white text-4xl md:text-5xl font-bold tracking-tight"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         {cleanTitle}
                     </h1>
@@ -136,7 +134,7 @@ export default async function DeliberationArticlePage({
                                 variant="outline"
                                 size="sm"
                                 asChild
-                                className="border-white/20 text-cyan-300/90 hover:text-cyan-400/90 hover:bg-white/10"
+                                className="border-white/20 bg-transparent text-cyan-300/90 hover:text-cyan-400/90 hover:bg-white/10"
                             >
                                 <Link
                                     href={`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${nextPost.slug}`}
