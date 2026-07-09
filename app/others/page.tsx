@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { getPostsByCategory } from "@/lib/api";
+import { getPosts } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { Calendar, Search, Download, PlayCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { WpPost } from "@/lib/types";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -21,39 +20,10 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-
-type CategoryType = "tous" | "video" | "divers" | "autre" | "publication";
-
-// Nettoyage des entités HTML
-const cleanText = (text: string): string => {
-    if (!text) return "";
-    return text
-        .replace(/&rsquo;/g, "'")
-        .replace(/&quot;/g, '"')
-        .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&")
-        .replace(/&#8211;/g, "–")
-        .replace(/&#8217;/g, "'")
-        .replace(/&#8220;/g, '"')
-        .replace(/&#8221;/g, '"')
-        .replace(/&amp;#8211;/g, "–")
-        .replace(/&amp;#8217;/g, "'");
-};
-
-// Extraction de la vignette YouTube depuis le contenu HTML
-const getYouTubeThumbnail = (html: string): string | null => {
-    if (!html) return null;
-    // YouTube embed (iframe)
-    const match = html.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
-    // YouTube watch URL
-    const match2 = html.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
-    if (match2) return `https://img.youtube.com/vi/${match2[1]}/hqdefault.jpg`;
-    // youtu.be
-    const match3 = html.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-    if (match3) return `https://img.youtube.com/vi/${match3[1]}/hqdefault.jpg`;
-    return null;
-};
+import { CategoryType } from "@/types/categoryType";
+import { cleanText, getYouTubeThumbnail } from "@/utils/utility";
+import { MdArrowRightAlt } from "react-icons/md";
+import { CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION, CAT_VIDEO } from "@/constants/constants";
 
 export default function OtherPage() {
     const [allPosts, setAllPosts] = useState<WpPost[]>([]);
@@ -67,15 +37,11 @@ export default function OtherPage() {
         const loadData = async () => {
             setLoading(true);
             try {
-                const [videos, divers, autres, publications] = await Promise.all([
-                    getPostsByCategory(32, { per_page: 100 }),
-                    getPostsByCategory(33, { per_page: 100 }),
-                    getPostsByCategory(31, { per_page: 100 }),
-                    getPostsByCategory(34, { per_page: 100 }),
-                ]);
-
+                // Récupère tous les posts (limité à 100 pour performance)
+                const posts = await getPosts({ per_page: 100, _embed: true });
+                // Déduplication par ID (au cas où)
                 const postsMap = new Map<number, WpPost>();
-                [...videos, ...divers, ...autres, ...publications].forEach((post) => {
+                posts.forEach((post) => {
                     if (!postsMap.has(post.id)) {
                         postsMap.set(post.id, post);
                     }
@@ -97,10 +63,10 @@ export default function OtherPage() {
         if (filter === "tous") return allPosts;
         const categoryIdMap: Record<CategoryType, number> = {
             tous: 0,
-            video: 32,
-            divers: 33,
-            autre: 31,
-            publication: 34,
+            video: CAT_VIDEO,
+            divers: CAT_DIVERS,
+            autres: CAT_AUTRE,
+            publication: CAT_PUBLICATION,
         };
         const targetId = categoryIdMap[filter];
         return allPosts.filter((post) => post.categories?.includes(targetId));
@@ -118,14 +84,12 @@ export default function OtherPage() {
     }, [filteredByCategory, searchTerm]);
 
     const totalPages = Math.ceil(filteredBySearch.length / perPage);
-    const paginatedPosts = filteredBySearch.slice(
-        (currentPage - 1) * perPage,
-        currentPage * perPage
-    );
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filter, searchTerm]);
+    const paginatedPosts = useMemo(() => {
+        return filteredBySearch.slice(
+            (currentPage - 1) * perPage,
+            currentPage * perPage
+        );
+    }, [filteredBySearch, currentPage, perPage]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -155,7 +119,7 @@ export default function OtherPage() {
 
                 <div className="flex flex-wrap items-center gap-4 mb-8">
                     <div className="flex gap-2">
-                        {(["tous", "video", "divers", "autre", "publication"] as const).map((cat) => (
+                        {(["tous", "video", "divers", "autres", "publication"] as const).map((cat) => (
                             <Button
                                 key={cat}
                                 variant={filter === cat ? "default" : "outline"}
@@ -167,7 +131,7 @@ export default function OtherPage() {
                                         : "bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:text-white"
                                 }
                             >
-                                {cat === "tous" ? "Tous" : cat === "video" ? "Vidéos" : cat === "divers" ? "Divers" : cat === "autre" ? "Autres" : "Publications"}
+                                {cat === "tous" ? "Tous" : cat === "video" ? "Vidéos" : cat === "divers" ? "Divers" : cat === "autres" ? "Autres" : "Publications"}
                             </Button>
                         ))}
                     </div>
@@ -177,7 +141,7 @@ export default function OtherPage() {
                             placeholder="Rechercher..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-56 bg-white/5 border-white/10 text-white placeholder-cyan-400 focus:ring-cyan-400/50"
+                            className="w-56 bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus:ring-cyan-400/50"
                         />
                         <Button type="submit" variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                             <Search className="w-4 h-4 mr-2" />
@@ -205,7 +169,6 @@ export default function OtherPage() {
                     <>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedPosts.map((post) => {
-                                // Récupérer l’image à la une, sinon la vignette YouTube
                                 const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
                                 const youtubeThumb = getYouTubeThumbnail(post.content.rendered);
                                 const imageUrl = featuredImage || youtubeThumb || null;
@@ -217,15 +180,12 @@ export default function OtherPage() {
                                 });
                                 const cleanTitle = cleanText(post.title.rendered);
 
-                                const category = post.categories?.includes(32)
-                                    ? "Vidéo"
-                                    : post.categories?.includes(33)
-                                        ? "Divers"
-                                        : post.categories?.includes(34)
-                                            ? "Publication"
-                                            : "Autre";
+                                let category = "Autre";
+                                if (post.categories?.includes(CAT_VIDEO)) category = "Vidéo";
+                                else if (post.categories?.includes(CAT_DIVERS)) category = "Divers";
+                                else if (post.categories?.includes(CAT_PUBLICATION)) category = "Publication";
 
-                                const downloadLink = (post.acf as any)?.file || (post.acf as any)?.download_link || null;
+                                const downloadLink = (post.acf as Record<string, unknown>)?.file || (post.acf as Record<string, unknown>)?.download_link || null;
                                 const isVideo = category === "Vidéo";
 
                                 return (
@@ -241,6 +201,7 @@ export default function OtherPage() {
                                                     fill
                                                     className="object-cover"
                                                     sizes="(max-width: 768px) 100vw, 50vw"
+                                                    loading="eager"
                                                 />
                                                 {isVideo && (
                                                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
@@ -277,10 +238,10 @@ export default function OtherPage() {
                                                     href={`/others/${post.slug}`}
                                                     className="inline-block text-cyan-300 hover:text-cyan-200 text-sm font-medium transition"
                                                 >
-                                                    Lire la suite →
+                                                    Lire la suite <MdArrowRightAlt />
                                                 </Link>
                                                 {downloadLink && (
-                                                    <a
+                                                    <Link
                                                         href={downloadLink}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
@@ -288,7 +249,7 @@ export default function OtherPage() {
                                                     >
                                                         <Download className="w-4 h-4" />
                                                         Télécharger
-                                                    </a>
+                                                    </Link>
                                                 )}
                                             </div>
                                         </CardContent>

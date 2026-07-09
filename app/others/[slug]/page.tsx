@@ -3,28 +3,12 @@ import Image from "next/image";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
 import { getPosts } from "@/lib/api";
+import { cleanText } from "@/utils/utility";
 
 export const dynamic = 'force-dynamic';
-
-const cleanText = (text: string): string => {
-    if (!text) return "";
-    return text
-        .replace(/&rsquo;/g, "'")
-        .replace(/&quot;/g, '"')
-        .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&")
-        .replace(/&#8211;/g, "–")
-        .replace(/&#8217;/g, "'")
-        .replace(/&#8220;/g, '"')
-        .replace(/&#8221;/g, '"')
-        .replace(/&amp;#8211;/g, "–")
-        .replace(/&amp;#8217;/g, "'");
-};
 
 async function getPostBySlug(slug: string) {
     const posts = await getPosts({ slug, _embed: true });
@@ -46,7 +30,6 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
         year: "numeric",
     });
 
-    // Nettoyage complet du titre avec la fonction cleanText
     const cleanTitle = cleanText(post.title.rendered);
 
     return (
