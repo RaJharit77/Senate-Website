@@ -4,6 +4,7 @@ import { formatDate } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
+import Image from "next/image";
 
 export default async function FriendshipGroupArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -35,7 +36,7 @@ export default async function FriendshipGroupArticlePage({ params }: { params: P
                     </div>
                     <h1
                         className="text-white text-3xl md:text-4xl font-bold"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         {post.title.rendered}
                     </h1>
@@ -47,10 +48,11 @@ export default async function FriendshipGroupArticlePage({ params }: { params: P
 
                 {imageUrl && (
                     <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl">
-                        <img
+                        <Image
                             src={imageUrl}
                             alt={post.title.rendered}
                             className="w-full h-full object-cover"
+                            fill
                         />
                     </div>
                 )}

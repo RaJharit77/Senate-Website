@@ -36,7 +36,7 @@ export default async function SenatorsActivitiesPage() {
             for (const { post, imageUrl } of postsWithImages) {
                 items.push({
                     id: post.id,
-                    slug: post.slug,                
+                    slug: post.slug,
                     category,
                     title: post.title.rendered,
                     date: formatDate(post.date),

@@ -3,21 +3,20 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { ActivityCategory } from "@/lib/api";
 import { Calendar } from "lucide-react";
+import { PER_PAGE } from "@/constants/constants";
+import type { ActivityCategory } from "@/types/internationalType";
 
 export interface SimpleActivityItem {
     id: number;
-    slug: string;         
+    slug: string;
     title: string;
     date: string;
     dateValue: number;
     imageUrl: string;
-    link: string;          
+    link: string;
     category: ActivityCategory;
 }
-
-const PER_PAGE = 9;
 
 function ActivityCard({ item }: { item: SimpleActivityItem }) {
     const href = `/international/inter-parliamentary-friendship-group/${item.slug}`;

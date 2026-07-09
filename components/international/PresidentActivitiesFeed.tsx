@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { ActivityCategory } from "@/lib/api";
 import { Calendar } from "lucide-react";
+import type { ActivityCategory } from "@/types/internationalType";
 
 export interface ActivityItem {
     id: number;

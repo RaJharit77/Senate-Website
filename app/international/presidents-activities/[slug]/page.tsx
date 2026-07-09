@@ -3,12 +3,12 @@ import { getAudiences, getDelegations, getInternational } from "@/lib/api";
 import { formatDate } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Calendar } from "lucide-react";
 
 export default async function PresidentActivityDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    // Essayer chaque CPT
     const fetchers = [getAudiences, getDelegations, getInternational];
     let post = null;
     for (const fetcher of fetchers) {
@@ -47,7 +47,7 @@ export default async function PresidentActivityDetailPage({ params }: { params: 
                     </div>
                     <h1
                         className="text-white text-3xl md:text-4xl font-bold"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                         {post.title.rendered}
                     </h1>
@@ -59,10 +59,11 @@ export default async function PresidentActivityDetailPage({ params }: { params: 
 
                 {imageUrl && (
                     <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl">
-                        <img
+                        <Image
                             src={imageUrl}
                             alt={post.title.rendered}
                             className="w-full h-full object-cover"
+                            fill
                         />
                     </div>
                 )}

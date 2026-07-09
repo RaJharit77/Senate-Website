@@ -5,7 +5,7 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 
 export default async function PresidentsActivitiesPage() {
-    let activities = await getPresidentActivities().catch(() => []);
+    const activities = await getPresidentActivities().catch(() => []);
 
     const items: ActivityItem[] = await Promise.all(
         activities.map(async ({ id, category, post }) => {

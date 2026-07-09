@@ -2,10 +2,10 @@ import { getPostsByCategorySlug, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
 import type { SimpleActivityItem } from "@/components/international/SimpleActivityGrid";
-import type { ActivityCategory } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
+import type { ActivityCategory } from "@/types/internationalType";
 
 export default async function InterParliamentaryFriendshipGroupPage() {
     const slugs = ["groupe-amitie", "groupe-interparlementaire-damitie"];
@@ -31,7 +31,7 @@ export default async function InterParliamentaryFriendshipGroupPage() {
             const imageUrl = await resolvePostImage(post, getMedia);
             return {
                 id: post.id,
-                slug: post.slug,              
+                slug: post.slug,
                 title: post.title.rendered,
                 date: formatDate(post.date),
                 dateValue: new Date(post.date).getTime(),
