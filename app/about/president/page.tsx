@@ -4,8 +4,10 @@ import Image from "next/image";
 import { RED, WHITE, EMERALD } from "@/utils/colors";
 import { presidentMeta } from "@/utils/data/president";
 
+export const dynamic = 'force-dynamic';
+
 export default async function PresidentMessagePage() {
-    const page = await getPageBySlug("le-mot-du-president");
+    const page = await getPageBySlug("le-mot-du-president").catch(() => null);
     if (!page) {
         notFound();
     }

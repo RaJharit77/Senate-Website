@@ -3,8 +3,10 @@ import { EMERALD, RED, WHITE, GREEN } from "@/utils/colors";
 import { DocCard, Divider } from "@/components/about/AboutStyles";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default async function MissionsPage() {
-    const page = await getPageBySlug("nature-et-missions-2");
+    const page = await getPageBySlug("nature-et-missions-2").catch(() => null);
     if (!page) return <div className="text-white">Page non trouvée</div>;
 
     return (

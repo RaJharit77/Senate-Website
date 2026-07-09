@@ -4,8 +4,10 @@ import { DocCard, Divider } from "@/components/about/AboutStyles";
 import { GREEN } from "@/utils/colors";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default async function StructuresPage() {
-    const page = await getPageBySlug("structures");
+    const page = await getPageBySlug("structures").catch(() => null);
     if (!page) return <div className="text-white">Page non trouvée</div>;
 
     return (

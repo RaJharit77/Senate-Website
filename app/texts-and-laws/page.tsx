@@ -5,6 +5,8 @@ import type { WpPost } from "@/lib/types";
 import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 
+export const dynamic = 'force-dynamic';
+
 export default async function TextAndLawsPage() {
     const posts = (await getPostsByCategorySlug("textes-et-lois", {
         per_page: 50,
