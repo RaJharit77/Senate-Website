@@ -26,8 +26,8 @@ export default function NotFoundPage() {
                 </Button>
                 <div className="mt-6 flex gap-1 justify-center" style={{ height: 3 }}>
                     <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                    <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                    <div className="w-4 rounded-full" style={{ backgroundColor: EMERALD }} />
+                    <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                    <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                 </div>
             </div>
         </div>

@@ -139,8 +139,61 @@ export function getRepubliqueIII(params: Params = {}) {
 export function getRepubliqueIV(params: Params = {}) {
     return fetchAPI<WpPost[]>("/republiqueiv", { _embed: true, ...params });
 }
-export function getRepubliqueV(params: Params = {}){
-    return fetchAPI<WpPost[]>("/republiquev", {_embed: true, ...params});
+/*export function getRepubliqueV(params: Params = {}) {
+    return fetchAPI<WpPost[]>("/republiquev", { _embed: true, ...params });
+}**/
+
+// ----- Républiques (textes constitutionnels) -----
+// Agrège les 4 post-types "republiquei" à "republiqueiv" en une seule liste,
+// triée du plus récent au plus ancien. Utile pour la page "Textes et Lois"
+// qui doit présenter l'historique constitutionnel.
+export async function getAllRepubliques(params: Params = {}) {
+    const results = await Promise.allSettled([
+        getRepubliqueI(params),
+        getRepubliqueII(params),
+        getRepubliqueIII(params),
+        getRepubliqueIV(params),
+        /*getRepubliqueV(params),*/
+    ]);
+
+    results.forEach((r, i) => {
+        if (r.status === "rejected") {
+            console.error(`[getAllRepubliques] republique${i + 1} failed:`, r.reason);
+        }
+    });
+
+    return results
+        .filter((r): r is PromiseFulfilledResult<WpPost[]> => r.status === "fulfilled")
+        .flatMap((r) => r.value)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+/**
+ * Récupère un sénateur par son slug en priorité dans les pages WordPress,
+ * puis dans les 4 CPT "republique*" si non trouvé.
+ */
+export async function getSenatorBySlug(slug: string): Promise<WpPost | null> {
+    const page = await getPageBySlug(slug).catch(() => null);
+    if (page) return page;
+
+    const fetchers = [
+        getRepubliqueI,
+        getRepubliqueII,
+        getRepubliqueIII,
+        getRepubliqueIV,
+        /*getRepubliqueV,*/
+    ];
+    for (const fetcher of fetchers) {
+        try {
+            const results = await fetcher({ slug, _embed: true });
+            if (results && results.length > 0) {
+                return results[0];
+            }
+        } catch {
+            // ignore
+        }
+    }
+    return null;
 }
 
 // ----- Pages -----
@@ -299,30 +352,6 @@ export async function getInternationalByCategorySlug(slug: string, params: Param
         _embed: true,
         ...params,
     });
-}
-
-// ----- Républiques (textes constitutionnels) -----
-// Agrège les 4 post-types "republiquei" à "republiqueiv" en une seule liste,
-// triée du plus récent au plus ancien. Utile pour la page "Textes et Lois"
-// qui doit présenter l'historique constitutionnel.
-export async function getAllRepubliques(params: Params = {}) {
-    const results = await Promise.allSettled([
-        getRepubliqueI(params),
-        getRepubliqueII(params),
-        getRepubliqueIII(params),
-        getRepubliqueIV(params),
-    ]);
-
-    results.forEach((r, i) => {
-        if (r.status === "rejected") {
-            console.error(`[getAllRepubliques] republique${i + 1} failed:`, r.reason);
-        }
-    });
-
-    return results
-        .filter((r): r is PromiseFulfilledResult<WpPost[]> => r.status === "fulfilled")
-        .flatMap((r) => r.value)
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 // International

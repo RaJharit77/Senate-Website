@@ -30,26 +30,43 @@ function generateSlug(name: string): string {
 }
 
 /**
- * Ajoute des liens vers les profils pour les noms de sénateurs contenus dans les colonnes
- * qui ont une image avec la classe .rounded-circle.
+ * Ajoute des liens vers les profils des sénateurs (vers /historical/[slug])
+ * et supprime les doublons de noms.
  */
 function addSenatorLinks(html: string): string {
-    // Sécurité pour éviter les erreurs côté serveur (SSR) dans Next.js
     if (!html || typeof document === "undefined") return html;
 
     const container = document.createElement("div");
     container.innerHTML = html;
 
     const columns = container.querySelectorAll('[class*="col-"]:has(.rounded-circle)');
+    const seenNames = new Set<string>();
+
     columns.forEach((col) => {
-        // On cherche le nom du sénateur : généralement un h3 ou h4
         const titleEl = col.querySelector("h3, h4");
-        if (titleEl && titleEl.textContent) {
-            const name = titleEl.textContent.trim();
-            const slug = generateSlug(name);
-            // On enveloppe le nom dans un lien
-            titleEl.innerHTML = `<a href="/${slug}" class="hover:text-cyan-300 transition-colors cursor-pointer">${name}</a>`;
+        if (!titleEl) return;
+
+        // Vérifier s'il y a déjà un lien
+        const existingLink = titleEl.querySelector("a");
+        if (existingLink) {
+            // Si un lien existe, on garde le lien original (il pointe vers le bon slug)
+            // mais on peut ajouter la classe pour le style si besoin
+            existingLink.className = "hover:text-cyan-300 transition-colors cursor-pointer";
+            return;
         }
+
+        const name = titleEl.textContent?.trim() || "";
+        if (!name) return;
+
+        if (seenNames.has(name)) {
+            col.remove();
+            return;
+        }
+        seenNames.add(name);
+
+        // Générer le slug à partir du nom (fallback si pas de lien)
+        const slug = generateSlug(name);
+        titleEl.innerHTML = `<a href="/historical/${slug}" class="hover:text-cyan-300 transition-colors cursor-pointer">${name}</a>`;
     });
 
     return container.innerHTML;

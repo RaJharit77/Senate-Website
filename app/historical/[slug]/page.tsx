@@ -4,26 +4,23 @@ import Link from "next/link";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getPageBySlug } from "@/lib/api";
+import { getSenatorBySlug } from "@/lib/api";
+import { formatDate } from "@/utils/utility";
 
 export const dynamic = 'force-dynamic';
 
 export default async function SenatorProfilePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    const page = await getPageBySlug(slug);
+    const post = await getSenatorBySlug(slug);
 
-    if (!page) {
+    if (!post) {
         notFound();
     }
 
-    const date = new Date(page.date).toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
+    const date = formatDate(post.date);
 
-    const cleanTitle = page.title.rendered
+    const cleanTitle = post.title.rendered
         .replace(/&rsquo;/g, "'")
         .replace(/&quot;/g, '"')
         .replace(/&nbsp;/g, " ")
@@ -78,7 +75,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
                                 [&_ol]:list-decimal [&_ol]:pl-6
                                 [&_li]:text-gray-300 [&_li]:mb-1"
                             style={{ fontFamily: "'Poppins', sans-serif" }}
-                            dangerouslySetInnerHTML={{ __html: page.content.rendered }}
+                            dangerouslySetInnerHTML={{ __html: post.content.rendered }}
                         />
                     </CardContent>
                 </Card>
