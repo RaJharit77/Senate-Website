@@ -48,7 +48,7 @@ function addSenatorLinks(html: string): string {
             const name = titleEl.textContent.trim();
             const slug = generateSlug(name);
             // On enveloppe le nom dans un lien
-            titleEl.innerHTML = `<a href="/senateur/${slug}" class="hover:text-cyan-300 transition-colors cursor-pointer">${name}</a>`;
+            titleEl.innerHTML = `<a href="/${slug}" class="hover:text-cyan-300 transition-colors cursor-pointer">${name}</a>`;
         }
     });
 
