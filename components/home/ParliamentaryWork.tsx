@@ -24,6 +24,7 @@ interface WorkItem {
   status: string;
   date: string;
   statusColor: string;
+  link: string;
 }
 
 interface TabData {
@@ -118,6 +119,7 @@ export function ParliamentaryWork() {
               date: formatDate(item.date),
               statusColor:
                 getAcfString(item, "statut", "") === "Terminé" ? RED : SKY_BLUE,
+              link: `/agenda/${item.slug}`,
             })),
           },
           {
@@ -133,6 +135,7 @@ export function ParliamentaryWork() {
               date: formatDate(item.date),
               statusColor:
                 getAcfString(item, "statut", "") === "Adopté" ? RED : GREEN,
+              link: `/parliamentary-proceedings/legislative-proceedings/${item.slug}`,
             })),
           },
           {
@@ -148,6 +151,7 @@ export function ParliamentaryWork() {
               date: formatDate(item.date),
               statusColor:
                 getAcfString(item, "statut", "") === "Terminé" ? RED : GREEN,
+              link: `/international/${item.slug}`,
             })),
           },
         ];
@@ -327,74 +331,75 @@ export function ParliamentaryWork() {
                 className="flex flex-col gap-3"
               >
                 {active.items.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className="group flex gap-4 rounded-xl border p-5 cursor-pointer transition-all hover:shadow-md backdrop-blur-sm bg-white/5"
-                    style={{
-                      borderColor: `rgba(255,255,255,0.1)`,
-                    }}
-                    whileHover={{
-                      borderColor: `${active.color}88`,
-                      backgroundColor: `${active.color}15`,
-                      scale: 1.01,
-                    }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div
-                      className="shrink-0 w-1 rounded-full self-stretch"
-                      style={{ backgroundColor: active.color }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 flex-wrap mb-2">
+                  <Link key={i} href={item.link} passHref>
+                    <motion.div
+                      className="group flex gap-4 rounded-xl border p-5 transition-all hover:shadow-md backdrop-blur-sm bg-white/5"
+                      style={{
+                        borderColor: `rgba(255,255,255,0.1)`,
+                      }}
+                      whileHover={{
+                        borderColor: `${active.color}88`,
+                        backgroundColor: `${active.color}15`,
+                        scale: 1.01,
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div
+                        className="shrink-0 w-1 rounded-full self-stretch"
+                        style={{ backgroundColor: active.color }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap mb-2">
+                          <span
+                            style={{
+                              fontFamily: "'Poppins', sans-serif",
+                              fontSize: "0.65rem",
+                              fontWeight: 700,
+                              letterSpacing: "0.08em",
+                              textTransform: "uppercase",
+                              color: active.color,
+                            }}
+                          >
+                            {item.ref}
+                          </span>
+                          <span
+                            className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold"
+                            style={{
+                              backgroundColor: item.statusColor,
+                            }}
+                          >
+                            {item.status}
+                          </span>
+                        </div>
+                        <h4
+                          style={{
+                            fontFamily: "'Poppins', sans-serif",
+                            fontSize: "0.95rem",
+                            fontWeight: 600,
+                            color: "#ffffff",
+                            lineHeight: 1.4,
+                            marginBottom: 6,
+                          }}
+                        >
+                          {item.title}
+                        </h4>
                         <span
                           style={{
                             fontFamily: "'Poppins', sans-serif",
-                            fontSize: "0.65rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.08em",
-                            textTransform: "uppercase",
-                            color: active.color,
+                            fontSize: "0.7rem",
+                            color: "rgba(255,255,255,0.5)",
                           }}
                         >
-                          {item.ref}
-                        </span>
-                        <span
-                          className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold"
-                          style={{
-                            backgroundColor: item.statusColor,
-                          }}
-                        >
-                          {item.status}
+                          {item.date}
                         </span>
                       </div>
-                      <h4
-                        style={{
-                          fontFamily: "'Poppins', sans-serif",
-                          fontSize: "0.95rem",
-                          fontWeight: 600,
-                          color: "#ffffff",
-                          lineHeight: 1.4,
-                          marginBottom: 6,
-                        }}
-                      >
-                        {item.title}
-                      </h4>
-                      <span
-                        style={{
-                          fontFamily: "'Poppins', sans-serif",
-                          fontSize: "0.7rem",
-                          color: "rgba(255,255,255,0.5)",
-                        }}
-                      >
-                        {item.date}
-                      </span>
-                    </div>
-                    <ArrowRight
-                      size={14}
-                      className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ color: active.color }}
-                    />
-                  </motion.div>
+                      <ArrowRight
+                        size={14}
+                        className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ color: active.color }}
+                      />
+                    </motion.div>
+                  </Link>
                 ))}
               </motion.div>
             </AnimatePresence>
