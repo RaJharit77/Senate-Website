@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { FileText, Calendar, BookOpen, ArrowRight, Globe } from "lucide-react";
+import { FileText, Calendar, BookOpen, ArrowRight, Globe, Users, User, UsersRound } from "lucide-react";
 import { CYAN, EMERALD, GREEN, RED, SKY_BLUE, WHITE } from "@/utils/colors";
-import { getPostsByCategory, getInternational } from "@/lib/api";
+import { getPostsByCategory } from "@/lib/api";
 import { CAT_ORDRE_JOUR, CAT_LOIS } from "@/constants/constants";
 import { formatDate } from "@/utils/utility";
 import type { WpPost } from "@/lib/types";
@@ -16,6 +16,9 @@ const iconMap = {
   Calendar,
   BookOpen,
   Globe,
+  Users,
+  User,
+  UsersRound,
 };
 
 interface WorkItem {
@@ -25,6 +28,7 @@ interface WorkItem {
   date: string;
   statusColor: string;
   link: string;
+  iconName?: keyof typeof iconMap;
 }
 
 interface TabData {
@@ -99,11 +103,36 @@ export function ParliamentaryWork() {
           _embed: true,
         })) as WpPost[];
 
-        // 3. International
-        const internationalItems = (await getInternational({
-          per_page: 4,
-          _embed: true,
-        })) as WpPost[];
+        // 3. International (Activités parlementaires internationales)
+        const internationalItems: WorkItem[] = [
+          {
+            ref: "Groupe d'amitié",
+            title: "Groupe Interparlementaire d'Amitié",
+            status: "Activités",
+            date: "",
+            statusColor: GREEN,
+            link: "/international/inter-parliamentary-friendship-group",
+            iconName: "Users",
+          },
+          {
+            ref: "Président",
+            title: "Activités du Président du Sénat",
+            status: "Audiences, délégations",
+            date: "",
+            statusColor: SKY_BLUE,
+            link: "/international/presidents-activities",
+            iconName: "User",
+          },
+          {
+            ref: "Sénateurs",
+            title: "Activités des Sénateurs",
+            status: "Déplacements",
+            date: "",
+            statusColor: GREEN,
+            link: "/international/senators-activities",
+            iconName: "UsersRound",
+          },
+        ];
 
         const tabs: TabData[] = [
           {
@@ -144,15 +173,7 @@ export function ParliamentaryWork() {
             label: "International",
             color: SKY_BLUE,
             path: "/international",
-            items: internationalItems.map((item) => ({
-              ref: getAcfString(item, "type", "Activité"),
-              title: item.title?.rendered || "Sans titre",
-              status: getAcfString(item, "statut", "En cours"),
-              date: formatDate(item.date),
-              statusColor:
-                getAcfString(item, "statut", "") === "Terminé" ? RED : GREEN,
-              link: `/international/${item.slug}`,
-            })),
+            items: internationalItems,
           },
         ];
 
@@ -330,77 +351,84 @@ export function ParliamentaryWork() {
                 transition={{ duration: 0.4 }}
                 className="flex flex-col gap-3"
               >
-                {active.items.map((item, i) => (
-                  <Link key={i} href={item.link} passHref>
-                    <motion.div
-                      className="group flex gap-4 rounded-xl border p-5 transition-all hover:shadow-md backdrop-blur-sm bg-white/5"
-                      style={{
-                        borderColor: `rgba(255,255,255,0.1)`,
-                      }}
-                      whileHover={{
-                        borderColor: `${active.color}88`,
-                        backgroundColor: `${active.color}15`,
-                        scale: 1.01,
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div
-                        className="shrink-0 w-1 rounded-full self-stretch"
-                        style={{ backgroundColor: active.color }}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 flex-wrap mb-2">
-                          <span
+                {active.items.map((item, i) => {
+                  // Si l'élément a une icône personnalisée, on peut l'afficher
+                  const ItemIcon = item.iconName ? iconMap[item.iconName] : null;
+                  return (
+                    <Link key={i} href={item.link} passHref>
+                      <motion.div
+                        className="group flex gap-4 rounded-xl border p-5 transition-all hover:shadow-md backdrop-blur-sm bg-white/5"
+                        style={{
+                          borderColor: `rgba(255,255,255,0.1)`,
+                        }}
+                        whileHover={{
+                          borderColor: `${active.color}88`,
+                          backgroundColor: `${active.color}15`,
+                          scale: 1.01,
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div
+                          className="shrink-0 w-1 rounded-full self-stretch"
+                          style={{ backgroundColor: active.color }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 flex-wrap mb-2">
+                            {ItemIcon && <ItemIcon size={16} style={{ color: active.color }} />}
+                            <span
+                              style={{
+                                fontFamily: "'Poppins', sans-serif",
+                                fontSize: "0.65rem",
+                                fontWeight: 700,
+                                letterSpacing: "0.08em",
+                                textTransform: "uppercase",
+                                color: active.color,
+                              }}
+                            >
+                              {item.ref}
+                            </span>
+                            <span
+                              className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold"
+                              style={{
+                                backgroundColor: item.statusColor,
+                              }}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+                          <h4
                             style={{
                               fontFamily: "'Poppins', sans-serif",
-                              fontSize: "0.65rem",
-                              fontWeight: 700,
-                              letterSpacing: "0.08em",
-                              textTransform: "uppercase",
-                              color: active.color,
+                              fontSize: "0.95rem",
+                              fontWeight: 600,
+                              color: "#ffffff",
+                              lineHeight: 1.4,
+                              marginBottom: 6,
                             }}
                           >
-                            {item.ref}
-                          </span>
-                          <span
-                            className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold"
-                            style={{
-                              backgroundColor: item.statusColor,
-                            }}
-                          >
-                            {item.status}
-                          </span>
+                            {item.title}
+                          </h4>
+                          {item.date && (
+                            <span
+                              style={{
+                                fontFamily: "'Poppins', sans-serif",
+                                fontSize: "0.7rem",
+                                color: "rgba(255,255,255,0.5)",
+                              }}
+                            >
+                              {item.date}
+                            </span>
+                          )}
                         </div>
-                        <h4
-                          style={{
-                            fontFamily: "'Poppins', sans-serif",
-                            fontSize: "0.95rem",
-                            fontWeight: 600,
-                            color: "#ffffff",
-                            lineHeight: 1.4,
-                            marginBottom: 6,
-                          }}
-                        >
-                          {item.title}
-                        </h4>
-                        <span
-                          style={{
-                            fontFamily: "'Poppins', sans-serif",
-                            fontSize: "0.7rem",
-                            color: "rgba(255,255,255,0.5)",
-                          }}
-                        >
-                          {item.date}
-                        </span>
-                      </div>
-                      <ArrowRight
-                        size={14}
-                        className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ color: active.color }}
-                      />
-                    </motion.div>
-                  </Link>
-                ))}
+                        <ArrowRight
+                          size={14}
+                          className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          style={{ color: active.color }}
+                        />
+                      </motion.div>
+                    </Link>
+                  );
+                })}
               </motion.div>
             </AnimatePresence>
 
