@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { FileText, Calendar, BookOpen, ArrowRight } from "lucide-react";
-import { CYAN, EMERALD, GREEN, RED, WHITE } from "@/utils/colors";
+import { FileText, Calendar, BookOpen, ArrowRight, Globe } from "lucide-react";
+import { CYAN, EMERALD, GREEN, RED, SKY_BLUE, WHITE } from "@/utils/colors";
+import { getPostsByCategory, getInternational } from "@/lib/api";
+import { CAT_ORDRE_JOUR, CAT_LOIS } from "@/constants/constants";
+import { formatDate } from "@/utils/utility";
+import type { WpPost } from "@/lib/types";
 
 const iconMap = {
   FileText,
   Calendar,
   BookOpen,
+  Globe,
 };
 
 interface WorkItem {
@@ -28,6 +33,12 @@ interface TabData {
   color: string;
   path: string;
   items: WorkItem[];
+}
+
+function getAcfString(item: WpPost, key: string, fallback: string): string {
+  const acf = item.acf as Record<string, unknown> | undefined;
+  const value = acf?.[key];
+  return typeof value === "string" ? value : fallback;
 }
 
 const infoCards = [
@@ -67,8 +78,103 @@ const staggerContainer = {
   },
 };
 
-export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
-  const [activeTab, setActiveTab] = useState(tabsData[0]?.id || "legislation");
+export function ParliamentaryWork() {
+  const [tabsData, setTabsData] = useState<TabData[]>([]);
+  const [activeTab, setActiveTab] = useState<string>("agenda");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // 1. Agenda (Ordre du jour)
+        const agendaItems = (await getPostsByCategory(CAT_ORDRE_JOUR, {
+          per_page: 4,
+          _embed: true,
+        })) as WpPost[];
+
+        // 2. Travaux législatifs (Lois)
+        const loisItems = (await getPostsByCategory(CAT_LOIS, {
+          per_page: 4,
+          _embed: true,
+        })) as WpPost[];
+
+        // 3. International
+        const internationalItems = (await getInternational({
+          per_page: 4,
+          _embed: true,
+        })) as WpPost[];
+
+        const tabs: TabData[] = [
+          {
+            id: "agenda",
+            iconName: "Calendar",
+            label: "Ordre du jour",
+            color: SKY_BLUE,
+            path: "/agenda",
+            items: agendaItems.map((item) => ({
+              ref: getAcfString(item, "reference", "Séance"),
+              title: item.title?.rendered || "Sans titre",
+              status: getAcfString(item, "statut", "À venir"),
+              date: formatDate(item.date),
+              statusColor:
+                getAcfString(item, "statut", "") === "Terminé" ? RED : SKY_BLUE,
+            })),
+          },
+          {
+            id: "legislation",
+            iconName: "FileText",
+            label: "Travaux législatifs",
+            color: SKY_BLUE,
+            path: "/parliamentary-proceedings",
+            items: loisItems.map((item) => ({
+              ref: getAcfString(item, "reference", item.title?.rendered || "Réf. inconnue"),
+              title: item.title?.rendered || "Sans titre",
+              status: getAcfString(item, "statut", "En cours"),
+              date: formatDate(item.date),
+              statusColor:
+                getAcfString(item, "statut", "") === "Adopté" ? RED : GREEN,
+            })),
+          },
+          {
+            id: "international",
+            iconName: "Globe",
+            label: "International",
+            color: SKY_BLUE,
+            path: "/international",
+            items: internationalItems.map((item) => ({
+              ref: getAcfString(item, "type", "Activité"),
+              title: item.title?.rendered || "Sans titre",
+              status: getAcfString(item, "statut", "En cours"),
+              date: formatDate(item.date),
+              statusColor:
+                getAcfString(item, "statut", "") === "Terminé" ? RED : GREEN,
+            })),
+          },
+        ];
+
+        setTabsData(tabs);
+        setActiveTab(tabs[0]?.id || "agenda");
+      } catch (err) {
+        console.error("[ParliamentaryWork] Failed to load data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div
+        className="py-16 text-center text-white/70"
+        style={{ fontFamily: "'Poppins', sans-serif" }}
+      >
+        Chargement des travaux parlementaires...
+      </div>
+    );
+  }
+
   const active = tabsData.find((t) => t.id === activeTab)!;
 
   return (
@@ -136,10 +242,12 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                     className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-500"
                     style={{ backgroundColor: GREEN }}
                   />
-                  {/* Conteneur du texte aligné en bas */}
                   <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
                     <div className="w-full space-y-1">
-                      <p className="text-sm font-bold uppercase tracking-wider" style={{ color: item.color }}>
+                      <p
+                        className="text-sm font-bold uppercase tracking-wider"
+                        style={{ color: item.color }}
+                      >
                         {item.label}
                       </p>
                       <h3 className="text-lg sm:text-xl font-semibold leading-tight">
@@ -147,18 +255,24 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                       </h3>
                       <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 text-red-500">
                         <span className="text-sm font-medium">Découvrir</span>
-                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        <ArrowRight
+                          size={16}
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="absolute bottom-0 left-0 h-1 w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" style={{ backgroundColor: GREEN }} />
+                  <div
+                    className="absolute bottom-0 left-0 h-1 w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
+                    style={{ backgroundColor: GREEN }}
+                  />
                 </div>
               </Link>
             </motion.div>
           ))}
         </div>
 
-        {/* Onglets et listes dynamiques (via tabsData) */}
+        {/* Onglets et listes dynamiques */}
         <div className="grid lg:grid-cols-3 gap-12">
           <motion.div variants={fadeUp}>
             <div className="flex flex-col gap-2">
@@ -173,9 +287,11 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                       fontFamily: "'Poppins', sans-serif",
                       fontSize: "0.84rem",
                       fontWeight: activeTab === tab.id ? 600 : 400,
-                      backgroundColor: activeTab === tab.id ? tab.color : "rgba(255,255,255,0.05)",
+                      backgroundColor:
+                        activeTab === tab.id ? tab.color : "rgba(255,255,255,0.05)",
                       color: activeTab === tab.id ? "#000000" : "rgba(255,255,255,0.7)",
-                      border: `1.5px solid ${activeTab === tab.id ? tab.color : "rgba(255,255,255,0.15)"}`,
+                      border: `1.5px solid ${activeTab === tab.id ? tab.color : "rgba(255,255,255,0.15)"
+                        }`,
                     }}
                   >
                     <TabIcon size={15} />
@@ -282,6 +398,7 @@ export function ParliamentaryWork({ tabsData }: { tabsData: TabData[] }) {
                 ))}
               </motion.div>
             </AnimatePresence>
+
             <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: 10 }}>
               <div className="flex-1" style={{ backgroundColor: WHITE }} />
               <div className="flex-1" style={{ backgroundColor: RED }} />

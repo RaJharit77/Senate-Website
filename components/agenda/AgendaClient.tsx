@@ -79,7 +79,7 @@ export function AgendaClient({ items, pageTitle }: { items: WpPost[]; pageTitle:
                                 setSearchTerm(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-56 bg-white/5 border-white/10 text-white placeholder-cyan-400 focus:ring-cyan-400/50"
+                            className="w-56 bg-white/5 border-white/10 text-white placeholder:text-cyan-300 focus:ring-cyan-400/50"
                         />
                         <Button type="submit" variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                             <Search className="w-4 h-4 mr-2" />
