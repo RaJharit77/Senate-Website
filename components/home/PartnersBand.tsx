@@ -96,6 +96,7 @@ export function PartnersBand() {
                                         src={p.logo}
                                         alt={p.name}
                                         fill
+                                        priority
                                         className="object-contain relative z-10"
                                         sizes="(max-width: 768px) 80px, 100px"
                                     />

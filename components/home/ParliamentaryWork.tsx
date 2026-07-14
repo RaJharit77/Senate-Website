@@ -260,6 +260,7 @@ export function ParliamentaryWork() {
                     src={item.image}
                     alt={item.label}
                     fill
+                    priority
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />

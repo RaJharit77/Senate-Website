@@ -347,6 +347,7 @@ export function AboutSection() {
                           src={person.image}
                           alt={`${person.firstName} ${person.name}`}
                           fill
+                          priority
                           className="object-cover transition-transform duration-700"
                           style={{
                             transform: isPresident ? "scale(1.02)" : "scale(1)",

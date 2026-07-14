@@ -239,6 +239,7 @@ function CompactCard({ article }: { article: Article }) {
               height={100}
               className="object-cover transition-transform duration-500 group-hover:scale-110"
               unoptimized={!isValidImage}
+              priority
             />
           </div>
           <CardContent className="flex flex-col justify-center min-w-0 flex-1 p-0">
