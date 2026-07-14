@@ -123,6 +123,13 @@ export function Header() {
     minute: "2-digit",
   });
 
+  // Version courte pour mobile (sans le jour de la semaine)
+  const shortDate = dateTime.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       setDateTime(date);
@@ -138,40 +145,42 @@ export function Header() {
         boxShadow: isScrolled ? "0 4px 30px rgba(0,0,0,0.3)" : "none",
       }}
     >
+      {/* --- BARRE CYAN RESPONSIVE --- */}
       <div style={{ backgroundColor: COLOURS.cyan }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-2">
-          <div className="flex items-center gap-5">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between py-1 sm:py-2">
+          {/* Liens sociaux (texte masqué sur mobile) */}
+          <div className="flex items-center gap-2 sm:gap-5">
             <Link
               href="https://web.facebook.com/SenatdeMadagascar"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.77rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              className="flex items-center gap-1 transition-opacity hover:opacity-80"
+              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
             >
               <FaFacebook size={14} />
-              <span>Sénat Madagascar</span>
+              <span className="hidden sm:inline">Sénat Madagascar</span>
             </Link>
             <Link
               href="https://www.youtube.com/@antenimierandoholona"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.77rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              className="flex items-center gap-1 transition-opacity hover:opacity-80"
+              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
             >
               <FaYoutube size={14} />
-              <span>Chaîne officielle</span>
+              <span className="hidden sm:inline">Chaîne officielle</span>
             </Link>
           </div>
 
-          {/* Calendrier déroulant avec Popover */}
-          <div className="flex items-center gap-2">
+          {/* Date/Heure */}
+          <div className="flex items-center gap-1 sm:gap-2">
             <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
                   className="hidden sm:flex items-center gap-2 text-black hover:text-gray-900 hover:bg-transparent"
-                  style={{ fontSize: "0.77rem", padding: "2px 8px", height: "auto" }}
+                  style={{ fontSize: "0.7rem", padding: "2px 8px", height: "auto" }}
                 >
                   <CalendarIcon size={14} />
                   <span className="whitespace-nowrap">
@@ -190,24 +199,25 @@ export function Header() {
             </Popover>
 
             {/* Version mobile : affichage compact */}
-            <div className="sm:hidden flex items-center gap-1 text-black text-[0.7rem]">
+            <div className="sm:hidden flex items-center gap-1 text-black text-[0.6rem]">
               <CalendarIcon size={12} />
-              <span>{formattedDate}</span>
+              <span>{shortDate}</span>
               <span className="text-black/60">{formattedTime}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Contact (email + téléphone) */}
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/contact"
               className="hidden sm:block transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.77rem", color: COLOURS.black, letterSpacing: "0.03em" }}
+              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
               contact@senat.mg
             </Link>
             <div
               className="flex items-center gap-1"
-              style={{ fontSize: "0.77rem", color: COLOURS.black }}
+              style={{ fontSize: "0.7rem", color: COLOURS.black }}
             >
               <Phone size={14} />
               <span className="hidden sm:inline">+261 34 12 01 036</span>
@@ -216,6 +226,7 @@ export function Header() {
         </div>
       </div>
 
+      {/* --- BARRE PRINCIPALE --- */}
       <div
         className="transition-colors duration-300"
         style={{
