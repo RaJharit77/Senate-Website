@@ -53,6 +53,7 @@ export default async function FriendshipGroupArticlePage({ params }: { params: P
                             alt={post.title.rendered}
                             className="w-full h-full object-cover"
                             fill
+                            priority
                         />
                     </div>
                 )}
