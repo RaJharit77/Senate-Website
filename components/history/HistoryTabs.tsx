@@ -7,6 +7,7 @@ export interface TabConfig {
     id: string;
     label: string;
     color: string;
+    textColor: string;
     period: string;
     intro: string;
 }
@@ -174,12 +175,12 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                             : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80"
                             }`}
                         style={{
-                            backgroundColor:
-                                activeTab === tab.id ? tab.color : "rgba(255,255,255,0.05)",
-                            border:
-                                activeTab === tab.id
-                                    ? `2px solid ${tab.color}`
-                                    : "2px solid transparent",
+                            backgroundColor: activeTab === tab.id ? tab.color : "transparent",
+                            color: activeTab === tab.id
+                                ? (tab.textColor || "white")
+                                : "rgba(255,255,255,0.6)",
+                            borderBottom: activeTab === tab.id ? "2px solid" : "2px solid transparent",
+                            borderColor: activeTab === tab.id ? tab.color : "transparent",
                         }}
                     >
                         {tab.label}
