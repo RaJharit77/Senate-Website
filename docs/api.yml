@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: API Chat du Sénat de Madagascar
+  description: |
+    Endpoint de conversation utilisant le modèle Groq `llama-3.1-8b-instant`.
+    L’assistant répond en français aux questions sur le Sénat.
+  version: 1.0.0
+  contact:
+    name: Support technique
+    email: contact@senat.mg
+
+servers:
+  - url: https://senat-de-madagascar.vercel.app/api
+    description: Serveur de production
+  - url: http://localhost:3000/api
+    description: Serveur de développement
+
+paths:
+  /chat:
+    post:
+      summary: Envoyer un message à l’assistant
+      description: |
+        Reçoit un message utilisateur et retourne une réponse générée par l’IA.
+      operationId: sendChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              exemple1:
+                value:
+                  message: "Quelles sont les missions du Sénat ?"
+      responses:
+        '200':
+          description: Réponse de l’assistant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              examples:
+                exemple:
+                  value:
+                    reply: "Le Sénat de Madagascar a pour missions de voter les lois, contrôler l’action du gouvernement et représenter les collectivités territoriales."
+        '400':
+          description: Requête invalide (message manquant)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erreur interne du serveur ou échec de l’appel à Groq
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Question ou instruction de l’utilisateur
+          example: "Quand a lieu la prochaine session parlementaire ?"
+
+    ChatResponse:
+      type: object
+      properties:
+        reply:
+          type: string
+          description: Réponse textuelle de l’assistant
+          example: "La prochaine session ordinaire aura lieu en octobre 2026."
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Description de l’erreur
+          example: "Message requis"

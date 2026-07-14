@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
+import { cleanText } from "@/utils/utility";
 
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
@@ -116,7 +117,7 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
         >
           <Image
             src={imageSrc}
-            alt={article.title}
+            alt={cleanText(article.title)}
             fill
             className="object-cover"
             unoptimized={!isValidImage}
@@ -148,7 +149,7 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
                 style={{ backgroundColor: `${article.categoryColor}cc` }}
               >
                 <Icon size={14} />
-                {article.category}
+                {cleanText(article.category)}
               </Badge>
               <span className="flex items-center gap-1.5 text-white/60 text-sm">
                 <Calendar size={14} />
@@ -159,13 +160,13 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
               className="animate-text text-white mb-3 text-3xl font-bold leading-tight"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              {article.title}
+              {cleanText(article.title)}
             </h3>
             <p
               className="animate-text text-white/70 text-base line-clamp-2 mb-4"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              {article.excerpt}
+              {cleanText(article.excerpt)}
             </p>
             <div
               className="animate-text inline-flex items-center gap-2 text-white border-b-2 pb-1 transition-all hover:gap-4 group"
@@ -233,7 +234,7 @@ function CompactCard({ article }: { article: Article }) {
           <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 100, height: 100 }}>
             <Image
               src={imageSrc}
-              alt={article.title}
+              alt={cleanText(article.title)}
               width={100}
               height={100}
               className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -247,7 +248,7 @@ function CompactCard({ article }: { article: Article }) {
                 style={{ color: CYAN }}
               >
                 <Icon size={12} />
-                {article.category}
+                {cleanText(article.category)}
               </span>
               <span
                 className="text-[0.6rem] flex items-center gap-1"
@@ -261,7 +262,7 @@ function CompactCard({ article }: { article: Article }) {
               className="text-white text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              {article.title}
+              {cleanText(article.title)}
             </h4>
             <div
               className="mt-2 inline-flex items-center gap-1 text-white/50 text-xs transition-all hover:gap-2 group-hover:text-cyan-400"
