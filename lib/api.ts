@@ -139,9 +139,12 @@ export function getRepubliqueIII(params: Params = {}) {
 export function getRepubliqueIV(params: Params = {}) {
     return fetchAPI<WpPost[]>("/republiqueiv", { _embed: true, ...params });
 }
-/*export function getRepubliqueV(params: Params = {}) {
+/*
+// Pour une nouvelle république
+export function getRepubliqueV(params: Params = {}) {
     return fetchAPI<WpPost[]>("/republiquev", { _embed: true, ...params });
-}**/
+}
+**/
 
 // ----- Républiques (textes constitutionnels) -----
 // Agrège les 4 post-types "republiquei" à "republiqueiv" en une seule liste,
