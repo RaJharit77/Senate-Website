@@ -70,7 +70,7 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
                     href={`/press-area/news/${post.slug}`}
                     className="inline-block mt-4 text-cyan-300 hover:text-cyan-200 text-sm font-medium transition self-start"
                 >
-                    Lire la suite <MdArrowRightAlt />
+                    Lire la suite <MdArrowRightAlt className="inline-block" />
                 </Link>
             </div>
         </motion.div>

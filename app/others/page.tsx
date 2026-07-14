@@ -238,7 +238,7 @@ export default function OtherPage() {
                                                     href={`/others/${post.slug}`}
                                                     className="inline-block text-cyan-300 hover:text-cyan-200 text-sm font-medium transition"
                                                 >
-                                                    Lire la suite <MdArrowRightAlt />
+                                                    Lire la suite <MdArrowRightAlt className="inline-block" />
                                                 </Link>
                                                 {downloadLink && (
                                                     <Link
