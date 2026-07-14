@@ -243,6 +243,7 @@ export function Header() {
               width={80}
               height={80}
               className="h-20 w-auto"
+              priority
             />
             <div>
               <div

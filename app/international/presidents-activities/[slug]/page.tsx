@@ -64,6 +64,7 @@ export default async function PresidentActivityDetailPage({ params }: { params: 
                             alt={post.title.rendered}
                             className="w-full h-full object-cover"
                             fill
+                            priority
                         />
                     </div>
                 )}

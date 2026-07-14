@@ -58,6 +58,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
                         unoptimized
+                        priority
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-gray-100 to-gray-200 text-gray-400">

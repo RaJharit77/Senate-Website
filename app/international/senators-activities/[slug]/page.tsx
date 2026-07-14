@@ -53,6 +53,7 @@ export default async function SenatorActivityDetailPage({ params }: { params: Pr
                             alt={post.title.rendered}
                             className="w-full h-full object-cover"
                             fill
+                            priority
                         />
                     </div>
                 )}

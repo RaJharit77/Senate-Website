@@ -19,6 +19,7 @@ export function Footer() {
                 alt="Sénat de Madagascar"
                 width={80}
                 height={80}
+                priority
                 className="h-20 w-auto rounded-full border border-cyan-500"
               />
               <div>
