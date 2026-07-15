@@ -21,6 +21,7 @@ export interface WpPost {
     content: {
         rendered: string;
     };
+    modified?: string;
     // Use unknown instead of any to avoid unexpected any and force explicit typing when accessed
     acf?: Record<string, unknown>;
     _embedded?: {
