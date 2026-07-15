@@ -7,6 +7,7 @@ import { FloatingSocialBar } from '@/components/navigation/common/FloatingSocial
 import Chatbot from '@/components/chatbot/Chatbot';
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next"
+import JsonLd from '@/components/JsonLd';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
 
@@ -82,6 +83,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Chatbot />
         <FloatingSocialBar />
         <Footer />
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'GovernmentOrganization',
+            name: 'Sénat de Madagascar',
+            url: process.env.VERCEL_URL,
+            logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
+            contactPoint: {
+              '@type': 'ContactPoint',
+              telephone: '+261 34 12 01 036',
+              email: 'contact@senat.mg',
+              contactType: 'Service client',
+              availableLanguage: ['French', 'Malagasy'],
+            },
+            sameAs: [
+              'https://www.facebook.com/senat.mg',
+              'https://www.youtube.com/@antenimierandoholona',
+              'https://wa.me/261341201036'
+            ],
+          }}
+        />
       </body>
     </html>
   );
