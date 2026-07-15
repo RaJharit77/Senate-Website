@@ -88,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             '@context': 'https://schema.org',
             '@type': 'GovernmentOrganization',
             name: 'Sénat de Madagascar',
-            url: 'https://senat-de-madagascar.vercel.app',
+            url: process.env.VERCEL_URL,
             logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
             contactPoint: {
               '@type': 'ContactPoint',
