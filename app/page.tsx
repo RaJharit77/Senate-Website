@@ -7,8 +7,17 @@ import { getAlaune, getActualite, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
-import { GREENS, REDS} from "@/utils/colors";
+import { GREENS, REDS } from "@/utils/colors";
+import JsonLd from '@/components/JsonLd';
+import { buildMetadata, buildBreadcrumbJsonLd } from '@/lib/seo';
 
+export const metadata = buildMetadata({
+  title: 'Accueil – Sénat de Madagascar',
+  description: 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.',
+  path: '/',
+});
+
+// ─── Helper ────────────────────────────────────────────────────
 function getAcfString(item: WpPost, key: string, fallback: string): string {
   const acf = item.acf as Record<string, unknown> | undefined;
   const value = acf?.[key];
@@ -66,7 +75,7 @@ export default async function HomePage() {
         image: imageUrl,
         featured: true,
         link: `/actualite/${item.slug}`,
-        index: index, // Add the index property here
+        index,
       };
     })
   );
@@ -97,8 +106,29 @@ export default async function HomePage() {
     })
   );
 
+  // ---- Données structurées (JSON‑LD) ----
+  const breadcrumb = buildBreadcrumbJsonLd([
+    { name: 'Accueil', url: 'https://senat-de-madagascar.vercel.app/' },
+  ]);
+
+  const webPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Accueil – Sénat de Madagascar',
+    description: 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.',
+    url: 'https://senat-de-madagascar.vercel.app/',
+    inLanguage: 'fr-FR',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Sénat de Madagascar',
+      url: 'https://senat-de-madagascar.vercel.app/',
+    },
+  };
+
   return (
     <>
+      <JsonLd data={breadcrumb} />
+      <JsonLd data={webPageJsonLd} />
       <HeroCarousel slides={slides} />
       <NewsGrid featuredArticles={featuredArticles} sideArticles={sideArticles} />
       <AboutSection />
