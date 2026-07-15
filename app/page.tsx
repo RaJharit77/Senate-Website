@@ -97,13 +97,6 @@ export default async function HomePage() {
     })
   );
 
-  // ---- Fetch agenda, deliberation, and laws items ----
-  /*const [agendaItems, deliberationItems, lawsItems] = await Promise.all([
-    getPostsByCategory(11, { per_page: 10, _embed: true }).catch(() => []),
-    getPostsByCategory(53, { per_page: 10, _embed: true }).catch(() => []),
-    getPostsByCategory(14, { per_page: 10, _embed: true }).catch(() => []),
-  ]);*/
-
   return (
     <>
       <HeroCarousel slides={slides} />
