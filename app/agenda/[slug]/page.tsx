@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+//Need to know import { notFound } from "next/navigation";
 import { getPostsByCategory } from "@/lib/api";
 import { formatDate, cleanText } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
@@ -7,6 +7,7 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import type { WpPost } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { CAT_ORDRE_JOUR } from "@/constants/constants";
+import NotFoundPage from "@/app/not-found";
 
 export default async function AgendaArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -16,7 +17,7 @@ export default async function AgendaArticlePage({ params }: { params: Promise<{ 
         _embed: true,
     }).catch(() => [])) as WpPost[];
 
-    if (!posts.length) notFound();
+    if (!posts.length) return <NotFoundPage />;
 
     const post = posts[0];
 

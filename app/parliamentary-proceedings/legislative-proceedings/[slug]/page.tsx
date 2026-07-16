@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { getPosts, getPostsByCategory } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DeliberationTable } from "@/components/parliamentary/DeliberationTable";
 import { cleanText } from "@/utils/utility";
 import { CAT_DELIBERATION, CAT_ORDRE_JOUR } from "@/constants/constants";
+import NotFoundPage from "@/app/not-found";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +53,7 @@ export default async function DeliberationArticlePage({
         getAllPostsWithTables(),
     ]);
 
-    if (!post) notFound();
+    if (!post) return <NotFoundPage />
 
     const cleanTitle = cleanText(post.title.rendered);
     const hasTable = post.content.rendered.includes("<table");

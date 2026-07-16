@@ -17,7 +17,7 @@ export const metadata = buildMetadata({
   path: '/',
 });
 
-// ─── Helper ────────────────────────────────────────────────────
+// ─── Helper ───
 function getAcfString(item: WpPost, key: string, fallback: string): string {
   const acf = item.acf as Record<string, unknown> | undefined;
   const value = acf?.[key];
@@ -108,7 +108,7 @@ export default async function HomePage() {
 
   // ---- Données structurées (JSON‑LD) ----
   const breadcrumb = buildBreadcrumbJsonLd([
-    { name: 'Accueil', url: 'https://senat-de-madagascar.vercel.app/' },
+    { name: 'Accueil', url: 'https://senat-de-madagascar.vercel.app' },
   ]);
 
   const webPageJsonLd = {
@@ -116,12 +116,12 @@ export default async function HomePage() {
     '@type': 'WebPage',
     name: 'Accueil – Sénat de Madagascar',
     description: 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.',
-    url: 'https://senat-de-madagascar.vercel.app/',
+    url: process.env.VERCEL_URL || "https://senat-de-madagascar.vercel.app",
     inLanguage: 'fr-FR',
     isPartOf: {
       '@type': 'WebSite',
       name: 'Sénat de Madagascar',
-      url: 'https://senat-de-madagascar.vercel.app/',
+      url: process.env.VERCEL_URL || 'https://senat-de-madagascar.vercel.app',
     },
   };
 

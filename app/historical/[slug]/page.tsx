@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSenatorBySlug } from "@/lib/api";
 import { formatDate } from "@/utils/utility";
+import NotFoundPage from "@/app/not-found";
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +14,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
 
     const post = await getSenatorBySlug(slug);
 
-    if (!post) {
-        notFound();
-    }
+    if (!post) return <NotFoundPage />
 
     const date = formatDate(post.date);
 

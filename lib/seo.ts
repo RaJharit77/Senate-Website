@@ -1,8 +1,7 @@
-// lib/seo.ts
 import type { Metadata } from 'next';
 
 const SITE_NAME = 'Sénat de Madagascar';
-const SITE_URL = process.env.VERCEL_URL
+export const SITE_URL = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'https://senat-de-madagascar.vercel.app';
 const DEFAULT_DESCRIPTION = 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.';

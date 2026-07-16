@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DeliberationTable } from "@/components/parliamentary/DeliberationTable";
 import { cleanText } from "@/utils/utility";
+import NotFoundPage from "@/app/not-found";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function DeliberationArticlePage({
     if (!allPosts.length) notFound();
 
     const post = allPosts.find((p) => p.slug === slug);
-    if (!post) notFound();
+    if (!post) return <NotFoundPage />
 
     const cleanTitle = cleanText(post.title.rendered);
     const hasTable = post.content.rendered.includes("<table");

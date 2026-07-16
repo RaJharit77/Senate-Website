@@ -1,19 +1,17 @@
-import { notFound } from "next/navigation";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getPageBySlug } from "@/lib/api";
+import NotFoundPage from "@/app/not-found";
 
 export const dynamic = 'force-dynamic';
 
 export default async function HistoricalStoryPage() {
     const page = await getPageBySlug("historique-2");
 
-    if (!page) {
-        notFound();
-    }
+    if (!page) return <NotFoundPage />
 
     const date = new Date(page.date).toLocaleDateString("fr-FR", {
         day: "numeric",
