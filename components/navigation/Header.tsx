@@ -147,8 +147,7 @@ export function Header() {
       {/* --- BARRE CYAN RESPONSIVE --- */}
       <div style={{ backgroundColor: COLOURS.cyan }}>
         <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between py-1 sm:py-2">
-          {/* Liens sociaux */}
-          <div className="flex items-center gap-2 sm:gap-5">
+          <div className="flex items-center gap-2 sm:gap-5 flex-1 justify-start">
             <Link
               href="https://web.facebook.com/SenatdeMadagascar"
               target="_blank"
@@ -171,8 +170,7 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Date/Heure */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-1 justify-center">
             <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -204,8 +202,8 @@ export function Header() {
             </div>
           </div>
 
-          {/* Contact (email + téléphone) - les deux liens vers /contact */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* Contacts */}
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
             <Link
               href="/contact"
               className="flex items-center gap-1 transition-opacity hover:opacity-80"
@@ -215,7 +213,9 @@ export function Header() {
               <span className="hidden sm:inline">contact@senat.mg</span>
             </Link>
             <Link
-              href="/contact"
+              href="https://wa.me/261341201036"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-1 transition-opacity hover:opacity-80"
               style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
@@ -226,7 +226,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* --- BARRE PRINCIPALE --- (inchangée) */}
+      {/* --- BARRE PRINCIPALE --- */}
       <div
         className="transition-colors duration-300"
         style={{
@@ -267,7 +267,7 @@ export function Header() {
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center justify-between gap-4 shrink-0">
+          <div className="hidden lg:flex flex-1 justify-center">
             <Link href="/" className="flex items-center gap-4">
               <Image
                 src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
