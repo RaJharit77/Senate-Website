@@ -282,7 +282,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
-            {/* Barre de recherche desktop - DESIGN AMÉLIORÉ */}
+            {/* Barre de recherche desktop - DESIGN AMÉLIORÉ AVEC CYAN */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center relative">
@@ -292,7 +292,7 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Rechercher…"
-                    className="px-5 py-2.5 pr-12 rounded-full border border-cyan-400/50 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md"
+                    className="px-5 py-2.5 pr-12 rounded-full border-2 border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400/50 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md"
                     style={{
                       fontSize: "0.85rem",
                       color: COLOURS.text,
@@ -301,7 +301,7 @@ export function Header() {
                   />
                   <button
                     type="submit"
-                    className="absolute right-1.5 p-1.5 rounded-full hover:bg-cyan-500/20 transition-colors"
+                    className="absolute right-1.5 p-1.5 rounded-full hover:bg-cyan-100 transition-colors"
                     style={{ color: COLOURS.cyan }}
                   >
                     <Search size={18} />
@@ -310,16 +310,16 @@ export function Header() {
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-cyan-400/50 hover:border-cyan-400 hover:bg-cyan-500/10 transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-cyan-400 hover:border-cyan-500 hover:bg-cyan-50/50 transition-all duration-300 shadow-sm hover:shadow-md"
                   style={{
                     fontSize: "0.85rem",
-                    color: COLOURS.textMuted,
-                    backgroundColor: "rgba(255,255,255,0.6)",
+                    color: COLOURS.cyan,
+                    backgroundColor: "rgba(255,255,255,0.8)",
                     backdropFilter: "blur(4px)",
                   }}
                 >
                   <Search size={16} />
-                  <span>Rechercher…</span>
+                  <span className="font-medium">Rechercher…</span>
                 </button>
               )}
             </div>
