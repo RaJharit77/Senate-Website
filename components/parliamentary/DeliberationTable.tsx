@@ -129,8 +129,10 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
                             {displayedRows.map((rowHtml, idx) => (
                                 <tr
                                     key={idx}
-                                    className={`border-t border-white/5 transition-colors ${idx % 2 === 0 ? "bg-white/5" : "bg-transparent"
-                                        } hover:bg-white/10`}
+                                    className={`border-t border-white/5 transition-colors ${idx % 2 === 0
+                                            ? "bg-slate-800/60 hover:bg-slate-700/70"
+                                            : "bg-slate-700/40 hover:bg-slate-700/60"
+                                        }`}
                                     dangerouslySetInnerHTML={{ __html: rowHtml }}
                                 />
                             ))}
