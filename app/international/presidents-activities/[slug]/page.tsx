@@ -1,10 +1,10 @@
-import { notFound } from "next/navigation";
 import { getAudiences, getDelegations, getInternational } from "@/lib/api";
 import { formatDate } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar } from "lucide-react";
+import NotFoundPage from "@/app/not-found";
 
 export default async function PresidentActivityDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -23,7 +23,7 @@ export default async function PresidentActivityDetailPage({ params }: { params: 
         }
     }
 
-    if (!post) notFound();
+    if (!post) return <NotFoundPage />
 
     const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
     const date = formatDate(post.date);

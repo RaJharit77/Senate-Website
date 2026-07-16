@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Calendar } from "lucide-react";
 import Link from "next/link";
 import type { ActivityCategory } from "@/types/internationalType";
+import { PER_PAGE_ACTIVITIES_FEED } from "@/constants/constants";
 
 export interface ActivityItem {
     id: number;
@@ -40,8 +41,6 @@ const FILTERS: { id: "all" | ActivityCategory; label: string }[] = [
     { id: "delegation", label: "Délégations" },
     { id: "international", label: "Déplacements" },
 ];
-
-const PER_PAGE = 6;
 
 function ActivityCard({ item }: { item: ActivityItem }) {
     return (
@@ -201,7 +200,7 @@ export function ActivitiesFeed({ items }: { items: ActivityItem[] }) {
 
     const totalPages = useMemo(() => {
         if (filter !== "all") {
-            return Math.max(1, Math.ceil(relevantItems.length / PER_PAGE));
+            return Math.max(1, Math.ceil(relevantItems.length / PER_PAGE_ACTIVITIES_FEED));
         }
         const maxLength = Math.max(
             groupedBySection.audience.length,
@@ -209,12 +208,12 @@ export function ActivitiesFeed({ items }: { items: ActivityItem[] }) {
             groupedBySection.international.length,
             1
         );
-        return Math.ceil(maxLength / PER_PAGE);
+        return Math.ceil(maxLength / PER_PAGE_ACTIVITIES_FEED);
     }, [filter, relevantItems.length, groupedBySection]);
 
     function pageSliceFor(categoryItems: ActivityItem[]) {
-        const start = (page - 1) * PER_PAGE;
-        return categoryItems.slice(start, start + PER_PAGE);
+        const start = (page - 1) * PER_PAGE_ACTIVITIES_FEED;
+        return categoryItems.slice(start, start + PER_PAGE_ACTIVITIES_FEED);
     }
 
     function handleFilterChange(next: "all" | ActivityCategory) {

@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getPosts } from "@/lib/api";
 import { cleanText } from "@/utils/utility";
+import NotFoundPage from "@/app/not-found";
 
 export const dynamic = 'force-dynamic';
 
@@ -19,9 +19,7 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
     const { slug } = await params;
     const post = await getPostBySlug(slug);
 
-    if (!post) {
-        notFound();
-    }
+    if (!post) return <NotFoundPage />
 
     const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
     const date = new Date(post.date).toLocaleDateString("fr-FR", {

@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { getPostBySlugNoCache } from "@/lib/api";
+import NotFoundPage from "@/app/not-found";
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +14,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     const post = await getPostBySlugNoCache(slug);
     console.log('ArticlePage post trouvé ?', post ? 'oui' : 'non');
 
-    if (!post) {
-        notFound();
-    }
+    if (!post) return <NotFoundPage />
 
     const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
     const date = new Date(post.date).toLocaleDateString("fr-FR", {

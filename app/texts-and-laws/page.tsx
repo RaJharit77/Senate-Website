@@ -4,6 +4,7 @@ import { getPostsByCategorySlug, getAllRepubliques } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
 import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
+import NotFoundPage from "../not-found";
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,8 @@ export default async function TextAndLawsPage() {
         per_page: 50,
         _embed: true,
     }).catch(() => [])) as WpPost[];
+
+    if(!posts) return <NotFoundPage />
 
     const republiquesRaw = (await getAllRepubliques({
         per_page: 20,

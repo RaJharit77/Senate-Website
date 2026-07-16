@@ -1,10 +1,10 @@
-import { notFound } from "next/navigation";
 import { getPosts } from "@/lib/api";
 import { formatDate } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar } from "lucide-react";
+import NotFoundPage from "@/app/not-found";
 
 export default async function SenatorActivityDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -12,7 +12,7 @@ export default async function SenatorActivityDetailPage({ params }: { params: Pr
     const posts = await getPosts({ slug, _embed: true }).catch(() => []);
     const post = posts.length > 0 ? posts[0] : null;
 
-    if (!post) notFound();
+    if (!post) return <NotFoundPage />
 
     const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
     const date = formatDate(post.date);

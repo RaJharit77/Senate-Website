@@ -6,8 +6,7 @@ import { DeliberationTable } from "@/components/parliamentary/DeliberationTable"
 import type { WpCategory, WpPost } from "@/lib/types";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-
-const PARENT_CATEGORY_ID = 10;
+import { PARENT_CATEGORY_ID } from "@/constants/constants";
 
 export default async function LegislativeProceedingsPage() {
     const introPage = await getPageBySlug("travaux-legislatifs-2").catch(() => null);

@@ -23,7 +23,7 @@ import {
 import { CategoryType } from "@/types/categoryType";
 import { cleanText, getYouTubeThumbnail } from "@/utils/utility";
 import { MdArrowRightAlt } from "react-icons/md";
-import { CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION, CAT_VIDEO } from "@/constants/constants";
+import { CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION, CAT_VIDEO, perPage } from "@/constants/constants";
 
 export default function OtherPage() {
     const [allPosts, setAllPosts] = useState<WpPost[]>([]);
@@ -31,7 +31,6 @@ export default function OtherPage() {
     const [filter, setFilter] = useState<CategoryType>("tous");
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const perPage = 6;
 
     useEffect(() => {
         const loadData = async () => {
@@ -89,7 +88,7 @@ export default function OtherPage() {
             (currentPage - 1) * perPage,
             currentPage * perPage
         );
-    }, [filteredBySearch, currentPage, perPage]);
+    }, [filteredBySearch, currentPage]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
