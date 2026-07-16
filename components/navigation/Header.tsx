@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { COLOURS } from "@/utils/colours";
@@ -123,7 +123,6 @@ export function Header() {
     minute: "2-digit",
   });
 
-  // Version courte pour mobile (sans le jour de la semaine)
   const shortDate = dateTime.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "short",
@@ -148,7 +147,7 @@ export function Header() {
       {/* --- BARRE CYAN RESPONSIVE --- */}
       <div style={{ backgroundColor: COLOURS.cyan }}>
         <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between py-1 sm:py-2">
-          {/* Liens sociaux (texte masqué sur mobile) */}
+          {/* Liens sociaux */}
           <div className="flex items-center gap-2 sm:gap-5">
             <Link
               href="https://web.facebook.com/SenatdeMadagascar"
@@ -198,7 +197,6 @@ export function Header() {
               </PopoverContent>
             </Popover>
 
-            {/* Version mobile : affichage compact */}
             <div className="sm:hidden flex items-center gap-1 text-black text-[0.6rem]">
               <CalendarIcon size={12} />
               <span>{shortDate}</span>
@@ -206,27 +204,29 @@ export function Header() {
             </div>
           </div>
 
-          {/* Contact (email + téléphone) */}
+          {/* Contact (email + téléphone) - les deux liens vers /contact */}
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/contact"
-              className="hidden sm:block transition-opacity hover:opacity-80"
+              className="flex items-center gap-1 transition-opacity hover:opacity-80"
               style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
-              contact@senat.mg
+              <Mail size={14} />
+              <span className="hidden sm:inline">contact@senat.mg</span>
             </Link>
-            <div
-              className="flex items-center gap-1"
-              style={{ fontSize: "0.7rem", color: COLOURS.black }}
+            <Link
+              href="/contact"
+              className="flex items-center gap-1 transition-opacity hover:opacity-80"
+              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
               <Phone size={14} />
               <span className="hidden sm:inline">+261 34 12 01 036</span>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* --- BARRE PRINCIPALE --- */}
+      {/* --- BARRE PRINCIPALE --- (inchangée) */}
       <div
         className="transition-colors duration-300"
         style={{
