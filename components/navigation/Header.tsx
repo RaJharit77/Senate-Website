@@ -282,28 +282,27 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
-            {/* Barre de recherche desktop */}
+            {/* Barre de recherche desktop - DESIGN AMÉLIORÉ */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
-                <form onSubmit={handleSearchSubmit} className="flex items-center">
+                <form onSubmit={handleSearchSubmit} className="flex items-center relative">
                   <input
                     ref={searchInputRef}
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Rechercher…"
-                    className="px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                    className="px-5 py-2.5 pr-12 rounded-full border border-cyan-400/50 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md"
                     style={{
                       fontSize: "0.85rem",
                       color: COLOURS.text,
-                      backgroundColor: "rgba(255,255,255,0.9)",
-                      width: "220px",
+                      width: "240px",
                     }}
                   />
                   <button
                     type="submit"
-                    className="ml-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    style={{ color: COLOURS.textMuted }}
+                    className="absolute right-1.5 p-1.5 rounded-full hover:bg-cyan-500/20 transition-colors"
+                    style={{ color: COLOURS.cyan }}
                   >
                     <Search size={18} />
                   </button>
@@ -311,10 +310,12 @@ export function Header() {
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-cyan-400 transition-all hover:border-cyan-500"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-cyan-400/50 hover:border-cyan-400 hover:bg-cyan-500/10 transition-all duration-300 shadow-sm hover:shadow-md"
                   style={{
                     fontSize: "0.85rem",
                     color: COLOURS.textMuted,
+                    backgroundColor: "rgba(255,255,255,0.6)",
+                    backdropFilter: "blur(4px)",
                   }}
                 >
                   <Search size={16} />
