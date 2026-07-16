@@ -3,7 +3,7 @@ import Image from "next/image";
 import { RED, WHITE, EMERALD } from "@/utils/colors";
 import { presidentMeta } from "@/utils/data/president";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import NotFoundPage from "@/app/not-found";
 
 export const dynamic = 'force-dynamic';
@@ -16,14 +16,15 @@ export const metadata = buildMetadata({
 
 export default async function PresidentMessagePage() {
     const page = await getPageBySlug("le-mot-du-president").catch(() => null);
+
     if (!page) return <NotFoundPage />
 
     const { name, title, mandateStart, mandateEnd, photoUrl } = presidentMeta;
 
     const breadcrumb = buildBreadcrumbJsonLd([
-        { name: 'Accueil', url: process.env.VERCEL_URL || 'https://senat-de-madagascar.vercel.app' },
-        { name: 'À propos', url: `${process.env.VERCEL_URL || "https://senat-de-madagascar.vercel.app"}/about` },
-        { name: 'Message du Président', url: `${process.env.VERCEL_URL || "https://senat-de-madagascar.vercel.app"}/about/president-message` },
+        { name: 'Accueil', url: SITE_URL || 'https://senat-de-madagascar.vercel.app' },
+        { name: 'À propos', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about` },
+        { name: 'Message du Président', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about/president-message` },
     ]);
 
     const webPageJsonLd = {

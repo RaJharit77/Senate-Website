@@ -4,7 +4,7 @@ import { TextesSection } from "@/components/about/TextesSection";
 import { getPageBySlug } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 
 export const dynamic = 'force-dynamic';
 
@@ -22,8 +22,8 @@ export default async function AboutPage() {
     ]);
 
     const breadcrumb = buildBreadcrumbJsonLd([
-        { name: "Accueil", url: process.env.VERCEL_URL || "https://senat-de-madagascar.vercel.app" },
-        { name: "À propos du Sénat", url: `${process.env.VERCEL_URL || "https://senat-de-madagascar.vercel.app"}/about` },
+        { name: "Accueil", url: SITE_URL || "https://senat-de-madagascar.vercel.app" },
+        { name: "À propos du Sénat", url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about` },
     ]);
 
     const webPageJsonLd = {
