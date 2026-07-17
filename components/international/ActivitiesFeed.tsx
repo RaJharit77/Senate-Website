@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import type { ActivityCategory } from "@/types/internationalType";
 import { PER_PAGE_ACTIVITIES_FEED } from "@/constants/constants";
 
@@ -42,51 +43,73 @@ const FILTERS: { id: "all" | ActivityCategory; label: string }[] = [
     { id: "international", label: "Déplacements" },
 ];
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.05,
+        },
+    },
+};
+
+const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+    },
+};
+
 function ActivityCard({ item }: { item: ActivityItem }) {
     return (
-        <Link
-            href={`/international/presidents-activities/${item.slug}`}
-            className="group relative flex flex-col overflow-hidden rounded-2xl bg-transparent border border-gray-600 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-        >
-            <div className="relative aspect-4/3 w-full overflow-hidden bg-transparent">
-                {item.imageUrl ? (
-                    <Image
-                        src={item.imageUrl}
-                        alt="activity card"
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
-                        unoptimized
-                        priority
-                    />
-                ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-gray-100 to-gray-200 text-gray-400">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <path d="M21 15l-5-5L5 21" />
-                        </svg>
+        <motion.div variants={cardVariants} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}>
+            <Link
+                href={`/international/senators-activities/${item.slug}`}
+                className="group relative flex flex-col overflow-hidden rounded-2xl bg-transparent border border-gray-600 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+            >
+                <div className="relative aspect-4/3 w-full overflow-hidden bg-transparent">
+                    {item.imageUrl ? (
+                        <Image
+                            src={item.imageUrl}
+                            alt="activity card"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                            unoptimized
+                            priority
+                        />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-gray-100 to-gray-200 text-gray-400">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <path d="M21 15l-5-5L5 21" />
+                            </svg>
+                        </div>
+                    )}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-cyan-500/80 backdrop-blur-sm rounded-full">
+                            {SECTION_CONFIG[item.category].label}
+                        </span>
                     </div>
-                )}
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="inline-block px-2 py-1 text-xs font-semibold bg-cyan-500/80 backdrop-blur-sm rounded-full">
-                        {SECTION_CONFIG[item.category].label}
-                    </span>
                 </div>
-            </div>
-            <div className="flex flex-1 flex-col gap-1 p-4">
-                <h4
-                    className="text-base font-semibold leading-snug text-gray-100 line-clamp-2"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                    dangerouslySetInnerHTML={{ __html: item.title }}
-                />
-                <div className="flex items-center gap-1 text-xs text-gray-200 mt-1">
-                    <Calendar size={14} />
-                    <span>{item.date}</span>
+                <div className="flex flex-1 flex-col gap-1 p-4">
+                    <h4
+                        className="text-base font-semibold leading-snug text-gray-100 line-clamp-2"
+                        style={{ fontFamily: "'Poppins', sans-serif" }}
+                        dangerouslySetInnerHTML={{ __html: item.title }}
+                    />
+                    <div className="flex items-center gap-1 text-xs text-gray-200 mt-1">
+                        <Calendar size={14} />
+                        <span>{item.date}</span>
+                    </div>
                 </div>
-            </div>
-        </Link>
+            </Link>
+        </motion.div>
     );
 }
 
@@ -165,11 +188,16 @@ function ActivitySection({
             {isEmpty ? (
                 <p className="text-sm text-white/50">{SECTION_CONFIG[category].emptyLabel}</p>
             ) : pageItems.length > 0 ? (
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <motion.div
+                    className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
                     {pageItems.map((item) => (
                         <ActivityCard key={item.id} item={item} />
                     ))}
-                </div>
+                </motion.div>
             ) : (
                 <p className="text-sm text-white/50">Aucun élément de cette catégorie sur cette page.</p>
             )}
@@ -254,11 +282,16 @@ export function ActivitiesFeed({ items }: { items: ActivityItem[] }) {
                     />
                 ))
             ) : hasAnyItems ? (
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <motion.div
+                    className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
                     {pageSliceFor(relevantItems).map((item) => (
                         <ActivityCard key={item.id} item={item} />
                     ))}
-                </div>
+                </motion.div>
             ) : null}
 
             <Pagination currentPage={page} totalPages={totalPages} onChange={setPage} />
