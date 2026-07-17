@@ -16,7 +16,6 @@ interface ExtendedPost extends WpPost {
     imageUrl: string | null;
 }
 
-// === Animation variants ===
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
