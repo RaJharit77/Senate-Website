@@ -4,12 +4,20 @@ import { ActivitiesFeed, type ActivityItem } from "@/components/international/Ac
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
+import JsonLd from "@/components/JsonLd";
+import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 
 const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> = {
     "audience_sen": "audience",
     "deplacement_sen": "international",
     "delegation_sen": "delegation"
 };
+
+export const metadata = buildMetadata({
+    title: "Activités des Sénateurs",
+    description: "Audiences, accueil de délégations et déplacements à l'étranger des Sénateurs de Madagascar.",
+    path: "/international/senators-activities",
+});
 
 export default async function SenatorsActivitiesPage() {
     const slugs = Object.keys(CATEGORY_MAP);
@@ -50,24 +58,43 @@ export default async function SenatorsActivitiesPage() {
 
     items.sort((a, b) => b.dateValue - a.dateValue);
 
+    const breadcrumb = buildBreadcrumbJsonLd([
+        { name: "Accueil", url: SITE_URL },
+        { name: "International", url: `${SITE_URL}/international` },
+        { name: "Activités des Sénateurs", url: `${SITE_URL}/international/senators-activities` },
+    ]);
+
+    const webPageJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "Activités des Sénateurs",
+        description: "Audiences, accueil de délégations et déplacements des Sénateurs.",
+        url: `${SITE_URL}/international/senators-activities`,
+        inLanguage: "fr-FR",
+    };
+
     return (
-        <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <div className="mb-12">
-                    <div className="flex gap-1 mb-4" style={{ height: 3 }}>
-                        <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+        <>
+            <JsonLd data={breadcrumb} />
+            <JsonLd data={webPageJsonLd} />
+            <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
+                <div className="max-w-7xl mx-auto">
+                    <div className="mb-12">
+                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                            <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+                        </div>
+                        <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                            Activités des Sénateurs
+                        </h1>
+                        <p className="text-lg mt-2 max-w-2xl text-white/50" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                            Audiences, accueil de délégations et déplacements à l&apos;étranger des Sénateurs.
+                        </p>
                     </div>
-                    <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                        Activités des Sénateurs
-                    </h1>
-                    <p className="text-lg mt-2 max-w-2xl text-white/50" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                        Audiences, accueil de délégations et déplacements à l&apos;étranger des Sénateurs.
-                    </p>
+                    <ActivitiesFeed items={items} />
                 </div>
-                <ActivitiesFeed items={items} />
             </div>
-        </div>
+        </>
     );
 }
