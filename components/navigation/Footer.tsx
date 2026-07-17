@@ -27,7 +27,7 @@ export function Footer() {
                   style={{
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 700,
-                    fontSize: "1.25rem",
+                    fontSize: "1.50rem",
                     color: WHITE,
                     lineHeight: 1,
                   }}
@@ -38,7 +38,7 @@ export function Footer() {
                   style={{
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 600,
-                    fontSize: "0.85rem",
+                    fontSize: "0.95rem",
                     color: WHITE,
                     lineHeight: 1.2,
                   }}

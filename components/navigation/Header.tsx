@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { COLOURS } from "@/utils/colours";
@@ -123,7 +123,6 @@ export function Header() {
     minute: "2-digit",
   });
 
-  // Version courte pour mobile (sans le jour de la semaine)
   const shortDate = dateTime.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "short",
@@ -148,8 +147,7 @@ export function Header() {
       {/* --- BARRE CYAN RESPONSIVE --- */}
       <div style={{ backgroundColor: COLOURS.cyan }}>
         <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between py-1 sm:py-2">
-          {/* Liens sociaux (texte masqué sur mobile) */}
-          <div className="flex items-center gap-2 sm:gap-5">
+          <div className="flex items-center gap-2 sm:gap-5 flex-1 justify-start">
             <Link
               href="https://web.facebook.com/SenatdeMadagascar"
               target="_blank"
@@ -172,8 +170,7 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Date/Heure */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-1 justify-center">
             <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -198,7 +195,6 @@ export function Header() {
               </PopoverContent>
             </Popover>
 
-            {/* Version mobile : affichage compact */}
             <div className="sm:hidden flex items-center gap-1 text-black text-[0.6rem]">
               <CalendarIcon size={12} />
               <span>{shortDate}</span>
@@ -206,22 +202,26 @@ export function Header() {
             </div>
           </div>
 
-          {/* Contact (email + téléphone) */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* Contacts */}
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
             <Link
               href="/contact"
-              className="hidden sm:block transition-opacity hover:opacity-80"
+              className="flex items-center gap-1 transition-opacity hover:opacity-80"
               style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
-              contact@senat.mg
+              <Mail size={14} />
+              <span className="hidden sm:inline">contact@senat.mg</span>
             </Link>
-            <div
-              className="flex items-center gap-1"
-              style={{ fontSize: "0.7rem", color: COLOURS.black }}
+            <Link
+              href="https://wa.me/261341201036"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 transition-opacity hover:opacity-80"
+              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
               <Phone size={14} />
               <span className="hidden sm:inline">+261 34 12 01 036</span>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -267,7 +267,7 @@ export function Header() {
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center justify-between gap-4 shrink-0">
+          <div className="hidden lg:flex flex-1 justify-center">
             <Link href="/" className="flex items-center gap-4">
               <Image
                 src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
@@ -282,28 +282,27 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
-            {/* Barre de recherche desktop */}
+            {/* Barre de recherche desktop - DESIGN AMÉLIORÉ AVEC CYAN */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
-                <form onSubmit={handleSearchSubmit} className="flex items-center">
+                <form onSubmit={handleSearchSubmit} className="flex items-center relative">
                   <input
                     ref={searchInputRef}
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Rechercher…"
-                    className="px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                    className="px-5 py-2.5 pr-12 rounded-full border-2 border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400/50 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md"
                     style={{
                       fontSize: "0.85rem",
                       color: COLOURS.text,
-                      backgroundColor: "rgba(255,255,255,0.9)",
-                      width: "220px",
+                      width: "240px",
                     }}
                   />
                   <button
                     type="submit"
-                    className="ml-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    style={{ color: COLOURS.textMuted }}
+                    className="absolute right-1.5 p-1.5 rounded-full hover:bg-cyan-100 transition-colors"
+                    style={{ color: COLOURS.cyan }}
                   >
                     <Search size={18} />
                   </button>
@@ -311,14 +310,16 @@ export function Header() {
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-cyan-400 transition-all hover:border-cyan-500"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-cyan-400 hover:border-cyan-500 hover:bg-cyan-50/50 transition-all duration-300 shadow-sm hover:shadow-md"
                   style={{
                     fontSize: "0.85rem",
-                    color: COLOURS.textMuted,
+                    color: COLOURS.cyan,
+                    backgroundColor: "rgba(255,255,255,0.8)",
+                    backdropFilter: "blur(4px)",
                   }}
                 >
                   <Search size={16} />
-                  <span>Rechercher…</span>
+                  <span className="font-medium">Rechercher…</span>
                 </button>
               )}
             </div>
