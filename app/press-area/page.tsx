@@ -16,6 +16,27 @@ interface ExtendedPost extends WpPost {
     imageUrl: string | null;
 }
 
+// === Animation variants ===
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.05,
+        },
+    },
+};
+
+const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+    },
+};
+
 function ArticleCard({ post }: { post: ExtendedPost }) {
     const { imageUrl, isFeatured } = post;
     const date = new Date(post.date).toLocaleDateString("fr-FR", {
@@ -27,9 +48,8 @@ function ArticleCard({ post }: { post: ExtendedPost }) {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            variants={cardVariants}
+            whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
             className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col"
         >
             <div className="relative w-full aspect-video overflow-hidden bg-white/5">
@@ -217,7 +237,13 @@ export default function PressPage() {
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
-                <div className="mb-12">
+                {/* En-tête animé */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="mb-12"
+                >
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
@@ -229,9 +255,16 @@ export default function PressPage() {
                     <p className="text-gray-300 text-lg mt-2 max-w-2xl">
                         Retrouvez tous les communiqués et actualités officielles du Sénat.
                     </p>
-                </div>
+                </motion.div>
 
-                <form onSubmit={handleSearch} className="flex gap-3 mb-8 max-w-md">
+                {/* Barre de recherche animée */}
+                <motion.form
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    onSubmit={handleSearch}
+                    className="flex gap-3 mb-8 max-w-md"
+                >
                     <input
                         type="text"
                         placeholder="Rechercher dans toutes les actualités..."
@@ -247,17 +280,20 @@ export default function PressPage() {
                         <Search size={18} />
                         Rechercher
                     </button>
-                </form>
+                </motion.form>
 
                 {/* Section À la une */}
                 <section className="mb-16">
-                    <h2
+                    <motion.h2
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
                         className="text-2xl font-bold mb-6 flex items-center gap-3"
                         style={{ color: EMERALD, fontFamily: "'Poppins', sans-serif" }}
                     >
                         <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
                         À la une
-                    </h2>
+                    </motion.h2>
                     {loadingFeatured ? (
                         <div className="flex justify-center py-12">
                             <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
@@ -265,16 +301,25 @@ export default function PressPage() {
                     ) : paginatedFeatured.length === 0 ? (
                         <p className="text-gray-400">Aucun article à la une.</p>
                     ) : (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <motion.div
+                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                        >
                             {paginatedFeatured.map((post) => (
                                 <ArticleCard key={post.id} post={post} />
                             ))}
-                        </div>
+                        </motion.div>
                     )}
                 </section>
 
+                {/* Section Toutes les actualités */}
                 <section className="mb-12">
-                    <h2
+                    <motion.h2
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
                         className="text-2xl font-bold mb-6 flex items-center gap-3"
                         style={{ color: EMERALD, fontFamily: "'Poppins', sans-serif" }}
                     >
@@ -285,7 +330,7 @@ export default function PressPage() {
                                 ({filteredRegular.length} article{filteredRegular.length > 1 ? 's' : ''})
                             </span>
                         )}
-                    </h2>
+                    </motion.h2>
 
                     {loadingRegular ? (
                         <div className="flex justify-center py-12">
@@ -294,16 +339,27 @@ export default function PressPage() {
                     ) : paginatedRegular.length === 0 ? (
                         <p className="text-gray-400">Aucune actualité.</p>
                     ) : (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <motion.div
+                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                        >
                             {paginatedRegular.map((post) => (
                                 <ArticleCard key={post.id} post={post} />
                             ))}
-                        </div>
+                        </motion.div>
                     )}
                 </section>
 
+                {/* Pagination animée */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                        className="flex justify-center items-center gap-2 mt-8 flex-wrap"
+                    >
                         <button
                             onClick={handlePrev}
                             disabled={currentPage === 1}
@@ -333,7 +389,7 @@ export default function PressPage() {
                         >
                             Suivant
                         </button>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </div>
