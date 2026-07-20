@@ -476,7 +476,7 @@ export function Header() {
                   className="absolute top-full left-0 z-50 py-2 shadow-xl rounded-b-lg overflow-hidden"
                   style={{
                     minWidth: 250,
-                    backgroundColor: COLOURS.white,
+                    backgroundColor: "#1e293b", // slate-800 au lieu de blanc
                     border: `1px solid ${COLOURS.border}`,
                     borderTop: `3px solid ${COLOURS.cyan}`,
                   }}
@@ -489,18 +489,18 @@ export function Header() {
                       style={{
                         fontFamily: "'Poppins', sans-serif",
                         fontSize: "0.85rem",
-                        color: COLOURS.text,
+                        color: "#e2e8f0", // texte clair
                         borderLeft: "3px solid transparent",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.backgroundColor = "#f1f5f9";
+                        (e.currentTarget as HTMLElement).style.backgroundColor = "#334155"; // slate-700
                         (e.currentTarget as HTMLElement).style.borderLeftColor = COLOURS.cyan;
                         (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
                         (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
-                        (e.currentTarget as HTMLElement).style.color = COLOURS.text;
+                        (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
                       }}
                     >
                       {child.label}
@@ -558,7 +558,7 @@ export function Header() {
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.2 }}
-                            style={{ backgroundColor: "#f1f5f9" }}
+                            style={{ backgroundColor: "#1e293b" }} // slate-800 au lieu de #f1f5f9
                             className="overflow-hidden"
                           >
                             {item.children.map((child) => (
@@ -566,8 +566,14 @@ export function Header() {
                                 key={child.label}
                                 href={child.path}
                                 className="block px-8 py-2"
-                                style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
+                                style={{ fontSize: "0.88rem", color: "#94a3b8" }} // texte gris clair
                                 onClick={() => setMobileOpen(false)}
+                                onMouseEnter={(e) => {
+                                  (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
+                                }}
+                                onMouseLeave={(e) => {
+                                  (e.currentTarget as HTMLElement).style.color = "#94a3b8";
+                                }}
                               >
                                 {child.label}
                               </Link>
