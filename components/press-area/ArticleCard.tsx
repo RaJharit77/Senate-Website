@@ -21,6 +21,16 @@ const cardVariants = {
     },
 };
 
+const imageVariants = {
+    hover: {
+        scale: 1.08,
+        transition: { duration: 0.3, ease: "easeOut" as const },
+    },
+    initial: {
+        scale: 1,
+    },
+};
+
 export default function ArticleCard({ post }: { post: ExtendedPost }) {
     const { imageUrl, isFeatured } = post;
     const date = new Date(post.date).toLocaleDateString("fr-FR", {
@@ -38,22 +48,34 @@ export default function ArticleCard({ post }: { post: ExtendedPost }) {
         >
             <div className="relative w-full aspect-video overflow-hidden bg-white/5">
                 {imageUrl ? (
-                    <Image
-                        src={imageUrl}
-                        alt={cleanTitle}
-                        fill
-                        className="object-cover object-center"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                    />
+                    <motion.div
+                        className="relative w-full h-full"
+                        initial="initial"
+                        whileHover="hover"
+                        variants={imageVariants}
+                    >
+                        <Image
+                            src={imageUrl}
+                            alt={cleanTitle}
+                            fill
+                            className="object-cover object-center"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                        />
+                    </motion.div>
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-500">
                         <ImageIcon size={48} strokeWidth={1} />
                     </div>
                 )}
                 {isFeatured && (
-                    <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-10">
+                    <motion.span
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2, duration: 0.3 }}
+                        className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-10"
+                    >
                         À la une
-                    </span>
+                    </motion.span>
                 )}
             </div>
             <div className="p-5 flex-1 flex flex-col">
