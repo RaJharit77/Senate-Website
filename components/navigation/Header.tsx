@@ -6,8 +6,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { COLOURS } from "@/utils/colours";
-import { WHITE } from "@/utils/colors";
+import { CLOUD_BURST, LINK_WATER, MIDNIGHT, MIDNIGHT_EXPRESS, SILVER, WHITE } from "@/utils/colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,28 @@ const navItems = [
   { label: "Autres", path: "/others" },
   { label: "Contact", path: "/contact" },
 ];
+
+const itemVariants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+  closed: {
+    opacity: 0,
+    y: -10,
+    transition: { duration: 0.2, ease: "easeIn" as const },
+  },
+};
+
+const listVariants = {
+  open: {
+    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
+  },
+  closed: {
+    transition: { staggerChildren: 0.05, staggerDirection: -1 },
+  },
+};
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -282,7 +305,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
-            {/* Barre de recherche desktop - DESIGN AMÉLIORÉ AVEC CYAN */}
+            {/* Barre de recherche desktop */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center relative">
@@ -387,7 +410,7 @@ export function Header() {
         )}
       </div>
 
-      {/* Navigation principale */}
+      {/* Navigation principale desktop */}
       <nav
         className="hidden lg:block transition-colors duration-300"
         style={{
@@ -453,7 +476,7 @@ export function Header() {
                   className="absolute top-full left-0 z-50 py-2 shadow-xl rounded-b-lg overflow-hidden"
                   style={{
                     minWidth: 250,
-                    backgroundColor: COLOURS.white,
+                    backgroundColor: MIDNIGHT_EXPRESS,
                     border: `1px solid ${COLOURS.border}`,
                     borderTop: `3px solid ${COLOURS.cyan}`,
                   }}
@@ -466,18 +489,18 @@ export function Header() {
                       style={{
                         fontFamily: "'Poppins', sans-serif",
                         fontSize: "0.85rem",
-                        color: COLOURS.text,
+                        color: SILVER,
                         borderLeft: "3px solid transparent",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.backgroundColor = "#f1f5f9";
+                        (e.currentTarget as HTMLElement).style.backgroundColor = CLOUD_BURST;
                         (e.currentTarget as HTMLElement).style.borderLeftColor = COLOURS.cyan;
                         (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
                         (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
-                        (e.currentTarget as HTMLElement).style.color = COLOURS.text;
+                        (e.currentTarget as HTMLElement).style.color = LINK_WATER;
                       }}
                     >
                       {child.label}
@@ -490,62 +513,95 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Menu mobile */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden border-t"
-          style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
-        >
-          {navItems.map((item) => (
-            <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
-              {item.children ? (
-                <>
-                  <button
-                    className="w-full text-left px-5 py-4 flex items-center justify-between"
-                    style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
-                    onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
-                  >
-                    {item.label}
-                    <ChevronDown
-                      size={14}
-                      style={{ color: COLOURS.cyan }}
-                      className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {item.children && openMenu === item.label && (
-                    <div style={{ backgroundColor: "#f1f5f9" }} className="pb-2">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          href={child.path}
-                          className="block px-8 py-2"
-                          style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <Link
-                  href={item.path}
-                  className="block px-5 py-4"
-                  style={{
-                    fontSize: "0.95rem",
-                    fontWeight: isActive(item.path) ? 600 : 500,
-                    color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
-                  }}
-                  onClick={() => setMobileOpen(false)}
+      {/* Menu mobile animé */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, overflow: "hidden" }}
+            animate={{ opacity: 1, height: "auto", overflow: "visible" }}
+            exit={{ opacity: 0, height: 0, overflow: "hidden" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="lg:hidden border-t"
+            style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
+          >
+            <motion.div
+              variants={listVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              className="max-h-[80vh] overflow-y-auto"
+            >
+              {navItems.map((item) => (
+                <motion.div
+                  key={item.label}
+                  variants={itemVariants}
+                  style={{ borderBottom: `1px solid ${COLOURS.border}` }}
                 >
-                  {item.label}
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                  {item.children ? (
+                    <>
+                      <button
+                        className="w-full text-left px-5 py-4 flex items-center justify-between"
+                        style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
+                        onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          size={14}
+                          style={{ color: COLOURS.cyan }}
+                          className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {openMenu === item.label && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ backgroundColor: MIDNIGHT }}
+                            className="overflow-hidden"
+                          >
+                            {item.children.map((child) => (
+                              <Link
+                                key={child.label}
+                                href={child.path}
+                                className="block px-8 py-2"
+                                style={{ fontSize: "0.88rem", color: SILVER }}
+                                onClick={() => setMobileOpen(false)}
+                                onMouseEnter={(e) => {
+                                  (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
+                                }}
+                                onMouseLeave={(e) => {
+                                  (e.currentTarget as HTMLElement).style.color = "#d1d5db";
+                                }}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  ) : (
+                    <Link
+                      href={item.path}
+                      className="block px-5 py-4"
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: isActive(item.path) ? 600 : 500,
+                        color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
+                      }}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

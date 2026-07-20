@@ -14,3 +14,10 @@ export const MARINA = "#0f172a";
 export const REDS = "#cc1111";
 export const SKY_BLUE = "#5bc8de";
 export const GREENS = "#16a34a";
+
+// News colours
+export const SILVER = "#f3f4f6";
+export const MIDNIGHT = "#111827";
+export const MIDNIGHT_EXPRESS = "#1f2937";
+export const CLOUD_BURST = "#374151";
+export const LINK_WATER = "#d1d5db";
