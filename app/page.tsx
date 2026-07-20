@@ -116,12 +116,12 @@ export default async function HomePage() {
     '@type': 'WebPage',
     name: 'Accueil – Sénat de Madagascar',
     description: 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.',
-    url: process.env.VERCEL_URL || "https://senat-de-madagascar.vercel.app",
+    url: process.env.SITE_URL,
     inLanguage: 'fr-FR',
     isPartOf: {
       '@type': 'WebSite',
       name: 'Sénat de Madagascar',
-      url: process.env.VERCEL_URL || 'https://senat-de-madagascar.vercel.app',
+      url: process.env.SITE_URL,
     },
   };
 
