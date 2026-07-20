@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { COLOURS } from "@/utils/colours";
 import { WHITE } from "@/utils/colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -282,7 +283,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
-            {/* Barre de recherche desktop - DESIGN AMÉLIORÉ AVEC CYAN */}
+            {/* Barre de recherche desktop */}
             <div className="hidden lg:flex items-center relative shrink-0">
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center relative">
@@ -490,62 +491,86 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Menu mobile */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden border-t"
-          style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
-        >
-          {navItems.map((item) => (
-            <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
-              {item.children ? (
-                <>
-                  <button
-                    className="w-full text-left px-5 py-4 flex items-center justify-between"
-                    style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
-                    onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
-                  >
-                    {item.label}
-                    <ChevronDown
-                      size={14}
-                      style={{ color: COLOURS.cyan }}
-                      className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {item.children && openMenu === item.label && (
-                    <div style={{ backgroundColor: "#f1f5f9" }} className="pb-2">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          href={child.path}
-                          className="block px-8 py-2"
-                          style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
+      {/* Menu mobile avec animation */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="lg:hidden border-t overflow-hidden"
+            style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
+          >
+            <motion.div
+              initial={{ y: -20 }}
+              animate={{ y: 0 }}
+              exit={{ y: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              {navItems.map((item) => (
+                <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
+                  {item.children ? (
+                    <>
+                      <button
+                        className="w-full text-left px-5 py-4 flex items-center justify-between"
+                        style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
+                        onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          size={14}
+                          style={{ color: COLOURS.cyan }}
+                          className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {openMenu === item.label && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            style={{ backgroundColor: "#f1f5f9" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pb-2">
+                              {item.children.map((child) => (
+                                <Link
+                                  key={child.label}
+                                  href={child.path}
+                                  className="block px-8 py-2"
+                                  style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
+                                  onClick={() => setMobileOpen(false)}
+                                >
+                                  {child.label}
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  ) : (
+                    <Link
+                      href={item.path}
+                      className="block px-5 py-4"
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: isActive(item.path) ? 600 : 500,
+                        color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
+                      }}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
                   )}
-                </>
-              ) : (
-                <Link
-                  href={item.path}
-                  className="block px-5 py-4"
-                  style={{
-                    fontSize: "0.95rem",
-                    fontWeight: isActive(item.path) ? 600 : 500,
-                    color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
-                  }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
