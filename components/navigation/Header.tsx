@@ -46,6 +46,28 @@ const navItems = [
   { label: "Contact", path: "/contact" },
 ];
 
+const itemVariants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+  closed: {
+    opacity: 0,
+    y: -10,
+    transition: { duration: 0.2, ease: "easeIn" as const },
+  },
+};
+
+const listVariants = {
+  open: {
+    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
+  },
+  closed: {
+    transition: { staggerChildren: 0.05, staggerDirection: -1 },
+  },
+};
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -388,7 +410,7 @@ export function Header() {
         )}
       </div>
 
-      {/* Navigation principale */}
+      {/* Navigation principale desktop */}
       <nav
         className="hidden lg:block transition-colors duration-300"
         style={{
@@ -491,25 +513,30 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Menu mobile avec animation */}
+      {/* Menu mobile animé */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0, height: 0, overflow: "hidden" }}
+            animate={{ opacity: 1, height: "auto", overflow: "visible" }}
+            exit={{ opacity: 0, height: 0, overflow: "hidden" }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="lg:hidden border-t overflow-hidden"
+            className="lg:hidden border-t"
             style={{ backgroundColor: COLOURS.navMob, borderColor: COLOURS.border }}
           >
             <motion.div
-              initial={{ y: -20 }}
-              animate={{ y: 0 }}
-              exit={{ y: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              variants={listVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              className="max-h-[80vh] overflow-y-auto"
             >
               {navItems.map((item) => (
-                <div key={item.label} style={{ borderBottom: `1px solid ${COLOURS.border}` }}>
+                <motion.div
+                  key={item.label}
+                  variants={itemVariants}
+                  style={{ borderBottom: `1px solid ${COLOURS.border}` }}
+                >
                   {item.children ? (
                     <>
                       <button
@@ -530,23 +557,21 @@ export function Header() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            transition={{ duration: 0.2 }}
                             style={{ backgroundColor: "#f1f5f9" }}
                             className="overflow-hidden"
                           >
-                            <div className="pb-2">
-                              {item.children.map((child) => (
-                                <Link
-                                  key={child.label}
-                                  href={child.path}
-                                  className="block px-8 py-2"
-                                  style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
-                                  onClick={() => setMobileOpen(false)}
-                                >
-                                  {child.label}
-                                </Link>
-                              ))}
-                            </div>
+                            {item.children.map((child) => (
+                              <Link
+                                key={child.label}
+                                href={child.path}
+                                className="block px-8 py-2"
+                                style={{ fontSize: "0.88rem", color: COLOURS.cyan }}
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -565,7 +590,7 @@ export function Header() {
                       {item.label}
                     </Link>
                   )}
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </motion.div>
