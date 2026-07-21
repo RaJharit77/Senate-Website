@@ -193,6 +193,7 @@ export function Header() {
             </Link>
           </div>
 
+          {/* Calendar */}
           <div className="flex items-center gap-1 sm:gap-2 flex-1 justify-center">
             <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
@@ -268,6 +269,7 @@ export function Header() {
               className="h-20 w-20"
               priority
             />
+
             <div>
               <div
                 className="font-bold text-[1.9rem] leading-none tracking-tight"
@@ -480,12 +482,9 @@ export function Header() {
                     }}
                   >
                     <span className="relative z-10">{item.label}</span>
-                    {/* Soulignement animé – s'étend de gauche à droite */}
                     <span
-                      className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out group-hover/link:w-full"
-                      style={{
-                        width: isActive(item.path) ? "100%" : "0%",
-                      }}
+                      className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out 
+                        ${isActive(item.path) ? "w-full" : "w-0 group-hover/link:w-full"}`}
                     />
                   </Link>
                 )}
@@ -635,10 +634,8 @@ export function Header() {
                       >
                         <span className="relative z-10">{item.label}</span>
                         <span
-                          className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out group-hover/link-mobile:w-full"
-                          style={{
-                            width: isActive(item.path) ? "100%" : "0%",
-                          }}
+                          className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out 
+                            ${isActive(item.path) ? "w-full" : "w-0 group-hover/link-mobile:w-full"}`}
                         />
                       </Link>
                     )}
