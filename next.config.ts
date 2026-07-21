@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
         pathname: '/vi/**',
       },
     ],
-    qualities: [100, 30, 75],
+    qualities: [100, 30, 75, 90],
   },
 };
 

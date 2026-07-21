@@ -265,7 +265,7 @@ export function Header() {
               alt="Sénat de Madagascar"
               width={80}
               height={80}
-              className="h-20 w-auto"
+              className="h-20 w-20"
               priority
             />
             <div>

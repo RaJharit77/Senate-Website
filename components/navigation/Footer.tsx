@@ -20,7 +20,7 @@ export function Footer() {
                 width={80}
                 height={80}
                 priority
-                className="h-20 w-auto rounded-full border border-cyan-500"
+                className="h-20 w-20 rounded-full border border-cyan-500"
               />
               <div>
                 <div

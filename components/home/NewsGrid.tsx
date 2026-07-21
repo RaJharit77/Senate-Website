@@ -120,6 +120,7 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
             alt={cleanText(article.title)}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
             unoptimized={!isValidImage}
           />
           <div
@@ -231,13 +232,13 @@ function CompactCard({ article }: { article: Article }) {
     >
       <Card className="flex gap-4 rounded-2xl p-4 cursor-pointer transition-all backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20">
         <Link href={article.link || "#"} className="flex gap-4 w-full">
-          <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 100, height: 100 }}>
+          <div className="shrink-0 rounded-xl overflow-hidden relative" style={{ width: 100, height: 100 }}>
             <Image
               src={imageSrc}
               alt={cleanText(article.title)}
-              width={100}
-              height={100}
+              fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
+              sizes="100px"
               unoptimized={!isValidImage}
               priority
             />
