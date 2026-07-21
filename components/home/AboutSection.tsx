@@ -352,6 +352,7 @@ export function AboutSection() {
                           style={{
                             transform: isPresident ? "scale(1.02)" : "scale(1)",
                           }}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                         {isPresident && (
                           <div
