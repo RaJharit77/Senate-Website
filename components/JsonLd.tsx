@@ -1,22 +1,12 @@
-'use client';
-
-import { useEffect } from 'react';
-
 interface JsonLdProps {
     data: Record<string, unknown>;
 }
 
 export default function JsonLd({ data }: JsonLdProps) {
-    useEffect(() => {
-        const script = document.createElement('script');
-        script.type = 'application/ld+json';
-        script.innerHTML = JSON.stringify(data);
-        document.head.appendChild(script);
-
-        return () => {
-            document.head.removeChild(script);
-        };
-    }, [data]);
-
-    return null;
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+        />
+    );
 }
