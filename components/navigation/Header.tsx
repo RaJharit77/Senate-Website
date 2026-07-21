@@ -8,7 +8,7 @@ import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLOURS } from "@/utils/colours";
-import { CLOUD_BURST, LINK_WATER, MIDNIGHT, MIDNIGHT_EXPRESS, SILVER, WHITE } from "@/utils/colors";
+import { ALICE_BLUE, CYAN, LINK_WATER, MIDNIGHT, SILVER, WHITE } from "@/utils/colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -420,96 +420,114 @@ export function Header() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center">
-          {navItems.map((item) => (
-            <div
-              key={item.label}
-              className="relative group"
-              onMouseEnter={() => item.children && setOpenMenu(item.label)}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
-              {item.children ? (
-                <button
-                  className="flex items-center gap-1 px-5 py-4 transition-colors relative"
-                  style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontSize: "0.9rem",
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                    color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
-                    backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
-                  }}
-                >
-                  {item.label}
-                  <ChevronDown size={12} className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`} />
-                  {isActive(item.path) && (
+          {navItems.map((item) => {
+            const hasChildren = !!item.children;
+            return (
+              <div
+                key={item.label}
+                className="relative group"
+                onMouseEnter={() => hasChildren && setOpenMenu(item.label)}
+                onMouseLeave={() => hasChildren && setOpenMenu(null)}
+              >
+                {hasChildren ? (
+                  <button
+                    className="flex items-center gap-1 px-5 py-4 transition-colors relative"
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                      letterSpacing: "0.02em",
+                      color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
+                      backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
+                      transition: "background-color 0.2s ease, color 0.2s ease",
+                    }}
+                  >
+                    {item.label}
+                    <ChevronDown size={12} className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`} />
+                    {isActive(item.path) && (
+                      <span
+                        className="absolute bottom-0 left-0 right-0 h-0.5"
+                        style={{ backgroundColor: COLOURS.cyan }}
+                      />
+                    )}
+                  </button>
+                ) : (
+                  <Link
+                    href={item.path}
+                    className="flex items-center gap-1 px-5 py-4 transition-all duration-200 relative group/link"
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                      letterSpacing: "0.02em",
+                      color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
+                      backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
+                      transform: "scale(1)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive(item.path)) {
+                        e.currentTarget.style.color = COLOURS.white;
+                        e.currentTarget.style.backgroundColor = COLOURS.navHover;
+                      }
+                      e.currentTarget.style.transform = "scale(1.05)";
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive(item.path)) {
+                        e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                  >
+                    <span className="relative z-10">{item.label}</span>
+                    {/* Soulignement animé – s'étend de gauche à droite */}
                     <span
-                      className="absolute bottom-0 left-0 right-0 h-0.5"
-                      style={{ backgroundColor: COLOURS.cyan }}
-                    />
-                  )}
-                </button>
-              ) : (
-                <Link
-                  href={item.path}
-                  className="flex items-center gap-1 px-5 py-4 transition-colors relative"
-                  style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontSize: "0.9rem",
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                    color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
-                    backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
-                  }}
-                >
-                  {item.label}
-                  {isActive(item.path) && (
-                    <span
-                      className="absolute bottom-0 left-0 right-0 h-0.5"
-                      style={{ backgroundColor: COLOURS.cyan }}
-                    />
-                  )}
-                </Link>
-              )}
-
-              {item.children && openMenu === item.label && (
-                <div
-                  className="absolute top-full left-0 z-50 py-2 shadow-xl rounded-b-lg overflow-hidden"
-                  style={{
-                    minWidth: 250,
-                    backgroundColor: MIDNIGHT_EXPRESS,
-                    border: `1px solid ${COLOURS.border}`,
-                    borderTop: `3px solid ${COLOURS.cyan}`,
-                  }}
-                >
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.label}
-                      href={child.path}
-                      className="flex items-center px-5 py-3 transition-colors"
+                      className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out group-hover/link:w-full"
                       style={{
-                        fontFamily: "'Poppins', sans-serif",
-                        fontSize: "0.85rem",
-                        color: SILVER,
-                        borderLeft: "3px solid transparent",
+                        width: isActive(item.path) ? "100%" : "0%",
                       }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.backgroundColor = CLOUD_BURST;
-                        (e.currentTarget as HTMLElement).style.borderLeftColor = COLOURS.cyan;
-                        (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
-                        (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
-                        (e.currentTarget as HTMLElement).style.color = LINK_WATER;
-                      }}
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                    />
+                  </Link>
+                )}
+
+                {hasChildren && openMenu === item.label && (
+                  <div
+                    className="absolute top-full left-0 z-50 py-2 shadow-xl rounded-b-lg overflow-hidden"
+                    style={{
+                      minWidth: 250,
+                      backgroundColor: WHITE,
+                      border: `1px solid ${COLOURS.border}`,
+                      borderTop: `3px solid ${COLOURS.cyan}`,
+                    }}
+                  >
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.label}
+                        href={child.path}
+                        className="flex items-center px-5 py-3 transition-colors"
+                        style={{
+                          fontFamily: "'Poppins', sans-serif",
+                          fontSize: "0.85rem",
+                          color: CYAN,
+                          borderLeft: "3px solid transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = ALICE_BLUE;
+                          (e.currentTarget as HTMLElement).style.borderLeftColor = CYAN;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                          (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
+                        }}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </nav>
 
@@ -531,73 +549,102 @@ export function Header() {
               exit="closed"
               className="max-h-[80vh] overflow-y-auto"
             >
-              {navItems.map((item) => (
-                <motion.div
-                  key={item.label}
-                  variants={itemVariants}
-                  style={{ borderBottom: `1px solid ${COLOURS.border}` }}
-                >
-                  {item.children ? (
-                    <>
-                      <button
-                        className="w-full text-left px-5 py-4 flex items-center justify-between"
-                        style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
-                        onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
+              {navItems.map((item) => {
+                const hasChildren = !!item.children;
+                return (
+                  <motion.div
+                    key={item.label}
+                    variants={itemVariants}
+                    style={{ borderBottom: `1px solid ${COLOURS.border}` }}
+                  >
+                    {hasChildren ? (
+                      <>
+                        <button
+                          className="w-full text-left px-5 py-4 flex items-center justify-between"
+                          style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
+                          onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
+                        >
+                          {item.label}
+                          <ChevronDown
+                            size={14}
+                            style={{ color: COLOURS.cyan }}
+                            className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                        <AnimatePresence>
+                          {openMenu === item.label && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.2 }}
+                              style={{ backgroundColor: MIDNIGHT }}
+                              className="overflow-hidden"
+                            >
+                              {item.children.map((child) => (
+                                <Link
+                                  key={child.label}
+                                  href={child.path}
+                                  className="block px-8 py-2 transition-colors"
+                                  style={{ fontSize: "0.88rem", color: SILVER }}
+                                  onClick={() => setMobileOpen(false)}
+                                  onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLElement).style.color = LINK_WATER;
+                                  }}
+                                >
+                                  {child.label}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </>
+                    ) : (
+                      <Link
+                        href={item.path}
+                        className="block px-5 py-4 relative group/link-mobile"
+                        style={{
+                          fontSize: "0.95rem",
+                          fontWeight: isActive(item.path) ? 600 : 500,
+                          color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
+                          transform: "scale(1)",
+                          transition: "transform 0.2s ease, color 0.2s ease",
+                        }}
+                        onClick={() => setMobileOpen(false)}
+                        onMouseEnter={(e) => {
+                          if (!isActive(item.path)) {
+                            e.currentTarget.style.color = COLOURS.cyan;
+                          }
+                          e.currentTarget.style.transform = "scale(1.02)";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isActive(item.path)) {
+                            e.currentTarget.style.color = COLOURS.white;
+                          }
+                          e.currentTarget.style.transform = "scale(1)";
+                        }}
+                        onTouchStart={(e) => {
+                          e.currentTarget.style.transform = "scale(0.97)";
+                        }}
+                        onTouchEnd={(e) => {
+                          e.currentTarget.style.transform = "scale(1)";
+                        }}
                       >
-                        {item.label}
-                        <ChevronDown
-                          size={14}
-                          style={{ color: COLOURS.cyan }}
-                          className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                        <span className="relative z-10">{item.label}</span>
+                        <span
+                          className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out group-hover/link-mobile:w-full"
+                          style={{
+                            width: isActive(item.path) ? "100%" : "0%",
+                          }}
                         />
-                      </button>
-                      <AnimatePresence>
-                        {openMenu === item.label && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            style={{ backgroundColor: MIDNIGHT }}
-                            className="overflow-hidden"
-                          >
-                            {item.children.map((child) => (
-                              <Link
-                                key={child.label}
-                                href={child.path}
-                                className="block px-8 py-2"
-                                style={{ fontSize: "0.88rem", color: SILVER }}
-                                onClick={() => setMobileOpen(false)}
-                                onMouseEnter={(e) => {
-                                  (e.currentTarget as HTMLElement).style.color = COLOURS.cyan;
-                                }}
-                                onMouseLeave={(e) => {
-                                  (e.currentTarget as HTMLElement).style.color = "#d1d5db";
-                                }}
-                              >
-                                {child.label}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </>
-                  ) : (
-                    <Link
-                      href={item.path}
-                      className="block px-5 py-4"
-                      style={{
-                        fontSize: "0.95rem",
-                        fontWeight: isActive(item.path) ? 600 : 500,
-                        color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
-                      }}
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </motion.div>
-              ))}
+                      </Link>
+                    )}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </motion.div>
         )}
