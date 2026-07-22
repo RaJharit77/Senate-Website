@@ -8,6 +8,9 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { Search } from "lucide-react";
 import { extractFirstImageFromContent } from "@/lib/extractImage";
 import ArticleCard from "@/components/press-area/ArticleCard";
+import { ArticleSkeleton } from "@/components/press-area/ArticleSkeleton";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface ExtendedPost extends WpPost {
     isFeatured: boolean;
@@ -162,6 +165,10 @@ export default function PressClient() {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
+    const renderSkeletons = () => {
+        return Array.from({ length: perPage }).map((_, i) => <ArticleSkeleton key={i} />);
+    };
+
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
@@ -185,29 +192,26 @@ export default function PressClient() {
                     </p>
                 </motion.div>
 
-                {/* Barre de recherche animée */}
+                {/* Barre de recherche */}
                 <motion.form
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                     onSubmit={handleSearch}
-                    className="flex gap-3 mb-8 max-w-md"
+                    className="flex flex-col sm:flex-row gap-3 mb-8 max-w-md"
                 >
-                    <input
+                    <Input
                         type="text"
                         placeholder="Rechercher dans toutes les actualités..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition"
+                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus-visible:ring-cyan-400/50"
                         style={{ fontFamily: "'Poppins', sans-serif" }}
                     />
-                    <button
-                        type="submit"
-                        className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition flex items-center gap-2"
-                    >
+                    <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition flex items-center gap-2">
                         <Search size={18} />
                         Rechercher
-                    </button>
+                    </Button>
                 </motion.form>
 
                 {/* Section À la une */}
@@ -223,8 +227,8 @@ export default function PressClient() {
                         À la une
                     </motion.h2>
                     {loadingFeatured ? (
-                        <div className="flex justify-center py-12">
-                            <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {renderSkeletons()}
                         </div>
                     ) : paginatedFeatured.length === 0 ? (
                         <p className="text-gray-400">Aucun article à la une.</p>
@@ -261,8 +265,8 @@ export default function PressClient() {
                     </motion.h2>
 
                     {loadingRegular ? (
-                        <div className="flex justify-center py-12">
-                            <div className="w-12 h-12 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin" />
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {renderSkeletons()}
                         </div>
                     ) : paginatedRegular.length === 0 ? (
                         <p className="text-gray-400">Aucune actualité.</p>
@@ -280,7 +284,7 @@ export default function PressClient() {
                     )}
                 </section>
 
-                {/* Pagination animée */}
+                {/* Pagination */}
                 {totalPages > 1 && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -288,35 +292,38 @@ export default function PressClient() {
                         transition={{ duration: 0.5, delay: 0.5 }}
                         className="flex justify-center items-center gap-2 mt-8 flex-wrap"
                     >
-                        <button
+                        <Button
                             onClick={handlePrev}
                             disabled={currentPage === 1}
-                            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition"
+                            variant="outline"
+                            className="border-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10"
                         >
                             Précédent
-                        </button>
+                        </Button>
 
                         {getPageNumbers().map((page, index) => (
-                            <button
+                            <Button
                                 key={index}
                                 onClick={() => goToPage(page)}
-                                className={`px-4 py-2 rounded-xl transition ${page === currentPage
-                                    ? 'bg-cyan-500 text-white'
-                                    : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10'
-                                    } ${page === '...' ? 'cursor-default' : ''}`}
+                                variant={page === currentPage ? "default" : "outline"}
+                                className={page === currentPage
+                                    ? 'bg-cyan-500 text-white hover:bg-cyan-600'
+                                    : 'border-white/10 text-gray-300 hover:bg-white/10'
+                                }
                                 disabled={page === '...'}
                             >
                                 {page}
-                            </button>
+                            </Button>
                         ))}
 
-                        <button
+                        <Button
                             onClick={handleNext}
                             disabled={currentPage === totalPages}
-                            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition"
+                            variant="outline"
+                            className="border-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10"
                         >
                             Suivant
-                        </button>
+                        </Button>
                     </motion.div>
                 )}
             </div>
