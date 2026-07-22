@@ -21,3 +21,4 @@ export const MIDNIGHT = "#111827";
 export const MIDNIGHT_EXPRESS = "#1f2937";
 export const CLOUD_BURST = "#374151";
 export const LINK_WATER = "#d1d5db";
+export const ALICE_BLUE = "#f0f9ff";

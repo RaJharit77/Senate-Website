@@ -5,6 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const leadership = [
   {
@@ -56,6 +59,7 @@ export function AboutSection() {
   return (
     <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
+        {/* En-tête */}
         <div className="mb-12">
           <div className="flex gap-1 mb-4" style={{ height: 3 }}>
             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
@@ -100,50 +104,118 @@ export function AboutSection() {
             Missions et attributions
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
-                <Scale size={24} style={{ color: EMERALD }} />
-              </div>
-              <h3 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.5rem" }}>
-                Fonction législative
-              </h3>
-              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.95rem", color: GRAY, lineHeight: 1.7 }}>
-                Les Sénateurs élaborent des propositions de loi pour satisfaire les besoins de leurs régions. La loi est l&apos;expression de la volonté du peuple.
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${RED}22` }}>
-                <Users size={24} style={{ color: RED }} />
-              </div>
-              <h3 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.5rem" }}>
-                Contrôle de l&apos;action gouvernementale
-              </h3>
-              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.95rem", color: GRAY, lineHeight: 1.7 }}>
-                Le Sénat contrôle l&apos;action du Gouvernement et évalue l&apos;efficacité des politiques publiques.
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${CYAN}22` }}>
-                <Globe size={24} style={{ color: CYAN }} />
-              </div>
-              <h3 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.5rem" }}>
-                Représentation des collectivités
-              </h3>
-              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.95rem", color: GRAY, lineHeight: 1.7 }}>
-                Le Sénat représente les Collectivités Territoriales Décentralisées. Les Sénateurs sont les élus des élus.
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
-                <BookOpen size={24} style={{ color: EMERALD }} />
-              </div>
-              <h3 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.5rem" }}>
-                Fonction consultative
-              </h3>
-              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.95rem", color: GRAY, lineHeight: 1.7 }}>
-                Le Sénat donne son avis sur les questions dont le Gouvernement le saisit, à l&apos;exclusion de tout projet législatif.
-              </p>
-            </div>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
+                  <Scale size={24} style={{ color: EMERALD }} />
+                </div>
+                <h3
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1.1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Fonction législative
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.95rem",
+                    color: GRAY,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  Les Sénateurs élaborent des propositions de loi pour satisfaire les besoins de leurs régions. La loi est l&apos;expression de la volonté du peuple.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${RED}22` }}>
+                  <Users size={24} style={{ color: RED }} />
+                </div>
+                <h3
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1.1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Contrôle de l&apos;action gouvernementale
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.95rem",
+                    color: GRAY,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  Le Sénat contrôle l&apos;action du Gouvernement et évalue l&apos;efficacité des politiques publiques.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${CYAN}22` }}>
+                  <Globe size={24} style={{ color: CYAN }} />
+                </div>
+                <h3
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1.1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Représentation des collectivités
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.95rem",
+                    color: GRAY,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  Le Sénat représente les Collectivités Territoriales Décentralisées. Les Sénateurs sont les élus des élus.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${GREEN}22` }}>
+                  <BookOpen size={24} style={{ color: EMERALD }} />
+                </div>
+                <h3
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1.1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Fonction consultative
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.95rem",
+                    color: GRAY,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  Le Sénat donne son avis sur les questions dont le Gouvernement le saisit, à l&apos;exclusion de tout projet législatif.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
@@ -160,52 +232,118 @@ export function AboutSection() {
           >
             Structures
           </h2>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: EMERALD, marginBottom: "0.5rem" }}>
-                  <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
-                  Cabinet du Président
-                </h4>
-                <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.9rem", color: GRAY, lineHeight: 1.6 }}>
-                  Assiste le Président dans l&apos;accomplissement de sa mission de Chef d&apos;Institution. Chargé de la coordination et de la gestion des affaires politiques et des relations publiques.
-                </p>
+          <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm p-8">
+            <CardContent className="p-0">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "1.1rem",
+                      fontWeight: 700,
+                      color: EMERALD,
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
+                    Cabinet du Président
+                  </h4>
+                  <p
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      color: GRAY,
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    Assiste le Président dans l&apos;accomplissement de sa mission de Chef d&apos;Institution. Chargé de la coordination et de la gestion des affaires politiques et des relations publiques.
+                  </p>
+                </div>
+                <div>
+                  <h4
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "1.1rem",
+                      fontWeight: 700,
+                      color: RED,
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Building2 size={18} className="inline mr-2" style={{ color: RED }} />
+                    Secrétariat Général
+                  </h4>
+                  <p
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      color: GRAY,
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    Dirige, coordonne et supervise les activités des Services du Sénat. Chargé du contentieux et du traitement des doléances.
+                  </p>
+                </div>
+                <div>
+                  <h4
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "1.1rem",
+                      fontWeight: 700,
+                      color: CYAN,
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Building2 size={18} className="inline mr-2" style={{ color: CYAN }} />
+                    Directions rattachées
+                  </h4>
+                  <ul
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      color: GRAY,
+                      lineHeight: 1.8,
+                      listStyle: "disc",
+                      paddingLeft: "1.2rem",
+                    }}
+                  >
+                    <li>Direction du Système d&apos;Information et de la Communication</li>
+                    <li>Direction de la Législation et des Études</li>
+                    <li>Direction de la Décentralisation</li>
+                    <li>Direction Administrative et des Ressources Humaines</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "1.1rem",
+                      fontWeight: 700,
+                      color: EMERALD,
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
+                    Autres organes
+                  </h4>
+                  <ul
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      color: GRAY,
+                      lineHeight: 1.8,
+                      listStyle: "disc",
+                      paddingLeft: "1.2rem",
+                    }}
+                  >
+                    <li>Inspection Générale du Sénat</li>
+                    <li>Personne Responsable des Marchés Publics</li>
+                    <li>Direction du Protocole</li>
+                    <li>Direction de la Sécurité</li>
+                  </ul>
+                </div>
               </div>
-              <div>
-                <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: RED, marginBottom: "0.5rem" }}>
-                  <Building2 size={18} className="inline mr-2" style={{ color: RED }} />
-                  Secrétariat Général
-                </h4>
-                <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.9rem", color: GRAY, lineHeight: 1.6 }}>
-                  Dirige, coordonne et supervise les activités des Services du Sénat. Chargé du contentieux et du traitement des doléances.
-                </p>
-              </div>
-              <div>
-                <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: CYAN, marginBottom: "0.5rem" }}>
-                  <Building2 size={18} className="inline mr-2" style={{ color: CYAN }} />
-                  Directions rattachées
-                </h4>
-                <ul style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.9rem", color: GRAY, lineHeight: 1.8, listStyle: "disc", paddingLeft: "1.2rem" }}>
-                  <li>Direction du Système d&apos;Information et de la Communication</li>
-                  <li>Direction de la Législation et des Études</li>
-                  <li>Direction de la Décentralisation</li>
-                  <li>Direction Administrative et des Ressources Humaines</li>
-                </ul>
-              </div>
-              <div>
-                <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem", fontWeight: 700, color: EMERALD, marginBottom: "0.5rem" }}>
-                  <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
-                  Autres organes
-                </h4>
-                <ul style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.9rem", color: GRAY, lineHeight: 1.8, listStyle: "disc", paddingLeft: "1.2rem" }}>
-                  <li>Inspection Générale du Sénat</li>
-                  <li>Personne Responsable des Marchés Publics</li>
-                  <li>Direction du Protocole</li>
-                  <li>Direction de la Sécurité</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Textes de référence section */}
@@ -222,52 +360,124 @@ export function AboutSection() {
             Textes de référence
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${EMERALD}22` }}>
-                <FileText size={24} style={{ color: EMERALD }} />
-              </div>
-              <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.3rem" }}>
-                Dispositions constitutionnelles
-              </h4>
-              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.85rem", color: GRAY, lineHeight: 1.6 }}>
-                Le Sénat est prévu par l&apos;article 80 et suivant de la Constitution de la Quatrième République.
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${RED}22` }}>
-                <FileText size={24} style={{ color: RED }} />
-              </div>
-              <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.3rem" }}>
-                Lois organiques
-              </h4>
-              <ul style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.85rem", color: GRAY, lineHeight: 1.8, listStyle: "disc", paddingLeft: "1.2rem" }}>
-                <li>Ordonnance n° 2001-001 du 05 janvier 2001</li>
-                <li>Loi Organique n° 2015-007 du 03 mars 2015</li>
-              </ul>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${CYAN}22` }}>
-                <FileText size={24} style={{ color: CYAN }} />
-              </div>
-              <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.3rem" }}>
-                Sources règlementaires
-              </h4>
-              <ul style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.85rem", color: GRAY, lineHeight: 1.8, listStyle: "disc", paddingLeft: "1.2rem" }}>
-                <li>Arrêté n°2001-001 du 08 mai 2001 (Règlement Intérieur)</li>
-                <li>Arrêté n°2001-002 du 16 mai 2001 (Organisation des Services)</li>
-              </ul>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-sm border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${EMERALD}22` }}>
-                <FileText size={24} style={{ color: EMERALD }} />
-              </div>
-              <h4 style={{ fontFamily: "'Poppins', sans-serif", fontSize: "1rem", fontWeight: 700, color: "#ffffff", marginBottom: "0.3rem" }}>
-                Textes sur les services
-              </h4>
-              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: "0.85rem", color: GRAY, lineHeight: 1.6 }}>
-                Arrêté n°2001-002 du 16 mai 2001 portant organisation générale des Services du Sénat.
-              </p>
-            </div>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${EMERALD}22` }}>
+                  <FileText size={24} style={{ color: EMERALD }} />
+                </div>
+                <h4
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.3rem",
+                  }}
+                >
+                  Dispositions constitutionnelles
+                </h4>
+                <p
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.85rem",
+                    color: GRAY,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Le Sénat est prévu par l&apos;article 80 et suivant de la Constitution de la Quatrième République.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${RED}22` }}>
+                  <FileText size={24} style={{ color: RED }} />
+                </div>
+                <h4
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.3rem",
+                  }}
+                >
+                  Lois organiques
+                </h4>
+                <ul
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.85rem",
+                    color: GRAY,
+                    lineHeight: 1.8,
+                    listStyle: "disc",
+                    paddingLeft: "1.2rem",
+                  }}
+                >
+                  <li>Ordonnance n° 2001-001 du 05 janvier 2001</li>
+                  <li>Loi Organique n° 2015-007 du 03 mars 2015</li>
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${CYAN}22` }}>
+                  <FileText size={24} style={{ color: CYAN }} />
+                </div>
+                <h4
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.3rem",
+                  }}
+                >
+                  Sources règlementaires
+                </h4>
+                <ul
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.85rem",
+                    color: GRAY,
+                    lineHeight: 1.8,
+                    listStyle: "disc",
+                    paddingLeft: "1.2rem",
+                  }}
+                >
+                  <li>Arrêté n°2001-001 du 08 mai 2001 (Règlement Intérieur)</li>
+                  <li>Arrêté n°2001-002 du 16 mai 2001 (Organisation des Services)</li>
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${EMERALD}22` }}>
+                  <FileText size={24} style={{ color: EMERALD }} />
+                </div>
+                <h4
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    marginBottom: "0.3rem",
+                  }}
+                >
+                  Textes sur les services
+                </h4>
+                <p
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.85rem",
+                    color: GRAY,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Arrêté n°2001-002 du 16 mai 2001 portant organisation générale des Services du Sénat.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
@@ -312,8 +522,8 @@ export function AboutSection() {
                   <em style={{ fontWeight: 700, color: WHITE }}>Histoires</em>
                 </h2>
               </div>
-              <Link
-                href="/about/structures"
+              <Button
+                asChild
                 className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full transition-all hover:opacity-80 hover:scale-105"
                 style={{
                   fontFamily: "'Poppins', sans-serif",
@@ -323,8 +533,8 @@ export function AboutSection() {
                   color: "#0f172a",
                 }}
               >
-                Voir les structures
-              </Link>
+                <Link href="/about/structures">Voir les structures</Link>
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -369,7 +579,7 @@ export function AboutSection() {
                             background: `linear-gradient(to top, ${person.accentColor}cc 0%, transparent 55%)`,
                           }}
                         />
-                        <div
+                        <Badge
                           className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
                           style={{
                             backgroundColor: person.accentColor,
@@ -380,8 +590,7 @@ export function AboutSection() {
                           }}
                         >
                           {person.description}
-                        </div>
-
+                        </Badge>
                         {isPresident && (
                           <div
                             className="absolute inset-0 transition-transform duration-700 group-hover:scale-103"
