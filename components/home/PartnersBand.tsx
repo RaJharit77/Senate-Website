@@ -4,6 +4,7 @@ import { CYAN } from "@/utils/colors";
 import { partners } from "@/utils/partners";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Card } from "@/components/ui/card";
 
 const loopedPartners = [...partners, ...partners];
 
@@ -61,47 +62,51 @@ export function PartnersBand() {
                         style={{ width: "max-content" }}
                     >
                         {loopedPartners.map((p, index) => (
-                            <motion.a
+                            <Card
                                 key={`${p.abbr}-${index}`}
-                                href="#"
-                                className="flex items-center gap-3 px-6 py-4 rounded-xl transition-all hover:shadow-md shrink-0 relative"
-                                style={{
-                                    backgroundColor: "rgba(255, 255, 255, 0.08)",
-                                    backdropFilter: "blur(4px)",
-                                    border: "none",          
-                                    boxShadow: "none",       
-                                    outline: "none",
-                                }}
-                                whileHover={{
-                                    scale: 1.12,
-                                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                                    boxShadow: "0 12px 40px rgba(91,200,222,0.3)",
-                                    transition: { duration: 0.3, ease: "easeOut" },
-                                }}
-                                whileTap={{ scale: 0.95 }}
+                                className="border-none shadow-none bg-transparent p-0 shrink-0"
                             >
-                                <span className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden">
-                                    <span
-                                        className="absolute inset-0 -translate-x-full animate-shine"
-                                        style={{
-                                            background:
-                                                "linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)",
-                                            width: "60%",
-                                            transform: "skewX(-20deg)",
-                                        }}
-                                    />
-                                </span>
-                                <div className="relative h-20 w-auto min-w-[80px]">
-                                    <Image
-                                        src={p.logo}
-                                        alt={p.name}
-                                        fill
-                                        priority
-                                        className="object-contain relative z-10"
-                                        sizes="(max-width: 768px) 80px, 100px"
-                                    />
-                                </div>
-                            </motion.a>
+                                <motion.a
+                                    href="#"
+                                    className="flex items-center gap-3 px-6 py-4 rounded-xl transition-all hover:shadow-md"
+                                    style={{
+                                        backgroundColor: "rgba(255, 255, 255, 0.08)",
+                                        backdropFilter: "blur(4px)",
+                                        border: "none",
+                                        boxShadow: "none",
+                                        outline: "none",
+                                    }}
+                                    whileHover={{
+                                        scale: 1.12,
+                                        backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                        boxShadow: "0 12px 40px rgba(91,200,222,0.3)",
+                                        transition: { duration: 0.3, ease: "easeOut" },
+                                    }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <span className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden">
+                                        <span
+                                            className="absolute inset-0 -translate-x-full animate-shine"
+                                            style={{
+                                                background:
+                                                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)",
+                                                width: "60%",
+                                                transform: "skewX(-20deg)",
+                                            }}
+                                        />
+                                    </span>
+                                    <div className="relative h-20 w-auto min-w-[80px]">
+                                        <Image
+                                            src={p.logo}
+                                            alt={p.name}
+                                            fill
+                                            priority
+                                            className="object-contain relative z-10"
+                                            sizes="(max-width: 768px) 80px, 100px"
+                                        />
+                                    </div>
+                                </motion.a>
+                            </Card>
                         ))}
                     </motion.div>
                 </div>
