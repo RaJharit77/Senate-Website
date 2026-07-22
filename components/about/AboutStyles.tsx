@@ -1,5 +1,6 @@
 import { EMERALD, INK, RED } from "@/utils/colors";
 import { type CSSProperties, type ReactNode } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const pStyle: CSSProperties = {
     fontFamily: "'Poppins', sans-serif",
@@ -92,27 +93,26 @@ export function DocCard({
     children: ReactNode;
 }) {
     return (
-        <div
-            className="bg-white rounded-3xl shadow-md border overflow-hidden"
-            style={{ borderColor: "rgba(22,36,20,0.08)" }}
-        >
-            <div className="px-6 sm:px-10 pt-8">
-                <div className="rounded-full py-3.5 px-6" style={{ backgroundColor: pillColor }}>
-                    <h2
-                        className="text-center"
-                        style={{
-                            fontFamily: "'Poppins', sans-serif",
-                            fontSize: "1.35rem",
-                            fontWeight: 700,
-                            color: "#ffffff",
-                            letterSpacing: "0.01em",
-                        }}
-                    >
-                        {title}
-                    </h2>
+        <Card className="border border-[rgba(22,36,20,0.08)] shadow-md rounded-3xl overflow-hidden bg-white">
+            <CardContent className="p-0">
+                <div className="px-6 sm:px-10 pt-8">
+                    <div className="rounded-full py-3.5 px-6" style={{ backgroundColor: pillColor }}>
+                        <h2
+                            className="text-center"
+                            style={{
+                                fontFamily: "'Poppins', sans-serif",
+                                fontSize: "1.35rem",
+                                fontWeight: 700,
+                                color: "#ffffff",
+                                letterSpacing: "0.01em",
+                            }}
+                        >
+                            {title}
+                        </h2>
+                    </div>
                 </div>
-            </div>
-            <div className="px-6 sm:px-10 pb-10 pt-2">{children}</div>
-        </div>
+                <div className="px-6 sm:px-10 pb-10 pt-2">{children}</div>
+            </CardContent>
+        </Card>
     );
 }
