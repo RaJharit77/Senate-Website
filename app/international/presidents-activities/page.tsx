@@ -1,10 +1,11 @@
 import { getPresidentActivities, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
-import { PresidentActivitiesFeed, type ActivityItem } from "@/components/international/PresidentActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { ActivityItem } from "@/types/internationalType";
+import { PresidentActivitiesFeed } from "@/components/international/PresidentActivitiesFeed";
 
 export const metadata = buildMetadata({
     title: "Activités du Président du Sénat",
@@ -65,7 +66,7 @@ export default async function PresidentsActivitiesPage() {
                             Audiences, accueil de délégations parlementaires étrangères et déplacements à l&apos;étranger du Président du Sénat.
                         </p>
                     </div>
-                    <PresidentActivitiesFeed items={items} />
+                    <PresidentActivitiesFeed items={items} basePath="/international/presidents-activities" />
                 </div>
             </div>
         </>

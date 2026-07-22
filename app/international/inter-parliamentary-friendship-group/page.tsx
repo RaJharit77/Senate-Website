@@ -1,13 +1,12 @@
 import { getPostsByCategorySlug, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
-import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
-import type { SimpleActivityItem } from "@/components/international/SimpleActivityGrid";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
-import type { ActivityCategory } from "@/types/internationalType";
+import type { ActivityCategory, SimpleActivityItem } from "@/types/internationalType";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
 
 export const metadata = buildMetadata({
     title: "Groupe Interparlementaire d'Amitié du Sénat",
