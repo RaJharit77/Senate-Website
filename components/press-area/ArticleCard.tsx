@@ -6,6 +6,8 @@ import Image from "next/image";
 import { Calendar, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { MdArrowRightAlt } from "react-icons/md";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export interface ExtendedPost extends WpPost {
     isFeatured: boolean;
@@ -44,61 +46,57 @@ export default function ArticleCard({ post }: { post: ExtendedPost }) {
         <motion.div
             variants={cardVariants}
             whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col"
         >
-            <div className="relative w-full aspect-video overflow-hidden bg-white/5">
-                {imageUrl ? (
-                    <motion.div
-                        className="relative w-full h-full"
-                        initial="initial"
-                        whileHover="hover"
-                        variants={imageVariants}
-                    >
-                        <Image
-                            src={imageUrl}
-                            alt={cleanTitle}
-                            fill
-                            className="object-cover object-center"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                    </motion.div>
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500">
-                        <ImageIcon size={48} strokeWidth={1} />
-                    </div>
-                )}
-                {isFeatured && (
-                    <motion.span
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2, duration: 0.3 }}
-                        className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-10"
-                    >
-                        À la une
-                    </motion.span>
-                )}
-            </div>
-            <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                    <Calendar size={14} />
-                    <span>{date}</span>
+            <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:shadow-2xl transition-shadow flex flex-col h-full">
+                <div className="relative w-full aspect-video overflow-hidden bg-white/5">
+                    {imageUrl ? (
+                        <motion.div
+                            className="relative w-full h-full"
+                            initial="initial"
+                            whileHover="hover"
+                            variants={imageVariants}
+                        >
+                            <Image
+                                src={imageUrl}
+                                alt={cleanTitle}
+                                fill
+                                className="object-cover object-center"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                            />
+                        </motion.div>
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-500">
+                            <ImageIcon size={48} strokeWidth={1} />
+                        </div>
+                    )}
+                    {isFeatured && (
+                        <Badge className="absolute top-3 left-3 bg-red-500 text-white border-none shadow-lg z-10">
+                            À la une
+                        </Badge>
+                    )}
                 </div>
-                <h3 className="text-white text-xl font-bold mb-2 line-clamp-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                    {cleanTitle}
-                </h3>
-                {post.excerpt?.rendered && (
-                    <p
-                        className="text-gray-300 text-sm line-clamp-3 flex-1"
-                        dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-                    />
-                )}
-                <Link
-                    href={`/press-area/news/${post.slug}`}
-                    className="inline-block mt-4 text-cyan-300 hover:text-cyan-200 text-sm font-medium transition self-start"
-                >
-                    Lire la suite <MdArrowRightAlt className="inline-block" />
-                </Link>
-            </div>
+                <CardContent className="p-5 flex flex-col flex-1">
+                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                        <Calendar size={14} />
+                        <span>{date}</span>
+                    </div>
+                    <CardTitle className="text-white text-xl font-bold mb-2 line-clamp-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                        {cleanTitle}
+                    </CardTitle>
+                    {post.excerpt?.rendered && (
+                        <p
+                            className="text-gray-300 text-sm line-clamp-3 flex-1"
+                            dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
+                        />
+                    )}
+                    <Link
+                        href={`/press-area/news/${post.slug}`}
+                        className="inline-block mt-4 text-cyan-300 hover:text-cyan-200 text-sm font-medium transition self-start"
+                    >
+                        Lire la suite <MdArrowRightAlt className="inline-block" />
+                    </Link>
+                </CardContent>
+            </Card>
         </motion.div>
     );
 }
