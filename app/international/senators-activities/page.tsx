@@ -92,7 +92,7 @@ export default async function SenatorsActivitiesPage() {
                             Audiences, accueil de délégations et déplacements à l&apos;étranger des Sénateurs.
                         </p>
                     </div>
-                    <ActivitiesFeed items={items} />
+                    <ActivitiesFeed items={items} basePath="/international/senators-activities" />
                 </div>
             </div>
         </>
