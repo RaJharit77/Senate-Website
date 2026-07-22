@@ -10,6 +10,8 @@ import { getPostsByCategory } from "@/lib/api";
 import { CAT_ORDRE_JOUR, CAT_LOIS } from "@/constants/constants";
 import { formatDate } from "@/utils/utility";
 import type { WpPost } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const iconMap = {
   FileText,
@@ -328,9 +330,9 @@ export function ParliamentaryWork() {
               })}
             </div>
 
-            <Link
-              href={active.path}
-              className="inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-full transition-all hover:opacity-80 hover:scale-105"
+            <Button
+              asChild
+              className="mt-8 px-5 py-2.5 rounded-full transition-all hover:opacity-80 hover:scale-105"
               style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: "0.78rem",
@@ -339,8 +341,10 @@ export function ParliamentaryWork() {
                 color: active.color === CYAN ? "#0f172a" : "#fff",
               }}
             >
-              Voir tout <ArrowRight size={13} />
-            </Link>
+              <Link href={active.path}>
+                Voir tout <ArrowRight size={13} />
+              </Link>
+            </Button>
           </motion.div>
 
           <div className="lg:col-span-2 flex flex-col gap-3">
@@ -389,14 +393,12 @@ export function ParliamentaryWork() {
                             >
                               {item.ref}
                             </span>
-                            <span
-                              className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold"
-                              style={{
-                                backgroundColor: item.statusColor,
-                              }}
+                            <Badge
+                              className="px-2.5 py-0.5 rounded-full text-white text-xs font-semibold border-none"
+                              style={{ backgroundColor: item.statusColor }}
                             >
                               {item.status}
-                            </span>
+                            </Badge>
                           </div>
                           <h4
                             style={{
