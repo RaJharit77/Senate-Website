@@ -13,6 +13,29 @@ import { WpPost } from "@/lib/types";
 // tableau vide pour ce groupe plutôt que de casser toute la page.
 export type ActivityCategory = "audience" | "delegation" | "international";
 
+
+export interface ActivityItem {
+    id: number;
+    slug: string;
+    category: ActivityCategory;
+    title: string;
+    date: string;
+    dateValue: number;
+    imageUrl: string;
+    link: string;
+}
+
+export interface SimpleActivityItem {
+    id: number;
+    slug: string;
+    title: string;
+    date: string;
+    dateValue: number;
+    imageUrl: string;
+    link: string;
+    category: ActivityCategory;
+}
+
 export interface PresidentActivity {
     id: number;
     category: ActivityCategory;
