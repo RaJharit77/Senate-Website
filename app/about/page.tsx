@@ -2,7 +2,7 @@ import { MissionSection } from "@/components/about/MissionSection";
 import { StructuresSection } from "@/components/about/StructuresSection";
 import { TextesSection } from "@/components/about/TextesSection";
 import { getPageBySlug } from "@/lib/api";
-import { EMERALD, RED, WHITE } from "@/utils/colors";
+import { PageHeader } from "@/components/about/PageHeader";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 
@@ -41,36 +41,10 @@ export default async function AboutPage() {
             <JsonLd data={webPageJsonLd} />
             <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto">
-                    <div className="mb-12">
-                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
-                            <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                            <div className="w-4 rounded-full" style={{ backgroundColor: RED }} />
-                            <div className="w-4 rounded-full" style={{ backgroundColor: EMERALD }} />
-                        </div>
-                        <h1
-                            style={{
-                                fontFamily: "'Poppins', sans-serif",
-                                fontSize: "clamp(2rem, 4vw, 3rem)",
-                                fontWeight: 700,
-                                color: WHITE,
-                                lineHeight: 1.2,
-                            }}
-                        >
-                            À propos du Sénat
-                        </h1>
-                        <p
-                            style={{
-                                fontFamily: "'Poppins', sans-serif",
-                                fontSize: "1.1rem",
-                                color: "rgba(255,255,255,0.5)",
-                                marginTop: "0.5rem",
-                                maxWidth: "600px",
-                            }}
-                        >
-                            Découvrez l&apos;histoire, la mission et l&apos;organisation de la chambre haute du Parlement malgache.
-                        </p>
-                    </div>
-
+                    <PageHeader
+                        title="À propos du Sénat"
+                        subtitle="Découvrez l'histoire, la mission et l'organisation de la chambre haute du Parlement malgache."
+                    />
                     <div className="space-y-16">
                         {missionPage && <MissionSection html={missionPage.content.rendered} />}
                         {structuresPage && <StructuresSection html={structuresPage.content.rendered} />}
