@@ -1,3 +1,103 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* AboutStyles */
+.prose h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent, #cc1111); /* RED */
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+.prose h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #5CE65C; /* EMERALD */
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+.prose p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.85;
+    color: #1a1a1a; /* INK */
+    margin-bottom: 1.15rem;
+}
+/* Listes non ordonnées avec séparateurs */
+.prose ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+.prose ul li {
+    position: relative;
+    padding-left: 1.4rem;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.85;
+    color: #1a1a1a;
+    border-bottom: 2px solid rgba(91, 200, 222, 0.3);
+}
+.prose ul li:last-child {
+    border-bottom: none;
+}
+.prose ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.3rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #5CE65C;
+}
+.prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin: 0 0 1.5rem 0;
+}
+.prose ol li {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.85;
+    color: #1a1a1a;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid rgba(91, 200, 222, 0.25);
+}
+.prose ol li:last-child {
+    border-bottom: none;
+}
+.prose strong {
+    color: #1a1a1a;
+    font-weight: 700;
+}
+.prose a {
+    color: #5CE65C;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+.prose a:hover {
+    color: #cc1111;
+}
+.prose blockquote {
+    border-left: 4px solid #cc1111;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #1a1a1a;
+    opacity: 0.8;
+    margin: 1.5rem 0;
+}
+.prose hr {
+    border: 0;
+    border-top: 1px solid rgba(22,36,20,0.1);
+    margin: 2rem 0;
+}
