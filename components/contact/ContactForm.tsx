@@ -2,14 +2,11 @@
 
 import { useState, type FormEvent } from "react";
 import { submitContactForm } from "@/lib/api";
-import { ContactFormResult } from "@/types/contactType";
-
-interface FormState {
-    name: string;
-    email: string;
-    subject: string;
-    message: string;
-}
+import { ContactFormResult, FormState } from "@/types/contactType";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 const EMPTY_FORM: FormState = {
     name: "",
@@ -57,67 +54,72 @@ export default function ContactForm() {
     const fieldError = (field: string) => result?.invalidFields?.[field];
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-                <label className="block text-white/80 text-sm font-semibold mb-1">
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+                <Label htmlFor="name" className="text-white/80 text-sm font-semibold">
                     Votre nom
-                </label>
-                <input
-                    type="text"
+                </Label>
+                <Input
+                    id="name"
                     name="name"
                     value={form.name}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50"
+                    className="bg-white/20 border-white/20 text-white placeholder:text-white/50 text-base py-3 px-4 h-auto"
                     placeholder="Nom complet"
                 />
                 {fieldError("your-name") && (
                     <p className="text-red-400 text-xs mt-1">{fieldError("your-name")}</p>
                 )}
             </div>
-            <div className="mb-4">
-                <label className="block text-white/80 text-sm font-semibold mb-1">
+
+            <div className="space-y-2">
+                <Label htmlFor="email" className="text-white/80 text-sm font-semibold">
                     Votre e-mail
-                </label>
-                <input
-                    type="email"
+                </Label>
+                <Input
+                    id="email"
                     name="email"
+                    type="email"
                     value={form.email}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50"
+                    className="bg-white/20 border-white/20 text-white placeholder:text-white/50 text-base py-3 px-4 h-auto"
                     placeholder="email@exemple.com"
                 />
                 {fieldError("your-email") && (
                     <p className="text-red-400 text-xs mt-1">{fieldError("your-email")}</p>
                 )}
             </div>
-            <div className="mb-4">
-                <label className="block text-white/80 text-sm font-semibold mb-1">
+
+            <div className="space-y-2">
+                <Label htmlFor="subject" className="text-white/80 text-sm font-semibold">
                     Objet
-                </label>
-                <input
-                    type="text"
+                </Label>
+                <Input
+                    id="subject"
                     name="subject"
                     value={form.subject}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50"
+                    className="bg-white/20 border-white/20 text-white placeholder:text-white/50 text-base py-3 px-4 h-auto"
                     placeholder="Sujet de votre message"
                 />
                 {fieldError("your-subject") && (
                     <p className="text-red-400 text-xs mt-1">{fieldError("your-subject")}</p>
                 )}
             </div>
-            <div className="mb-6">
-                <label className="block text-white/80 text-sm font-semibold mb-1">
+
+            <div className="space-y-2">
+                <Label htmlFor="message" className="text-white/80 text-sm font-semibold">
                     Votre message
-                </label>
-                <textarea
+                </Label>
+                <Textarea
+                    id="message"
                     name="message"
                     value={form.message}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-white/20 px-4 py-3 bg-white/20 text-white placeholder:text-white/50 min-h-[120px]"
+                    className="bg-white/20 border-white/20 text-white placeholder:text-white/50 text-base py-3 px-4 min-h-[150px]"
                     placeholder="Écrivez votre message ici..."
                 />
                 {fieldError("your-message") && (
@@ -127,22 +129,22 @@ export default function ContactForm() {
 
             {result && (
                 <p
-                    className={`text-sm mb-4 ${
-                        result.status === "mail_sent" ? "text-green-400" : "text-red-400"
-                    }`}
+                    className={`text-sm ${result.status === "mail_sent" ? "text-green-400" : "text-red-400"
+                        }`}
                     role="status"
                 >
                     {result.message}
                 </p>
             )}
 
-            <button
+            <Button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 rounded-lg bg-[#5CE65C] text-black font-semibold transition-all hover:opacity-80 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
+                className="w-full bg-[#5CE65C] text-black font-semibold hover:bg-[#4bc94b] hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100 text-base py-3 h-auto"
+                size="lg"
             >
                 {submitting ? "Envoi en cours..." : "Envoyer"}
-            </button>
+            </Button>
         </form>
     );
 }

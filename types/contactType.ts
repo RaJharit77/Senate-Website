@@ -22,3 +22,10 @@ export const WP_ROOT = (process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v
     /\/wp-json\/wp\/v2\/?$/,
     ""
 );
+
+export interface FormState {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+}
