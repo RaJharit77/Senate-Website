@@ -229,16 +229,6 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         <div className="flex-1" style={{ backgroundColor: RED }} />
         <div className="flex-1" style={{ backgroundColor: EMERALD }} />
       </div>
-
-      <style>{`
-        .hero-image {
-          animation: slowZoom 8s ease-in-out forwards;
-        }
-        @keyframes slowZoom {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.08); }
-        }
-      `}</style>
     </section>
   );
 }

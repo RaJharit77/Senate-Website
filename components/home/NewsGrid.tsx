@@ -377,26 +377,6 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
         <div className="flex-1" style={{ backgroundColor: RED }} />
         <div className="flex-1" style={{ backgroundColor: EMERALD }} />
       </div>
-
-      <style>{`
-        .scrollbar-custom::-webkit-scrollbar {
-          width: 6px;
-        }
-        .scrollbar-custom::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .scrollbar-custom::-webkit-scrollbar-thumb {
-          background: rgba(91, 200, 222, 0.3);
-          border-radius: 10px;
-        }
-        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-          background: rgba(91, 200, 222, 0.5);
-        }
-        .scrollbar-custom {
-          scrollbar-width: thin;
-          scrollbar-color: rgba(91, 200, 222, 0.3) transparent;
-        }
-      `}</style>
     </motion.section>
   );
 }
