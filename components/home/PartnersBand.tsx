@@ -111,24 +111,6 @@ export function PartnersBand() {
                     </motion.div>
                 </div>
             </div>
-
-            <style>{`
-                @keyframes rotateGlow {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                @keyframes spinGlow {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                @keyframes shine {
-                    0% { transform: translateX(-100%) skewX(-20deg); }
-                    100% { transform: translateX(200%) skewX(-20deg); }
-                }
-                .animate-shine {
-                    animation: shine 4s ease-in-out infinite;
-                }
-            `}</style>
         </div>
     );
 }
