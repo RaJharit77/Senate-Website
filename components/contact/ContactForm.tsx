@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { submitContactForm } from "@/lib/api";
 import { ContactFormResult, FormState } from "@/types/contactType";
 import { Input } from "@/components/ui/input";
@@ -27,7 +27,7 @@ export default function ContactForm() {
         setForm((prev) => ({ ...prev, [name]: value }));
     }
 
-    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
         if (submitting) return;
 
