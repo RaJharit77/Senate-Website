@@ -172,7 +172,6 @@ export default function PressClient() {
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
-                {/* En-tête animé */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
