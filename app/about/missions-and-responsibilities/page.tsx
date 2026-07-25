@@ -1,7 +1,7 @@
 import { getPageBySlug } from "@/lib/api";
 import { DocCard, Divider } from "@/components/about/AboutStyles";
 import { PageHeader } from "@/components/about/PageHeader";
-import { GREEN, RED } from "@/utils/colors";
+import { EMERALD, RED } from "@/utils/colors";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import NotFoundPage from "@/app/not-found";
@@ -47,7 +47,7 @@ export default async function MissionsPage() {
                         ]}
                     />
                     <DocCard title="Missions et attributions du Sénat" pillColor={RED}>
-                        <Divider color={GREEN}>Missions</Divider>
+                        <Divider color={EMERALD}>Missions</Divider>
                         <div
                             className="prose prose-lg max-w-none text-gray-800 font-poppins"
                             dangerouslySetInnerHTML={{ __html: page.content.rendered }}
