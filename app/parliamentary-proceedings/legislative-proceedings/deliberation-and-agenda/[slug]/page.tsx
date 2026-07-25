@@ -78,7 +78,7 @@ export default async function DeliberationArticlePage({
             <div className="min-h-screen bg-linear-to-b from-black/40 via-black/20 to-black/40 backdrop-blur-sm py-12 px-4 sm:px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-12">
-                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                        <div className="flex gap-1 mb-4 h-[3px]">
                             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
@@ -97,12 +97,11 @@ export default async function DeliberationArticlePage({
                             </Link>
                         </Button>
                         <h1
-                            className="text-white text-4xl md:text-5xl font-bold tracking-tight"
-                            style={{ fontFamily: "'Poppins', sans-serif" }}
+                            className="text-white text-4xl md:text-5xl font-bold tracking-tight font-poppins"
                         >
                             {cleanTitle}
                         </h1>
-                        <p className="text-white/60 text-lg mt-2 max-w-2xl">
+                        <p className="text-[#c0c0c0] text-lg mt-2 max-w-2xl">
                             {hasTable
                                 ? "Consultez le tableau complet de cette délibération."
                                 : "Détails des textes et lois adoptés."}
@@ -115,7 +114,7 @@ export default async function DeliberationArticlePage({
                                 <DeliberationTable tableHtml={post.content.rendered} showPagination={true} />
                             ) : (
                                 <div
-                                    className="prose prose-invert max-w-none text-white/80 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-cyan-300 [&_em]:text-cyan-200"
+                                    className="prose prose-invert max-w-none text-[#c0c0c0] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-cyan-300 [&_em]:text-cyan-200"
                                     dangerouslySetInnerHTML={{ __html: post.content.rendered }}
                                 />
                             )}
@@ -142,7 +141,7 @@ export default async function DeliberationArticlePage({
                             ) : (
                                 <div />
                             )}
-                            <span className="text-white/40 text-sm">
+                            <span className="text-[#c0c0c0] text-sm">
                                 {currentIndex + 1} / {allPosts.length}
                             </span>
                             {nextPost ? (

@@ -60,7 +60,7 @@ const infoCards = [
     label: "Textes et Lois",
     desc: "Textes en cours et adoptés par le sénat",
     image: "https://senat.mg/wp-content/themes/senat13/images/lois.jpg",
-    path: "/parliamentary-proceedings/legislative-proceedings",
+    path: "/texts-and-laws",
     color: CYAN,
   },
   {

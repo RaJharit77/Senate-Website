@@ -84,8 +84,7 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--accent, #cc1111);
-    /* RED */
+    color: #5bc8de !important;
     margin-top: 2rem;
     margin-bottom: 1rem;
     letter-spacing: -0.01em;
@@ -95,7 +94,7 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #5CE65C;
+    color: #5CE65C !important;
     /* EMERALD */
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
@@ -105,8 +104,9 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1.02rem;
     line-height: 1.85;
-    color: #1a1a1a;
-    /* INK */
+    color: #e8e8e8 !important;
+    /* ARGENTÉ éclairci + ombre portée pour rester lisible sur l'image de fond */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
     margin-bottom: 1.15rem;
 }
 
@@ -127,7 +127,9 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1.02rem;
     line-height: 1.85;
-    color: #1a1a1a;
+    color: #e8e8e8 !important;
+    /* ARGENTÉ éclairci + ombre portée pour rester lisible sur l'image de fond */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
     border-bottom: 2px solid rgba(91, 200, 222, 0.3);
 }
 
@@ -143,7 +145,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: #5CE65C;
+    background-color: #5CE65C !important;
 }
 
 .prose ol {
@@ -156,7 +158,9 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1.02rem;
     line-height: 1.85;
-    color: #1a1a1a;
+    color: #e8e8e8 !important;
+    /* ARGENTÉ éclairci + ombre portée pour rester lisible sur l'image de fond */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
     border-bottom: 2px solid rgba(91, 200, 222, 0.25);
@@ -166,33 +170,73 @@
     border-bottom: none;
 }
 
+/* Tableaux (ex: liste d'abréviations rendue en <table>) */
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 1.5rem 0;
+}
+
+.prose th {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: #ffffff !important;
+    /* Même traitement que .prose strong */
+    text-align: left;
+    vertical-align: top;
+    padding: 0.6rem 1.25rem 0.6rem 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    border-bottom: 2px solid rgba(91, 200, 222, 0.3);
+}
+
+.prose td {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.85;
+    color: #e8e8e8 !important;
+    /* ARGENTÉ éclairci + ombre portée, même traitement que .prose p */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    text-align: left;
+    vertical-align: top;
+    padding: 0.6rem 1.25rem 0.6rem 0;
+    border-bottom: 1px solid rgba(91, 200, 222, 0.2);
+}
+
+.prose tr:last-child td {
+    border-bottom: none;
+}
+
 .prose strong {
-    color: #1a1a1a;
+    color: #ffffff !important;
+    /* Blanc pour les mots forts */
     font-weight: 700;
 }
 
 .prose a {
-    color: #5CE65C;
+    color: #5bc8de !important;
     text-decoration: underline;
     transition: color 0.2s;
 }
 
 .prose a:hover {
-    color: #cc1111;
+    color: #5bc8de;
+    opacity: 0.8;
 }
 
 .prose blockquote {
-    border-left: 4px solid #cc1111;
+    border-left: 4px solid #5bc8de;
+    /* CYAN */
     padding-left: 1rem;
     font-style: italic;
-    color: #1a1a1a;
+    color: #c0c0c0 !important;
     opacity: 0.8;
     margin: 1.5rem 0;
 }
 
 .prose hr {
     border: 0;
-    border-top: 1px solid rgba(22, 36, 20, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin: 2rem 0;
 }
 

@@ -41,7 +41,7 @@ export default async function DeliberationListPage() {
             <div className="min-h-screen bg-linear-to-b from-black/40 via-black/20 to-black/40 backdrop-blur-sm py-12 px-4 sm:px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-12">
-                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                        <div className="flex gap-1 mb-4 h-[3px]">
                             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
@@ -54,12 +54,11 @@ export default async function DeliberationListPage() {
                             Retour aux travaux législatifs
                         </Link>
                         <h1
-                            className="text-white text-4xl md:text-5xl font-bold tracking-tight"
-                            style={{ fontFamily: "'Poppins', sans-serif" }}
+                            className="text-white text-4xl md:text-5xl font-bold tracking-tight font-poppins"
                         >
                             Délibérations et ordres du jour
                         </h1>
-                        <p className="text-white/60 text-lg mt-2 max-w-2xl">
+                        <p className="text-[#c0c0c0] text-lg mt-2 max-w-2xl">
                             Consultez tous les ordres du jour, délibérations et textes adoptés par le Sénat.
                         </p>
                     </div>

@@ -1,10 +1,11 @@
 import { getPageBySlug } from "@/lib/api";
 import { DocCard, Divider } from "@/components/about/AboutStyles";
 import { PageHeader } from "@/components/about/PageHeader";
-import { GREEN, RED } from "@/utils/colors";
+import { EMERALD, RED } from "@/utils/colors";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import NotFoundPage from "@/app/not-found";
+import { stripInlineTextColor } from "@/lib/sanitizeHtml";
 
 export const dynamic = 'force-dynamic';
 
@@ -47,10 +48,10 @@ export default async function StructuresPage() {
                         ]}
                     />
                     <DocCard title="Structures du Sénat" pillColor={RED}>
-                        <Divider color={GREEN}>Organisation</Divider>
+                        <Divider color={EMERALD}>Organisation</Divider>
                         <div
-                            className="prose prose-lg max-w-none text-gray-800 font-poppins"
-                            dangerouslySetInnerHTML={{ __html: page.content.rendered }}
+                            className="prose prose-lg max-w-none font-poppins"
+                            dangerouslySetInnerHTML={{ __html: stripInlineTextColor(page.content.rendered) }}
                         />
                     </DocCard>
                 </div>

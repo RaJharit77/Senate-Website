@@ -48,7 +48,6 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
 
     const cleanTitle = cleanText(post.title.rendered);
 
-    // Données structurées
     const breadcrumb = buildBreadcrumbJsonLd([
         { name: "Accueil", url: SITE_URL },
         { name: "Autres activités", url: `${SITE_URL}/others` },

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { FileQuestion } from "lucide-react";
 import { EMERALD, RED, WHITE } from "@/utils/colors";

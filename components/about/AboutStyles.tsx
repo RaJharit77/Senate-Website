@@ -1,19 +1,18 @@
 "use client";
 
-import { EMERALD, INK, RED } from "@/utils/colors";
+import { EMERALD, RED } from "@/utils/colors";
 import { type CSSProperties, type ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const contentStyles: CSSProperties = {
     fontFamily: "'Poppins', sans-serif",
-    color: INK,
 };
 
 export const pStyle: CSSProperties = {
     fontFamily: "'Poppins', sans-serif",
     fontSize: "1.02rem",
     lineHeight: 1.85,
-    color: INK,
+    color: "#1a1a1a",
     marginBottom: "1.15rem",
 };
 
@@ -63,7 +62,7 @@ export function NamedItem({
     return (
         <li style={liStyle}>
             <Bullet color={color} />
-            <strong style={{ color: INK, fontWeight: 700 }}>{name}</strong> — {children}
+            <strong style={{ color: "#1a1a1a", fontWeight: 700 }}>{name}</strong> — {children}
         </li>
     );
 }
@@ -100,7 +99,7 @@ export function DocCard({
     children: ReactNode;
 }) {
     return (
-        <Card className="border border-[rgba(22,36,20,0.08)] shadow-md rounded-3xl overflow-hidden bg-white">
+        <Card className="border border-[rgba(22,36,20,0.08)] shadow-md rounded-3xl overflow-hidden bg-transparent">
             <CardHeader className="p-0">
                 <div className="px-6 sm:px-10 pt-8">
                     <div className="rounded-full py-3.5 px-6" style={{ backgroundColor: pillColor }}>
