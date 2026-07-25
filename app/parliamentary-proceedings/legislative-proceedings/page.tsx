@@ -66,15 +66,15 @@ export default async function LegislativeProceedingsPage() {
             <div className="min-h-screen bg-linear-to-b from-black/40 via-black/20 to-black/40 backdrop-blur-sm py-12 px-4 sm:px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-12">
-                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                        <div className="flex gap-1 mb-4 h-[3px]">
                             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                         </div>
-                        <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                        <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight font-poppins">
                             Travaux législatifs
                         </h1>
-                        <p className="text-white/60 text-lg mt-2 max-w-2xl leading-relaxed">
+                        <p className="text-[#c0c0c0] text-lg mt-2 max-w-2xl leading-relaxed">
                             Découvrez la procédure législative, les lois et les délibérations du Sénat.
                         </p>
                     </div>
@@ -88,7 +88,7 @@ export default async function LegislativeProceedingsPage() {
                                     Procédure législative
                                 </h2>
                                 <div
-                                    className="text-white/80 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_strong]:text-cyan-300"
+                                    className="text-[#c0c0c0] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_strong]:text-cyan-300"
                                     dangerouslySetInnerHTML={{ __html: introPage.content.rendered }}
                                 />
                             </div>
@@ -118,7 +118,7 @@ export default async function LegislativeProceedingsPage() {
                         <div className="mt-8">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
-                                    <span className="inline-block w-1 h-8 bg-emerald-400 rounded-full" />
+                                    <span className="inline-block w-1 h-8 bg-cyan-400 rounded-full" />
                                     Délibérations
                                 </h2>
                                 <Link
@@ -133,7 +133,7 @@ export default async function LegislativeProceedingsPage() {
                                     {deliberationPost.content.rendered.includes("<table") ? (
                                         <DeliberationTable tableHtml={deliberationPost.content.rendered} />
                                     ) : (
-                                        <p className="text-white/50">Aucun tableau de délibérations.</p>
+                                        <p className="text-[#c0c0c0]">Aucun tableau de délibérations.</p>
                                     )}
                                 </CardContent>
                             </Card>

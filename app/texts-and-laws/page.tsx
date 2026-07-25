@@ -14,7 +14,7 @@ export default async function TextAndLawsPage() {
         _embed: true,
     }).catch(() => [])) as WpPost[];
 
-    if(!posts) return <NotFoundPage />
+    if (!posts) return <NotFoundPage />
 
     const republiquesRaw = (await getAllRepubliques({
         per_page: 20,
@@ -28,45 +28,28 @@ export default async function TextAndLawsPage() {
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
+                {/* En-tête */}
                 <div className="mb-12">
-                    <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                    <div className="flex gap-1 mb-4 h-[3px]">
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                         <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                     </div>
-                    <h1
-                        style={{
-                            fontFamily: "'Poppins', sans-serif",
-                            fontSize: "clamp(2rem, 4vw, 3rem)",
-                            fontWeight: 700,
-                            color: WHITE,
-                            lineHeight: 1.2,
-                        }}
-                    >
+                    <h1 className="font-poppins font-bold text-white leading-tight text-[clamp(2rem,4vw,3rem)]">
                         Textes et Lois
                     </h1>
-                    <p
-                        style={{
-                            fontFamily: "'Poppins', sans-serif",
-                            fontSize: "1.1rem",
-                            color: "rgba(255,255,255,0.5)",
-                            marginTop: "0.5rem",
-                            maxWidth: "600px",
-                        }}
-                    >
+                    <p className="font-poppins text-lg text-white/50 mt-2 max-w-2xl">
                         Retrouvez ici les projets et propositions de lois adoptés par le Sénat, ainsi que
                         les textes constitutionnels de Madagascar.
                     </p>
                 </div>
 
+                {/* Section "ADOPTÉS" */}
                 {posts.length > 0 && (
                     <section className="mb-16">
                         <div className="flex items-center gap-3 mb-6">
                             <FileText size={22} style={{ color: WHITE }} />
-                            <h2
-                                className="text-2xl font-semibold text-white"
-                                style={{ fontFamily: "'Poppins', sans-serif" }}
-                            >
+                            <h2 className="text-2xl font-semibold text-white font-poppins">
                                 ADOPTÉS
                             </h2>
                         </div>
@@ -124,14 +107,12 @@ export default async function TextAndLawsPage() {
                     </section>
                 )}
 
+                {/* Section "Textes constitutionnels" */}
                 {republiques.length > 0 && (
                     <section>
                         <div className="flex items-center gap-3 mb-6">
                             <Scale size={22} style={{ color: WHITE }} />
-                            <h2
-                                className="text-2xl font-semibold text-white"
-                                style={{ fontFamily: "'Poppins', sans-serif" }}
-                            >
+                            <h2 className="text-2xl font-semibold text-white font-poppins">
                                 Textes constitutionnels
                             </h2>
                         </div>
@@ -148,8 +129,7 @@ export default async function TextAndLawsPage() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h3
-                                                className="text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors"
-                                                style={{ fontFamily: "'Playfair Display', serif" }}
+                                                className="text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors font-serif"
                                                 dangerouslySetInnerHTML={{ __html: item.title.rendered }}
                                             />
                                             <div className="flex items-center gap-3 mt-2 text-white/40 text-sm">
