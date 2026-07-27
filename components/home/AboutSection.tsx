@@ -8,6 +8,7 @@ import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cleanText } from "@/utils/utility";
 
 // ---- Styles constants ----
 const headerStyles = {
@@ -151,7 +152,53 @@ const staggerContainer = {
   },
 };
 
-// ---- Données ----
+// ---- Types pour les textes de référence ----
+interface ReferenceItem {
+  title: string;
+  text?: string;
+  list?: string[];
+  icon: typeof FileText;
+  color: string;
+  bg: string;
+  link?: string;
+}
+
+// ---- Données statiques (fallback pour la section Textes de référence) ----
+const staticReferenceTexts: ReferenceItem[] = [
+  {
+    title: "Dispositions constitutionnelles",
+    text: "Le Sénat est prévu par l'article 80 et suivant de la Constitution de la Quatrième République.",
+    icon: FileText,
+    color: EMERALD,
+    bg: EMERALD,
+  },
+  {
+    title: "Lois organiques",
+    list: ["Ordonnance n° 2001-001 du 05 janvier 2001", "Loi Organique n° 2015-007 du 03 mars 2015"],
+    icon: FileText,
+    color: RED,
+    bg: RED,
+  },
+  {
+    title: "Sources règlementaires",
+    list: [
+      "Arrêté n°2001-001 du 08 mai 2001 (Règlement Intérieur)",
+      "Arrêté n°2001-002 du 16 mai 2001 (Organisation des Services)",
+    ],
+    icon: FileText,
+    color: CYAN,
+    bg: CYAN,
+  },
+  {
+    title: "Textes sur les services",
+    text: "Arrêté n°2001-002 du 16 mai 2001 portant organisation générale des Services du Sénat.",
+    icon: FileText,
+    color: EMERALD,
+    bg: EMERALD,
+  },
+];
+
+// ---- Données statiques pour le leadership ----
 const leadership = [
   {
     name: "NDREMANJARY",
@@ -170,7 +217,7 @@ const leadership = [
     description: "Les Membres",
     image: "https://senat.mg/wp-content/themes/senat13/images/membres.jpg",
     accentColor: RED,
-    path: "/about/structures",
+    path: "/historical",
     isPresident: false,
   },
   {
@@ -185,8 +232,31 @@ const leadership = [
   },
 ];
 
-// ---- Composant ----
-export function AboutSection() {
+// ---- Interface des props ----
+interface AboutSectionProps {
+  laws?: {
+    id: number;
+    title: string;
+    excerpt: string;
+    link: string;
+    date: string;
+  }[];
+}
+
+// ---- Composant principal ----
+export function AboutSection({ laws }: AboutSectionProps) {
+  // Construction des données pour la section "Textes de référence"
+  const referenceItems: ReferenceItem[] = laws && laws.length > 0
+    ? laws.map((law): ReferenceItem => ({
+        title: cleanText(law.title),
+        text: law.excerpt ? cleanText(law.excerpt) : "Aucun extrait disponible.",
+        link: law.link,
+        icon: FileText,
+        color: EMERALD,
+        bg: EMERALD,
+      }))
+    : staticReferenceTexts;
+
   return (
     <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
@@ -316,39 +386,7 @@ export function AboutSection() {
         <section id="textes" className="mb-16">
           <h2 style={sectionTitle}>Textes de référence</h2>
           <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                title: "Dispositions constitutionnelles",
-                text: "Le Sénat est prévu par l'article 80 et suivant de la Constitution de la Quatrième République.",
-                icon: FileText,
-                color: EMERALD,
-                bg: EMERALD,
-              },
-              {
-                title: "Lois organiques",
-                list: ["Ordonnance n° 2001-001 du 05 janvier 2001", "Loi Organique n° 2015-007 du 03 mars 2015"],
-                icon: FileText,
-                color: RED,
-                bg: RED,
-              },
-              {
-                title: "Sources règlementaires",
-                list: [
-                  "Arrêté n°2001-001 du 08 mai 2001 (Règlement Intérieur)",
-                  "Arrêté n°2001-002 du 16 mai 2001 (Organisation des Services)",
-                ],
-                icon: FileText,
-                color: CYAN,
-                bg: CYAN,
-              },
-              {
-                title: "Textes sur les services",
-                text: "Arrêté n°2001-002 du 16 mai 2001 portant organisation générale des Services du Sénat.",
-                icon: FileText,
-                color: EMERALD,
-                bg: EMERALD,
-              },
-            ].map((item, idx) => {
+            {referenceItems.map((item, idx) => {
               const Icon = item.icon;
               return (
                 <Card
@@ -364,6 +402,14 @@ export function AboutSection() {
                     </div>
                     <h4 style={refTitle}>{item.title}</h4>
                     {item.text && <p style={refText}>{item.text}</p>}
+                    {item.link && (
+                      <Link
+                        href={item.link}
+                        className="inline-block mt-2 text-cyan-400 hover:text-cyan-300 text-sm font-medium transition"
+                      >
+                        En savoir plus →
+                      </Link>
+                    )}
                     {item.list && (
                       <ul style={refList}>
                         {item.list.map((li, i) => (
