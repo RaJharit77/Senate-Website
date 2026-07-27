@@ -1,131 +1,15 @@
 "use client";
 
-import { BookOpen, Users, Scale, Globe, Building2, FileText } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
+import { motion } from "framer-motion";
+import { Building2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-// ---- Styles constants ----
-const headerStyles = {
-  title: {
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "clamp(2rem, 4vw, 3rem)",
-    fontWeight: 700,
-    color: WHITE,
-    lineHeight: 1.2,
-  },
-  subtitle: {
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "1.1rem",
-    color: "rgba(255,255,255,0.5)",
-    marginTop: "0.5rem",
-    maxWidth: "600px",
-  },
-};
-
-const sectionTitle = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "1.8rem",
-  fontWeight: 700,
-  color: CYAN,
-  marginBottom: "1.5rem",
-};
-
-const cardTitle = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "1.1rem",
-  fontWeight: 700,
-  color: "#ffffff",
-  marginBottom: "0.5rem",
-};
-
-const cardText = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.95rem",
-  color: GRAY,
-  lineHeight: 1.7,
-};
-
-const structureTitle = (color: string) => ({
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "1.1rem",
-  fontWeight: 700,
-  color,
-  marginBottom: "0.5rem",
-});
-
-const structureText = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.9rem",
-  color: GRAY,
-  lineHeight: 1.6,
-};
-
-const structureList = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.9rem",
-  color: GRAY,
-  lineHeight: 1.8,
-  listStyle: "disc",
-  paddingLeft: "1.2rem",
-};
-
-const refTitle = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "1rem",
-  fontWeight: 700,
-  color: "#ffffff",
-  marginBottom: "0.3rem",
-};
-
-const refText = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.85rem",
-  color: GRAY,
-  lineHeight: 1.6,
-};
-
-const refList = {
-  ...refText,
-  listStyle: "disc",
-  paddingLeft: "1.2rem",
-};
-
-const badgeStyles = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.62rem",
-  fontWeight: 600,
-  letterSpacing: "0.06em",
-};
-
-const leadershipRole = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.72rem",
-  fontWeight: 600,
-  letterSpacing: "0.06em",
-  marginBottom: 2,
-  textTransform: "uppercase" as const,
-};
-
-const leadershipName = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "1rem",
-  fontWeight: 700,
-  color: WHITE,
-  letterSpacing: "0.01em",
-  lineHeight: 1.2,
-};
-
-const leadershipFirstName = {
-  fontFamily: "'Poppins', sans-serif",
-  fontSize: "0.78rem",
-  color: GRAY,
-  marginTop: 2,
-};
+import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
+import { missionData, leadershipData, referenceTextsData } from "@/utils/data/aboutSection";
+import { RiArrowRightLongFill } from "react-icons/ri";
 
 const dividerBar = {
   height: 3,
@@ -151,92 +35,27 @@ const staggerContainer = {
   },
 };
 
-// ---- Données ----
-const leadership = [
-  {
-    name: "NDREMANJARY",
-    firstName: "Jean André",
-    role: "Président du Sénat par intérim",
-    description: "Le Président",
-    image: "https://senat.mg/wp-content/themes/senat13/images/NDREMANJARY.png",
-    accentColor: CYAN,
-    path: "/",
-    isPresident: true,
-  },
-  {
-    name: "Tous les Membres",
-    firstName: "Les sénateurs durant la deuxième législature du quatrième République",
-    role: "Les Membres du bureau",
-    description: "Les Membres",
-    image: "https://senat.mg/wp-content/themes/senat13/images/membres.jpg",
-    accentColor: RED,
-    path: "/about/structures",
-    isPresident: false,
-  },
-  {
-    name: "Histoire & Missions",
-    firstName: "Connaître le Sénat à travers les Républiques",
-    role: "Découvrez l'institution",
-    description: "Histoire du Sénat",
-    image: "https://senat.mg/wp-content/themes/senat13/images/historique.jpg",
-    accentColor: EMERALD,
-    path: "/historical",
-    isPresident: false,
-  },
-];
-
-// ---- Composant ----
 export function AboutSection() {
   return (
     <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
-        {/* En-tête */}
         <div className="mb-12">
           <div className="flex gap-1 mb-4" style={dividerBar}>
             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
             <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
             <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
           </div>
-          <h1 style={headerStyles.title}>À propos du Sénat</h1>
-          <p style={headerStyles.subtitle}>
+          <h1 className="about-title">À propos du Sénat</h1>
+          <p className="about-subtitle">
             Découvrez l&apos;histoire, la mission et l&apos;organisation de la chambre haute du Parlement malgache.
           </p>
         </div>
 
         {/* Missions section */}
         <section id="missions" className="mb-16">
-          <h2 style={sectionTitle}>Missions et attributions</h2>
+          <h2 className="section-title">Missions et attributions</h2>
           <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                icon: Scale,
-                color: EMERALD,
-                bg: GREEN,
-                title: "Fonction législative",
-                text: "Les Sénateurs élaborent des propositions de loi pour satisfaire les besoins de leurs régions. La loi est l'expression de la volonté du peuple.",
-              },
-              {
-                icon: Users,
-                color: RED,
-                bg: RED,
-                title: "Contrôle de l'action gouvernementale",
-                text: "Le Sénat contrôle l'action du Gouvernement et évalue l'efficacité des politiques publiques.",
-              },
-              {
-                icon: Globe,
-                color: CYAN,
-                bg: CYAN,
-                title: "Représentation des collectivités",
-                text: "Le Sénat représente les Collectivités Territoriales Décentralisées. Les Sénateurs sont les élus des élus.",
-              },
-              {
-                icon: BookOpen,
-                color: EMERALD,
-                bg: GREEN,
-                title: "Fonction consultative",
-                text: "Le Sénat donne son avis sur les questions dont le Gouvernement le saisit, à l'exclusion de tout projet législatif.",
-              },
-            ].map((item, idx) => {
+            {missionData.map((item, idx) => {
               const Icon = item.icon;
               return (
                 <Card
@@ -250,8 +69,14 @@ export function AboutSection() {
                     >
                       <Icon size={24} style={{ color: item.color }} />
                     </div>
-                    <h3 style={cardTitle}>{item.title}</h3>
-                    <p style={cardText}>{item.text}</p>
+                    <h3 className="card-title-about">{item.title}</h3>
+                    <p className="card-text-about">{item.text}</p>
+                    <Link
+                      href={item.link}
+                      className="inline-block mt-3 text-cyan-400 hover:text-cyan-300 text-sm font-medium transition"
+                    >
+                      En savoir plus <RiArrowRightLongFill className="inline-block" />
+                    </Link>
                   </CardContent>
                 </Card>
               );
@@ -261,34 +86,34 @@ export function AboutSection() {
 
         {/* Structures section */}
         <section id="structures" className="mb-16">
-          <h2 style={sectionTitle}>Structures</h2>
+          <h2 className="section-title">Structures</h2>
           <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm p-8">
             <CardContent className="p-0">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 style={structureTitle(EMERALD)}>
+                  <h4 className="structure-title" style={{ color: EMERALD }}>
                     <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
                     Cabinet du Président
                   </h4>
-                  <p style={structureText}>
+                  <p className="structure-text">
                     Assiste le Président dans l&apos;accomplissement de sa mission de Chef d&apos;Institution. Chargé de la coordination et de la gestion des affaires politiques et des relations publiques.
                   </p>
                 </div>
                 <div>
-                  <h4 style={structureTitle(RED)}>
+                  <h4 className="structure-title" style={{ color: RED }}>
                     <Building2 size={18} className="inline mr-2" style={{ color: RED }} />
                     Secrétariat Général
                   </h4>
-                  <p style={structureText}>
+                  <p className="structure-text">
                     Dirige, coordonne et supervise les activités des Services du Sénat. Chargé du contentieux et du traitement des doléances.
                   </p>
                 </div>
                 <div>
-                  <h4 style={structureTitle(CYAN)}>
+                  <h4 className="structure-title" style={{ color: CYAN }}>
                     <Building2 size={18} className="inline mr-2" style={{ color: CYAN }} />
                     Directions rattachées
                   </h4>
-                  <ul style={structureList}>
+                  <ul className="structure-list">
                     <li>Direction du Système d&apos;Information et de la Communication</li>
                     <li>Direction de la Législation et des Études</li>
                     <li>Direction de la Décentralisation</li>
@@ -296,11 +121,11 @@ export function AboutSection() {
                   </ul>
                 </div>
                 <div>
-                  <h4 style={structureTitle(EMERALD)}>
+                  <h4 className="structure-title" style={{ color: EMERALD }}>
                     <Building2 size={18} className="inline mr-2" style={{ color: EMERALD }} />
                     Autres organes
                   </h4>
-                  <ul style={structureList}>
+                  <ul className="structure-list">
                     <li>Inspection Générale du Sénat</li>
                     <li>Personne Responsable des Marchés Publics</li>
                     <li>Direction du Protocole</li>
@@ -308,47 +133,23 @@ export function AboutSection() {
                   </ul>
                 </div>
               </div>
+              <div className="mt-6">
+                <Link
+                  href="/about/structures"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 text-sm font-medium transition"
+                >
+                  Voir toutes les structures <RiArrowRightLongFill className="inline-block" />
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </section>
 
         {/* Textes de référence section */}
         <section id="textes" className="mb-16">
-          <h2 style={sectionTitle}>Textes de référence</h2>
+          <h2 className="section-title">Textes de référence</h2>
           <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                title: "Dispositions constitutionnelles",
-                text: "Le Sénat est prévu par l'article 80 et suivant de la Constitution de la Quatrième République.",
-                icon: FileText,
-                color: EMERALD,
-                bg: EMERALD,
-              },
-              {
-                title: "Lois organiques",
-                list: ["Ordonnance n° 2001-001 du 05 janvier 2001", "Loi Organique n° 2015-007 du 03 mars 2015"],
-                icon: FileText,
-                color: RED,
-                bg: RED,
-              },
-              {
-                title: "Sources règlementaires",
-                list: [
-                  "Arrêté n°2001-001 du 08 mai 2001 (Règlement Intérieur)",
-                  "Arrêté n°2001-002 du 16 mai 2001 (Organisation des Services)",
-                ],
-                icon: FileText,
-                color: CYAN,
-                bg: CYAN,
-              },
-              {
-                title: "Textes sur les services",
-                text: "Arrêté n°2001-002 du 16 mai 2001 portant organisation générale des Services du Sénat.",
-                icon: FileText,
-                color: EMERALD,
-                bg: EMERALD,
-              },
-            ].map((item, idx) => {
+            {referenceTextsData.map((item, idx) => {
               const Icon = item.icon;
               return (
                 <Card
@@ -362,15 +163,21 @@ export function AboutSection() {
                     >
                       <Icon size={24} style={{ color: item.color }} />
                     </div>
-                    <h4 style={refTitle}>{item.title}</h4>
-                    {item.text && <p style={refText}>{item.text}</p>}
+                    <h4 className="ref-title">{item.title}</h4>
+                    {item.text && <p className="ref-text">{item.text}</p>}
                     {item.list && (
-                      <ul style={refList}>
+                      <ul className="ref-list">
                         {item.list.map((li, i) => (
                           <li key={i}>{li}</li>
                         ))}
                       </ul>
                     )}
+                    <Link
+                      href={item.link}
+                      className="inline-block mt-3 text-cyan-400 hover:text-cyan-300 text-sm font-medium transition"
+                    >
+                      En savoir plus <RiArrowRightLongFill className="inline-block" />
+                    </Link>
                   </CardContent>
                 </Card>
               );
@@ -394,12 +201,9 @@ export function AboutSection() {
                   <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                 </div>
                 <p
+                  className="text-[0.7rem] font-bold uppercase tracking-widest"
                   style={{
                     fontFamily: "'Poppins', sans-serif",
-                    fontSize: "0.7rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
                     color: CYAN,
                     marginBottom: "0.5rem",
                   }}
@@ -407,15 +211,12 @@ export function AboutSection() {
                   Le Sénat de Madagascar
                 </p>
                 <h2
+                  className="font-poppins font-bold text-white leading-tight"
                   style={{
-                    fontFamily: "'Poppins', sans-serif",
                     fontSize: "clamp(1.5rem, 2.5vw, 2.1rem)",
-                    fontWeight: 700,
-                    color: WHITE,
-                    lineHeight: 1.2,
                   }}
                 >
-                  Dirigeants & <em style={{ fontWeight: 700, color: WHITE }}>Histoires</em>
+                  Dirigeants & <em className="font-bold text-white">Histoires</em>
                 </h2>
               </div>
               <Button
@@ -434,7 +235,7 @@ export function AboutSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {leadership.map((person) => {
+              {leadershipData.map((person) => {
                 const isPresident = person.isPresident || false;
                 return (
                   <motion.div
@@ -476,10 +277,9 @@ export function AboutSection() {
                           }}
                         />
                         <Badge
-                          className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity badge-about"
                           style={{
                             backgroundColor: person.accentColor,
-                            ...badgeStyles,
                           }}
                         >
                           {person.description}
@@ -499,9 +299,11 @@ export function AboutSection() {
                         style={{ backgroundColor: person.accentColor, width: 36 }}
                       />
 
-                      <p style={{ ...leadershipRole, color: person.accentColor }}>{person.role}</p>
-                      <h3 style={leadershipName}>{person.name}</h3>
-                      <p style={leadershipFirstName}>{person.firstName}</p>
+                      <p className="leadership-role" style={{ color: person.accentColor }}>
+                        {person.role}
+                      </p>
+                      <h3 className="leadership-name">{person.name}</h3>
+                      <p className="leadership-firstname">{person.firstName}</p>
                     </Link>
                   </motion.div>
                 );

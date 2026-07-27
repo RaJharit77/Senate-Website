@@ -515,3 +515,161 @@ export async function getDeliberationPosts(params: Params = {}) {
     unique.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     return unique;
 }
+
+/**
+ * Récupère les posts d'une catégorie avec pagination.
+ * Retourne les posts, le total d'articles et le nombre total de pages.
+ */
+export async function getPostsByCategoryWithPagination(
+    categoryId: number,
+    page: number = 1,
+    perPage: number = 10,
+    params: Params = {}
+): Promise<{ items: WpPost[]; total: number; totalPages: number }> {
+    const url = new URL(`${API_BASE}/posts`);
+    url.searchParams.set('categories', String(categoryId));
+    url.searchParams.set('page', String(page));
+    url.searchParams.set('per_page', String(perPage));
+    url.searchParams.set('_embed', 'true');
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+            url.searchParams.set(key, String(value));
+        }
+    });
+
+    const res = await fetch(url.toString(), {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)',
+            Accept: 'application/json',
+        },
+        next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+        throw new Error(`Failed to fetch posts: ${res.status}`);
+    }
+
+    const total = parseInt(res.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '0', 10);
+    const items = await res.json();
+
+    return { items, total, totalPages };
+}
+
+/**
+ * Récupère un article de la catégorie "PL adoptes" (ID 14) par son slug.
+ * Utilise l'API REST de WordPress.
+ */
+export async function getTextAndLawBySlug(slug: string): Promise<WpPost | null> {
+    try {
+        const res = await fetch(
+            `${API_BASE}/posts?categories=14&slug=${slug}&_embed=true&per_page=1`,
+            { next: { revalidate: 3600 } }
+        );
+        if (res.ok) {
+            const posts = await res.json();
+            return posts.length > 0 ? posts[0] : null;
+        }
+        console.error(`[getTextAndLawBySlug] HTTP ${res.status} pour le slug "${slug}"`);
+        return null;
+    } catch (err) {
+        console.error(`[getTextAndLawBySlug] Erreur pour le slug "${slug}":`, err);
+        return null;
+    }
+}
+
+/**
+ * Récupère les extraits des articles de la catégorie "PL adoptes" (ID 14)
+ * pour la section "Textes de référence" de la page d'accueil.
+ */
+/*export async function getLawsExcerpts(limit: number = 4): Promise<{
+    id: number;
+    title: string;
+    excerpt: string;
+    link: string;
+    date: string;
+}[]> {
+    try {
+        const res = await fetch(
+            `${API_BASE}/posts?categories=14&_embed=true&per_page=${limit}`,
+            { next: { revalidate: 3600 } }
+        );
+        if (!res.ok) return [];
+        const posts = (await res.json()) as WpPost[];
+        return posts.map((post: WpPost) => ({
+            id: post.id,
+            title: post.title.rendered,
+            excerpt: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || "Aucun extrait disponible.",
+            link: post.link || `/texts-and-laws/${post.slug}`,
+            date: post.date,
+        }));
+    } catch {
+        return [];
+    }
+}*/
+export async function getLawsExcerpts(limit: number = 4): Promise<{
+    id: number;
+    title: string;
+    excerpt: string;
+    link: string;
+    date: string;
+}[]> {
+    try {
+        const res = await fetch(
+            `${API_BASE}/posts?categories=14&_embed=true&per_page=${limit}`,
+            { next: { revalidate: 3600 } }
+        );
+        if (!res.ok) return [];
+        const posts = (await res.json()) as WpPost[];
+        return posts.map((post: WpPost) => ({
+            id: post.id,
+            title: post.title.rendered,
+            excerpt: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || "Aucun extrait disponible.",
+            link: post.link || `/texts-and-laws/${post.slug}`,
+            date: post.date,
+        }));
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Récupère les quatre pages de référence pour la section "Textes de référence"
+ * en fonction de leurs slugs.
+ * Retourne un objet avec les quatre pages (ou null si non trouvées).
+ */
+export async function getReferencePages(): Promise<{
+    dispositions: WpPost | null;
+    loisOrganiques: WpPost | null;
+    sourcesReglementaires: WpPost | null;
+    textesServices: WpPost | null;
+}> {
+    const slugs = {
+        dispositions: "dispositions-constitutionnelles",
+        loisOrganiques: "lois-organiques",
+        sourcesReglementaires: "sources-reglementaires",
+        textesServices: "textes-sur-les-services",
+    };
+
+    const [dispositions, loisOrganiques, sourcesReglementaires, textesServices] =
+        await Promise.all([
+            getPageBySlug(slugs.dispositions).catch((err) => {
+                console.error("[getReferencePages] dispositions:", err);
+                return null;
+            }),
+            getPageBySlug(slugs.loisOrganiques).catch((err) => {
+                console.error("[getReferencePages] loisOrganiques:", err);
+                return null;
+            }),
+            getPageBySlug(slugs.sourcesReglementaires).catch((err) => {
+                console.error("[getReferencePages] sourcesReglementaires:", err);
+                return null;
+            }),
+            getPageBySlug(slugs.textesServices).catch((err) => {
+                console.error("[getReferencePages] textesServices:", err);
+                return null;
+            }),
+        ]);
+
+    return { dispositions, loisOrganiques, sourcesReglementaires, textesServices };
+}

@@ -269,3 +269,166 @@
     color: #5bc8de !important;
     opacity: 0.8;
 }
+
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.prose table thead {
+    background: rgba(91, 200, 222, 0.15);
+}
+
+.prose table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #ffffff !important;
+    border-bottom: 2px solid rgba(91, 200, 222, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.prose table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: #e8e8e8 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.prose table tbody tr:hover {
+    background: rgba(91, 200, 222, 0.05);
+}
+
+.prose table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---- AboutSection styles ---- */
+.about-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.about-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.5rem;
+    max-width: 600px;
+}
+
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5bc8de;
+    margin-bottom: 1.5rem;
+}
+
+.card-title-about {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.card-text-about {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: #e0e0e0;
+    line-height: 1.7;
+}
+
+.structure-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.structure-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.structure-list {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #e0e0e0;
+    line-height: 1.8;
+    list-style: disc;
+    padding-left: 1.2rem;
+}
+
+.ref-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.3rem;
+}
+
+.ref-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.ref-list {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    line-height: 1.8;
+    list-style: disc;
+    padding-left: 1.2rem;
+}
+
+.leadership-role {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.leadership-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+.leadership-firstname {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    color: #e0e0e0;
+    margin-top: 2px;
+}
+
+.divider-bar {
+    height: 3px;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.badge-about {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
