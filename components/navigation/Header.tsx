@@ -30,6 +30,8 @@ const navItems = [
     path: "/parliamentary-proceddings",
     children: [
       { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
+      { label: "Calendrier Parlementaire", path: "/agenda" }, 
+      { label: "Textes et lois", path: "/texts-and-laws" },
     ],
   },
   {
