@@ -30,7 +30,7 @@ const navItems = [
     path: "/parliamentary-proceddings",
     children: [
       { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
-      { label: "Calendrier Parlementaire", path: "/agenda" }, 
+      { label: "Calendrier Parlementaire", path: "/agenda" },
       { label: "Textes et lois", path: "/texts-and-laws" },
     ],
   },
@@ -122,7 +122,7 @@ export function Header() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/recherche?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchOpen(false);
       setSearchQuery("");
     }
