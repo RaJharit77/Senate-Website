@@ -35,3 +35,8 @@ export const CF7_CONTAINER_POST = 149;
 
 // Others page
 export const perPage = 6;
+
+// Texts and laws
+// ID de la catégorie "PL adoptes"
+export const CAT_LOIS_ADOPTES = 14;
+export const ITEMS_PER_PAGES = 5;
