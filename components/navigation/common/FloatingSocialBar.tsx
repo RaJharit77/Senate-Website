@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { socialLinks } from "@/utils/socialLinks";
+import { socialLinks } from "@/utils/data/socialLinks";
 import Link from "next/link";
 import { Share2, X } from "lucide-react";
 

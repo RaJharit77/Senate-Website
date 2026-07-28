@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { FileText, Calendar, BookOpen, ArrowRight, Globe, Users, User, UsersRound } from "lucide-react";
+import { FileText, Calendar, BookOpen, ArrowRight, Globe, Users, User, UsersRound, Loader2 } from "lucide-react";
 import { CYAN, EMERALD, GREEN, RED, SKY_BLUE, WHITE } from "@/utils/colors";
 import { getPostsByCategory } from "@/lib/api";
 import { CAT_ORDRE_JOUR, CAT_LOIS } from "@/constants/constants";
@@ -12,16 +12,7 @@ import { formatDate } from "@/utils/utility";
 import type { WpPost } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-const iconMap = {
-  FileText,
-  Calendar,
-  BookOpen,
-  Globe,
-  Users,
-  User,
-  UsersRound,
-};
+import { infoCards } from "@/utils/data/parliamentaryWork";
 
 interface WorkItem {
   ref: string;
@@ -42,35 +33,21 @@ interface TabData {
   items: WorkItem[];
 }
 
+const iconMap = {
+  FileText,
+  Calendar,
+  BookOpen,
+  Globe,
+  Users,
+  User,
+  UsersRound,
+};
+
 function getAcfString(item: WpPost, key: string, fallback: string): string {
   const acf = item.acf as Record<string, unknown> | undefined;
   const value = acf?.[key];
   return typeof value === "string" ? value : fallback;
 }
-
-const infoCards = [
-  {
-    label: "Calendrier",
-    desc: "Ordre du jour des réunions parlementaires",
-    image: "https://senat.mg/wp-content/themes/senat13/images/ordre-du-jour.jpg",
-    path: "/agenda",
-    color: CYAN,
-  },
-  {
-    label: "Textes et Lois",
-    desc: "Textes en cours et adoptés par le sénat",
-    image: "https://senat.mg/wp-content/themes/senat13/images/lois.jpg",
-    path: "/texts-and-laws",
-    color: CYAN,
-  },
-  {
-    label: "International",
-    desc: "Diplomatie et activités parlementaire du sénat",
-    image: "https://senat.mg/wp-content/themes/senat13/images/international.jpg",
-    path: "/international",
-    color: CYAN,
-  },
-];
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -193,11 +170,8 @@ export function ParliamentaryWork() {
 
   if (loading) {
     return (
-      <div
-        className="py-16 text-center text-white/70"
-        style={{ fontFamily: "'Poppins', sans-serif" }}
-      >
-        Chargement des travaux parlementaires...
+      <div className="py-16 flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-cyan-400 animate-spin" />
       </div>
     );
   }
