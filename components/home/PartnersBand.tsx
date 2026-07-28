@@ -1,7 +1,7 @@
 "use client";
 
 import { CYAN } from "@/utils/colors";
-import { partners } from "@/utils/partners";
+import { partners } from "@/utils/data/partners";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
