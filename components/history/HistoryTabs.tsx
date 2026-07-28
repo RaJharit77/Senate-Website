@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export interface TabConfig {
     id: string;
@@ -47,11 +48,8 @@ function addSenatorLinks(html: string): string {
         const titleEl = col.querySelector("h3, h4");
         if (!titleEl) return;
 
-        // Vérifier s'il y a déjà un lien
         const existingLink = titleEl.querySelector("a");
         if (existingLink) {
-            // Si un lien existe, on garde le lien original (il pointe vers le bon slug)
-            // mais on peut ajouter la classe pour le style si besoin
             existingLink.className = "hover:text-cyan-300 transition-colors cursor-pointer";
             return;
         }
@@ -65,7 +63,6 @@ function addSenatorLinks(html: string): string {
         }
         seenNames.add(name);
 
-        // Générer le slug à partir du nom (fallback si pas de lien)
         const slug = generateSlug(name);
         titleEl.innerHTML = `<a href="/historical/${slug}" class="hover:text-cyan-300 transition-colors cursor-pointer">${name}</a>`;
     });
@@ -74,33 +71,66 @@ function addSenatorLinks(html: string): string {
 }
 
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
-    const [activeTab, setActiveTab] = useState(tabs[0]?.id ?? "");
+    const router = useRouter();
+
+    const getInitialTab = (): string => {
+        if (typeof window === "undefined") return tabs[0]?.id ?? "";
+        const hash = window.location.hash.replace("#", "");
+        if (tabs.some((t) => t.id === hash)) {
+            return hash;
+        }
+        return tabs[0]?.id ?? "";
+    };
+
+    const [activeTab, setActiveTab] = useState(getInitialTab);
     const mounted = typeof document !== "undefined";
+
+    // Synchronisation avec le hash dans l'URL
+    useEffect(() => {
+        let t: ReturnType<typeof setTimeout> | null = null;
+        const update = () => {
+            const hash = window.location.hash.replace("#", "");
+            if (!tabs.some((t) => t.id === hash)) return;
+            // Avoid synchronous setState inside effect to prevent cascading renders
+            // Schedule the state update asynchronously.
+            const id = hash;
+            if (t) clearTimeout(t);
+            t = setTimeout(() => setActiveTab(id), 0);
+        };
+
+        // Run once on mount / when tabs change
+        if (typeof window !== "undefined") update();
+        // Listen to hash changes
+        window.addEventListener("hashchange", update);
+        return () => {
+            if (t) clearTimeout(t);
+            window.removeEventListener("hashchange", update);
+        };
+    }, [tabs]);
+
+    const handleTabClick = (tabId: string) => {
+        setActiveTab(tabId);
+        // Met à jour le hash dans l'URL sans recharger la page
+        router.push(`#${tabId}`, { scroll: false });
+    };
 
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];
     const rawContent = contents[activeTab] ?? "";
 
-    // On applique la fonction des liens uniquement côté client une fois monté
     const activeContent = mounted ? addSenatorLinks(rawContent) : rawContent;
 
-    // ── CONFIGURATION TAILWIND AVEC ESPACEMENT ──
+    // ── CONFIGURATION TAILWIND (inchangée) ──
     const tailwindWPStyles = `
         text-gray-300 font-poppins leading-relaxed w-full
 
-        /* 1. LIGNE PRINCIPALE : Flexbox centré.
-           Utilisation de gap-12 (48px) pour reproduire l'espacement large de votre maquette. */
         [&_.row]:!flex [&_.row]:!flex-wrap [&_.row]:!justify-center [&_.row]:!items-center [&_.row]:!gap-12 [&_.row]:!w-full [&_.row]:!my-12
 
-        /* 2. COLONNES CLASSIQUES (Texte) : S'adaptent responsivement. */
         [&_[class*="col-"]:not(:has(.rounded-circle)):not(:has(img))]:!w-full
         md:[&_.col-md-12:not(:has(.rounded-circle)):not(:has(img))]:!w-full
         md:[&_.col-md-10:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(83.33%-1.5rem)]
         md:[&_.col-md-8:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(66.66%-1.5rem)]
         md:[&_.col-md-6:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(50%-1.5rem)]
 
-        /* =========================================================
-            3. CARTES DES SÉNATEURS (Taille fixe et Espacées)
-           ========================================================= */
         [&_[class*="col-"]:has(.rounded-circle)]:!w-[160px] 
         sm:[&_[class*="col-"]:has(.rounded-circle)]:!w-[200px]
         md:[&_[class*="col-"]:has(.rounded-circle)]:!w-[220px]
@@ -110,7 +140,6 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         [&_[class*="col-"]:has(.rounded-circle)]:!rounded-[2rem]
         [&_[class*="col-"]:has(.rounded-circle)]:!border
         [&_[class*="col-"]:has(.rounded-circle)]:!border-white/10
-        /* Padding augmenté à p-6 pour bien aérer le contenu de chaque carte */
         [&_[class*="col-"]:has(.rounded-circle)]:!p-6
         
         [&_[class*="col-"]:has(.rounded-circle)]:!flex
@@ -125,11 +154,9 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         hover:[&_[class*="col-"]:has(.rounded-circle)]:!bg-white/10
         hover:[&_[class*="col-"]:has(.rounded-circle)]:!z-10
 
-        /* Image Profile : L'image est légèrement agrandie pour équilibrer le grand espacement */
         [&_.rounded-circle]:!rounded-full [&_.rounded-circle]:!w-16 [&_.rounded-circle]:!h-16 md:[&_.rounded-circle]:!w-24 md:[&_.rounded-circle]:!h-24 [&_.rounded-circle]:!object-cover
         [&_.rounded-circle]:!block [&_.rounded-circle]:!mx-auto [&_.rounded-circle]:!mb-4 [&_.rounded-circle]:!shrink-0 [&_.rounded-circle]:!shadow-lg [&_.rounded-circle]:!border-2 [&_.rounded-circle]:!border-white/20
 
-        /* Typo Profile */
         [&_[class*="col-"]:has(.rounded-circle)_h2], 
         [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-sm md:[&_[class*="col-"]:has(.rounded-circle)_h3]:!text-[15px] [&_[class*="col-"]:has(.rounded-circle)_h3]:!font-bold [&_[class*="col-"]:has(.rounded-circle)_h3]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h3]:!mt-0 [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-white [&_[class*="col-"]:has(.rounded-circle)_h3]:!line-clamp-2
         
@@ -137,9 +164,6 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         
         [&_[class*="col-"]:has(.rounded-circle)_p]:!text-[10px] md:[&_[class*="col-"]:has(.rounded-circle)_p]:!text-[11px] [&_[class*="col-"]:has(.rounded-circle)_p]:!text-white/60 [&_[class*="col-"]:has(.rounded-circle)_p]:!mb-0 [&_[class*="col-"]:has(.rounded-circle)_p]:!line-clamp-2 [&_[class*="col-"]:has(.rounded-circle)_p]:!leading-tight
 
-        /* =========================================================
-            4. FLÈCHE VERTE DE SÉPARATION (Entre les profils)
-           ========================================================= */
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!w-auto
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!flex
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!justify-center
@@ -147,19 +171,14 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!px-2
 
         [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle)]:!rounded-xl
-        /* ========================================================= */
 
-        /* 5. Titres Globaux */
         [&_h1]:!text-center [&_h1]:!text-3xl [&_h1]:!font-bold [&_h1]:!text-white [&_h1]:!mb-6
         [&_h2:not([class*="col-"]_h2)]:!text-center [&_h2:not([class*="col-"]_h2)]:!text-2xl [&_h2:not([class*="col-"]_h2)]:!text-white [&_h2:not([class*="col-"]_h2)]:!mb-4
         
-        /* 6. Paragraphes descriptifs */
         [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!text-justify [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!w-full [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!mb-4
 
-        /* 7. Boutons et Badges */
         [&_.bg-danger]:!bg-red-500/20 [&_.bg-danger]:!text-red-300 [&_.bg-danger]:!border [&_.bg-danger]:!border-red-500/30 [&_.bg-danger]:!px-6 [&_.bg-danger]:!py-2 [&_.bg-danger]:!rounded-full [&_.bg-danger]:!block [&_.bg-danger]:!w-fit [&_.bg-danger]:!mx-auto [&_.bg-danger]:!my-6 [&_.bg-danger]:!font-bold [&_.bg-danger]:!text-sm [&_.bg-danger]:!text-center
 
-        /* 8. Listes */
         [&_ul]:!list-disc [&_ul]:!pl-6 [&_ul]:!mb-6 [&_li]:!mb-2 [&_li]:!text-gray-300
     `;
 
@@ -169,7 +188,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={() => handleTabClick(tab.id)}
                         className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${activeTab === tab.id
                             ? "text-white shadow-lg scale-105"
                             : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80"
@@ -223,7 +242,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                         className="text-white/80 text-lg mb-10 italic leading-relaxed border-l-4 pl-4"
                         style={{
                             fontFamily: "'Poppins', sans-serif",
-                            borderColor: activeConfig.color
+                            borderColor: activeConfig.color,
                         }}
                     >
                         {activeConfig.intro}
@@ -231,36 +250,16 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
 
                     {loading ? (
                         <div className="flex items-center gap-4 text-white/60 py-12 justify-center">
-                            <svg
-                                className="animate-spin h-8 w-8"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                />
-                                <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8v8z"
-                                />
+                            <svg className="animate-spin h-8 w-8" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                             </svg>
                             <span className="text-lg animate-pulse">Chargement des données historiques...</span>
                         </div>
                     ) : activeContent ? (
-                        <div
-                            className={tailwindWPStyles}
-                            dangerouslySetInnerHTML={{ __html: activeContent }}
-                        />
+                        <div className={tailwindWPStyles} dangerouslySetInnerHTML={{ __html: activeContent }} />
                     ) : (
-                        <p className="text-white/40 italic py-12 text-center">
-                            Aucun contenu disponible pour cette section.
-                        </p>
+                        <p className="text-white/40 italic py-12 text-center">Aucun contenu disponible pour cette section.</p>
                     )}
                 </motion.div>
             </AnimatePresence>
