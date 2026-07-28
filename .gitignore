@@ -42,3 +42,7 @@ next-env.d.ts
 
 # docs
 docs/*.txt
+
+# texts and laws
+app/texts-and-laws/constitutional-texts
+components/texts-and-laws/ConstitutionalTexts.tsx
