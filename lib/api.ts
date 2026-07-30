@@ -222,6 +222,21 @@ export function search(query: string) {
     return fetchAPI<unknown[]>("/search", { search: query });
 }
 
+// Recherche unifiée sur tout le site : interroge /api/search (voir
+// app/api/search/route.ts), qui agrège pages, textes et lois, actualités,
+// activités du Président, historique, etc. en parallèle et associe à
+// chaque résultat un chemin Next.js interne garanti — plutôt que de
+// déduire une route à partir du `url`/`subtype` WordPress.
+// Pensée pour un appel côté client (fetch relatif) : ne pas l'utiliser
+// depuis un composant serveur (pas d'origine implicite côté serveur).
+export async function searchSite(query: string): Promise<unknown[]> {
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) {
+        throw new Error(`Failed to search: ${res.status}`);
+    }
+    return res.json();
+}
+
 // ----- Media (optional) -----
 export function getMedia(id: number) {
     return fetchAPI(`/media/${id}`, {}, true);
