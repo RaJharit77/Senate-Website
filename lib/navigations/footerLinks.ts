@@ -1,4 +1,4 @@
-import { CYAN, RED } from "./colors";
+import { CYAN, RED } from "../../utils/colors";
 
 export const footerLinks = [
     {

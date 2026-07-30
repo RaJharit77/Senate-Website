@@ -56,7 +56,7 @@ export const leadershipData = [
         description: "Les Membres",
         image: "https://senat.mg/wp-content/themes/senat13/images/membres.jpg",
         accentColor: RED,
-        path: "/historical",
+        path: "/historical#quatrieme",
         isPresident: false,
     },
     {

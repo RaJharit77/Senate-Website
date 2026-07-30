@@ -12,41 +12,7 @@ import { ALICE_BLUE, CYAN, LINK_WATER, MIDNIGHT, SILVER, WHITE } from "@/utils/c
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-
-const navItems = [
-  { label: "Accueil", path: "/" },
-  {
-    label: "À propos du Sénat",
-    path: "/about",
-    children: [
-      { label: "Missions et attributions", path: "/about/missions-and-responsibilities" },
-      { label: "Structures", path: "/about/structures" },
-      { label: "Textes de référence", path: "/about/reference-texts" },
-    ],
-  },
-  { label: "Historique", path: "/historical" },
-  {
-    label: "Travaux Parlementaires",
-    path: "/parliamentary-proceddings",
-    children: [
-      { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
-      { label: "Calendrier Parlementaire", path: "/agenda" }, 
-      { label: "Textes et lois", path: "/texts-and-laws" },
-    ],
-  },
-  {
-    label: "International",
-    path: "/international",
-    children: [
-      { label: "Activités du Président", path: "/international/presidents-activities" },
-      { label: "Activités des Sénateurs", path: "/international/senators-activities" },
-      { label: "Groupe Interparlementaire d'amitié", path: "/international/inter-parliamentary-friendship-group" },
-    ],
-  },
-  { label: "Espace Presse", path: "/press-area" },
-  { label: "Autres", path: "/others" },
-  { label: "Contact", path: "/contact" },
-];
+import { navItems } from "@/lib/navigations/navigation";
 
 const itemVariants = {
   open: {
@@ -122,7 +88,7 @@ export function Header() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/recherche?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchOpen(false);
       setSearchQuery("");
     }
@@ -319,10 +285,10 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Rechercher…"
-                    className="px-5 py-2.5 pr-12 rounded-full border-2 border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400/50 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md"
+                    className="px-5 py-2.5 pr-12 rounded-full border-2 border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400/50 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md caret-cyan-800"
                     style={{
                       fontSize: "0.85rem",
-                      color: COLOURS.text,
+                      color: COLOURS.textInput,
                       width: "240px",
                     }}
                   />
@@ -385,11 +351,11 @@ export function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher…"
-                className="flex-1 px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="flex-1 px-4 py-2 rounded-full border-2 border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 caret-cyan-800"
                 style={{
                   borderColor: COLOURS.cyan,
                   fontSize: "0.9rem",
-                  color: COLOURS.text,
+                  color: COLOURS.textInput,
                   backgroundColor: "white",
                 }}
               />

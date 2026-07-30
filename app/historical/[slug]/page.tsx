@@ -33,7 +33,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
 
     const post = await getSenatorBySlug(slug);
 
-    if (!post) return <NotFoundPage />
+    if (!post) return <NotFoundPage />;
 
     const date = formatDate(post.date);
     const cleanTitle = cleanText(post.title.rendered);

@@ -12,55 +12,12 @@ import {
 } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
 import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
-import { RED, WHITE, EMERALD, CYAN } from "@/utils/colors";
+import { RED, WHITE, EMERALD } from "@/utils/colors";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
-import type { TabConfig } from "@/components/history/HistoryTabs";
 import { TabId } from "@/types/tabId";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
-
-const TABS: TabConfig[] = [
-    {
-        id: "premiere",
-        label: "Première République",
-        color: EMERALD,
-        textColor: "black",
-        period: "1959 – 1972",
-        intro: "Pendant la Première République, le Sénat constitue la Chambre Haute d'un Parlement bicaméral aux côtés de l'Assemblée Nationale.",
-    },
-    {
-        id: "deuxieme",
-        label: "Deuxième République",
-        color: RED,
-        textColor: "white",
-        period: "1975 – 1991",
-        intro: "Pendant la Deuxième République, le Sénat est supprimé au profit d'un Parlement monocaméral : l'Assemblée Nationale concentre l'essentiel du pouvoir législatif.",
-    },
-    {
-        id: "troisieme",
-        label: "Troisième République",
-        color: EMERALD,
-        textColor: "black",
-        period: "1992 – 2009",
-        intro: "Pendant la Troisième République, le système bicaméral est réhabilité par la Constitution de 1992, mais le Sénat ne redevient effectif qu'en mai 2001.",
-    },
-    {
-        id: "quatrieme",
-        label: "Quatrième République",
-        color: RED,
-        textColor: "black",
-        period: "depuis 2014",
-        intro: "Pendant la Quatrième République, le Sénat reprend ses fonctions aux côtés de l'Assemblée Nationale, avec un mandat sénatorial ramené à cinq ans.",
-    },
-    {
-        id: "transition",
-        label: "Période Transitoire",
-        color: CYAN,
-        textColor: "black",
-        period: "1972 – 1975 · 1991 – 1992 · 2009 – 2014",
-        intro: "Durant les périodes transitoires, le Sénat est suspendu et remplacé par des organes consultatifs (CNPD, CRES, puis Conseil Supérieur de la Transition) le temps de la mise en place de nouvelles institutions.",
-    },
-];
+import { TABS } from "@/utils/data/historical";
 
 const REPUBLIC_FETCHERS: Record<Exclude<TabId, "transition">, () => Promise<WpPost[]>> = {
     premiere: getRepubliqueI,

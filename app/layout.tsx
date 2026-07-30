@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Poppins, Inter, Geist } from 'next/font/google';
 import '../styles/globals.css';
-import { Header } from '@/components/navigation/Header';
-import { Footer } from '@/components/navigation/Footer';
-import { FloatingSocialBar } from '@/components/navigation/common/FloatingSocialBar';
+import { Header } from '@/components/navigations/Header';
+import { Footer } from '@/components/navigations/Footer';
+import { FloatingSocialBar } from '@/components/navigations/common/FloatingSocialBar';
 import Chatbot from '@/components/chatbot/Chatbot';
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next"

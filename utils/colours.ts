@@ -9,6 +9,7 @@ export const COLOURS = {
     white: "#ffffff",
     offWhite: "#f5f9f5",
     text: "#0f172a",
+    textInput: "#000080",
     textMuted: "#64748b",
     border: "rgba(15,23,42,0.08)",
     navBg: "#1e293b",

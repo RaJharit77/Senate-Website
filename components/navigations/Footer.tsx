@@ -5,7 +5,7 @@ import { Mail, MapPin, ArrowRight } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { EMERALD, NAV_BG, RED, WHITE } from "@/utils/colors";
-import { footerLinks } from "@/utils/footerLinks";
+import { footerLinks } from "@/lib/navigations/footerLinks";
 
 export function Footer() {
   return (

@@ -6,6 +6,33 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* Firefox */
+html {
+    scrollbar-color: #00bcd4 transparent;
+    /* poignée cyan, fond transparent */
+    scrollbar-width: thin;
+}
+
+/* Chrome, Edge, Safari, Opera */
+::-webkit-scrollbar {
+    width: 10px;
+    /* largeur de la barre verticale */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00bcd4;
+    /* Bleu cyan */
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00e5ff;
+}
+
 /* Home Page Hero carousel */
 .hero-image {
     animation: slowZoom 8s ease-in-out forwards;
