@@ -128,11 +128,24 @@ export async function GET(request: NextRequest) {
     // Initialiser les résultats avec ceux de la navigation statique
     const results: UnifiedSearchResult[] = [...staticResults];
 
+    // On garde en mémoire les chemins (URL) déjà ajoutés pour éviter les doublons
+    const seenPaths = new Set(results.map(r => r.path));
+
+    // Fonction utilitaire pour éviter l'insertion de doublons
+    const addUniqueResult = (post: WpPost, path: string, source: string, idPrefix: string) => {
+        if (!seenPaths.has(path)) {
+            results.push(toResult(post, path, source, idPrefix));
+            seenPaths.add(path);
+        }
+    };
+
     // ----- Pages : seulement celles qu'on sait router avec certitude -----
     if (pagesRes.status === "fulfilled") {
         for (const page of pagesRes.value) {
             const path = PAGE_SLUG_MAP[page.slug];
-            if (path) results.push(toResult(page, path, "Page", "page"));
+            if (path) {
+                addUniqueResult(page, path, "Page", "page");
+            }
         }
     } else {
         console.error("[/api/search] getPages a échoué:", pagesRes.reason);
@@ -141,7 +154,7 @@ export async function GET(request: NextRequest) {
     // ----- Textes et lois (catégorie 14) -----
     if (lawsRes.status === "fulfilled") {
         for (const post of lawsRes.value) {
-            results.push(toResult(post, `/texts-and-laws/${post.slug}`, "Texte de loi", "law"));
+            addUniqueResult(post, `/texts-and-laws/${post.slug}`, "Texte de loi", "law");
         }
     } else {
         console.error("[/api/search] getPostsByCategory(14) a échoué:", lawsRes.reason);
@@ -156,8 +169,11 @@ export async function GET(request: NextRequest) {
     for (const [res, idPrefix] of presidentSources) {
         if (res.status === "fulfilled") {
             for (const post of res.value) {
-                results.push(
-                    toResult(post, `/international/presidents-activities/${post.slug}`, "Activité du Président", idPrefix)
+                addUniqueResult(
+                    post,
+                    `/international/presidents-activities/${post.slug}`,
+                    "Activité du Président",
+                    idPrefix
                 );
             }
         } else {
@@ -168,7 +184,7 @@ export async function GET(request: NextRequest) {
     // ----- Historique constitutionnel (Républiques I à IV) -----
     if (republiquesRes.status === "fulfilled") {
         for (const post of republiquesRes.value) {
-            results.push(toResult(post, `/historical/${post.slug}`, "Historique", "republique"));
+            addUniqueResult(post, `/historical/${post.slug}`, "Historique", "republique");
         }
     } else {
         console.error("[/api/search] getAllRepubliques a échoué:", republiquesRes.reason);
@@ -177,14 +193,14 @@ export async function GET(request: NextRequest) {
     // ----- Actualités / à la une -----
     if (actualiteRes.status === "fulfilled") {
         for (const post of actualiteRes.value) {
-            results.push(toResult(post, `/press-area/news/${post.slug}`, "Actualité", "actualite"));
+            addUniqueResult(post, `/press-area/news/${post.slug}`, "Actualité", "actualite");
         }
     } else {
         console.error("[/api/search] getActualite a échoué:", actualiteRes.reason);
     }
     if (alauneRes.status === "fulfilled") {
         for (const post of alauneRes.value) {
-            results.push(toResult(post, `/press-area/news/${post.slug}`, "À la une", "alaune"));
+            addUniqueResult(post, `/press-area/news/${post.slug}`, "À la une", "alaune");
         }
     } else {
         console.error("[/api/search] getAlaune a échoué:", alauneRes.reason);

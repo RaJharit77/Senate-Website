@@ -2,16 +2,16 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { search } from "@/lib/api";
+import { searchSite } from "@/lib/api";
 import Link from "next/link";
 
 interface SearchResult {
-    id: number;
+    id: string;
     title: string;
-    url: string;
-    type: string;
-    subtype: string;
     excerpt: string;
+    date: string | null;
+    path: string;
+    source: string;
 }
 
 export default function SearchPage() {
@@ -32,7 +32,7 @@ export default function SearchPage() {
                 }
             }, 0);
 
-            search(query)
+            searchSite(query)
                 .then((data: unknown) => {
                     if (!active) return;
                     const items = Array.isArray(data) ? data : [];
@@ -82,14 +82,14 @@ export default function SearchPage() {
                         ) : (
                             results.map((item) => (
                                 <div key={item.id} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                                    <Link href={item.url} className="text-cyan-400 text-xl font-semibold hover:underline">
+                                    <Link href={item.path} className="text-cyan-400 text-xl font-semibold hover:underline">
                                         {item.title || "Sans titre"}
                                     </Link>
                                     {item.excerpt && (
                                         <p className="text-white/60 text-sm mt-1">{item.excerpt}</p>
                                     )}
                                     <p className="text-white/40 text-xs mt-2">
-                                        {item.subtype || item.type || "Article"}
+                                        {item.source}
                                     </p>
                                 </div>
                             ))
