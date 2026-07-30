@@ -59,7 +59,7 @@ export function PaginationControls({
                 size="sm"
                 onClick={() => onChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="border-white/10 text-white/60 hover:bg-white/10 hover:text-white/80"
+                className="border-white/10 bg-transparent text-white/60 hover:bg-white/10 hover:text-white/80"
             >
                 <MdKeyboardDoubleArrowLeft />
             </Button>
@@ -72,7 +72,7 @@ export function PaginationControls({
                     className={
                         p === currentPage
                             ? "bg-cyan-500 text-white hover:bg-cyan-600"
-                            : "border-white/10 text-white/70 hover:bg-white/10 hover:text-white/90"
+                            : "border-white/10 bg-transparent text-white/70 hover:bg-white/10 hover:text-white/90"
                     }
                 >
                     {p}
@@ -83,7 +83,7 @@ export function PaginationControls({
                 size="sm"
                 onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="border-white/10 text-white/60 hover:bg-white/10 hover:text-white/80"
+                className="border-white/10 bg-transparent text-white/60 hover:bg-white/10 hover:text-white/80"
             >
                 <MdKeyboardDoubleArrowRight />
             </Button>

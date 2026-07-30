@@ -295,7 +295,7 @@ export default function PressClient() {
                             onClick={handlePrev}
                             disabled={currentPage === 1}
                             variant="outline"
-                            className="border-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10"
+                            className="border-white/10 bg-transparent text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:text-cyan-300"
                         >
                             Précédent
                         </Button>
@@ -307,7 +307,7 @@ export default function PressClient() {
                                 variant={page === currentPage ? "default" : "outline"}
                                 className={page === currentPage
                                     ? 'bg-cyan-500 text-white hover:bg-cyan-600'
-                                    : 'border-white/10 text-gray-300 hover:bg-white/10'
+                                    : 'border-white/10 bg-transparent text-gray-300 hover:bg-white/10 hover:text-cyan-300'
                                 }
                                 disabled={page === '...'}
                             >
@@ -319,7 +319,7 @@ export default function PressClient() {
                             onClick={handleNext}
                             disabled={currentPage === totalPages}
                             variant="outline"
-                            className="border-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10"
+                            className="border-white/10 bg-transparent text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:text-cyan-300"
                         >
                             Suivant
                         </Button>
