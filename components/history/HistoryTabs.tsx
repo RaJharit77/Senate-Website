@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { X } from "lucide-react";
 
 export interface TabConfig {
@@ -367,8 +368,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                             </button>
 
                             {selectedSenator.imgSrc && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
+                                <Image
                                     src={selectedSenator.imgSrc}
                                     alt={selectedSenator.name}
                                     className="w-28 h-28 rounded-full object-cover mx-auto mb-6 border-2 border-white/20 shadow-lg"
