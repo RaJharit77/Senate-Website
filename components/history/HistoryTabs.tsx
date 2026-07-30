@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { X } from "lucide-react";
 
 export interface TabConfig {
     id: string;
@@ -21,12 +19,6 @@ interface HistoryTabsProps {
     loading?: boolean;
 }
 
-interface SenatorInfo {
-    name: string;
-    role: string;
-    imgSrc: string;
-}
-
 function generateSlug(name: string): string {
     return name
         .normalize("NFD")
@@ -37,45 +29,13 @@ function generateSlug(name: string): string {
         .toLowerCase();
 }
 
-/**
- * Tronque un nom proprement, sans couper un mot en deux.
- * Le seuil est volontairement généreux : les cartes réservent 2 lignes
- * (min-h-[2.5em] + wrap), donc la plupart des noms à 2-3 mots n'ont pas
- * besoin d'être coupés du tout. Le bouton "Voir plus" prend le relais
- * pour les noms/fonctions qui dépassent malgré tout.
- */
-function truncateName(name: string, maxLen = 34): string {
-    if (name.length <= maxLen) return name;
-    const sliced = name.slice(0, maxLen);
-    const lastSpace = sliced.lastIndexOf(" ");
-    const cut = lastSpace > 10 ? sliced.slice(0, lastSpace) : sliced;
-    return cut.trim() + "…";
-}
-
 function cleanWhitespace(text: string): string {
-    // Le HTML WordPress contient parfois des &nbsp; (espace insécable, \u00A0)
-    // au milieu des noms ; \s en JS matche aussi \u00A0, donc ceci normalise
-    // tout en simples espaces avant slug/troncature/affichage.
     return text.replace(/\s+/g, " ").trim();
 }
 
 /**
- * Ajoute des liens internes vers /historical/[slug] sur chaque carte sénateur,
- * tronque proprement les noms trop longs, et injecte un bouton "Voir plus"
- * (avec les infos complètes en data-attributes) quand le nom ou la fonction
- * est réellement tronqué.
- *
- * IMPORTANT — pas de déduplication globale ici.
- * Le contenu WordPress de "La Quatrième République" est un récit chronologique :
- * le même sénateur (ex. BESOA Erick Lambert) réapparaît volontairement à
- * plusieurs endroits, une fois par période où il siège au Bureau Permanent.
- * Un Set global de noms déjà vus supprimait silencieusement ces réapparitions
- * légitimes (col.remove()), ce qui faisait "disparaître" des sénateurs bien
- * réels par rapport au site officiel. Si un JOUR un vrai doublon accidentel
- * apparaît dans le CMS (deux cartes strictement identiques, côte à côte, dans
- * la même .row), corrige-le côté WordPress plutôt que de le masquer ici :
- * une suppression côté client est invisible et donc impossible à diagnostiquer
- * (c'est exactement ce qui s'est passé).
+ * Ajoute des liens internes vers /historical/[slug] sur chaque carte sénateur.
+ * Affiche le nom complet et le rôle complet (sans troncature ni "Voir plus").
  */
 function addSenatorLinks(html: string): string {
     if (!html || typeof document === "undefined") return html;
@@ -84,7 +44,6 @@ function addSenatorLinks(html: string): string {
     container.innerHTML = html;
 
     const columns = container.querySelectorAll('[class*="col-"]:has(.rounded-circle)');
-    let idx = 0;
 
     columns.forEach((col) => {
         const titleEl = col.querySelector("h3, h4") as HTMLElement | null;
@@ -95,47 +54,28 @@ function addSenatorLinks(html: string): string {
         const fullName = cleanWhitespace(rawName);
         if (!fullName) return;
 
-        const roleEl = Array.from(col.querySelectorAll("h4, p")).find(
-            (el) => el !== titleEl && el.textContent?.trim()
-        ) as HTMLElement | undefined;
-        const fullRole = roleEl ? cleanWhitespace(roleEl.textContent || "") : "";
-
-        const displayName = truncateName(fullName);
-        const isTruncated = displayName !== fullName || fullRole.length > 50;
-        const senatorId = `sen-${idx++}`;
         const slug = generateSlug(fullName);
         const href = `/historical/${slug}`;
 
-        col.setAttribute("data-senator-id", senatorId);
-        col.setAttribute("data-senator-name", fullName);
-        col.setAttribute("data-senator-role", fullRole);
-        const imgEl = col.querySelector("img") as HTMLImageElement | null;
-        col.setAttribute("data-senator-img", imgEl?.src || "");
-
+        // Remplacer le texte par un lien avec le nom complet
         if (existingLink) {
             existingLink.setAttribute("href", href);
             existingLink.removeAttribute("target");
             existingLink.className = "hover:text-cyan-300 transition-colors cursor-pointer";
             existingLink.setAttribute("title", fullName);
-            existingLink.textContent = displayName;
+            existingLink.textContent = fullName; // nom complet
         } else {
             const a = document.createElement("a");
             a.setAttribute("href", href);
             a.setAttribute("title", fullName);
             a.className = "hover:text-cyan-300 transition-colors cursor-pointer";
-            a.textContent = displayName;
+            a.textContent = fullName;
             titleEl.innerHTML = "";
             titleEl.appendChild(a);
         }
 
-        if (isTruncated) {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "senator-more-btn";
-            btn.setAttribute("data-senator-trigger", senatorId);
-            btn.textContent = "Voir plus";
-            col.appendChild(btn);
-        }
+        // Si un élément pour le rôle existe, on le laisse tel quel (complet)
+        // On ne fait aucune troncature.
     });
 
     return container.innerHTML;
@@ -144,25 +84,23 @@ function addSenatorLinks(html: string): string {
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const router = useRouter();
 
-    // Premier onglet identique côté serveur ET au tout premier rendu client
-    // (pas de branchement sur window/document dans le rendu lui-même).
     const [activeTab, setActiveTab] = useState(tabs[0]?.id ?? "");
-    const [selectedSenator, setSelectedSenator] = useState<SenatorInfo | null>(null);
-    // isClient ne devient vrai que dans un effect, donc après l'hydratation :
-    // le rendu serveur et le tout premier rendu client restent identiques.
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setIsClient(true);
+        const handle = window.requestAnimationFrame(() => {
+            setIsClient(true);
+        });
+        return () => window.cancelAnimationFrame(handle);
     }, []);
 
-    // Une fois monté, on aligne l'onglet actif sur le hash de l'URL si présent.
     useEffect(() => {
-        const hash = window.location.hash.replace("#", "");
-        if (!hash || !tabs.some((t) => t.id === hash)) return;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setActiveTab(hash);
+        const handle = window.requestAnimationFrame(() => {
+            const hash = window.location.hash.replace("#", "");
+            if (!hash || !tabs.some((t) => t.id === hash)) return;
+            setActiveTab(hash);
+        });
+        return () => window.cancelAnimationFrame(handle);
     }, [tabs]);
 
     useEffect(() => {
@@ -179,23 +117,6 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         setActiveTab(tabId);
         router.push(`#${tabId}`, { scroll: false });
     };
-
-    // Écoute les clics sur les boutons "Voir plus" injectés dans le HTML dangereux
-    useEffect(() => {
-        const handler = (e: Event) => {
-            const target = (e.target as HTMLElement).closest("[data-senator-trigger]");
-            if (!target) return;
-            const card = target.closest("[data-senator-id]") as HTMLElement | null;
-            if (!card) return;
-            setSelectedSenator({
-                name: card.getAttribute("data-senator-name") || "",
-                role: card.getAttribute("data-senator-role") || "",
-                imgSrc: card.getAttribute("data-senator-img") || "",
-            });
-        };
-        document.addEventListener("click", handler);
-        return () => document.removeEventListener("click", handler);
-    }, []);
 
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];
     const rawContent = contents[activeTab] ?? "";
@@ -244,15 +165,13 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
 
         [&_[class*="col-"]:has(.rounded-circle)_p]:!text-[10px] md:[&_[class*="col-"]:has(.rounded-circle)_p]:!text-[11px] [&_[class*="col-"]:has(.rounded-circle)_p]:!text-white/60 [&_[class*="col-"]:has(.rounded-circle)_p]:!mb-2 [&_[class*="col-"]:has(.rounded-circle)_p]:!line-clamp-3 [&_[class*="col-"]:has(.rounded-circle)_p]:!leading-tight
 
-        [&_.senator-more-btn]:!mt-2 [&_.senator-more-btn]:!text-[10px] [&_.senator-more-btn]:!font-semibold [&_.senator-more-btn]:!text-cyan-300 [&_.senator-more-btn]:!bg-cyan-400/10 [&_.senator-more-btn]:!px-3 [&_.senator-more-btn]:!py-1 [&_.senator-more-btn]:!rounded-full [&_.senator-more-btn]:!border [&_.senator-more-btn]:!border-cyan-400/30 [&_.senator-more-btn]:hover:!bg-cyan-400/20 [&_.senator-more-btn]:!transition-colors [&_.senator-more-btn]:!cursor-pointer
-
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!w-auto
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!flex
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!justify-center
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!items-center
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!px-2
 
-        [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle)]:!rounded-xl
+        [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle))]:!rounded-xl
 
         [&_h1]:!text-center [&_h1]:!text-3xl [&_h1]:!font-bold [&_h1]:!text-white [&_h1]:!mb-6
         [&_h2:not([class*="col-"]_h2)]:!text-center [&_h2:not([class*="col-"]_h2)]:!text-2xl [&_h2:not([class*="col-"]_h2)]:!text-white [&_h2:not([class*="col-"]_h2)]:!mb-4
@@ -340,56 +259,6 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                         <p className="text-white/40 italic py-12 text-center">Aucun contenu disponible pour cette section.</p>
                     )}
                 </motion.div>
-            </AnimatePresence>
-
-            {/* Modal profil complet */}
-            <AnimatePresence>
-                {selectedSenator && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-                        onClick={() => setSelectedSenator(null)}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-[#0f1c1f] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button
-                                onClick={() => setSelectedSenator(null)}
-                                className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
-                                aria-label="Fermer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-
-                            {selectedSenator.imgSrc && (
-                                <Image
-                                    src={selectedSenator.imgSrc}
-                                    alt={selectedSenator.name}
-                                    className="w-28 h-28 rounded-full object-cover mx-auto mb-6 border-2 border-white/20 shadow-lg"
-                                />
-                            )}
-
-                            <h3
-                                className="text-white text-xl font-bold text-center mb-2"
-                                style={{ fontFamily: "'Poppins', sans-serif" }}
-                            >
-                                {selectedSenator.name}
-                            </h3>
-
-                            {selectedSenator.role && (
-                                <p className="text-cyan-400 text-sm text-center leading-relaxed">
-                                    {selectedSenator.role}
-                                </p>
-                            )}
-                        </motion.div>
-                    </motion.div>
-                )}
             </AnimatePresence>
         </div>
     );
