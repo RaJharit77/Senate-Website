@@ -38,6 +38,7 @@ export function ActivityCard({ item, basePath }: { item: ActivityItem; basePath:
                                 src={item.imageUrl}
                                 alt={item.title}
                                 fill
+                                priority
                                 sizes="(max-width: 768px) 100vw, 33vw"
                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 unoptimized

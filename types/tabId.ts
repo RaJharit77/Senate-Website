@@ -1,1 +1,1 @@
-export type TabId = "premiere" | "deuxieme" | "troisieme" | "quatrieme" | "transition";
+export type TabId = "first" | "second" | "third" | "fourth" | "transition";
