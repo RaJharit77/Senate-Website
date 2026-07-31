@@ -1,13 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, MapPin, ArrowRight } from "lucide-react";
+import { Mail, MapPin, ArrowRight, Tag } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { EMERALD, NAV_BG, RED, WHITE } from "@/utils/colors";
 import { footerLinks } from "@/lib/navigations/footerLinks";
+import { useEffect, useState } from "react";
+import { release } from "@/lib/api";
 
 export function Footer() {
+  const [releaseTag, setReleaseTag] = useState<string | null>(null);
+  const [releaseUrl, setReleaseUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRelease = async () => {
+      try {
+        const data = await release();
+        setReleaseTag(data.tag_name);
+        setReleaseUrl(data.html_url);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la version :", error);
+      }
+    };
+    fetchRelease();
+  }, []);
+
   return (
     <footer style={{ backgroundColor: NAV_BG }}>
       <div className="py-16 px-4 sm:px-6">
@@ -110,6 +128,19 @@ export function Footer() {
           <p className="font-poppins text-[0.7rem] text-white/40 tracking-wider">
             © 2026 Sénat / DSIC — République de Madagascar
           </p>
+          {releaseTag && (
+            <div className="flex justify-center mt-2">
+              <a
+                href={releaseUrl || process.env.GITHUB_LINK_RELEASE}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-white/40 hover:text-cyan-400 text-xs transition-colors"
+              >
+                <Tag className="w-3 h-3" />
+                <span>Version {releaseTag}</span>
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </footer>
