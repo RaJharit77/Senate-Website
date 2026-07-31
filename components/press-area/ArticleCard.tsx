@@ -60,6 +60,7 @@ export default function ArticleCard({ post }: { post: ExtendedPost }) {
                                 src={imageUrl}
                                 alt={cleanTitle}
                                 fill
+                                priority
                                 className="object-cover object-center"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                             />

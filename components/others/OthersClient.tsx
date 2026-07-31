@@ -196,6 +196,7 @@ export default function OthersClient() {
                                                     src={imageUrl}
                                                     alt={cleanTitle}
                                                     fill
+                                                    priority
                                                     className="object-cover"
                                                     sizes="(max-width: 768px) 100vw, 50vw"
                                                     loading="eager"
