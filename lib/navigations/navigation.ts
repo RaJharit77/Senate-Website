@@ -9,7 +9,7 @@ export const navItems = [
             { label: "Textes de référence", path: "/about/reference-texts" },
         ],
     },
-    { label: "Historique", path: "/historical" },
+    { label: "Historique", path: "/historical?tab=first" },
     {
         label: "Travaux Parlementaires",
         path: "/parliamentary-proceedings",

@@ -20,20 +20,20 @@ import { buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { TABS } from "@/utils/data/historical";
 
 const REPUBLIC_FETCHERS: Record<Exclude<TabId, "transition">, () => Promise<WpPost[]>> = {
-    premiere: getRepubliqueI,
-    deuxieme: getRepubliqueII,
-    troisieme: getRepubliqueIII,
-    quatrieme: getRepubliqueIV,
+    first: getRepubliqueI,
+    second: getRepubliqueII,
+    third: getRepubliqueIII,
+    fourth: getRepubliqueIV,
 };
 
 const HERO_IMAGE = "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg";
 
 type ContentMap = Record<TabId, string>;
 const EMPTY_CONTENT: ContentMap = {
-    premiere: "",
-    deuxieme: "",
-    troisieme: "",
-    quatrieme: "",
+    first: "",
+    second: "",
+    third: "",
+    fourth: "",
     transition: "",
 };
 
@@ -45,7 +45,7 @@ export default function HistoricalClient() {
         const fetchData = async () => {
             try {
                 const ids: Exclude<TabId, "transition">[] = [
-                    "premiere", "deuxieme", "troisieme", "quatrieme",
+                    "first", "second", "third", "fourth",
                 ];
                 const results = await Promise.allSettled(
                     ids.map((id) => REPUBLIC_FETCHERS[id]())
@@ -120,6 +120,7 @@ export default function HistoricalClient() {
                                 src={HERO_IMAGE}
                                 alt="Senate Structures"
                                 fill
+                                priority
                                 className="object-cover"
                                 sizes="100vw"
                                 quality={30}

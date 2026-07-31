@@ -3,7 +3,7 @@ import { CYAN, EMERALD, RED } from "../colors";
 
 export const TABS: TabConfig[] = [
     {
-        id: "premiere",
+        id: "first",
         label: "Première République",
         color: EMERALD,
         textColor: "black",
@@ -11,7 +11,7 @@ export const TABS: TabConfig[] = [
         intro: "Pendant la Première République, le Sénat constitue la Chambre Haute d'un Parlement bicaméral aux côtés de l'Assemblée Nationale.",
     },
     {
-        id: "deuxieme",
+        id: "second",
         label: "Deuxième République",
         color: RED,
         textColor: "white",
@@ -19,7 +19,7 @@ export const TABS: TabConfig[] = [
         intro: "Pendant la Deuxième République, le Sénat est supprimé au profit d'un Parlement monocaméral : l'Assemblée Nationale concentre l'essentiel du pouvoir législatif.",
     },
     {
-        id: "troisieme",
+        id: "third",
         label: "Troisième République",
         color: EMERALD,
         textColor: "black",
@@ -27,7 +27,7 @@ export const TABS: TabConfig[] = [
         intro: "Pendant la Troisième République, le système bicaméral est réhabilité par la Constitution de 1992, mais le Sénat ne redevient effectif qu'en mai 2001.",
     },
     {
-        id: "quatrieme",
+        id: "fourth",
         label: "Quatrième République",
         color: RED,
         textColor: "black",

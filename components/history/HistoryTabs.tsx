@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export interface TabConfig {
     id: string;
@@ -35,7 +35,7 @@ function cleanWhitespace(text: string): string {
 
 /**
  * Ajoute des liens internes vers /historical/[slug] sur chaque carte sénateur.
- * Affiche le nom complet et le rôle complet (sans troncature ni "Voir plus").
+ * Affiche le nom complet et le rôle complet.
  */
 function addSenatorLinks(html: string): string {
     if (!html || typeof document === "undefined") return html;
@@ -57,13 +57,12 @@ function addSenatorLinks(html: string): string {
         const slug = generateSlug(fullName);
         const href = `/historical/${slug}`;
 
-        // Remplacer le texte par un lien avec le nom complet
         if (existingLink) {
             existingLink.setAttribute("href", href);
             existingLink.removeAttribute("target");
             existingLink.className = "hover:text-cyan-300 transition-colors cursor-pointer";
             existingLink.setAttribute("title", fullName);
-            existingLink.textContent = fullName; // nom complet
+            existingLink.textContent = fullName;
         } else {
             const a = document.createElement("a");
             a.setAttribute("href", href);
@@ -73,9 +72,6 @@ function addSenatorLinks(html: string): string {
             titleEl.innerHTML = "";
             titleEl.appendChild(a);
         }
-
-        // Si un élément pour le rôle existe, on le laisse tel quel (complet)
-        // On ne fait aucune troncature.
     });
 
     return container.innerHTML;
@@ -83,39 +79,31 @@ function addSenatorLinks(html: string): string {
 
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
-    const [activeTab, setActiveTab] = useState(tabs[0]?.id ?? "");
+    // 1. Déterminer la clé active directement depuis l'URL (Single Source of Truth)
+    const activeTabFromQuery = searchParams.get("tab") || tabs[0]?.id || "";
+
+    // 2. Supprimer la synchronisation par useEffect en initialisant l'état avec la valeur de l'URL
+    const [activeTab, setActiveTab] = useState(activeTabFromQuery);
     const [isClient, setIsClient] = useState(false);
 
+    // Mettre à jour l'état si l'URL change (sans passer par un useEffect synchrone)
+    if (activeTabFromQuery !== activeTab) {
+        setActiveTab(activeTabFromQuery);
+    }
+
+    // Déclencher l'activation côté client asynchronement après le montage du composant
     useEffect(() => {
-        const handle = window.requestAnimationFrame(() => {
-            setIsClient(true);
-        });
-        return () => window.cancelAnimationFrame(handle);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsClient(true);
     }, []);
-
-    useEffect(() => {
-        const handle = window.requestAnimationFrame(() => {
-            const hash = window.location.hash.replace("#", "");
-            if (!hash || !tabs.some((t) => t.id === hash)) return;
-            setActiveTab(hash);
-        });
-        return () => window.cancelAnimationFrame(handle);
-    }, [tabs]);
-
-    useEffect(() => {
-        const update = () => {
-            const hash = window.location.hash.replace("#", "");
-            if (!tabs.some((t) => t.id === hash)) return;
-            setActiveTab(hash);
-        };
-        window.addEventListener("hashchange", update);
-        return () => window.removeEventListener("hashchange", update);
-    }, [tabs]);
 
     const handleTabClick = (tabId: string) => {
         setActiveTab(tabId);
-        router.push(`#${tabId}`, { scroll: false });
+        // Mettre à jour le paramètre 'tab' dans l'URL sans recharger la page
+        router.push(`${pathname}?tab=${tabId}`, { scroll: false });
     };
 
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];

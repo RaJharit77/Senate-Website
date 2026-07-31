@@ -68,7 +68,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
                         className="text-gray-400 hover:text-white hover:bg-white/10 mb-6"
                         asChild
                     >
-                        <Link href="/historical" className="inline-flex items-center gap-2">
+                        <Link href="/historical?tab=quatrieme" className="inline-flex items-center gap-2">
                             <ArrowLeft className="w-4 h-4" />
                             Retour à l&apos;historique
                         </Link>
