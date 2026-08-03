@@ -665,3 +665,18 @@ export async function getReferencePages(): Promise<{
 
     return { dispositions, loisOrganiques, sourcesReglementaires, textesServices };
 }
+
+// Release 
+interface ReleaseData {
+    tag_name: string;
+    html_url: string;
+}
+
+export async function release(): Promise<ReleaseData> {
+    const res = await fetch('/api/release');
+
+    if (!res.ok) {
+        throw new Error(`Failed to fetch release: ${res.status}`);
+    }
+    return res.json();
+}
