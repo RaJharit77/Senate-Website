@@ -16,6 +16,7 @@ export const metadata = buildMetadata({
 
 export default async function TextesPage() {
     const page = await getPageBySlug("textes-de-reference").catch(() => null);
+
     if (!page) return <NotFoundPage />;
 
     const breadcrumb = buildBreadcrumbJsonLd([
