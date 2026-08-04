@@ -7,6 +7,7 @@ import Image from "next/image";
 import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cleanText } from "@/utils/utility";
 
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
@@ -61,6 +62,9 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
   const imageSrc = isValidImage ? slide.image : PLACEHOLDER_IMAGE;
   const truncatedExcerpt = truncateExcerpt(slide.excerpt, 120);
 
+  const cleanTitle = cleanText(slide.title);
+  const cleanExcerpt = cleanText(truncatedExcerpt);
+
   return (
     <section
       className="relative overflow-hidden"
@@ -73,7 +77,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         <Image
           key={slide.id}
           src={imageSrc}
-          alt={slide.title}
+          alt={cleanText(slide.title)}
           fill
           className="object-cover hero-image"
           priority
@@ -130,7 +134,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
               letterSpacing: "-0.02em",
               textShadow: "0 2px 20px rgba(0,0,0,0.3)",
             }}
-            dangerouslySetInnerHTML={{ __html: slide.title }}
+            dangerouslySetInnerHTML={{ __html: cleanTitle }}
           />
 
           <p
@@ -141,7 +145,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
               textShadow: "0 1px 12px rgba(0,0,0,0.2)",
             }}
           >
-            {truncatedExcerpt}
+            {cleanExcerpt}
           </p>
 
           <Button

@@ -6,7 +6,10 @@ export function StructuresSection({ html }: { html: string }) {
     return (
         <DocCard title="Structures du Sénat" pillColor={RED}>
             <Divider color={GREEN}>Organisation</Divider>
-            <div dangerouslySetInnerHTML={{ __html: stripInlineTextColor(html) }} />
+            <div
+                className="prose prose-lg max-w-none font-poppins text-[#1a1a1a]"
+                dangerouslySetInnerHTML={{ __html: stripInlineTextColor(html) }}
+            />
         </DocCard>
     );
 }

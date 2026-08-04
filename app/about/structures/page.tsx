@@ -17,6 +17,7 @@ export const metadata = buildMetadata({
 
 export default async function StructuresPage() {
     const page = await getPageBySlug("structures").catch(() => null);
+
     if (!page) return <NotFoundPage />;
 
     const breadcrumb = buildBreadcrumbJsonLd([

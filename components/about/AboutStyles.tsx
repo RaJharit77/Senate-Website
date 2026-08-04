@@ -1,45 +1,8 @@
 "use client";
 
 import { EMERALD, RED } from "@/utils/colors";
-import { type CSSProperties, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-export const contentStyles: CSSProperties = {
-    fontFamily: "'Poppins', sans-serif",
-};
-
-export const pStyle: CSSProperties = {
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "1.02rem",
-    lineHeight: 1.85,
-    color: "#1a1a1a",
-    marginBottom: "1.15rem",
-};
-
-export const subheadStyle: CSSProperties = {
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "1.25rem",
-    fontWeight: 700,
-    color: RED,
-    marginTop: "2rem",
-    marginBottom: "1rem",
-};
-
-export const ulStyle: CSSProperties = {
-    listStyle: "none",
-    padding: 0,
-    margin: "0 0 1.5rem 0",
-    display: "flex",
-    flexDirection: "column",
-    gap: "1.1rem",
-};
-
-export const liStyle: CSSProperties = {
-    ...pStyle,
-    marginBottom: 0,
-    paddingLeft: "1.4rem",
-    position: "relative",
-};
 
 export function Bullet({ color }: { color: string }) {
     return (
@@ -60,31 +23,24 @@ export function NamedItem({
     children: ReactNode;
 }) {
     return (
-        <li style={liStyle}>
+        <li className="relative font-poppins text-[1.02rem] leading-[1.85] text-[#1a1a1a] mb-0 pl-[1.4rem]">
             <Bullet color={color} />
-            <strong style={{ color: "#1a1a1a", fontWeight: 700 }}>{name}</strong> — {children}
+            <strong className="font-bold text-[#1a1a1a]">{name}</strong> — {children}
         </li>
     );
 }
 
 export function Divider({ children, color = RED }: { children: string; color?: string }) {
     return (
-        <div className="flex items-center gap-4" style={{ margin: "2rem 0 1.5rem" }}>
-            <span className="flex-1 h-px" style={{ backgroundColor: "rgba(22,36,20,0.18)" }} />
+        <div className="flex items-center gap-4 my-8">
+            <span className="flex-1 h-px bg-[rgba(22,36,20,0.18)]" />
             <span
-                style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase",
-                    color,
-                    whiteSpace: "nowrap",
-                }}
+                className="font-poppins text-[0.78rem] font-bold uppercase tracking-[0.16em] whitespace-nowrap"
+                style={{ color }}
             >
                 {children}
             </span>
-            <span className="flex-1 h-px" style={{ backgroundColor: "rgba(22,36,20,0.18)" }} />
+            <span className="flex-1 h-px bg-[rgba(22,36,20,0.18)]" />
         </div>
     );
 }
@@ -99,30 +55,26 @@ export function DocCard({
     children: ReactNode;
 }) {
     return (
-        <Card className="border border-[rgba(22,36,20,0.08)] shadow-md rounded-3xl overflow-hidden bg-transparent">
+        <Card className="border border-[rgba(22,36,20,0.08)] shadow-md rounded-3xl overflow-hidden bg-white/10 backdrop-blur-sm">
             <CardHeader className="p-0">
                 <div className="px-6 sm:px-10 pt-8">
-                    <div className="rounded-full py-3.5 px-6" style={{ backgroundColor: pillColor }}>
+                    <div
+                        className="rounded-full py-3.5 px-6 backdrop-blur-sm border border-white/20"
+                        style={{
+                            backgroundColor: `${pillColor}80`,
+                            backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(255,255,255,0.25)',
+                        }}
+                    >
                         <CardTitle
-                            className="text-center"
-                            style={{
-                                fontFamily: "'Poppins', sans-serif",
-                                fontSize: "1.35rem",
-                                fontWeight: 700,
-                                color: "#ffffff",
-                                letterSpacing: "0.01em",
-                                lineHeight: 1.2,
-                            }}
+                            className="text-center font-poppins text-[1.35rem] font-bold tracking-[0.01em] leading-[1.2] text-white"
                         >
                             {title}
                         </CardTitle>
                     </div>
                 </div>
             </CardHeader>
-            <CardContent
-                className="px-6 sm:px-10 pb-10 pt-2 prose prose-lg max-w-none"
-                style={contentStyles}
-            >
+            <CardContent className="px-6 sm:px-10 pb-10 pt-2 prose prose-lg max-w-none font-poppins text-[#1a1a1a]">
                 {children}
             </CardContent>
         </Card>

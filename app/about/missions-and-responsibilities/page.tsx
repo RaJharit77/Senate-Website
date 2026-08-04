@@ -16,6 +16,7 @@ export const metadata = buildMetadata({
 
 export default async function MissionsPage() {
     const page = await getPageBySlug("nature-et-missions-2").catch(() => null);
+
     if (!page) return <NotFoundPage />;
 
     const breadcrumb = buildBreadcrumbJsonLd([

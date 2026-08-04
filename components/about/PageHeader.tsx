@@ -19,7 +19,10 @@ export function PageHeader({ title, subtitle, breadcrumb, className = "" }: Page
                             {index === breadcrumb.length - 1 ? (
                                 <span className="text-cyan-400 text-sm font-semibold">{item.label}</span>
                             ) : (
-                                <Link href={item.href} className="text-cyan-400 font-semibold hover:text-white transition-colors text-sm">
+                                <Link
+                                    href={item.href}
+                                    className="text-cyan-400 font-semibold hover:text-white transition-colors text-sm"
+                                >
                                     {item.label}
                                 </Link>
                             )}
