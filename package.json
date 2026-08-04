@@ -9,7 +9,10 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "playwright test": "playwright test",
+    "playwright test:report": "playwright show-report",
+    "playwright test --ui": "playwright test --ui"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

@@ -1,6 +1,9 @@
 /// <reference types="cypress" />
 
+export { };
+
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Cypress {
         interface Chainable {
             visitAndWait(url: string): Chainable<AUTWindow>;
