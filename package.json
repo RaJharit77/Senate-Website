@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -57,6 +59,7 @@
     "motion": "12.42.2",
     "next": "16.2.10",
     "next-themes": "0.4.6",
+    "playwright": "^1.62.1",
     "radix-ui": "^1.6.7",
     "react": "19.2.7",
     "react-day-picker": "10.0.1",
@@ -77,6 +80,7 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.1.2",
     "@types/react": "^19.2.18",
