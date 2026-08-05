@@ -5,18 +5,15 @@ import { Mail, MapPin, ArrowRight, Tag } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import gsap from "gsap";
 import { EMERALD, NAV_BG, RED, WHITE } from "@/utils/colors";
 import { footerLinks } from "@/lib/navigations/footerLinks";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { release } from "@/lib/api";
 
 export function Footer() {
   const [releaseTag, setReleaseTag] = useState<string | null>(null);
   const [releaseUrl, setReleaseUrl] = useState<string | null>(null);
-  const footerLogoRef = useRef<HTMLDivElement>(null);
 
-  // --- Récupération de la version GitHub ---
   useEffect(() => {
     const fetchRelease = async () => {
       try {
@@ -30,37 +27,17 @@ export function Footer() {
     fetchRelease();
   }, []);
 
-  // --- GSAP floating animation pour le logo du footer ---
-  useEffect(() => {
-    const logo = footerLogoRef.current;
-    if (logo) {
-      gsap.to(logo, {
-        y: -4,
-        duration: 2.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-    }
-    return () => {
-      if (logo) gsap.killTweensOf(logo);
-    };
-  }, []);
-
   return (
     <footer style={{ backgroundColor: NAV_BG }}>
       <div className="py-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
-            {/* Logo Sénat avec animation */}
-            <motion.div
-              ref={footerLogoRef}
-              whileHover={{ scale: 1.05, rotate: 2 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <Link href="/" className="flex items-center gap-3 mb-5">
+            <Link href="/" className="flex items-center gap-3 mb-5">
+              <motion.div
+                whileHover={{ scale: 1.08, rotate: 1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="cursor-pointer"
+              >
                 <Image
                   src="https://senat.mg/wp-content/uploads/2025/03/cropped-senat-192x192.png"
                   alt="Sénat de Madagascar"
@@ -69,16 +46,16 @@ export function Footer() {
                   priority
                   className="h-20 w-20 rounded-full border border-cyan-500"
                 />
-                <div>
-                  <div className="font-poppins font-bold text-2xl leading-none text-white">
-                    Sénat
-                  </div>
-                  <div className="font-poppins font-semibold text-base leading-tight text-white">
-                    de Madagascar
-                  </div>
+              </motion.div>
+              <div>
+                <div className="font-poppins font-bold text-2xl leading-none text-white">
+                  Sénat
                 </div>
-              </Link>
-            </motion.div>
+                <div className="font-poppins font-semibold text-base leading-tight text-white">
+                  de Madagascar
+                </div>
+              </div>
+            </Link>
 
             <p className="font-poppins text-sm leading-relaxed text-white/50 max-w-xs mb-6">
               Le Sénat de Madagascar, chambre haute du Parlement, représente les collectivités territoriales et participe à l&apos;élaboration des lois de la République.

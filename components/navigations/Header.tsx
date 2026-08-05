@@ -7,7 +7,6 @@ import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } f
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import gsap from "gsap";
 import { COLOURS } from "@/utils/colours";
 import { ALICE_BLUE, CYAN, LINK_WATER, MIDNIGHT, SILVER, WHITE } from "@/utils/colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -50,11 +49,6 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Refs pour les logos animés
-  const logoRef = useRef<HTMLDivElement>(null);
-  const republiqueRef = useRef<HTMLDivElement>(null);
-
-  // --- Horloge ---
   useEffect(() => {
     const interval = setInterval(() => {
       setDateTime(new Date());
@@ -62,7 +56,6 @@ export function Header() {
     return () => clearInterval(interval);
   }, []);
 
-  // --- Scroll ---
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -71,7 +64,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- Click outside search ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
@@ -87,44 +79,12 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [searchOpen]);
 
-  // --- Focus search input ---
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [searchOpen]);
 
-  // --- GSAP floating animations ---
-  useEffect(() => {
-    const logoNode = logoRef.current;
-    const republiqueNode = republiqueRef.current;
-
-    if (logoNode) {
-      gsap.to(logoNode, {
-        y: -6,
-        duration: 2.2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-    }
-    if (republiqueNode) {
-      gsap.to(republiqueNode, {
-        y: -5,
-        duration: 2.8,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 0.3,
-      });
-    }
-    return () => {
-      if (logoNode) gsap.killTweensOf(logoNode);
-      if (republiqueNode) gsap.killTweensOf(republiqueNode);
-    };
-  }, []);
-
-  // --- Handlers ---
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -268,16 +228,12 @@ export function Header() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-4">
-          {/* Logo Sénat avec animation */}
-          <motion.div
-            ref={logoRef}
-            whileHover={{ scale: 1.05, rotate: 2 }}
-            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="shrink-0"
-          >
-            <Link href="/" className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-4 shrink-0">
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="cursor-pointer"
+            >
               <Image
                 src="https://senat.mg/wp-content/themes/senat13/images/logo-senat.png"
                 alt="Sénat de Madagascar"
@@ -286,50 +242,49 @@ export function Header() {
                 className="h-20 w-20"
                 priority
               />
-              <div>
-                <div
-                  className="font-bold text-[1.9rem] leading-none tracking-tight"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
-                >
-                  Sénat
-                </div>
-                <div
-                  className="font-semibold text-[1.1rem] leading-tight tracking-wide"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
-                >
-                  de Madagascar
-                </div>
-                <div
-                  className="font-medium uppercase tracking-widest text-gray-500 truncate max-w-[100px] sm:max-w-[160px] lg:max-w-[200px] text-[0.45rem] sm:text-[0.55rem] lg:text-[0.65rem]"
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  République de Madagascar
-                </div>
-              </div>
-            </Link>
-          </motion.div>
+            </motion.div>
 
-          {/* Logo République avec animation */}
-          <motion.div
-            ref={republiqueRef}
-            whileHover={{ scale: 1.08, rotate: -2 }}
-            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="hidden lg:flex flex-1 justify-center"
-          >
+            <div>
+              <div
+                className="font-bold text-[1.9rem] leading-none tracking-tight"
+                style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
+              >
+                Sénat
+              </div>
+              <div
+                className="font-semibold text-[1.1rem] leading-tight tracking-wide"
+                style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
+              >
+                de Madagascar
+              </div>
+              <div
+                className="font-medium uppercase tracking-widest text-gray-500 truncate max-w-[100px] sm:max-w-[160px] lg:max-w-[200px] text-[0.45rem] sm:text-[0.55rem] lg:text-[0.65rem]"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+              >
+                République de Madagascar
+              </div>
+            </div>
+          </Link>
+
+          <div className="hidden lg:flex flex-1 justify-center">
             <Link href="/" className="flex items-center gap-4">
-              <Image
-                src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
-                alt="République de Madagascar"
-                width={120}
-                height={120}
-                className="h-auto w-auto object-contain"
-                priority
-                quality={100}
-              />
+              <motion.div
+                whileHover={{ scale: 1.08, rotate: -1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
+                  alt="République de Madagascar"
+                  width={120}
+                  height={120}
+                  className="h-auto w-auto object-contain"
+                  priority
+                  quality={100}
+                />
+              </motion.div>
             </Link>
-          </motion.div>
+          </div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
             {/* Barre de recherche desktop */}
