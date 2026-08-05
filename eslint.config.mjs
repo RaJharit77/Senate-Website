@@ -13,6 +13,12 @@ const eslintConfig = defineConfig([
       },
     },
   },
+  {
+    files: ["cypress/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next: are too broad and ignore too many files that should be linted.
