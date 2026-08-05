@@ -50,10 +50,11 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Refs pour les animations GSAP
+  // Refs pour les logos animés
   const logoRef = useRef<HTMLDivElement>(null);
   const republiqueRef = useRef<HTMLDivElement>(null);
 
+  // --- Horloge ---
   useEffect(() => {
     const interval = setInterval(() => {
       setDateTime(new Date());
@@ -61,6 +62,7 @@ export function Header() {
     return () => clearInterval(interval);
   }, []);
 
+  // --- Scroll ---
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -69,6 +71,7 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- Click outside search ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
@@ -84,48 +87,44 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [searchOpen]);
 
+  // --- Focus search input ---
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [searchOpen]);
 
-  // Animation GSAP : flottement doux et rotation lente
+  // --- GSAP floating animations ---
   useEffect(() => {
-    if (logoRef.current) {
-      gsap.to(logoRef.current, {
+    const logoNode = logoRef.current;
+    const republiqueNode = republiqueRef.current;
+
+    if (logoNode) {
+      gsap.to(logoNode, {
         y: -6,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-      gsap.to(logoRef.current, {
-        rotation: 2,
-        duration: 3,
+        duration: 2.2,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
       });
     }
-    if (republiqueRef.current) {
-      gsap.to(republiqueRef.current, {
-        y: 6,
-        duration: 2.5,
+    if (republiqueNode) {
+      gsap.to(republiqueNode, {
+        y: -5,
+        duration: 2.8,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-      });
-      gsap.to(republiqueRef.current, {
-        rotation: -1.5,
-        duration: 3.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
+        delay: 0.3,
       });
     }
+    return () => {
+      if (logoNode) gsap.killTweensOf(logoNode);
+      if (republiqueNode) gsap.killTweensOf(republiqueNode);
+    };
   }, []);
 
+  // --- Handlers ---
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -269,13 +268,13 @@ export function Header() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-4">
-          {/* Logo Sénat avec animations Framer Motion + GSAP */}
+          {/* Logo Sénat avec animation */}
           <motion.div
             ref={logoRef}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            whileHover={{ scale: 1.08, rotate: 3, boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}
+            whileHover={{ scale: 1.05, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             className="shrink-0"
           >
             <Link href="/" className="flex items-center gap-4">
@@ -310,13 +309,13 @@ export function Header() {
             </Link>
           </motion.div>
 
-          {/* Logo République avec animations Framer Motion + GSAP */}
+          {/* Logo République avec animation */}
           <motion.div
             ref={republiqueRef}
-            initial={{ opacity: 0, y: 20 }}
+            whileHover={{ scale: 1.08, rotate: -2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-            whileHover={{ scale: 1.05, rotate: -2, boxShadow: "0 8px 25px rgba(0,0,0,0.15)" }}
             className="hidden lg:flex flex-1 justify-center"
           >
             <Link href="/" className="flex items-center gap-4">
