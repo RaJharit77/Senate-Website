@@ -229,14 +229,20 @@ export function Header() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-4 shrink-0">
-            <Image
-              src="https://senat.mg/wp-content/themes/senat13/images/logo-senat.png"
-              alt="Sénat de Madagascar"
-              width={80}
-              height={80}
-              className="h-20 w-20"
-              priority
-            />
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="cursor-pointer"
+            >
+              <Image
+                src="https://senat.mg/wp-content/themes/senat13/images/logo-senat.png"
+                alt="Sénat de Madagascar"
+                width={80}
+                height={80}
+                className="h-20 w-20"
+                priority
+              />
+            </motion.div>
 
             <div>
               <div
@@ -262,15 +268,21 @@ export function Header() {
 
           <div className="hidden lg:flex flex-1 justify-center">
             <Link href="/" className="flex items-center gap-4">
-              <Image
-                src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
-                alt="République de Madagascar"
-                width={120}
-                height={120}
-                className="h-auto w-auto object-contain"
-                priority
-                quality={100}
-              />
+              <motion.div
+                whileHover={{ scale: 1.08, rotate: -1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
+                  alt="République de Madagascar"
+                  width={120}
+                  height={120}
+                  className="h-auto w-auto object-contain"
+                  priority
+                  quality={100}
+                />
+              </motion.div>
             </Link>
           </div>
 

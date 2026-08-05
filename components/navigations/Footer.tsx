@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Mail, MapPin, ArrowRight, Tag } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { EMERALD, NAV_BG, RED, WHITE } from "@/utils/colors";
 import { footerLinks } from "@/lib/navigations/footerLinks";
 import { useEffect, useState } from "react";
@@ -32,14 +33,20 @@ export function Footer() {
         <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-5">
-              <Image
-                src="https://senat.mg/wp-content/uploads/2025/03/cropped-senat-192x192.png"
-                alt="Sénat de Madagascar"
-                width={80}
-                height={80}
-                priority
-                className="h-20 w-20 rounded-full border border-cyan-500"
-              />
+              <motion.div
+                whileHover={{ scale: 1.08, rotate: 1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="https://senat.mg/wp-content/uploads/2025/03/cropped-senat-192x192.png"
+                  alt="Sénat de Madagascar"
+                  width={80}
+                  height={80}
+                  priority
+                  className="h-20 w-20 rounded-full border border-cyan-500"
+                />
+              </motion.div>
               <div>
                 <div className="font-poppins font-bold text-2xl leading-none text-white">
                   Sénat
