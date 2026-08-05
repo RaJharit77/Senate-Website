@@ -7,6 +7,7 @@ import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } f
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
 import { COLOURS } from "@/utils/colours";
 import { ALICE_BLUE, CYAN, LINK_WATER, MIDNIGHT, SILVER, WHITE } from "@/utils/colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -49,6 +50,10 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
+  // Refs pour les animations GSAP
+  const logoRef = useRef<HTMLDivElement>(null);
+  const republiqueRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setDateTime(new Date());
@@ -84,6 +89,42 @@ export function Header() {
       searchInputRef.current.focus();
     }
   }, [searchOpen]);
+
+  // Animation GSAP : flottement doux et rotation lente
+  useEffect(() => {
+    if (logoRef.current) {
+      gsap.to(logoRef.current, {
+        y: -6,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(logoRef.current, {
+        rotation: 2,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }
+    if (republiqueRef.current) {
+      gsap.to(republiqueRef.current, {
+        y: 6,
+        duration: 2.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(republiqueRef.current, {
+        rotation: -1.5,
+        duration: 3.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,39 +269,56 @@ export function Header() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-4">
-          <Link href="/" className="flex items-center gap-4 shrink-0">
-            <Image
-              src="https://senat.mg/wp-content/themes/senat13/images/logo-senat.png"
-              alt="Sénat de Madagascar"
-              width={80}
-              height={80}
-              className="h-20 w-20"
-              priority
-            />
+          {/* Logo Sénat avec animations Framer Motion + GSAP */}
+          <motion.div
+            ref={logoRef}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            whileHover={{ scale: 1.08, rotate: 3, boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}
+            className="shrink-0"
+          >
+            <Link href="/" className="flex items-center gap-4">
+              <Image
+                src="https://senat.mg/wp-content/themes/senat13/images/logo-senat.png"
+                alt="Sénat de Madagascar"
+                width={80}
+                height={80}
+                className="h-20 w-20"
+                priority
+              />
+              <div>
+                <div
+                  className="font-bold text-[1.9rem] leading-none tracking-tight"
+                  style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
+                >
+                  Sénat
+                </div>
+                <div
+                  className="font-semibold text-[1.1rem] leading-tight tracking-wide"
+                  style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
+                >
+                  de Madagascar
+                </div>
+                <div
+                  className="font-medium uppercase tracking-widest text-gray-500 truncate max-w-[100px] sm:max-w-[160px] lg:max-w-[200px] text-[0.45rem] sm:text-[0.55rem] lg:text-[0.65rem]"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                >
+                  République de Madagascar
+                </div>
+              </div>
+            </Link>
+          </motion.div>
 
-            <div>
-              <div
-                className="font-bold text-[1.9rem] leading-none tracking-tight"
-                style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
-              >
-                Sénat
-              </div>
-              <div
-                className="font-semibold text-[1.1rem] leading-tight tracking-wide"
-                style={{ fontFamily: "'Poppins', sans-serif", color: COLOURS.cyan }}
-              >
-                de Madagascar
-              </div>
-              <div
-                className="font-medium uppercase tracking-widest text-gray-500 truncate max-w-[100px] sm:max-w-[160px] lg:max-w-[200px] text-[0.45rem] sm:text-[0.55rem] lg:text-[0.65rem]"
-                style={{ fontFamily: "'Poppins', sans-serif" }}
-              >
-                République de Madagascar
-              </div>
-            </div>
-          </Link>
-
-          <div className="hidden lg:flex flex-1 justify-center">
+          {/* Logo République avec animations Framer Motion + GSAP */}
+          <motion.div
+            ref={republiqueRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+            whileHover={{ scale: 1.05, rotate: -2, boxShadow: "0 8px 25px rgba(0,0,0,0.15)" }}
+            className="hidden lg:flex flex-1 justify-center"
+          >
             <Link href="/" className="flex items-center gap-4">
               <Image
                 src="https://senat.mg/wp-content/themes/senat13/images/Rpp.png"
@@ -272,7 +330,7 @@ export function Header() {
                 quality={100}
               />
             </Link>
-          </div>
+          </motion.div>
 
           <div className="flex items-center gap-4" ref={searchContainerRef}>
             {/* Barre de recherche desktop */}
