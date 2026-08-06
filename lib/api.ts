@@ -192,8 +192,8 @@ export async function getSenatorBySlug(slug: string): Promise<WpPost | null> {
             if (results && results.length > 0) {
                 return results[0];
             }
-        } catch {
-            // ignore
+        } catch(error) {
+            console.error("Erreur pendant la récupération des sénateurs", error);
         }
     }
     return null;
