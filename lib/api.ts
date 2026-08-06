@@ -673,10 +673,16 @@ interface ReleaseData {
 }
 
 export async function release(): Promise<ReleaseData> {
-    const res = await fetch('/api/release');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
 
-    if (!res.ok) {
-        throw new Error(`Failed to fetch release: ${res.status}`);
+    try {
+        const res = await fetch('/api/release', { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+    } catch {
+        clearTimeout(timeout);
+        return { tag_name: "v0.0.0", html_url: "#" };
     }
-    return res.json();
 }
