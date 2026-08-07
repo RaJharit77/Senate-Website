@@ -748,7 +748,7 @@ packages:
     peerDependenciesMeta:
       '@cfworker/json-schema':
         optional: true
-
+        
   '@mui/core-downloads-tracker@9.3.1':
     resolution: {integrity: sha512-IAyAFNQbT7hysJ9HXphiOmWJF7G1OglzHanqCgvQgH9LA2ydxtmaTBDbcBqw6euZesyShiwvpvbnYO1GY1AyXQ==}
 
@@ -5971,7 +5971,9 @@ snapshots:
   '@mui/material@9.2.0(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.7)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.7)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.7)(supports-color@8.1.1))(@types/react@19.2.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@babel/runtime': 7.29.7
+      
       '@mui/core-downloads-tracker': 9.3.1
+
       '@mui/system': 9.3.0(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.7)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.7)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.7)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.7)
       '@mui/types': 9.3.0(@types/react@19.2.18)
       '@mui/utils': 9.3.0(@types/react@19.2.18)(react@19.2.7)
