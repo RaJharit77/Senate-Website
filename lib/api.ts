@@ -5,6 +5,8 @@ import { PresidentActivity } from "@/types/internationalType";
 
 const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
 
+const isClient = typeof window !== 'undefined';
+
 type Params = Record<string, string | number | boolean>;
 
 class WpApiError extends Error {
@@ -14,7 +16,30 @@ class WpApiError extends Error {
     }
 }
 
+async function fetchViaProxy<T>(endpoint: string, params: Params = {}): Promise<T> {
+    const url = new URL(`/api/proxy/${endpoint}`, window.location.origin);
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+            url.searchParams.set(key, String(value));
+        }
+    });
+    const res = await fetch(url.toString());
+    if (!res.ok) {
+        throw new Error(`Proxy error: ${res.status}`);
+    }
+    return res.json();
+}
+
 async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolean = false): Promise<T> {
+    if (isClient) {
+        try {
+            return await fetchViaProxy<T>(endpoint, params);
+        } catch (err) {
+            if (!silent) console.error(`[fetchAPI] Proxy error for ${endpoint}:`, err);
+            throw new WpApiError(`Proxy error for ${endpoint}`, undefined, endpoint);
+        }
+    }
+
     const url = new URL(`${API_BASE}${endpoint}`);
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -192,7 +217,7 @@ export async function getSenatorBySlug(slug: string): Promise<WpPost | null> {
             if (results && results.length > 0) {
                 return results[0];
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Erreur pendant la récupération des sénateurs", error);
         }
     }
