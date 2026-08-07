@@ -8,6 +8,7 @@ import Chatbot from '@/components/chatbot/Chatbot';
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next"
 import JsonLd from '@/components/JsonLd';
+import { LenisProvider } from '@/components/lenis/LenisProvider';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
 
@@ -73,16 +74,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="fr"
+      lang="fr - mg - en"
       className={cn("h-full", "antialiased", poppins.className, inter.className, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Analytics />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Chatbot />
-        <FloatingSocialBar />
-        <Footer />
+        <LenisProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Chatbot />
+          <FloatingSocialBar />
+          <Footer />
+        </LenisProvider>
         <JsonLd
           data={{
             '@context': 'https://schema.org',

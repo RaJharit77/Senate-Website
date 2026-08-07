@@ -1,6 +1,7 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+@import 'lenis/dist/lenis.css';
 
 .font-poppins {
     font-family: 'Poppins', sans-serif;
