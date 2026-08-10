@@ -159,7 +159,10 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!items-center
         [&_[class*="col-"]:has(img:not(.rounded-circle))]:!px-2
 
-        [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle))]:!rounded-xl
+        [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle)]:!rounded-xl
+
+        [&_.wp-block-image]:!my-8
+        [&_figure]:!my-8
 
         [&_h1]:!text-center [&_h1]:!text-3xl [&_h1]:!font-bold [&_h1]:!text-white [&_h1]:!mb-6
         [&_h2:not([class*="col-"]_h2)]:!text-center [&_h2:not([class*="col-"]_h2)]:!text-2xl [&_h2:not([class*="col-"]_h2)]:!text-white [&_h2:not([class*="col-"]_h2)]:!mb-4
