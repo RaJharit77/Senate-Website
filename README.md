@@ -1,4 +1,4 @@
-# 🇲🇬 Sénat de Madagascar - Portail Web Officiel (`senat-web-site`)
+# Sénat de Madagascar - Portail Web Officiel (`senat-web-site`)
 
 Ce projet constitue l'interface front-end du portail officiel du Sénat de Madagascar. Conçu pour assurer la modernisation structurelle de l'institution sur le web, il est optimisé pour les performances de rendu, l'accessibilité citoyenne et le référencement (SEO). L'application gère de multiples domaines allant des travaux parlementaires à l'agenda officiel, en passant par les actualités et les textes de loi.
 
