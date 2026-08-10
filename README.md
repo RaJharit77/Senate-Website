@@ -27,6 +27,7 @@ Le projet s'appuie sur une stack front-end moderne orientée composants, alliant
 ![Material UI](https://img.shields.io/badge/Material_UI-9.2.0-007FFF?style=for-the-badge&logo=mui&logoColor=white)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.43.0-0055FF?style=for-the-badge&logo=framer&logoColor=white)
 ![GSAP](https://img.shields.io/badge/GSAP-3.15.0-88CE02?style=for-the-badge&logo=greensock&logoColor=white)
+![Lenis](https://img.shields.io/badge/Lenis-Smooth_Scroll-000000?style=for-the-badge)
 
 ### Tests & Qualité Code
 ![Cypress](https://img.shields.io/badge/Cypress-15.20.0-17202C?style=for-the-badge&logo=cypress&logoColor=white)
