@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Search, X } from "lucide-react";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
 import { DeliberationTable } from "./DeliberationTable";
 import { cleanText } from "@/utils/utility";
 
@@ -25,38 +26,135 @@ export function ClientDeliberationList({
   useRouterNavigation = false,
 }: ClientDeliberationListProps) {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const total = posts.length;
-  const currentPost = posts[currentIndex];
-  const cleanTitle = cleanText(currentPost.title.rendered);
-  const hasTable = currentPost.content.rendered.includes("<table");
+
+  // Filtrer les articles en fonction de la recherche
+  const filteredPosts = useMemo(() => {
+    if (!searchQuery.trim()) return posts;
+    const term = searchQuery.toLowerCase().trim();
+    return posts.filter((post) => {
+      const title = cleanText(post.title.rendered).toLowerCase();
+      const content = cleanText(post.content.rendered).toLowerCase();
+      return title.includes(term) || content.includes(term);
+    });
+  }, [posts, searchQuery]);
+
+  const total = filteredPosts.length;
+
+  // Réinitialiser l'index lorsque la recherche change
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentIndex(0);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setCurrentIndex(0);
+  };
+
+  // Assurer que l'index reste dans les limites
+  const safeIndex = Math.min(Math.max(currentIndex, 0), total - 1);
+  if (currentIndex !== safeIndex) {
+    setCurrentIndex(safeIndex);
+  }
+
+  const currentPost = total > 0 ? filteredPosts[safeIndex] : null;
+
+  if (!currentPost) {
+    // Defensive: should not happen because total > 0 handled above, but guard anyway
+    return null;
+  }
 
   const handlePrev = () => {
-    if (currentIndex > 0) {
-      const newIndex = currentIndex - 1;
+    if (safeIndex > 0) {
+      const newIndex = safeIndex - 1;
       setCurrentIndex(newIndex);
-      if (useRouterNavigation) {
+      if (useRouterNavigation && filteredPosts[newIndex]) {
         router.push(
-          `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${posts[newIndex].slug}`
+          `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${filteredPosts[newIndex].slug}`
         );
       }
     }
   };
 
   const handleNext = () => {
-    if (currentIndex < total - 1) {
-      const newIndex = currentIndex + 1;
+    if (safeIndex < total - 1) {
+      const newIndex = safeIndex + 1;
       setCurrentIndex(newIndex);
-      if (useRouterNavigation) {
+      if (useRouterNavigation && filteredPosts[newIndex]) {
         router.push(
-          `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${posts[newIndex].slug}`
+          `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${filteredPosts[newIndex].slug}`
         );
       }
     }
   };
 
+  // Si aucun article ne correspond à la recherche
+  if (total === 0) {
+    return (
+      <div>
+        {/* Barre de recherche même quand aucun résultat */}
+        <div className="mb-6">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+            <Input
+              type="text"
+              placeholder="Rechercher dans toutes les délibérations..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-9 pr-8 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-cyan-400/50 focus:ring-cyan-400/20"
+            />
+            {searchQuery && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="bg-white/5 backdrop-blur-md rounded-3xl p-12 text-center text-white/40 border border-white/10">
+          Aucune délibération ne correspond à votre recherche.
+        </div>
+      </div>
+    );
+  }
+
+  const cleanTitle = cleanText(currentPost.title.rendered);
+  const hasTable = currentPost.content.rendered.includes("<table");
+
   return (
     <div>
+      {/* Barre de recherche globale */}
+      <div className="mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+          <Input
+            type="text"
+            placeholder="Rechercher dans toutes les délibérations..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9 pr-8 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-cyan-400/50 focus:ring-cyan-400/20"
+          />
+          {searchQuery && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        {searchQuery && (
+          <p className="text-sm text-white/40 mt-2">
+            {total} résultat{total > 1 ? "s" : ""} trouvé{total > 1 ? "s" : ""}
+          </p>
+        )}
+      </div>
+
+      {/* Contenu de la délibération courante */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-white flex items-center gap-3">
@@ -84,25 +182,26 @@ export function ClientDeliberationList({
         </Card>
       </div>
 
+      {/* Navigation (précédent/suivant) */}
       {total > 1 && (
         <div className="flex items-center justify-center gap-3 mt-8">
           <Button
             variant="outline"
             size="sm"
             onClick={handlePrev}
-            disabled={currentIndex === 0}
+            disabled={safeIndex === 0}
             className="border-white/20 text-cyan-300/90 bg-transparent hover:text-cyan-400/90 hover:bg-white/10 disabled:opacity-30"
           >
             <ChevronLeft className="w-4 h-4 mr-1" /> Précédent
           </Button>
           <span className="text-white/60 text-sm">
-            {currentIndex + 1} / {total}
+            {safeIndex + 1} / {total}
           </span>
           <Button
             variant="outline"
             size="sm"
             onClick={handleNext}
-            disabled={currentIndex === total - 1}
+            disabled={safeIndex === total - 1}
             className="border-white/20 text-cyan-300/90 hover:text-cyan-400/90 bg-transparent hover:bg-white/10 disabled:opacity-30"
           >
             Suivant <ChevronRight className="w-4 h-4 ml-1" />
