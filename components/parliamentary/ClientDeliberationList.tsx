@@ -61,11 +61,6 @@ export function ClientDeliberationList({
 
   const currentPost = total > 0 ? filteredPosts[safeIndex] : null;
 
-  if (!currentPost) {
-    // Defensive: should not happen because total > 0 handled above, but guard anyway
-    return null;
-  }
-
   const handlePrev = () => {
     if (safeIndex > 0) {
       const newIndex = safeIndex - 1;
@@ -91,7 +86,7 @@ export function ClientDeliberationList({
   };
 
   // Si aucun article ne correspond à la recherche
-  if (total === 0) {
+  if (total === 0 || !currentPost) {
     return (
       <div>
         {/* Barre de recherche même quand aucun résultat */}
