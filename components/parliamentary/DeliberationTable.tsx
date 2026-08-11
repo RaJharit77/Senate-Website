@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,12 +8,32 @@ import { Input } from "@/components/ui/input";
 interface DeliberationTableProps {
     tableHtml: string;
     showPagination?: boolean;
+    // Terme de recherche initial (ex: injecté depuis la recherche globale de la page).
+    // L'utilisateur peut ensuite le modifier librement dans cette table sans affecter la recherche globale.
+    initialSearchTerm?: string;
 }
 
-export function DeliberationTable({ tableHtml, showPagination = true }: DeliberationTableProps) {
-    const [currentPage, setCurrentPage] = useState(1);
+interface DeliberationTableInternalProps extends DeliberationTableProps {
+    showAll: boolean;
+    setShowAll: Dispatch<SetStateAction<boolean>>;
+}
+
+export function DeliberationTable(props: DeliberationTableProps) {
     const [showAll, setShowAll] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
+
+    return (
+        <DeliberationTableInner
+            key={`${props.tableHtml}::${props.initialSearchTerm}`}
+            {...props}
+            showAll={showAll}
+            setShowAll={setShowAll}
+        />
+    );
+}
+
+function DeliberationTableInner({ tableHtml, showPagination = true, initialSearchTerm = "", showAll, setShowAll }: DeliberationTableInternalProps) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
     const rowsPerPage = 6;
 
     // Récupération des lignes du tableau

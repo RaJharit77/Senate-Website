@@ -20,6 +20,14 @@ interface ClientDeliberationListProps {
   useRouterNavigation?: boolean;
 }
 
+// Extrait le texte brut d'un contenu HTML (titre + tableau) pour la recherche globale
+function extractSearchableText(html: string): string {
+  if (typeof window === "undefined") return cleanText(html);
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+  return tempDiv.textContent?.toLowerCase() || "";
+}
+
 export function ClientDeliberationList({
   posts,
   initialIndex = 0,
@@ -29,14 +37,15 @@ export function ClientDeliberationList({
   const [searchQuery, setSearchQuery] = useState("");
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
-  // Filtrer les articles en fonction de la recherche
+  // Filtrer les articles en fonction de la recherche (titre + contenu complet, y compris les tableaux)
   const filteredPosts = useMemo(() => {
     if (!searchQuery.trim()) return posts;
     const term = searchQuery.toLowerCase().trim();
     return posts.filter((post) => {
       const title = cleanText(post.title.rendered).toLowerCase();
-      const content = cleanText(post.content.rendered).toLowerCase();
-      return title.includes(term) || content.includes(term);
+      if (title.includes(term)) return true;
+      const content = extractSearchableText(post.content.rendered);
+      return content.includes(term);
     });
   }, [posts, searchQuery]);
 
@@ -166,7 +175,11 @@ export function ClientDeliberationList({
         <Card className="bg-white/5 backdrop-blur-md rounded-3xl border-white/10 shadow-2xl overflow-hidden">
           <CardContent className="p-4 md:p-8">
             {hasTable ? (
-              <DeliberationTable tableHtml={currentPost.content.rendered} showPagination={true} />
+              <DeliberationTable
+                tableHtml={currentPost.content.rendered}
+                showPagination={true}
+                initialSearchTerm={searchQuery}
+              />
             ) : (
               <div
                 className="prose prose-invert max-w-none text-white/80 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-cyan-300 [&_em]:text-cyan-200"
