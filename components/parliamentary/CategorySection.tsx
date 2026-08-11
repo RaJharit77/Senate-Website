@@ -13,7 +13,7 @@ interface CategorySectionProps {
 export function CategorySection({ title, posts, isDeliberation }: CategorySectionProps) {
     if (isDeliberation) {
         return (
-            <div>
+            <div className="font-poppins">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
                     <span className="inline-block w-1 h-6 bg-emerald-400 rounded-full" />
                     {title}
@@ -35,7 +35,7 @@ export function CategorySection({ title, posts, isDeliberation }: CategorySectio
 
     if (posts.length === 0) {
         return (
-            <div>
+            <div className="font-poppins">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
                     <span className="inline-block w-1 h-6 bg-cyan-400 rounded-full" />
                     {title}
@@ -46,7 +46,7 @@ export function CategorySection({ title, posts, isDeliberation }: CategorySectio
     }
 
     return (
-        <div>
+        <div className="font-poppins">
             <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
                 <span className="inline-block w-1 h-6 bg-cyan-400 rounded-full" />
                 {title}

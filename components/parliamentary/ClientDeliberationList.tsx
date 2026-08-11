@@ -90,7 +90,7 @@ export function ClientDeliberationList({
     return (
       <div>
         {/* Barre de recherche même quand aucun résultat */}
-        <div className="mb-6">
+        <div className="mb-6 font-poppins">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
             <Input
@@ -121,7 +121,7 @@ export function ClientDeliberationList({
   const hasTable = currentPost.content.rendered.includes("<table");
 
   return (
-    <div>
+    <div className="font-poppins">
       {/* Barre de recherche globale */}
       <div className="mb-6">
         <div className="relative max-w-md">

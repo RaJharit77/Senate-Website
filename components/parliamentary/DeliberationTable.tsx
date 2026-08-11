@@ -66,7 +66,7 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 font-poppins">
             {/* Barre de recherche et contrôles */}
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="relative flex-1 min-w-[200px]">
