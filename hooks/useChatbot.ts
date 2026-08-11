@@ -5,11 +5,13 @@ interface Message {
     content: string;
 }
 
+type Language = 'fr' | 'mg';
+
 export function useChatbot(initialMessages: Message[] = []) {
     const [messages, setMessages] = useState<Message[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
 
-    const sendMessage = async (content: string) => {
+    const sendMessage = async (content: string, language: Language) => {
         if (!content.trim()) return;
         const userMessage: Message = { role: 'user', content };
         setMessages(prev => [...prev, userMessage]);
@@ -19,18 +21,25 @@ export function useChatbot(initialMessages: Message[] = []) {
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: content }),
+                body: JSON.stringify({ message: content, language }),
             });
             const data = await res.json();
             const assistantMessage: Message = { role: 'assistant', content: data.reply };
             setMessages(prev => [...prev, assistantMessage]);
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Erreur de connexion.' }]);
+            const errorText = language === 'mg'
+                ? 'Nisy olana tamin’ny fifandraisana.'
+                : 'Erreur de connexion.';
+            setMessages(prev => [...prev, { role: 'assistant', content: errorText }]);
             console.error(error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    return { messages, sendMessage, isLoading };
+    const resetConversation = (newMessages: Message[] = []) => {
+        setMessages(newMessages);
+    };
+
+    return { messages, sendMessage, isLoading, resetConversation };
 }
