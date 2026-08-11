@@ -75,7 +75,7 @@ export default async function DeliberationArticlePage({
         <>
             <JsonLd data={breadcrumb} />
             <JsonLd data={articleJsonLd} />
-            <div className="min-h-screen bg-linear-to-b from-black/40 via-black/20 to-black/40 backdrop-blur-sm py-12 px-4 sm:px-6">
+            <div className="min-h-screen bg-linear-to-b from-black/40 via-black/20 to-black/40 backdrop-blur-sm py-12 px-4 sm:px-6 font-poppins">
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-12">
                         <div className="flex gap-1 mb-4 h-[3px]">
