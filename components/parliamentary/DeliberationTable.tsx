@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Eye, EyeOff, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, EyeOff, Search, Undo2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface DeliberationTableProps {
@@ -15,6 +15,10 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const rowsPerPage = 6;
+
+    // Historique du terme de recherche précédent pour permettre l'annulation
+    const previousSearchTermRef = useRef<string>("");
+    const [canUndoSearch, setCanUndoSearch] = useState(false);
 
     // Récupération des lignes du tableau
     const allRows = useMemo(() => {
@@ -56,7 +60,25 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
         setShowAll((prev) => !prev);
         if (!showAll) setCurrentPage(1);
     };
+
+    const handleSearchChange = (value: string) => {
+        previousSearchTermRef.current = searchTerm;
+        setCanUndoSearch(searchTerm.trim() !== "");
+        setSearchTerm(value);
+        setCurrentPage(1);
+        if (value && showAll) setShowAll(false);
+    };
+
+    // Annule la dernière modification et revient au terme de recherche précédent
+    const undoSearch = () => {
+        setSearchTerm(previousSearchTermRef.current);
+        setCurrentPage(1);
+        setCanUndoSearch(false);
+    };
+
     const clearSearch = () => {
+        previousSearchTermRef.current = searchTerm;
+        setCanUndoSearch(searchTerm.trim() !== "");
         setSearchTerm("");
         setCurrentPage(1);
     };
@@ -69,25 +91,33 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
         <div className="space-y-6 font-poppins">
             {/* Barre de recherche et contrôles */}
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="relative flex-1 min-w-[200px]">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
-                    <Input
-                        type="text"
-                        placeholder="Filtrer les lignes..."
-                        value={searchTerm}
-                        onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setCurrentPage(1);
-                            if (e.target.value && showAll) setShowAll(false);
-                        }}
-                        className="pl-9 pr-8 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-cyan-400/50 focus:ring-cyan-400/20"
-                    />
-                    {searchTerm && (
+                <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+                        <Input
+                            type="text"
+                            placeholder="Filtrer les lignes..."
+                            value={searchTerm}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                            className="pl-9 pr-8 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-cyan-400/50 focus:ring-cyan-400/20"
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={clearSearch}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+                                title="Effacer le filtre"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        )}
+                    </div>
+                    {canUndoSearch && (
                         <button
-                            onClick={clearSearch}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+                            onClick={undoSearch}
+                            className="flex items-center gap-1 text-sm text-cyan-300 hover:text-cyan-200 transition whitespace-nowrap px-2 py-2"
+                            title="Annuler et revenir au filtre précédent"
                         >
-                            <X className="h-4 w-4" />
+                            <Undo2 className="h-4 w-4" /> Annuler
                         </button>
                     )}
                 </div>

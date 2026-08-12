@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ExternalLink, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Search, Undo2, X } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { DeliberationTable } from "./DeliberationTable";
@@ -29,6 +29,10 @@ export function ClientDeliberationList({
   const [searchQuery, setSearchQuery] = useState("");
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
+  // Historique de la recherche précédente pour permettre l'annulation
+  const previousSearchRef = useRef<string>("");
+  const [canUndo, setCanUndo] = useState(false);
+
   // Filtrer les articles en fonction de la recherche
   const filteredPosts = useMemo(() => {
     if (!searchQuery.trim()) return posts;
@@ -44,11 +48,22 @@ export function ClientDeliberationList({
 
   // Réinitialiser l'index lorsque la recherche change
   const handleSearchChange = (value: string) => {
+    previousSearchRef.current = searchQuery;
+    setCanUndo(searchQuery.trim() !== "");
     setSearchQuery(value);
     setCurrentIndex(0);
   };
 
+  // Annule la dernière modification et revient à la recherche précédente
+  const undoSearch = () => {
+    setSearchQuery(previousSearchRef.current);
+    setCurrentIndex(0);
+    setCanUndo(false);
+  };
+
   const clearSearch = () => {
+    previousSearchRef.current = searchQuery;
+    setCanUndo(searchQuery.trim() !== "");
     setSearchQuery("");
     setCurrentIndex(0);
   };
@@ -85,46 +100,10 @@ export function ClientDeliberationList({
     }
   };
 
-  // Si aucun article ne correspond à la recherche
-  if (total === 0 || !currentPost) {
-    return (
-      <div>
-        {/* Barre de recherche même quand aucun résultat */}
-        <div className="mb-6 font-poppins">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
-            <Input
-              type="text"
-              placeholder="Rechercher dans toutes les délibérations..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9 pr-8 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-cyan-400/50 focus:ring-cyan-400/20"
-            />
-            {searchQuery && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        </div>
-        <div className="bg-white/5 backdrop-blur-md rounded-3xl p-12 text-center text-white/40 border border-white/10">
-          Aucune délibération ne correspond à votre recherche.
-        </div>
-      </div>
-    );
-  }
-
-  const cleanTitle = cleanText(currentPost.title.rendered);
-  const hasTable = currentPost.content.rendered.includes("<table");
-
-  return (
-    <div className="font-poppins">
-      {/* Barre de recherche globale */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
+  const searchBar = (
+    <div className="mb-6 font-poppins">
+      <div className="flex items-center gap-2 max-w-md">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
           <Input
             type="text"
@@ -137,17 +116,48 @@ export function ClientDeliberationList({
             <button
               onClick={clearSearch}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+              title="Effacer la recherche"
             >
               <X className="h-4 w-4" />
             </button>
           )}
         </div>
-        {searchQuery && (
-          <p className="text-sm text-white/40 mt-2">
-            {total} résultat{total > 1 ? "s" : ""} trouvé{total > 1 ? "s" : ""}
-          </p>
+        {canUndo && (
+          <button
+            onClick={undoSearch}
+            className="flex items-center gap-1 text-sm text-cyan-300 hover:text-cyan-200 transition whitespace-nowrap px-2 py-2"
+            title="Annuler et revenir à la recherche précédente"
+          >
+            <Undo2 className="h-4 w-4" /> Annuler
+          </button>
         )}
       </div>
+      {searchQuery && (
+        <p className="text-sm text-white/40 mt-2">
+          {total} résultat{total > 1 ? "s" : ""} trouvé{total > 1 ? "s" : ""}
+        </p>
+      )}
+    </div>
+  );
+
+  // Si aucun article ne correspond à la recherche
+  if (total === 0 || !currentPost) {
+    return (
+      <div>
+        {searchBar}
+        <div className="bg-white/5 backdrop-blur-md rounded-3xl p-12 text-center text-white/40 border border-white/10">
+          Aucune délibération ne correspond à votre recherche.
+        </div>
+      </div>
+    );
+  }
+
+  const cleanTitle = cleanText(currentPost.title.rendered);
+  const hasTable = currentPost.content.rendered.includes("<table");
+
+  return (
+    <div className="font-poppins">
+      {searchBar}
 
       {/* Contenu de la délibération courante */}
       <div className="mb-8">
