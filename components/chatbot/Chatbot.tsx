@@ -64,7 +64,7 @@ export default function Chatbot() {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-20 right-4 left-4 sm:left-auto z-50 w-[calc(100%-2rem)] sm:w-96 max-h-[80vh] sm:max-h-125 bg-dark/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden"
+                        className="fixed bottom-20 right-4 left-4 sm:left-auto z-50 w-[calc(100%-2rem)] sm:w-96 max-h-[80vh] sm:max-h-125 bg-dark/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden font-poppins"
                     >
                         <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
                             <h3 className="font-semibold text-cyan-500">Assistant du Sénat de Madagascar</h3>
