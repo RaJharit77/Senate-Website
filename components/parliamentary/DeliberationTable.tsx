@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, Search, Undo2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,13 @@ interface DeliberationTableProps {
     showPagination?: boolean;
 }
 
+interface TableState {
+    rows: string[];
+    isLoading: boolean;
+}
+
 export function DeliberationTable({ tableHtml, showPagination = true }: DeliberationTableProps) {
+    const [tableState, setTableState] = useState<TableState>({ rows: [], isLoading: true });
     const [currentPage, setCurrentPage] = useState(1);
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -19,31 +25,39 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
     // Historique du terme de recherche précédent pour permettre l'annulation
     const previousSearchTermRef = useRef<string>("");
     const [canUndoSearch, setCanUndoSearch] = useState(false);
+    const hasInitializedRef = useRef(false);
 
-    // Récupération des lignes du tableau
-    const allRows = useMemo(() => {
-        if (typeof window === "undefined") return [];
+    // Parser le HTML une fois que le composant est monté côté client
+    useEffect(() => {
+        if (hasInitializedRef.current) return;
+        
         const parser = new DOMParser();
         const doc = parser.parseFromString(tableHtml, "text/html");
         const table = doc.querySelector("table");
-        if (!table) return [];
-        const tbody = table.querySelector("tbody");
-        const rows = tbody ? tbody.querySelectorAll("tr") : table.querySelectorAll("tr:not(:first-child)");
-        return Array.from(rows).map((tr) => tr.outerHTML);
+        let rowList: string[] = [];
+        if (table) {
+            const tbody = table.querySelector("tbody");
+            const rowsEl = tbody ? tbody.querySelectorAll("tr") : table.querySelectorAll("tr:not(:first-child)");
+            rowList = Array.from(rowsEl).map((tr) => tr.outerHTML);
+        }
+        // Mise à jour en une seule fois (évite les rendus en cascade)
+        setTableState({ rows: rowList, isLoading: false });
+        hasInitializedRef.current = true;
     }, [tableHtml]);
+
+    const { rows, isLoading } = tableState;
 
     // Filtrage des lignes selon le terme de recherche
     const filteredRows = useMemo(() => {
-        if (!searchTerm.trim()) return allRows;
+        if (!searchTerm.trim()) return rows;
         const term = searchTerm.toLowerCase().trim();
-        return allRows.filter((rowHtml) => {
-            // On crée un élément temporaire pour extraire le texte
+        return rows.filter((rowHtml) => {
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = rowHtml;
             const text = tempDiv.textContent?.toLowerCase() || "";
             return text.includes(term);
         });
-    }, [allRows, searchTerm]);
+    }, [rows, searchTerm]);
 
     const totalRows = filteredRows.length;
     const totalPages = Math.ceil(totalRows / rowsPerPage);
@@ -69,7 +83,6 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
         if (value && showAll) setShowAll(false);
     };
 
-    // Annule la dernière modification et revient au terme de recherche précédent
     const undoSearch = () => {
         setSearchTerm(previousSearchTermRef.current);
         setCurrentPage(1);
@@ -83,7 +96,22 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
         setCurrentPage(1);
     };
 
-    if (allRows.length === 0) {
+    // Affichage pendant le chargement (identique serveur et client)
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-12">
+                <div className="flex items-center gap-3 text-white/60">
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    <span>Chargement du tableau...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (rows.length === 0) {
         return <p className="text-white/50 italic">Aucune délibération trouvée.</p>;
     }
 
