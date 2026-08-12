@@ -101,7 +101,7 @@ export default function ContactPage() {
                                         </div>
                                         <div>
                                             <p className="text-white/80 font-semibold text-sm">Téléphone</p>
-                                            <p className="text-white/60 text-sm">+261 34 12 01 036</p>
+                                            <p className="text-white/60 text-sm">+261 34...</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-4">
