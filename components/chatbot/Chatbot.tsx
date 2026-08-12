@@ -67,7 +67,7 @@ export default function Chatbot() {
                         className="fixed bottom-20 right-4 left-4 sm:left-auto z-50 w-[calc(100%-2rem)] sm:w-96 max-h-[80vh] sm:max-h-125 bg-dark/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden font-poppins"
                     >
                         <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
-                            <h3 className="font-semibold text-cyan-400">Assistant du Sénat de Madagascar</h3>
+                            <h3 className="font-semibold text-cyan-500">Assistant du Sénat de Madagascar</h3>
                             <div className="flex rounded-lg border border-white/20 overflow-hidden text-xs shrink-0">
                                 <button
                                     type="button"
@@ -75,7 +75,7 @@ export default function Chatbot() {
                                     aria-pressed={language === 'fr'}
                                     className={`px-2 py-1 transition ${language === 'fr'
                                         ? 'bg-primary text-white'
-                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                        : 'bg-white/5 text-gray-100 hover:bg-white/10'
                                         }`}
                                 >
                                     FR
@@ -86,7 +86,7 @@ export default function Chatbot() {
                                     aria-pressed={language === 'mg'}
                                     className={`px-2 py-1 transition ${language === 'mg'
                                         ? 'bg-primary text-white'
-                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                        : 'bg-white/5 text-gray-100 hover:bg-white/10'
                                         }`}
                                 >
                                     MG
