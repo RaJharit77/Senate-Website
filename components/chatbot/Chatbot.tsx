@@ -67,7 +67,7 @@ export default function Chatbot() {
                         className="fixed bottom-20 right-4 left-4 sm:left-auto z-50 w-[calc(100%-2rem)] sm:w-96 max-h-[80vh] sm:max-h-125 bg-dark/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden font-poppins"
                     >
                         <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
-                            <h3 className="font-semibold text-cyan-500">Assistant du Sénat de Madagascar</h3>
+                            <h3 className="font-semibold text-cyan-300">Assistant du Sénat de Madagascar</h3>
                             <div className="flex rounded-lg border border-white/20 overflow-hidden text-xs shrink-0">
                                 <button
                                     type="button"
@@ -75,7 +75,7 @@ export default function Chatbot() {
                                     aria-pressed={language === 'fr'}
                                     className={`px-2 py-1 transition ${language === 'fr'
                                         ? 'bg-primary text-white'
-                                        : 'bg-white/5 text-gray-300 hover:bg-white/10'
+                                        : 'bg-white/5 text-gray-500 hover:bg-white/10'
                                         }`}
                                 >
                                     FR
@@ -117,21 +117,21 @@ export default function Chatbot() {
                             )}
                             <div ref={messagesEndRef} />
                         </div>
-                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/10 flex gap-2">
+                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/10 flex items-center gap-2">
                             <input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder={PLACEHOLDER[language]}
-                                className="flex-1 bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
+                                className="flex-1 min-w-0 bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
                                 disabled={isLoading}
                             />
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="p-2 bg-primary rounded-lg text-white hover:bg-primary/90 disabled:opacity-50"
+                                className="shrink-0 p-2 bg-primary rounded-lg text-white hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
                             >
-                                <Send className="w-5 h-5" />
+                                <Send className="w-5 h-5 shrink-0" />
                             </button>
                         </form>
                     </motion.div>
