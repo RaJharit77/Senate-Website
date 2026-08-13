@@ -24,20 +24,22 @@ const defaultDescription = 'Site officiel du Sénat de Madagascar. Retrouvez les
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${siteName}`,
     default: siteName,
+    template: `%s | ${siteName}`,
   },
   description: defaultDescription,
+  applicationName: 'Sénat de Madagascar',
+  keywords: ['Sénat de Madagascar', 'Antenimierandoholona', 'Actualités', 'Travaux parlementaires', 'Histoire', 'Institutions', 'Législation', 'Contact'],
   icons: {
     icon: '/ico/favicon.jpeg',
     shortcut: '/ico/favicon.jpeg',
     apple: '/ico/favicon.jpeg',
   },
   openGraph: {
+    siteName: siteName,
     title: siteName,
     description: defaultDescription,
     url: siteUrl,
-    siteName: siteName,
     images: [
       {
         url: `${siteUrl}/og-image.jpg`,
