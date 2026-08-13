@@ -81,24 +81,28 @@ export default async function DeliberationArticlePage({
                         </div>
                         <Button
                             variant="ghost"
-                            className="text-cyan-300 hover:text-cyan-200 mb-4 group hover:bg-transparent"
+                            className="text-cyan-300 hover:text-cyan-200 mb-3 group hover:bg-transparent px-0 hover:px-0"
                             asChild
                         >
                             <Link
                                 href="/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda"
-                                className="inline-flex items-center gap-2"
+                                className="inline-flex items-center gap-2 text-sm"
                             >
                                 <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                                 Retour à la liste
+                                <span className="text-white/30">/</span>
+                                <span className="text-white/50 group-hover:text-cyan-200 transition-colors">
+                                    Délibérations, textes adoptés, lois...
+                                </span>
                             </Link>
                         </Button>
                         <h1
                             className="text-white text-4xl md:text-5xl font-bold tracking-tight font-poppins"
                         >
-                            Délibérations et ordres du jour
+                            {cleanTitle}
                         </h1>
                         <p className="text-[#c0c0c0] text-lg mt-2 max-w-2xl">
-                            Consultez tous les ordres du jour, délibérations et textes adoptés par le Sénat.
+                            Consultez le détail de cette délibération, ordre du jour ou texte adopté par le Sénat.
                         </p>
                     </div>
 

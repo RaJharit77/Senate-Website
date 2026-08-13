@@ -212,7 +212,7 @@ export function Header() {
               style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
             >
               <Phone size={14} />
-              <span className="hidden sm:inline">+261 34 12 01 036</span>
+              <span className="hidden sm:inline">+261 34...</span>
             </Link>
           </div>
         </div>
