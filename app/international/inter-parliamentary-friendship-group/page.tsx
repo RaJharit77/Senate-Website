@@ -7,6 +7,7 @@ import type { ActivityCategory, SimpleActivityItem } from "@/types/international
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
+import { delay } from "@/lib/delay";
 
 export const metadata = buildMetadata({
     title: "Groupe Interparlementaire d'Amitié du Sénat",
@@ -15,6 +16,8 @@ export const metadata = buildMetadata({
 });
 
 export default async function InterParliamentaryFriendshipGroupPage() {
+    await delay(500);
+
     const slugs = ["groupe-amitie", "groupe-interparlementaire-damitie"];
     let allPosts: WpPost[] = [];
 

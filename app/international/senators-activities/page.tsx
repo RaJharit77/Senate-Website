@@ -6,6 +6,7 @@ import type { WpPost } from "@/lib/types";
 import { formatDate } from "@/utils/utility";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { delay } from "@/lib/delay";
 
 const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> = {
     "audience_sen": "audience",
@@ -20,6 +21,8 @@ export const metadata = buildMetadata({
 });
 
 export default async function SenatorsActivitiesPage() {
+    await delay(500);
+
     const slugs = Object.keys(CATEGORY_MAP);
     const results = await Promise.allSettled(
         slugs.map((slug) => getPostsByCategorySlug(slug, { per_page: 100, _embed: true }))
