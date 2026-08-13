@@ -92,7 +92,44 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd
           data={{
             '@context': 'https://schema.org',
-            '@type': 'WebSite, GovernmentOrganization, InstitutionalWebSite',
+            '@type': 'GovernmentOrganization',
+            name: 'Sénat de Madagascar',
+            url: siteUrl,
+            logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
+            contactPoint: {
+              '@type': 'ContactPoint',
+              telephone: '+261 34 12 01 036',
+              email: 'contact@senat.mg',
+              contactType: 'Service client',
+              availableLanguage: ['French', 'Malagasy'],
+            },
+            sameAs: [
+              'https://www.facebook.com/senat.mg',
+              'https://www.youtube.com/@antenimierandoholona',
+              'https://wa.me/261341201036'
+            ],
+          }}
+        />
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Sénat de Madagascar',
+            url: siteUrl,
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          }}
+        />
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'InstitutionalWebSite',
             name: 'Sénat de Madagascar',
             url: siteUrl,
             logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
