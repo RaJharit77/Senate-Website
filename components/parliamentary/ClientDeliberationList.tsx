@@ -115,6 +115,19 @@ export function ClientDeliberationList({
               placeholder="Rechercher dans toutes les délibérations..."
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && currentPost) {
+                  e.preventDefault();
+                  const slug = currentPost.slug;
+                  setSearchQuery("");
+                  setCanUndo(false);
+                  if (useRouterNavigation) {
+                    router.push(
+                      `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${slug}`
+                    );
+                  }
+                }
+              }}
               className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 pr-9 text-white placeholder:text-white/35 transition-colors focus:border-cyan-400/50 focus-visible:ring-2 focus-visible:ring-cyan-400/25"
             />
             {searchQuery && (
@@ -185,9 +198,13 @@ export function ClientDeliberationList({
           </h2>
           <Link
             href={`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${currentPost.slug}`}
+            onClick={() => {
+              setSearchQuery("");
+              setCanUndo(false);
+            }}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-cyan-300 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50"
           >
-            Permalien <ExternalLink className="h-3.5 w-3.5" />
+            <ExternalLink className="h-4 w-4" />
           </Link>
         </div>
         <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 shadow-2xl backdrop-blur-md">
