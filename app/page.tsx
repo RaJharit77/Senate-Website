@@ -117,7 +117,7 @@ export default async function HomePage() {
     { name: 'Missions et attributions', url: `${SITE_URL}/about/missions-and-responsibilities` },
     { name: 'Structures', url: `${SITE_URL}/about/structures` },
     { name: 'Textes de référence', url: `${SITE_URL}/about/reference-texts` },
-    { name: 'Message du Président', url: `${SITE_URL}/about/president-message` },
+    //{ name: 'Message du Président', url: `${SITE_URL}/about/president-message` },
     { name: 'Historique', url: `${SITE_URL}/historical` },
     { name: 'Travaux Parlementaires', url: `${SITE_URL}/parliamentary-proceedings` },
     { name: 'Travaux Parlementaires', url: `${SITE_URL}/parliamentary-proceedings/legislative-proceedings` },
@@ -131,7 +131,7 @@ export default async function HomePage() {
     { name: 'Espace Presse', url: `${SITE_URL}/press-area` },
     { name: 'Textes et Lois', url: `${SITE_URL}/texts-and-laws` },
     { name: 'Contact', url: `${SITE_URL}/contact` },
-    //{ name: 'Plan du site', url: `${SITE_URL}/sitemap` },
+    { name: 'Plan du site', url: `${SITE_URL}/sitemap` },
     { name: 'Autres', url: `${SITE_URL}/others` },
   ];
 
