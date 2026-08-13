@@ -16,7 +16,8 @@ const inter = Inter({ subsets: ['latin'] });
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
-const siteName = 'Antenimierandoholona - Site web du Sénat de Madagascar';
+const siteName = 'Sénat de Madagascar';
+const title = 'Antenimierandoholona - Site web du Sénat de Madagascar';
 const siteUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'https://senat-de-madagascar.vercel.app';
@@ -36,8 +37,8 @@ export const metadata: Metadata = {
     apple: '/ico/favicon.jpeg',
   },
   openGraph: {
-    siteName: siteName,
-    title: siteName,
+    siteName,
+    title: title,
     description: defaultDescription,
     url: siteUrl,
     images: [
@@ -91,9 +92,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd
           data={{
             '@context': 'https://schema.org',
-            '@type': 'GovernmentOrganization, InstitutionalWebSite, WebSite',
+            '@type': 'WebSite, GovernmentOrganization, InstitutionalWebSite',
             name: 'Sénat de Madagascar',
-            url: process.env.VERCEL_URL,
+            url: siteUrl,
             logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
             contactPoint: {
               '@type': 'ContactPoint',
