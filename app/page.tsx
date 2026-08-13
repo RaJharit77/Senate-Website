@@ -131,7 +131,7 @@ export default async function HomePage() {
     { name: 'Espace Presse', url: `${SITE_URL}/press-area` },
     { name: 'Textes et Lois', url: `${SITE_URL}/texts-and-laws` },
     { name: 'Contact', url: `${SITE_URL}/contact` },
-    //{ name: 'Plan du site', url: `${SITE_URL}/sitemap` },
+    { name: 'Plan du site', url: `${SITE_URL}/sitemap` },
     { name: 'Autres', url: `${SITE_URL}/others` },
   ];
 
