@@ -6,6 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { ActivityItem } from "@/types/internationalType";
 import { PresidentActivitiesFeed } from "@/components/international/PresidentActivitiesFeed";
+import { delay } from "@/lib/delay";
 
 export const metadata = buildMetadata({
     title: "Activités du Président du Sénat",
@@ -14,6 +15,8 @@ export const metadata = buildMetadata({
 });
 
 export default async function PresidentsActivitiesPage() {
+    await delay(500);
+
     const activities = await getPresidentActivities().catch(() => []);
 
     const items: ActivityItem[] = await Promise.all(
