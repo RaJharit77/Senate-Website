@@ -91,7 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd
           data={{
             '@context': 'https://schema.org',
-            '@type': 'GovernmentOrganization',
+            '@type': 'GovernmentOrganization, InstitutionalWebSite, WebSite',
             name: 'Sénat de Madagascar',
             url: process.env.VERCEL_URL,
             logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
