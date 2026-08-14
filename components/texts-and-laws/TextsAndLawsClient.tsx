@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { FileText, Eye, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { FileText, Eye, ChevronLeft, ChevronRight, Search, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,18 +27,38 @@ interface TextAndLawsClientProps {
 export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps) {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
+    const [selectedYear, setSelectedYear] = useState<string>("all");
     const [currentPage, setCurrentPage] = useState(1);
 
-    // Filtrer les lois selon la recherche (titre ou extrait)
+    // Extraire les années uniques depuis les lois
+    const uniqueYears = useMemo(() => {
+        const years = laws.map((law) => new Date(law.date).getFullYear().toString());
+        return Array.from(new Set(years)).sort((a, b) => Number(b) - Number(a));
+    }, [laws]);
+
+    // Filtrer les lois selon la recherche, l'année et le tri
     const filteredLaws = useMemo(() => {
-        if (!searchTerm.trim()) return laws;
-        const term = searchTerm.toLowerCase().trim();
-        return laws.filter(
-            (law) =>
-                law.title.toLowerCase().includes(term) ||
-                law.excerpt.toLowerCase().includes(term)
-        );
-    }, [laws, searchTerm]);
+        let result = laws;
+
+        // Recherche par titre ou extrait
+        if (searchTerm.trim()) {
+            const term = searchTerm.toLowerCase().trim();
+            result = result.filter(
+                (law) =>
+                    law.title.toLowerCase().includes(term) ||
+                    law.excerpt.toLowerCase().includes(term)
+            );
+        }
+
+        // Filtre par année
+        if (selectedYear !== "all") {
+            result = result.filter(
+                (law) => new Date(law.date).getFullYear().toString() === selectedYear
+            );
+        }
+
+        return result;
+    }, [laws, searchTerm, selectedYear]);
 
     // Trier les lois
     const sortedLaws = useMemo(() => {
@@ -66,7 +86,7 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    // Réinitialiser la page quand la recherche ou le tri change
+    // Réinitialiser la page quand un filtre change
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
         setCurrentPage(1);
@@ -74,6 +94,11 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
 
     const handleSortChange = (value: string) => {
         setSortOrder(value as "recent" | "oldest");
+        setCurrentPage(1);
+    };
+
+    const handleYearChange = (value: string) => {
+        setSelectedYear(value);
         setCurrentPage(1);
     };
 
@@ -94,7 +119,7 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                 ADOPTÉS
                             </h2>
                             <span className="text-white/30 text-sm ml-2">
-                                ({sortedLaws.length} texte{sortedLaws.length > 1 ? 's' : ''})
+                                ({sortedLaws.length} texte{sortedLaws.length > 1 ? "s" : ""})
                             </span>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
@@ -109,7 +134,37 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                     className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-56 h-9 text-sm rounded-full"
                                 />
                             </div>
-                            {/* Tri */}
+
+                            {/* Filtre par année */}
+                            {uniqueYears.length > 1 && (
+                                <Select value={selectedYear} onValueChange={handleYearChange}>
+                                    <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
+                                        <div className="flex items-center gap-1">
+                                            <Calendar size={14} className="text-white/40" />
+                                            <SelectValue placeholder="Année" />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-[#1a2633] border-white/10 text-white">
+                                        <SelectItem
+                                            value="all"
+                                            className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                        >
+                                            Toutes les années
+                                        </SelectItem>
+                                        {uniqueYears.map((year) => (
+                                            <SelectItem
+                                                key={year}
+                                                value={year}
+                                                className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                            >
+                                                {year}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+
+                            {/* Tri par date */}
                             <Select value={sortOrder} onValueChange={handleSortChange}>
                                 <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
                                     <SelectValue placeholder="Trier par" />
@@ -134,7 +189,8 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
 
                     {sortedLaws.length === 0 ? (
                         <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-12 text-center text-white/40">
-                            <p>Aucun texte ne correspond à votre recherche.</p>
+                            <p>Aucun texte ne correspond à vos critères.</p>
+                            <p className="text-sm mt-2">Essayez de modifier les filtres ou la recherche.</p>
                         </div>
                     ) : (
                         <>
@@ -175,7 +231,8 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                         </thead>
                                         <tbody>
                                             {paginatedLaws.map((law, index) => {
-                                                const globalIndex = (currentPage - 1) * ITEMS_PER_PAGES + index + 1;
+                                                const globalIndex =
+                                                    (currentPage - 1) * ITEMS_PER_PAGES + index + 1;
                                                 return (
                                                     <tr
                                                         key={law.id}
@@ -183,13 +240,18 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                                     >
                                                         <td
                                                             className="px-6 py-5 align-top font-mono text-sm border-b"
-                                                            style={{ borderColor: "rgba(255,255,255,0.06)", color: CYAN }}
+                                                            style={{
+                                                                borderColor: "rgba(255,255,255,0.06)",
+                                                                color: CYAN,
+                                                            }}
                                                         >
                                                             {String(globalIndex).padStart(2, "0")}
                                                         </td>
                                                         <td
                                                             className="px-6 py-5 align-top border-b"
-                                                            style={{ borderColor: "rgba(255,255,255,0.06)" }}
+                                                            style={{
+                                                                borderColor: "rgba(255,255,255,0.06)",
+                                                            }}
                                                         >
                                                             <Link
                                                                 href={`/texts-and-laws/${law.slug}`}
@@ -197,25 +259,33 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                                             >
                                                                 <span
                                                                     className="font-poppins font-semibold text-[#e8e8e8] group-hover:text-cyan-400 transition-colors leading-relaxed"
-                                                                    dangerouslySetInnerHTML={{ __html: law.title }}
+                                                                    dangerouslySetInnerHTML={{
+                                                                        __html: law.title,
+                                                                    }}
                                                                 />
                                                                 {law.excerpt && (
                                                                     <span
                                                                         className="block font-poppins text-white/40 text-sm mt-1 line-clamp-2"
-                                                                        dangerouslySetInnerHTML={{ __html: law.excerpt }}
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: law.excerpt,
+                                                                        }}
                                                                     />
                                                                 )}
                                                             </Link>
                                                         </td>
                                                         <td
                                                             className="px-6 py-5 align-top text-right text-white/40 text-sm whitespace-nowrap border-b"
-                                                            style={{ borderColor: "rgba(255,255,255,0.06)" }}
+                                                            style={{
+                                                                borderColor: "rgba(255,255,255,0.06)",
+                                                            }}
                                                         >
                                                             {formatDate(law.date)}
                                                         </td>
                                                         <td
                                                             className="px-6 py-5 align-top text-center border-b"
-                                                            style={{ borderColor: "rgba(255,255,255,0.06)" }}
+                                                            style={{
+                                                                borderColor: "rgba(255,255,255,0.06)",
+                                                            }}
                                                         >
                                                             <Link
                                                                 href={`/texts-and-laws/${law.slug}`}

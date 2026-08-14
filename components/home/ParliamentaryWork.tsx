@@ -50,20 +50,21 @@ function getAcfString(item: WpPost, key: string, fallback: string): string {
 }
 
 /**
- * Détermine le statut et la couleur d'un élément d'agenda en fonction de la date.
- * Si la date est passée → "Passé" (rouge), sinon → "À venir" (cyan).
+ * Détermine le statut d'un article en fonction de sa date par rapport à aujourd'hui.
  */
-function getAgendaStatus(dateStr: string): { status: string; statusColor: string } {
-  const date = new Date(dateStr);
-  const now = new Date();
-  // Comparer uniquement les dates (sans l'heure)
-  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const nowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+function getStatusFromDate(dateStr: string): { status: string; color: string } {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // début de la journée
 
-  if (dateOnly < nowOnly) {
-    return { status: "Passé", statusColor: RED };
+  const date = new Date(dateStr);
+  date.setHours(0, 0, 0, 0);
+
+  if (date < today) {
+    return { status: "Terminé", color: RED };
+  } else if (date.getTime() === today.getTime()) {
+    return { status: "Aujourd'hui", color: SKY_BLUE };
   } else {
-    return { status: "À venir", statusColor: SKY_BLUE };
+    return { status: "À venir", color: SKY_BLUE };
   }
 }
 
@@ -139,13 +140,14 @@ export function ParliamentaryWork() {
             color: SKY_BLUE,
             path: "/agenda",
             items: agendaItems.map((item) => {
-              const { status, statusColor } = getAgendaStatus(item.date);
+              // Calcul du statut basé sur la date
+              const { status, color } = getStatusFromDate(item.date);
               return {
                 ref: getAcfString(item, "reference", "Séance"),
                 title: item.title?.rendered || "Sans titre",
-                status,
+                status: status,
                 date: formatDate(item.date),
-                statusColor,
+                statusColor: color,
                 link: `/agenda/${item.slug}`,
               };
             }),
