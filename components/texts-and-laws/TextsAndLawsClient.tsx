@@ -111,12 +111,22 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                             </div>
                             {/* Tri */}
                             <Select value={sortOrder} onValueChange={handleSortChange}>
-                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full">
+                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
                                     <SelectValue placeholder="Trier par" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a2633] border-white/10 text-white">
-                                    <SelectItem value="recent">Plus récent</SelectItem>
-                                    <SelectItem value="oldest">Plus ancien</SelectItem>
+                                    <SelectItem
+                                        value="recent"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                    >
+                                        Plus récent
+                                    </SelectItem>
+                                    <SelectItem
+                                        value="oldest"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                    >
+                                        Plus ancien
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
