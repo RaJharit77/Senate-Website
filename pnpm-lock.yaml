@@ -174,8 +174,8 @@ importers:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
       react-hook-form:
-        specifier: 7.80.0
-        version: 7.80.0(react@19.2.7)
+        specifier: 7.85.0
+        version: 7.85.0(react@19.2.7)
       react-icons:
         specifier: ^5.7.0
         version: 5.7.0(react@19.2.7)
@@ -4638,8 +4638,8 @@ packages:
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  react-hook-form@7.80.0:
-    resolution: {integrity: sha512-4P+fk6oXsxY+6xSj7Euhc2sumQD8zQqCuVHoJwoyp9EchP+IUW9OESB7uHFJOKsIBQ4MQqYE84INJFqUCYNoOg==}
+  react-hook-form@7.85.0:
+    resolution: {integrity: sha512-U2MTriFXnclmV4rOE20p2DcRFv5WEg3FIcBFOKcOLFHDVvGIMPvLTkTWefUsonmlaVy23khVDxDWym6uJVGOzw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -9906,7 +9906,7 @@ snapshots:
 
   react-fast-compare@3.2.2: {}
 
-  react-hook-form@7.80.0(react@19.2.7):
+  react-hook-form@7.85.0(react@19.2.7):
     dependencies:
       react: 19.2.7
 
