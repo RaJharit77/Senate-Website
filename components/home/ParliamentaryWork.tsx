@@ -49,6 +49,24 @@ function getAcfString(item: WpPost, key: string, fallback: string): string {
   return typeof value === "string" ? value : fallback;
 }
 
+/**
+ * Détermine le statut et la couleur d'un élément d'agenda en fonction de la date.
+ * Si la date est passée → "Passé" (rouge), sinon → "À venir" (cyan).
+ */
+function getAgendaStatus(dateStr: string): { status: string; statusColor: string } {
+  const date = new Date(dateStr);
+  const now = new Date();
+  // Comparer uniquement les dates (sans l'heure)
+  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const nowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (dateOnly < nowOnly) {
+    return { status: "Passé", statusColor: RED };
+  } else {
+    return { status: "À venir", statusColor: SKY_BLUE };
+  }
+}
+
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
@@ -120,15 +138,17 @@ export function ParliamentaryWork() {
             label: "Ordre du jour",
             color: SKY_BLUE,
             path: "/agenda",
-            items: agendaItems.map((item) => ({
-              ref: getAcfString(item, "reference", "Séance"),
-              title: item.title?.rendered || "Sans titre",
-              status: getAcfString(item, "statut", "À venir"),
-              date: formatDate(item.date),
-              statusColor:
-                getAcfString(item, "statut", "") === "Terminé" ? RED : SKY_BLUE,
-              link: `/agenda/${item.slug}`,
-            })),
+            items: agendaItems.map((item) => {
+              const { status, statusColor } = getAgendaStatus(item.date);
+              return {
+                ref: getAcfString(item, "reference", "Séance"),
+                title: item.title?.rendered || "Sans titre",
+                status,
+                date: formatDate(item.date),
+                statusColor,
+                link: `/agenda/${item.slug}`,
+              };
+            }),
           },
           {
             id: "legislation",
@@ -332,7 +352,6 @@ export function ParliamentaryWork() {
                 className="flex flex-col gap-3"
               >
                 {active.items.map((item, i) => {
-                  // Si l'élément a une icône personnalisée, on peut l'afficher
                   const ItemIcon = item.iconName ? iconMap[item.iconName] : null;
                   return (
                     <Link key={i} href={item.link} passHref>
