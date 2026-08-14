@@ -197,7 +197,7 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
 
                             {/* Tri */}
                             <Select value={sortOrder} onValueChange={handleSortChange}>
-                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400">
+                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 [&>svg]:text-white/50">
                                     <SelectValue placeholder="Trier" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a2633] border-white/10 text-white">
