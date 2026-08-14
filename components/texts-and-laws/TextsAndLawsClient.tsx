@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { FileText, Eye, ChevronLeft, ChevronRight, Search, Calendar } from "lucide-react";
+import { FileText, Eye, ChevronLeft, ChevronRight, Search, Calendar, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -135,36 +135,36 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                 />
                             </div>
 
-                            {/* Filtre par année */}
-                            {uniqueYears.length > 1 && (
-                                <Select value={selectedYear} onValueChange={handleYearChange}>
-                                    <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
-                                        <div className="flex items-center gap-1">
-                                            <Calendar size={14} className="text-white/40" />
-                                            <SelectValue placeholder="Année" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-[#1a2633] border-white/10 text-white">
+                            {/* Filtre par année - toujours visible */}
+                            <Select value={selectedYear} onValueChange={handleYearChange}>
+                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
+                                    <div className="flex items-center gap-1">
+                                        <Calendar size={14} className="text-white/40" />
+                                        <SelectValue placeholder="Année">
+                                            {selectedYear !== "all" ? selectedYear : "Année"}
+                                        </SelectValue>
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent className="bg-[#1a2633] border-white/10 text-white">
+                                    <SelectItem
+                                        value="all"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                    >
+                                        Toutes les années
+                                    </SelectItem>
+                                    {uniqueYears.map((year) => (
                                         <SelectItem
-                                            value="all"
+                                            key={year}
+                                            value={year}
                                             className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
                                         >
-                                            Toutes les années
+                                            {year}
                                         </SelectItem>
-                                        {uniqueYears.map((year) => (
-                                            <SelectItem
-                                                key={year}
-                                                value={year}
-                                                className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
-                                            >
-                                                {year}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )}
+                                    ))}
+                                </SelectContent>
+                            </Select>
 
-                            {/* Tri par date */}
+                            {/* Tri par date avec icônes */}
                             <Select value={sortOrder} onValueChange={handleSortChange}>
                                 <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
                                     <SelectValue placeholder="Trier par" />
@@ -172,14 +172,16 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                 <SelectContent className="bg-[#1a2633] border-white/10 text-white">
                                     <SelectItem
                                         value="recent"
-                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white flex items-center gap-2"
                                     >
+                                        <ArrowUp size={14} className="inline-block mr-2" />
                                         Plus récent
                                     </SelectItem>
                                     <SelectItem
                                         value="oldest"
-                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white flex items-center gap-2"
                                     >
+                                        <ArrowDown size={14} className="inline-block mr-2" />
                                         Plus ancien
                                     </SelectItem>
                                 </SelectContent>

@@ -51,21 +51,30 @@ function getAcfString(item: WpPost, key: string, fallback: string): string {
 
 /**
  * Détermine le statut d'un article en fonction de sa date par rapport à aujourd'hui.
+ * Pour les lois, on adapte le libellé : "Terminé" devient "Adopté".
  */
-function getStatusFromDate(dateStr: string): { status: string; color: string } {
+function getStatusFromDate(dateStr: string, type: "agenda" | "legislation" = "agenda"): { status: string; color: string } {
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // début de la journée
+  today.setHours(0, 0, 0, 0);
 
   const date = new Date(dateStr);
   date.setHours(0, 0, 0, 0);
 
+  let status: string;
+  let color: string;
+
   if (date < today) {
-    return { status: "Terminé", color: RED };
+    status = type === "legislation" ? "Adopté" : "Terminé";
+    color = RED;
   } else if (date.getTime() === today.getTime()) {
-    return { status: "Aujourd'hui", color: SKY_BLUE };
+    status = "Aujourd'hui";
+    color = SKY_BLUE;
   } else {
-    return { status: "À venir", color: SKY_BLUE };
+    status = "À venir";
+    color = SKY_BLUE;
   }
+
+  return { status, color };
 }
 
 const fadeUp: Variants = {
@@ -140,12 +149,11 @@ export function ParliamentaryWork() {
             color: SKY_BLUE,
             path: "/agenda",
             items: agendaItems.map((item) => {
-              // Calcul du statut basé sur la date
-              const { status, color } = getStatusFromDate(item.date);
+              const { status, color } = getStatusFromDate(item.date, "agenda");
               return {
                 ref: getAcfString(item, "reference", "Séance"),
                 title: item.title?.rendered || "Sans titre",
-                status: status,
+                status,
                 date: formatDate(item.date),
                 statusColor: color,
                 link: `/agenda/${item.slug}`,
@@ -158,15 +166,18 @@ export function ParliamentaryWork() {
             label: "Travaux législatifs",
             color: SKY_BLUE,
             path: "/parliamentary-proceedings",
-            items: loisItems.map((item) => ({
-              ref: getAcfString(item, "reference", item.title?.rendered || "Réf. inconnue"),
-              title: item.title?.rendered || "Sans titre",
-              status: getAcfString(item, "statut", "En cours"),
-              date: formatDate(item.date),
-              statusColor:
-                getAcfString(item, "statut", "") === "Adopté" ? RED : GREEN,
-              link: `/parliamentary-proceedings/legislative-proceedings/${item.slug}`,
-            })),
+            items: loisItems.map((item) => {
+              // Utilise la date pour définir le statut (spécifique aux lois)
+              const { status, color } = getStatusFromDate(item.date, "legislation");
+              return {
+                ref: getAcfString(item, "reference", item.title?.rendered || "Réf. inconnue"),
+                title: item.title?.rendered || "Sans titre",
+                status,
+                date: formatDate(item.date),
+                statusColor: color,
+                link: `/parliamentary-proceedings/legislative-proceedings/${item.slug}`,
+              };
+            }),
           },
           {
             id: "international",
