@@ -2,10 +2,27 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { FileText, Eye, ChevronLeft, ChevronRight, Search, Calendar, ArrowUp, ArrowDown } from "lucide-react";
+import {
+    FileText,
+    Eye,
+    ChevronLeft,
+    ChevronRight,
+    Search,
+    Calendar,
+    ArrowUp,
+    ArrowDown,
+    X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { CYAN, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 import { ITEMS_PER_PAGES } from "@/constants/constants";
@@ -40,7 +57,6 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
     const filteredLaws = useMemo(() => {
         let result = laws;
 
-        // Recherche par titre ou extrait
         if (searchTerm.trim()) {
             const term = searchTerm.toLowerCase().trim();
             result = result.filter(
@@ -50,7 +66,6 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
             );
         }
 
-        // Filtre par année
         if (selectedYear !== "all") {
             result = result.filter(
                 (law) => new Date(law.date).getFullYear().toString() === selectedYear
@@ -71,7 +86,6 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
         return sorted;
     }, [filteredLaws, sortOrder]);
 
-    // Pagination
     const totalPages = Math.ceil(sortedLaws.length / ITEMS_PER_PAGES);
     const paginatedLaws = useMemo(() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGES;
@@ -86,7 +100,6 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    // Réinitialiser la page quand un filtre change
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
         setCurrentPage(1);
@@ -101,6 +114,15 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
         setSelectedYear(value);
         setCurrentPage(1);
     };
+
+    const resetFilters = () => {
+        setSearchTerm("");
+        setSelectedYear("all");
+        setSortOrder("recent");
+        setCurrentPage(1);
+    };
+
+    const hasActiveFilters = searchTerm.trim() !== "" || selectedYear !== "all";
 
     return (
         <div>
@@ -125,19 +147,28 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                         <div className="flex flex-wrap items-center gap-3">
                             {/* Recherche */}
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 w-4 h-4" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
                                 <Input
                                     type="text"
                                     placeholder="Rechercher un texte..."
                                     value={searchTerm}
                                     onChange={handleSearchChange}
-                                    className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-56 h-9 text-sm rounded-full"
+                                    className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-56 h-9 text-sm rounded-full focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 transition-shadow"
                                 />
+                                {searchTerm && (
+                                    <button
+                                        onClick={() => setSearchTerm("")}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition"
+                                        aria-label="Effacer la recherche"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                )}
                             </div>
 
-                            {/* Filtre par année - toujours visible */}
+                            {/* Filtre par année */}
                             <Select value={selectedYear} onValueChange={handleYearChange}>
-                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
+                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400">
                                     <div className="flex items-center gap-1">
                                         <Calendar size={14} className="text-white/40" />
                                         <SelectValue placeholder="Année">
@@ -164,30 +195,84 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                 </SelectContent>
                             </Select>
 
-                            {/* Tri par date avec icônes */}
+                            {/* Tri */}
                             <Select value={sortOrder} onValueChange={handleSortChange}>
-                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors">
-                                    <SelectValue placeholder="Trier par" />
+                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400">
+                                    <SelectValue placeholder="Trier" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a2633] border-white/10 text-white">
                                     <SelectItem
                                         value="recent"
-                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white flex items-center gap-2"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
                                     >
-                                        <ArrowUp size={14} className="inline-block mr-2" />
-                                        Plus récent
+                                        <div className="flex items-center gap-2">
+                                            <ArrowUp size={14} />
+                                            Plus récent
+                                        </div>
                                     </SelectItem>
                                     <SelectItem
                                         value="oldest"
-                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white flex items-center gap-2"
+                                        className="hover:bg-cyan-500/20 data-[state=checked]:bg-cyan-500/30 focus:bg-cyan-500/20 focus:text-white"
                                     >
-                                        <ArrowDown size={14} className="inline-block mr-2" />
-                                        Plus ancien
+                                        <div className="flex items-center gap-2">
+                                            <ArrowDown size={14} />
+                                            Plus ancien
+                                        </div>
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
+
+                            {/* Bouton Réinitialiser */}
+                            {hasActiveFilters && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={resetFilters}
+                                    className="text-white/40 hover:text-white hover:bg-white/10 rounded-full px-3 h-9 text-sm font-normal gap-1.5"
+                                >
+                                    <X size={14} />
+                                    Réinitialiser
+                                </Button>
+                            )}
                         </div>
                     </div>
+
+                    {/* Affichage des filtres actifs (badges) */}
+                    {(searchTerm || selectedYear !== "all") && (
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                            <span className="text-white/30 text-xs">Filtres actifs :</span>
+                            {searchTerm && (
+                                <Badge
+                                    variant="secondary"
+                                    className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30 rounded-full px-3 py-0.5 text-xs flex items-center gap-1"
+                                >
+                                    Recherche : {searchTerm}
+                                    <button
+                                        onClick={() => setSearchTerm("")}
+                                        className="hover:text-white transition"
+                                        aria-label="Retirer le filtre"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                </Badge>
+                            )}
+                            {selectedYear !== "all" && (
+                                <Badge
+                                    variant="secondary"
+                                    className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30 rounded-full px-3 py-0.5 text-xs flex items-center gap-1"
+                                >
+                                    Année : {selectedYear}
+                                    <button
+                                        onClick={() => setSelectedYear("all")}
+                                        className="hover:text-white transition"
+                                        aria-label="Retirer le filtre"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                </Badge>
+                            )}
+                        </div>
+                    )}
 
                     {sortedLaws.length === 0 ? (
                         <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-12 text-center text-white/40">
