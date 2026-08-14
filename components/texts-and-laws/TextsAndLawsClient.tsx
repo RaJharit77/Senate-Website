@@ -166,12 +166,12 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                                 )}
                             </div>
 
-                            {/* Filtre par année */}
+                            {/* Filtre par année - avec icône en blanc argenté */}
                             <Select value={selectedYear} onValueChange={handleYearChange}>
-                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400">
+                                <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 [&>svg]:text-white/50">
                                     <div className="flex items-center gap-1">
                                         <Calendar size={14} className="text-white/40" />
-                                        <SelectValue placeholder="Année" className="text-sm text-white/80">
+                                        <SelectValue placeholder="Année">
                                             {selectedYear !== "all" ? selectedYear : "Année"}
                                         </SelectValue>
                                     </div>
@@ -198,7 +198,7 @@ export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps)
                             {/* Tri */}
                             <Select value={sortOrder} onValueChange={handleSortChange}>
                                 <SelectTrigger className="w-[140px] h-9 bg-white/10 border-white/20 text-white text-sm rounded-full hover:bg-cyan-500/10 transition-colors focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400">
-                                    <SelectValue placeholder="Trier" className="text-sm text-white/80" />
+                                    <SelectValue placeholder="Trier" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a2633] border-white/10 text-white">
                                     <SelectItem
