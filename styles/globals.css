@@ -2,6 +2,8 @@
 @import './tailwind.css';
 @import './theme.css';
 @import 'lenis/dist/lenis.css';
+@import './historyTabs.css';
+
 
 .font-poppins {
     font-family: 'Poppins', sans-serif;
