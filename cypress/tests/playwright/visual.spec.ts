@@ -19,4 +19,11 @@ test.describe('Régression visuelle', () => {
         const form = page.locator('form');
         await expect(form).toHaveScreenshot('contact-form.png');
     });
+
+    test('comparer la page Historique', async ({ page }) => {
+        await page.goto('/historical');
+        await expect(page).toHaveScreenshot('historical.png', { fullPage: true, maxDiffPixelRatio: 0.1 });
+    });
 });
+
+test.skip(!!process.env.CI, 'Visual tests only run locally');
