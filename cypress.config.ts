@@ -10,6 +10,8 @@ export default defineConfig({
         defaultCommandTimeout: 10000,
         video: false,
         screenshotOnRunFailure: true,
+        experimentalMemoryManagement: true,  
+        numTestsKeptInMemory: 1,
     },
     component: {
         devServer: {

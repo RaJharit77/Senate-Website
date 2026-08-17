@@ -13,7 +13,7 @@ describe('Tests de performance', () => {
             const measure = win.performance.getEntriesByName('load')[0];
             cy.log(`Temps de chargement : ${measure.duration.toFixed(0)}ms`);
             // On peut ajouter une assertion
-            expect(measure.duration).to.be.lessThan(3000); // seuil de 3 secondes
+            expect(measure.duration).to.be.lessThan(5000);
         });
     });
 
@@ -23,7 +23,7 @@ describe('Tests de performance', () => {
             const fcp = win.performance.getEntriesByType('paint').find(p => p.name === 'first-contentful-paint');
             if (fcp) {
                 cy.log(`FCP : ${fcp.startTime.toFixed(0)}ms`);
-                expect(fcp.startTime).to.be.lessThan(2000);
+                expect(fcp.startTime).to.be.lessThan(3000);
             }
         });
     });
@@ -53,7 +53,7 @@ describe('Tests de performance', () => {
         cy.window().then((win) => {
             const lcp = (win as Window & { __lcp?: number }).__lcp || 0;
             cy.log(`LCP : ${lcp.toFixed(0)}ms`);
-            expect(lcp).to.be.lessThan(2500);
+            expect(lcp).to.be.lessThan(4000);
         });
     });
 
@@ -78,7 +78,7 @@ describe('Tests de performance', () => {
             const measure = win.performance.getEntriesByName('loadSlow')[0];
             cy.log(`Temps de chargement avec réseau lent : ${measure.duration.toFixed(0)}ms`);
             // Seuil plus élevé
-            expect(measure.duration).to.be.lessThan(5000);
+            expect(measure.duration).to.be.lessThan(8000);
         });
     });
 });

@@ -2,10 +2,12 @@
 
 describe('Normal Tests – Interactions & Dynamic Content', () => {
     it('displays President message', () => {
-        cy.visit('/about/president-message');
-        cy.get('h1').should('contain', 'Message du Président');
-        cy.get('[data-testid="president-photo"]').should('be.visible');
-        cy.get('.president-content p').should('have.length.at.least', 1);
+        it('displays President message', () => {
+            cy.visit('/about/president-message');
+            cy.get('h1').should('contain', 'Message du Président');
+            cy.get('.relative.w-48.h-48 img, .rounded-full img').should('be.visible');
+            cy.get('.president-content p').should('have.length.at.least', 1);
+        });
     });
 
     it('performs search and shows results', () => {

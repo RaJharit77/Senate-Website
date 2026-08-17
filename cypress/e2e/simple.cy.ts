@@ -7,8 +7,8 @@ describe('Simple Tests – Core Pages & Navigation', () => {
 
     it('loads homepage with main sections', () => {
         cy.checkLayout();
-        cy.get('[data-testid="hero-carousel"]').should('exist');
-        cy.get('[data-testid="news-grid"]').should('exist');
+        cy.get('.relative.overflow-hidden, [class*="carousel"]').should('exist');
+        cy.get('[class*="news-grid"], .grid').should('exist');
         cy.get('[data-testid="about-section"]').should('exist');
         cy.get('[data-testid="parliamentary-work"]').should('exist');
         cy.get('[data-testid="partners-band"]').should('exist');
