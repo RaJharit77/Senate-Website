@@ -12,11 +12,7 @@
     "cypress:run": "cypress run",
     "playwright test": "playwright test",
     "playwright test:report": "playwright show-report",
-    "playwright test --ui": "playwright test --ui",
-    
-    "cypress:run:ci": "cypress run --headless --browser chrome",
-    "playwright:ci": "playwright test --headed=false",
-    "test:ci": "pnpm run cypress:run:ci && pnpm run playwright:ci"
+    "playwright test --ui": "playwright test --ui"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
