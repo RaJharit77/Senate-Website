@@ -1,9 +1,9 @@
 /* ==========================================================================
-   Styles pour le contenu WordPress injecté via dangerouslySetInnerHTML dans
-   HistoryTabs.tsx. Ce HTML vient de WordPress et utilise des classes façon
-   Bootstrap (.row, .col-md-6, .rounded-circle, .bg-danger...) qu'on ne
-   contrôle pas à la source : on les redessine ici en CSS pur (sans @apply
-   avec variantes) pour éviter les erreurs de build.
+    Styles pour le contenu WordPress injecté via dangerouslySetInnerHTML dans
+    HistoryTabs.tsx. Ce HTML vient de WordPress et utilise des classes façon
+    Bootstrap (.row, .col-md-6, .rounded-circle, .bg-danger...) qu'on ne
+    contrôle pas à la source : on les redessine ici en CSS pur (sans @apply
+    avec variantes) pour éviter les erreurs de build.
    ========================================================================== */
 
 /* 1. Conteneur principal ---------------------------------------------- */
@@ -153,6 +153,7 @@
     margin-bottom: 0.5rem !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     line-height: 1.25 !important;
