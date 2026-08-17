@@ -245,7 +245,14 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                             <span className="text-lg animate-pulse">Chargement des données historiques...</span>
                         </div>
                     ) : activeContent ? (
+<<<<<<< HEAD
                         <div className={tailwindWPStyles} dangerouslySetInnerHTML={{ __html: activeContent }} />
+=======
+                        <div
+                            className="prose prose-invert max-w-none text-gray-300 font-poppins leading-relaxed w-full"
+                            dangerouslySetInnerHTML={{ __html: activeContent }}
+                        />
+>>>>>>> 83ce63d (fix: Update History component for fixing an import error during the build)
                     ) : (
                         <p className="text-white/40 italic py-12 text-center">Aucun contenu disponible pour cette section.</p>
                     )}
