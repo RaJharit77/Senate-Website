@@ -10,6 +10,7 @@
     "lint:fix": "eslint --fix",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:run:ci": "cypress run --headless --reporter mochawesome",
     "playwright test": "playwright test",
     "playwright test:report": "playwright show-report",
     "playwright test --ui": "playwright test --ui"
