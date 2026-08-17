@@ -7,11 +7,16 @@ describe('Simple Tests – Core Pages & Navigation', () => {
 
     it('loads homepage with main sections', () => {
         cy.checkLayout();
+        // Carousel : section avec .relative.overflow-hidden
         cy.get('.relative.overflow-hidden, [class*="carousel"]').should('exist');
-        cy.get('[class*="news-grid"], .grid').should('exist');
-        cy.get('[data-testid="about-section"]').should('exist');
-        cy.get('[data-testid="parliamentary-work"]').should('exist');
-        cy.get('[data-testid="partners-band"]').should('exist');
+        // News grid : une grille avec des articles
+        cy.get('.grid, [class*="news"]').should('exist');
+        // Section "À propos" : on peut chercher un titre "À propos du Sénat"
+        cy.get('h2, h1').contains('À propos du Sénat').should('exist');
+        // Section "Travaux Parlementaires"
+        cy.get('h2, h1').contains('Travaux Parlementaires').should('exist');
+        // Partenaires : une bande de logos
+        cy.get('[class*="partner"], .flex.gap-4 img').should('exist');
     });
 
     it('navigates to About and its subpages', () => {
@@ -41,6 +46,7 @@ describe('Simple Tests – Core Pages & Navigation', () => {
         cy.get('nav a').contains('Historique').click();
         cy.url().should('include', '/historical');
         cy.get('h1').contains('Histoire du Sénat').should('be.visible');
-        cy.get('[role="tablist"]').should('exist');
+        // Les onglets sont des boutons avec role="tab"
+        cy.get('[role="tab"]').should('exist');
     });
 });

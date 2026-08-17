@@ -58,26 +58,23 @@ describe('Tests de performance', () => {
     });
 
     it('simule une connexion lente (3G) et mesure le temps de chargement', () => {
+        cy.intercept('**/wp-json/**', (req) => {
+            req.on('response', (res) => {
+                res.setDelay(1000);
+            });
+        }).as('slowApi');
+
         cy.visit('/', {
             onBeforeLoad: (win) => {
                 win.performance.mark('start');
             },
-            // Cypress ne permet pas de throttler directement, on peut utiliser cy.intercept pour retarder les réponses
         });
-        // On peut retarder les réponses API pour simuler une latence
-        cy.intercept('**/wp-json/**', (req) => {
-            req.on('response', (res) => {
-                res.setDelay(1000); // 1 seconde de délai
-            });
-        }).as('slowApi');
 
-        cy.visit('/');
         cy.window().then((win) => {
             win.performance.mark('end');
             win.performance.measure('loadSlow', 'start', 'end');
             const measure = win.performance.getEntriesByName('loadSlow')[0];
             cy.log(`Temps de chargement avec réseau lent : ${measure.duration.toFixed(0)}ms`);
-            // Seuil plus élevé
             expect(measure.duration).to.be.lessThan(8000);
         });
     });

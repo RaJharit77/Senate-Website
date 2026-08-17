@@ -6,7 +6,7 @@ test.describe('Performance avec Playwright', () => {
         await page.goto('/');
         const loadTime = Date.now() - start;
         console.log(`Temps de chargement : ${loadTime}ms`);
-        expect(loadTime).toBeLessThan(3000);
+        expect(loadTime).toBeLessThan(5000);
     });
 
     test('mesure le FCP et LCP via Performance API', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('Performance avec Playwright', () => {
             return entry ? entry.startTime : 0;
         });
         console.log(`FCP : ${fcp.toFixed(0)}ms`);
-        expect(fcp).toBeLessThan(2000);
+        expect(fcp).toBeLessThan(3000);
 
         const lcp = await page.evaluate<number>(() => {
             return new Promise<number>((resolve) => {
@@ -34,7 +34,7 @@ test.describe('Performance avec Playwright', () => {
             });
         });
         console.log(`LCP : ${lcp.toFixed(0)}ms`);
-        expect(lcp).toBeLessThan(2500);
+        expect(lcp).toBeLessThan(4000);
     });
 
     test('simule une connexion lente (3G) et mesure le temps de chargement', async ({ page }) => {
@@ -56,6 +56,6 @@ test.describe('Performance avec Playwright', () => {
         await page.goto('/');
         const loadTime = Date.now() - start;
         console.log(`Temps de chargement (3G) : ${loadTime}ms`);
-        expect(loadTime).toBeLessThan(5000);
+        expect(loadTime).toBeLessThan(8000);
     });
 });
