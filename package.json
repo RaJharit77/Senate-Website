@@ -1,6 +1,6 @@
 {
-  "name": "senat-web-site",
-  "version": "0.1.0",
+  "name": "senate-website",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,7 +12,11 @@
     "cypress:run": "cypress run",
     "playwright test": "playwright test",
     "playwright test:report": "playwright show-report",
-    "playwright test --ui": "playwright test --ui"
+    "playwright test --ui": "playwright test --ui",
+    
+    "cypress:run:ci": "cypress run --headless --browser chrome",
+    "playwright:ci": "playwright test --headed=false",
+    "test:ci": "pnpm run cypress:run:ci && pnpm run playwright:ci"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -84,19 +88,24 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.9.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.2.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "cypress": "^15.20.1",
+    "cypress-axe": "^1.5.0",
+    "cypress-lighthouse": "^0.1.0",
     "eslint": "^10.8.1",
     "eslint-config-next": "16.3.0",
     "eslint-plugin-react": "^7.37.5",
+    "lighthouse": "^12.0.0",
     "postcss": "8.5.23",
     "shard": "1.1.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wait-on": "^9.1.0"
   },
   "packageManager": "pnpm@11.21.0+sha512.521705bce689924eac72f5a3587122f362689ef6571e55ba80076fd637c11132ecffada26fad4ea79c485bfddbfd3d5a2a5b05805a77e893de71ec8a6cca3bb1"
 }
