@@ -1,1 +1,3 @@
-import './command';
+import './commands';
+import './accessibility';
+import 'cypress-axe';
