@@ -6,7 +6,7 @@ describe('Simple Tests – Core Pages & Navigation', () => {
     });
 
     it('loads homepage with main sections', () => {
-        cy.check();
+        cy.checkLayout();
         cy.get('[data-testid="hero-carousel"]').should('exist');
         cy.get('[data-testid="news-grid"]').should('exist');
         cy.get('[data-testid="about-section"]').should('exist');
