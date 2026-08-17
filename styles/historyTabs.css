@@ -1,0 +1,244 @@
+/* ==========================================================================
+   Styles pour le contenu WordPress injecté via dangerouslySetInnerHTML dans
+   HistoryTabs.tsx. Ce HTML vient de WordPress et utilise des classes façon
+   Bootstrap (.row, .col-md-6, .rounded-circle, .bg-danger...) qu'on ne
+   contrôle pas à la source : on les redessine ici en CSS pur (sans @apply
+   avec variantes) pour éviter les erreurs de build.
+   ========================================================================== */
+
+/* 1. Conteneur principal ---------------------------------------------- */
+.wp-senate-content {
+    color: #d1d5db;
+    /* text-gray-300 */
+    line-height: 1.625;
+    /* leading-relaxed */
+    width: 100%;
+}
+
+/* 2. Grille principale ------------------------------------------------ */
+.wp-senate-content .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    gap: 3rem !important;
+    /* 12 * 0.25rem */
+    width: 100% !important;
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+}
+
+/* 3. Colonnes de texte (tout sauf les cartes photo) ------------------- */
+.wp-senate-content [class*="col-"]:not(:has(.rounded-circle)):not(:has(img)) {
+    width: 100% !important;
+}
+
+/* Responsive : colonnes Bootstrap classiques */
+@media (min-width: 768px) {
+    .wp-senate-content .col-md-12:not(:has(.rounded-circle)):not(:has(img)) {
+        width: 100% !important;
+    }
+
+    .wp-senate-content .col-md-10:not(:has(.rounded-circle)):not(:has(img)) {
+        width: calc(83.3333% - 1.5rem) !important;
+        /* md:w-[calc(83.33%-1.5rem)] */
+    }
+
+    .wp-senate-content .col-md-8:not(:has(.rounded-circle)):not(:has(img)) {
+        width: calc(66.6666% - 1.5rem) !important;
+    }
+
+    .wp-senate-content .col-md-6:not(:has(.rounded-circle)):not(:has(img)) {
+        width: calc(50% - 1.5rem) !important;
+    }
+}
+
+/* 4. Cartes sénateur (colonne contenant une photo ronde) -------------- */
+.wp-senate-content [class*="col-"]:has(.rounded-circle) {
+    width: 170px !important;
+    min-height: 220px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 2rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    position: relative !important;
+    transition: transform 0.2s, background 0.2s, z-index 0.2s !important;
+}
+
+.wp-senate-content [class*="col-"]:has(.rounded-circle):hover {
+    transform: scale(1.05) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    z-index: 10 !important;
+}
+
+@media (min-width: 640px) {
+    .wp-senate-content [class*="col-"]:has(.rounded-circle) {
+        width: 210px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .wp-senate-content [class*="col-"]:has(.rounded-circle) {
+        width: 230px !important;
+    }
+}
+
+.wp-senate-content .rounded-circle {
+    border-radius: 9999px !important;
+    width: 4rem !important;
+    height: 4rem !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin: 0 auto 1rem auto !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+@media (min-width: 768px) {
+    .wp-senate-content .rounded-circle {
+        width: 6rem !important;
+        height: 6rem !important;
+    }
+}
+
+.wp-senate-content [class*="col-"]:has(.rounded-circle) h3 {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.25rem !important;
+    margin-top: 0 !important;
+    color: #ffffff !important;
+    line-height: 1.25 !important;
+    min-height: 2.5em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+@media (min-width: 768px) {
+    .wp-senate-content [class*="col-"]:has(.rounded-circle) h3 {
+        font-size: 0.9375rem !important;
+    }
+}
+
+.wp-senate-content [class*="col-"]:has(.rounded-circle) h4 {
+    font-size: 0.75rem !important;
+    color: #22d3ee !important;
+    /* text-cyan-400 */
+    margin-bottom: 0.5rem !important;
+    margin-top: 0 !important;
+    line-height: 1.25 !important;
+    min-height: 2.2em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+@media (min-width: 768px) {
+    .wp-senate-content [class*="col-"]:has(.rounded-circle) h4 {
+        font-size: 0.875rem !important;
+    }
+}
+
+.wp-senate-content [class*="col-"]:has(.rounded-circle) p {
+    font-size: 0.625rem !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin-bottom: 0.5rem !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    line-height: 1.25 !important;
+}
+
+@media (min-width: 768px) {
+    .wp-senate-content [class*="col-"]:has(.rounded-circle) p {
+        font-size: 0.6875rem !important;
+    }
+}
+
+/* 5. Images (non rondes) – flèches de transition --------------------- */
+.wp-senate-content [class*="col-"]:has(img:not(.rounded-circle)) {
+    width: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+.wp-senate-content img:not(.rounded-circle) {
+    display: block !important;
+    margin: 0 auto !important;
+    object-fit: contain !important;
+    max-width: 100% !important;
+    border-radius: 0.75rem !important;
+}
+
+/* 6. Images de contenu (montages/scans dans le texte) ---------------- */
+.wp-senate-content .wp-block-image,
+.wp-senate-content figure {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* 7. Titres globaux -------------------------------------------------- */
+.wp-senate-content h1 {
+    text-align: center !important;
+    font-size: 1.875rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.wp-senate-content h2:not([class*="col-"] h2) {
+    text-align: center !important;
+    font-size: 1.5rem !important;
+    color: #ffffff !important;
+    margin-bottom: 1rem !important;
+}
+
+/* 8. Paragraphes descriptifs (hors cartes sénateur) ------------------ */
+.wp-senate-content p:not([class*="col-"]:has(.rounded-circle) p) {
+    text-align: justify !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+}
+
+/* 9. Bandeaux de section ".bg-danger" -------------------------------- */
+.wp-senate-content .bg-danger {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+    /* text-red-300 */
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    border-radius: 9999px !important;
+    display: block !important;
+    width: fit-content !important;
+    margin: 1.5rem auto !important;
+    font-weight: 700 !important;
+    font-size: 0.875rem !important;
+    text-align: center !important;
+}
+
+/* 10. Listes --------------------------------------------------------- */
+.wp-senate-content ul {
+    list-style: disc !important;
+    padding-left: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.wp-senate-content li {
+    margin-bottom: 0.5rem !important;
+    color: #d1d5db !important;
+}

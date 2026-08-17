@@ -11,11 +11,6 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,9 +26,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Generate Prisma Client
-        run: pnpm prisma generate
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps chromium

@@ -2,3 +2,5 @@
 @import './tailwind.css';
 @import './theme.css';
 @import 'lenis/dist/lenis.css';
+@import 'swiper/css';
+@import './historyTabs.css';

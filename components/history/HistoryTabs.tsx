@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { addSenatorLinks } from "@/lib/senatorLinks";
 
 export interface TabConfig {
     id: string;
@@ -19,82 +20,31 @@ interface HistoryTabsProps {
     loading?: boolean;
 }
 
-function generateSlug(name: string): string {
-    return name
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9\-]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "")
-        .toLowerCase();
-}
-
-function cleanWhitespace(text: string): string {
-    return text.replace(/\s+/g, " ").trim();
-}
-
 /**
- * Ajoute des liens internes vers /historical/[slug] sur chaque carte sénateur.
- * Affiche le nom complet et le rôle complet.
+ * Onglets "Républiques" de la page Historique : affiche le contenu WordPress
+ * de la république active (avec liens internes posés sur les cartes sénateur)
+ * et garde l'onglet actif synchronisé avec le paramètre d'URL ?tab=.
  */
-function addSenatorLinks(html: string): string {
-    if (!html || typeof document === "undefined") return html;
-
-    const container = document.createElement("div");
-    container.innerHTML = html;
-
-    const columns = container.querySelectorAll('[class*="col-"]:has(.rounded-circle)');
-
-    columns.forEach((col) => {
-        const titleEl = col.querySelector("h3, h4") as HTMLElement | null;
-        if (!titleEl) return;
-
-        const existingLink = titleEl.querySelector("a");
-        const rawName = existingLink?.textContent || titleEl.textContent || "";
-        const fullName = cleanWhitespace(rawName);
-        if (!fullName) return;
-
-        const slug = generateSlug(fullName);
-        const href = `/historical/${slug}`;
-
-        if (existingLink) {
-            existingLink.setAttribute("href", href);
-            existingLink.removeAttribute("target");
-            existingLink.className = "hover:text-cyan-300 transition-colors cursor-pointer";
-            existingLink.setAttribute("title", fullName);
-            existingLink.textContent = fullName;
-        } else {
-            const a = document.createElement("a");
-            a.setAttribute("href", href);
-            a.setAttribute("title", fullName);
-            a.className = "hover:text-cyan-300 transition-colors cursor-pointer";
-            a.textContent = fullName;
-            titleEl.innerHTML = "";
-            titleEl.appendChild(a);
-        }
-    });
-
-    return container.innerHTML;
-}
-
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    // 1. Déterminer la clé active directement depuis l'URL (Single Source of Truth)
+    // L'URL est la source de vérité pour l'onglet actif.
     const activeTabFromQuery = searchParams.get("tab") || tabs[0]?.id || "";
-
-    // 2. Supprimer la synchronisation par useEffect en initialisant l'état avec la valeur de l'URL
     const [activeTab, setActiveTab] = useState(activeTabFromQuery);
     const [isClient, setIsClient] = useState(false);
 
-    // Mettre à jour l'état si l'URL change (sans passer par un useEffect synchrone)
+    // Ajustement d'état pendant le rendu (pattern React officiel) plutôt qu'un
+    // useEffect : évite un rendu intermédiaire où l'ancien onglet reste visible
+    // le temps que l'effet se déclenche.
     if (activeTabFromQuery !== activeTab) {
         setActiveTab(activeTabFromQuery);
     }
 
-    // Déclencher l'activation côté client asynchronement après le montage du composant
+    // addSenatorLinks manipule le DOM : on ne l'exécute qu'après le montage
+    // pour que le HTML du rendu serveur et du tout premier rendu client
+    // restent identiques (pas de mismatch d'hydratation).
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsClient(true);
@@ -102,77 +52,12 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
 
     const handleTabClick = (tabId: string) => {
         setActiveTab(tabId);
-        // Mettre à jour le paramètre 'tab' dans l'URL sans recharger la page
         router.push(`${pathname}?tab=${tabId}`, { scroll: false });
     };
 
     const activeConfig = tabs.find((t) => t.id === activeTab) ?? tabs[0];
     const rawContent = contents[activeTab] ?? "";
     const activeContent = isClient ? addSenatorLinks(rawContent) : rawContent;
-
-    const tailwindWPStyles = `
-        text-gray-300 font-poppins leading-relaxed w-full
-
-        [&_.row]:!flex [&_.row]:!flex-wrap [&_.row]:!justify-center [&_.row]:!items-stretch [&_.row]:!gap-12 [&_.row]:!w-full [&_.row]:!my-12
-
-        [&_[class*="col-"]:not(:has(.rounded-circle)):not(:has(img))]:!w-full
-        md:[&_.col-md-12:not(:has(.rounded-circle)):not(:has(img))]:!w-full
-        md:[&_.col-md-10:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(83.33%-1.5rem)]
-        md:[&_.col-md-8:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(66.66%-1.5rem)]
-        md:[&_.col-md-6:not(:has(.rounded-circle)):not(:has(img))]:!w-[calc(50%-1.5rem)]
-
-        [&_[class*="col-"]:has(.rounded-circle)]:!w-[170px] 
-        sm:[&_[class*="col-"]:has(.rounded-circle)]:!w-[210px]
-        md:[&_[class*="col-"]:has(.rounded-circle)]:!w-[230px]
-
-        [&_[class*="col-"]:has(.rounded-circle)]:!min-h-[220px]
-        [&_[class*="col-"]:has(.rounded-circle)]:!bg-white/5
-        [&_[class*="col-"]:has(.rounded-circle)]:!rounded-[2rem]
-        [&_[class*="col-"]:has(.rounded-circle)]:!border
-        [&_[class*="col-"]:has(.rounded-circle)]:!border-white/10
-        [&_[class*="col-"]:has(.rounded-circle)]:!p-6
-        
-        [&_[class*="col-"]:has(.rounded-circle)]:!flex
-        [&_[class*="col-"]:has(.rounded-circle)]:!flex-col
-        [&_[class*="col-"]:has(.rounded-circle)]:!items-center
-        [&_[class*="col-"]:has(.rounded-circle)]:!justify-center
-        [&_[class*="col-"]:has(.rounded-circle)]:!text-center
-        [&_[class*="col-"]:has(.rounded-circle)]:!relative
-        
-        [&_[class*="col-"]:has(.rounded-circle)]:!transition-transform
-        hover:[&_[class*="col-"]:has(.rounded-circle)]:!scale-105
-        hover:[&_[class*="col-"]:has(.rounded-circle)]:!bg-white/10
-        hover:[&_[class*="col-"]:has(.rounded-circle)]:!z-10
-
-        [&_.rounded-circle]:!rounded-full [&_.rounded-circle]:!w-16 [&_.rounded-circle]:!h-16 md:[&_.rounded-circle]:!w-24 md:[&_.rounded-circle]:!h-24 [&_.rounded-circle]:!object-cover
-        [&_.rounded-circle]:!block [&_.rounded-circle]:!mx-auto [&_.rounded-circle]:!mb-4 [&_.rounded-circle]:!shrink-0 [&_.rounded-circle]:!shadow-lg [&_.rounded-circle]:!border-2 [&_.rounded-circle]:!border-white/20
-
-        [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-sm md:[&_[class*="col-"]:has(.rounded-circle)_h3]:!text-[15px] [&_[class*="col-"]:has(.rounded-circle)_h3]:!font-bold [&_[class*="col-"]:has(.rounded-circle)_h3]:!mb-1 [&_[class*="col-"]:has(.rounded-circle)_h3]:!mt-0 [&_[class*="col-"]:has(.rounded-circle)_h3]:!text-white [&_[class*="col-"]:has(.rounded-circle)_h3]:!leading-tight [&_[class*="col-"]:has(.rounded-circle)_h3]:!min-h-[2.5em] [&_[class*="col-"]:has(.rounded-circle)_h3]:!flex [&_[class*="col-"]:has(.rounded-circle)_h3]:!items-center [&_[class*="col-"]:has(.rounded-circle)_h3]:!justify-center [&_[class*="col-"]:has(.rounded-circle)_h3]:!w-full
-
-        [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-xs md:[&_[class*="col-"]:has(.rounded-circle)_h4]:!text-sm [&_[class*="col-"]:has(.rounded-circle)_h4]:!text-cyan-400 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mb-2 [&_[class*="col-"]:has(.rounded-circle)_h4]:!mt-0 [&_[class*="col-"]:has(.rounded-circle)_h4]:!leading-tight [&_[class*="col-"]:has(.rounded-circle)_h4]:!min-h-[2.2em] [&_[class*="col-"]:has(.rounded-circle)_h4]:!flex [&_[class*="col-"]:has(.rounded-circle)_h4]:!items-center [&_[class*="col-"]:has(.rounded-circle)_h4]:!justify-center [&_[class*="col-"]:has(.rounded-circle)_h4]:!w-full
-
-        [&_[class*="col-"]:has(.rounded-circle)_p]:!text-[10px] md:[&_[class*="col-"]:has(.rounded-circle)_p]:!text-[11px] [&_[class*="col-"]:has(.rounded-circle)_p]:!text-white/60 [&_[class*="col-"]:has(.rounded-circle)_p]:!mb-2 [&_[class*="col-"]:has(.rounded-circle)_p]:!line-clamp-3 [&_[class*="col-"]:has(.rounded-circle)_p]:!leading-tight
-
-        [&_[class*="col-"]:has(img:not(.rounded-circle))]:!w-auto
-        [&_[class*="col-"]:has(img:not(.rounded-circle))]:!flex
-        [&_[class*="col-"]:has(img:not(.rounded-circle))]:!justify-center
-        [&_[class*="col-"]:has(img:not(.rounded-circle))]:!items-center
-        [&_[class*="col-"]:has(img:not(.rounded-circle))]:!px-2
-
-        [&_img:not(.rounded-circle)]:!block [&_img:not(.rounded-circle)]:!mx-auto [&_img:not(.rounded-circle)]:!object-contain [&_img:not(.rounded-circle)]:!max-w-full [&_img:not(.rounded-circle)]:!rounded-xl
-
-        [&_.wp-block-image]:!my-8
-        [&_figure]:!my-8
-
-        [&_h1]:!text-center [&_h1]:!text-3xl [&_h1]:!font-bold [&_h1]:!text-white [&_h1]:!mb-6
-        [&_h2:not([class*="col-"]_h2)]:!text-center [&_h2:not([class*="col-"]_h2)]:!text-2xl [&_h2:not([class*="col-"]_h2)]:!text-white [&_h2:not([class*="col-"]_h2)]:!mb-4
-        
-        [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!text-justify [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!w-full [&_p:not([class*="col-"]:has(.rounded-circle)_p)]:!mb-4
-
-        [&_.bg-danger]:!bg-red-500/20 [&_.bg-danger]:!text-red-300 [&_.bg-danger]:!border [&_.bg-danger]:!border-red-500/30 [&_.bg-danger]:!px-6 [&_.bg-danger]:!py-2 [&_.bg-danger]:!rounded-full [&_.bg-danger]:!block [&_.bg-danger]:!w-fit [&_.bg-danger]:!mx-auto [&_.bg-danger]:!my-6 [&_.bg-danger]:!font-bold [&_.bg-danger]:!text-sm [&_.bg-danger]:!text-center
-
-        [&_ul]:!list-disc [&_ul]:!pl-6 [&_ul]:!mb-6 [&_li]:!mb-2 [&_li]:!text-gray-300
-    `;
 
     return (
         <div>
@@ -212,8 +97,8 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                 >
                     <div className="mb-8 flex flex-col items-start gap-2">
                         <h3
-                            className="text-3xl font-bold tracking-tight"
-                            style={{ color: activeConfig.color, fontFamily: "'Poppins', sans-serif" }}
+                            className="font-poppins text-3xl font-bold tracking-tight"
+                            style={{ color: activeConfig.color }}
                         >
                             {activeConfig.label}
                         </h3>
@@ -230,8 +115,8 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                     </div>
 
                     <p
-                        className="text-white/80 text-lg mb-10 italic leading-relaxed border-l-4 pl-4"
-                        style={{ fontFamily: "'Poppins', sans-serif", borderColor: activeConfig.color }}
+                        className="font-poppins text-white/80 text-lg mb-10 italic leading-relaxed border-l-4 pl-4"
+                        style={{ borderColor: activeConfig.color }}
                     >
                         {activeConfig.intro}
                     </p>
@@ -245,7 +130,7 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                             <span className="text-lg animate-pulse">Chargement des données historiques...</span>
                         </div>
                     ) : activeContent ? (
-                        <div className={tailwindWPStyles} dangerouslySetInnerHTML={{ __html: activeContent }} />
+                        <div className="wp-senate-content font-poppins" dangerouslySetInnerHTML={{ __html: activeContent }} />
                     ) : (
                         <p className="text-white/40 italic py-12 text-center">Aucun contenu disponible pour cette section.</p>
                     )}

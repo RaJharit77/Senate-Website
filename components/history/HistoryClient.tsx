@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -19,7 +19,14 @@ import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { TABS } from "@/utils/data/historical";
 
-const REPUBLIC_FETCHERS: Record<Exclude<TabId, "transition">, () => Promise<WpPost[]>> = {
+type RepublicId = Exclude<TabId, "transition">;
+type ContentMap = Record<TabId, string>;
+
+// Les fonctions d'API utilisent la numérotation romaine (I, II, III, IV),
+// les clés internes des ordinaux anglais : cette table fait le lien.
+const REPUBLIC_IDS: RepublicId[] = ["first", "second", "third", "fourth"];
+
+const REPUBLIC_FETCHERS: Record<RepublicId, () => Promise<WpPost[]>> = {
     first: getRepubliqueI,
     second: getRepubliqueII,
     third: getRepubliqueIII,
@@ -28,7 +35,6 @@ const REPUBLIC_FETCHERS: Record<Exclude<TabId, "transition">, () => Promise<WpPo
 
 const HERO_IMAGE = "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg";
 
-type ContentMap = Record<TabId, string>;
 const EMPTY_CONTENT: ContentMap = {
     first: "",
     second: "",
@@ -37,47 +43,61 @@ const EMPTY_CONTENT: ContentMap = {
     transition: "",
 };
 
+/**
+ * Construit la ContentMap à partir des résultats de Promise.allSettled :
+ * range le contenu de chaque république, et regroupe tous les blocs de
+ * transition trouvés dans un seul onglet "transition".
+ */
+function buildContentMap(
+    ids: RepublicId[],
+    results: PromiseSettledResult<WpPost[]>[]
+): ContentMap {
+    const next: ContentMap = { ...EMPTY_CONTENT };
+    const transitionParts: string[] = [];
+
+    results.forEach((result, index) => {
+        const id = ids[index];
+        if (result.status === "fulfilled" && result.value[0]) {
+            const rawHtml = result.value[0].content.rendered;
+            const { before, transition } = splitTransitionBlock(rawHtml);
+            if (transition) transitionParts.push(transition);
+            next[id] = stripLeadingH2(before);
+        } else if (result.status === "rejected") {
+            console.error(`[HistoryPage] Erreur chargement ${id}:`, result.reason);
+        }
+    });
+
+    next.transition = transitionParts
+        .map((block) => stripLeadingH2(block))
+        .join('<hr class="history-hr" />');
+
+    return next;
+}
+
 export default function HistoricalClient() {
     const [contents, setContents] = useState<ContentMap>(EMPTY_CONTENT);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let cancelled = false;
+
         const fetchData = async () => {
             try {
-                const ids: Exclude<TabId, "transition">[] = [
-                    "first", "second", "third", "fourth",
-                ];
                 const results = await Promise.allSettled(
-                    ids.map((id) => REPUBLIC_FETCHERS[id]())
+                    REPUBLIC_IDS.map((id) => REPUBLIC_FETCHERS[id]())
                 );
-
-                const next: ContentMap = { ...EMPTY_CONTENT };
-                const transitionParts: string[] = [];
-
-                results.forEach((result, index) => {
-                    const id = ids[index];
-                    if (result.status === "fulfilled" && result.value[0]) {
-                        const rawHtml = result.value[0].content.rendered;
-                        const { before, transition } = splitTransitionBlock(rawHtml);
-                        if (transition) transitionParts.push(transition);
-                        next[id] = stripLeadingH2(before);
-                    } else if (result.status === "rejected") {
-                        console.error(`[HistoryPage] Erreur chargement ${id}:`, result.reason);
-                    }
-                });
-
-                next.transition = transitionParts
-                    .map((block) => stripLeadingH2(block))
-                    .join('<hr class="history-hr" />');
-
-                setContents(next);
+                if (!cancelled) setContents(buildContentMap(REPUBLIC_IDS, results));
             } catch (error) {
                 console.error("[HistoryPage] Erreur chargement:", error);
             } finally {
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         };
+
         fetchData();
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     const breadcrumb = buildBreadcrumbJsonLd([
@@ -106,10 +126,7 @@ export default function HistoricalClient() {
                             <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                             <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                         </div>
-                        <h1
-                            className="text-white text-4xl font-bold"
-                            style={{ fontFamily: "'Poppins', sans-serif" }}
-                        >
+                        <h1 className="font-poppins text-white text-4xl font-bold">
                             Histoire du Sénat de Madagascar
                         </h1>
                     </div>
@@ -128,10 +145,7 @@ export default function HistoricalClient() {
                         </div>
 
                         <div className="relative z-10">
-                            <h2
-                                className="text-white text-2xl font-bold text-center mb-6"
-                                style={{ fontFamily: "'Poppins', sans-serif" }}
-                            >
+                            <h2 className="font-poppins text-white text-2xl font-bold text-center mb-6">
                                 Le Sénat à travers les Républiques
                             </h2>
 
@@ -152,10 +166,7 @@ export default function HistoricalClient() {
                                 </div>
                             </div>
 
-                            <p
-                                className="text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed"
-                                style={{ fontFamily: "'Poppins', sans-serif" }}
-                            >
+                            <p className="font-poppins text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed">
                                 Le Sénat a été mis en place au lendemain de la naissance de la République
                                 Malgache, le 14 octobre 1958 ; plus précisément après l&apos;adoption de
                                 la Constitution du 29 avril 1959. Cependant, il a été mis en veilleuse
