@@ -91,7 +91,7 @@
     "@types/react-dom": "^19.2.4",
     "cypress": "^15.20.1",
     "eslint": "^10.8.1",
-    "eslint-config-next": "16.2.9",
+    "eslint-config-next": "16.3.0",
     "eslint-plugin-react": "^7.37.5",
     "postcss": "8.5.23",
     "shard": "1.1.0",
