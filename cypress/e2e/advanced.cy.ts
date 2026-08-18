@@ -16,7 +16,6 @@ describe('Advanced Tests – API Mocking, Edge Cases, Structured Data', () => {
 
     it('handles loading state for client-side components', () => {
         cy.visit('/historical');
-        // Si un spinner existe, il peut avoir une classe comme .animate-spin
         cy.get('.animate-spin, [class*="spinner"]', { timeout: 2000 }).should('exist');
         cy.get('.bg-white\\/10, .prose', { timeout: 10000 }).should('be.visible');
     });
@@ -33,7 +32,6 @@ describe('Advanced Tests – API Mocking, Edge Cases, Structured Data', () => {
     it('checks images have alt attributes', () => {
         cy.visit('/');
         cy.get('img').each(($img) => {
-            // ensure images have a non-empty alt attribute
             cy.wrap($img).should('have.attr', 'alt').and('not.be.empty');
         });
     });

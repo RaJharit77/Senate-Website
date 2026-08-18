@@ -22,6 +22,7 @@ test.describe('User Journey Simulation', () => {
 
         // Search
         await page.getByRole('button', { name: 'Rechercher…' }).click();
+        await page.locator('input[type="search"]').waitFor({ state: 'visible' });
         await page.fill('input[type="search"]', 'loi');
         await page.press('input[type="search"]', 'Enter');
         await expect(page).toHaveURL(/\/search\?q=loi/);

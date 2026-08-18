@@ -20,8 +20,8 @@ describe('User Journey – Full visitor simulation', () => {
         cy.get('h1').contains('Structures du Sénat').should('be.visible');
 
         // Recherche
-        cy.get('button:has-text("Rechercher")').click();
-        cy.get('input[type="search"]').type('loi{enter}');
+        cy.contains('button', 'Rechercher…').click();
+        cy.get('input[type="search"]').should('be.visible').type('loi{enter}');
         cy.url().should('include', '/search?q=loi');
         cy.get('[class*="result"]').should('exist');
 

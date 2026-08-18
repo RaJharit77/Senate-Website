@@ -13,8 +13,8 @@ describe('Simple Tests – Core Pages & Navigation', () => {
         cy.get('.grid, [class*="news"]').should('exist');
         // Titre "À propos du Sénat"
         cy.get('h2, h1').contains('À propos du Sénat').should('exist');
-        // Titre "Travaux Parlementaires" (dans le paragraphe)
-        cy.get('p:has-text("Travaux Parlementaires")').should('exist');
+        // Titre "Travaux Parlementaires" (dans un paragraphe)
+        cy.contains('p', 'Travaux Parlementaires').should('exist');
         // Bande de partenaires
         cy.get('[class*="partner"], .flex.gap-4 img').should('exist');
     });

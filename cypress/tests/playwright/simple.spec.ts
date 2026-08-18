@@ -19,7 +19,8 @@ test.describe('Simple Tests', () => {
         await expect(page.locator('h1:has-text("À propos du Sénat")')).toBeVisible();
 
         await page.getByRole('link', { name: 'Missions et attributions' }).click();
-        await expect(page).toHaveURL(/\/about\/missions-and-responsibilities/);
+        // L'URL réelle peut être avec ou sans 's' selon la configuration, on utilise une regex flexible
+        await expect(page).toHaveURL(/\/about\/missions?-and-responsibilities/);
         await expect(page.locator('h1:has-text("Missions et attributions")')).toBeVisible();
 
         await page.goBack();

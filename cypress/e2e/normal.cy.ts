@@ -10,26 +10,26 @@ describe('Normal Tests – Interactions & Dynamic Content', () => {
 
     it('performs search and shows results', () => {
         cy.visit('/');
-        // Bouton "Rechercher…" avec le texte visible
-        cy.get('button:has-text("Rechercher")').click();
-        cy.get('input[type="search"]').type('Sénat{enter}');
+        // Utiliser cy.contains sur le bouton avec le texte "Rechercher…"
+        cy.contains('button', 'Rechercher…').click();
+        // Attendre que l'input de recherche apparaisse
+        cy.get('input[type="search"]').should('be.visible').type('Sénat{enter}');
         cy.url().should('include', '/search?q=Sénat');
         cy.get('h1').contains('Résultats de recherche').should('be.visible');
         cy.get('.bg-white\\/10, [class*="result"]').should('exist');
-        cy.get('a[href*="/search"]').should('have.length.at.least', 0);
     });
 
     it('submits contact form with validation', () => {
         cy.visit('/contact');
         cy.get('button[type="submit"]').click();
-        // Classe d'erreur du formulaire
-        cy.get('.text-red-400').should('be.visible');
+        // Attendre qu'un message d'erreur apparaisse (classe text-red-400)
+        cy.get('.text-red-400', { timeout: 5000 }).should('be.visible');
 
         cy.get('input[name="name"]').type('John Doe');
         cy.get('input[name="email"]').type('john@example.com');
         cy.get('textarea[name="message"]').type('Test message');
         cy.get('button[type="submit"]').click();
-        // Message de succès
+        // Message de succès (text-green-400)
         cy.get('.text-green-400', { timeout: 10000 }).should('be.visible');
     });
 
