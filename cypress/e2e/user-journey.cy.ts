@@ -3,15 +3,15 @@
 describe('User Journey – Full visitor simulation', () => {
     it('simulates a visitor exploring the site', () => {
         cy.visit('/');
-        cy.get('.relative.overflow-hidden, [class*="carousel"]').should('be.visible');
+        cy.get('section.relative.overflow-hidden').should('be.visible');
 
-        // Cliquer sur le premier article de la grille (s'il existe)
+        // Cliquer sur le premier article de la grille
         cy.get('.grid a, .card a').first().click({ force: true });
         cy.url().should('match', /\/actualite\/.+/);
         cy.get('article, .prose').should('exist');
         cy.go('back');
 
-        cy.get('nav a').contains('À propos du Sénat').click();
+        cy.contains('nav a', 'À propos du Sénat').click();
         cy.url().should('include', '/about');
         cy.get('h1').contains('À propos du Sénat').should('be.visible');
 
@@ -20,7 +20,7 @@ describe('User Journey – Full visitor simulation', () => {
         cy.get('h1').contains('Structures du Sénat').should('be.visible');
 
         // Recherche
-        cy.get('button:has(svg[data-icon="search"])').click();
+        cy.get('button:has-text("Rechercher")').click();
         cy.get('input[type="search"]').type('loi{enter}');
         cy.url().should('include', '/search?q=loi');
         cy.get('[class*="result"]').should('exist');
@@ -38,8 +38,8 @@ describe('User Journey – Full visitor simulation', () => {
         cy.url().should('include', '/historical');
         cy.get('h1').contains('Histoire du Sénat').should('be.visible');
 
-        // Chatbot : un bouton flottant, souvent avec une icône MessageCircle
-        cy.get('button:has(svg[data-icon="message-circle"])').click({ force: true });
+        // Chatbot (bouton flottant en bas à droite)
+        cy.get('button.fixed.bottom-4.right-4').click({ force: true });
         cy.get('.fixed.bottom-20, [class*="chatbot-window"]').should('be.visible');
         cy.get('textarea').type('Bonjour{enter}');
         cy.get('.message, [class*="message"]', { timeout: 15000 })
