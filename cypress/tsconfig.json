@@ -1,19 +1,35 @@
 {
-    "extends": "../tsconfig.json",
     "compilerOptions": {
-        "noEmit": true,
+        "target": "ES2019",
+        "lib": [
+            "es2019",
+            "dom"
+        ],
         "types": [
             "cypress",
-            "node"
+            "node",
+            "cypress-axe"
         ],
+        "module": "commonjs",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
         "paths": {
             "@/*": [
+                "../*"
+            ],
+            "*": [
                 "./*"
             ]
         }
     },
     "include": [
-        "**/*.ts",
-        "**/*.tsx"
+        "./**/*.ts",
+        "./**/*.tsx"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }

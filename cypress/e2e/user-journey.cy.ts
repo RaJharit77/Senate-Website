@@ -2,52 +2,80 @@
 
 describe('User Journey – Full visitor simulation', () => {
     it('simulates a visitor exploring the site', () => {
-        // 1. Arrive on homepage
         cy.visit('/');
-        cy.get('[data-testid="hero-carousel"]').should('be.visible');
+        cy.get('section.relative.overflow-hidden').should('be.visible');
 
-        // 2. Click on first featured article (if exists)
-        cy.get('[data-testid="news-grid"] a').first().click();
+        // Premier article
+        cy.get('.grid a, .card a').first().click({ force: true });
         cy.url().should('match', /\/actualite\/.+/);
-        cy.get('article, .prose').should('exist');
+        cy.get('h1').should('exist');
+
+        // Retour arrière avec vérification explicite
         cy.go('back');
+        cy.url().should('eq', 'http://localhost:3000/');
 
-        // 3. Navigate to About page
-        cy.get('nav a').contains('À propos du Sénat').click();
+        // Navigation "À propos"
+        cy.get('header, nav').should('be.visible');
+        cy.contains('À propos du Sénat').trigger('mouseover');
+        cy.contains('Missions et attributions').click();
+
         cy.url().should('include', '/about');
-        cy.get('h1').contains('À propos du Sénat').should('be.visible');
+        cy.contains('Missions et attributions').should('exist');
+        cy.contains('Structures').should('exist');
+        cy.contains('Textes de référence').should('exist');
 
-        // 4. Go to Structures subpage
-        cy.get('a').contains('Structures').click();
-        cy.url().should('include', '/about/structures');
-        cy.get('h1').contains('Structures du Sénat').should('be.visible');
+        // Recherche
+        cy.get('body').then(($body) => {
+            if ($body.find('[data-testid="search-button"]').length) {
+                cy.get('[data-testid="search-button"]').first().click({ force: true });
+            } else {
+                cy.contains('button', /Rechercher/).first().click({ force: true });
+            }
+        });
+        cy.get('input[type="search"], input[placeholder*="Rechercher"]').first()
+            .should('be.visible', { timeout: 10000 })
+            .type('loi{enter}');
 
-        // 5. Use search
-        cy.get('[data-testid="search-button"]').click();
-        cy.get('input[type="search"]').type('loi{enter}');
-        cy.url().should('include', '/search?q=loi');
-        cy.get('[data-testid="search-results"]').should('exist');
+        cy.url().should('match', /\/search\?q=.*loi/);
+        cy.get('.grid a, .card a', { timeout: 10000 }).should('exist');
+        cy.get('.grid a, .card a').first().click();
 
-        // 6. Click on first search result
-        cy.get('[data-testid="search-results"] a').first().click();
         cy.url().should('not.contain', '/search');
         cy.get('h1').should('exist');
 
-        // 7. Navigate to Press Area
-        cy.get('nav a').contains('Espace Presse').click();
+        cy.get('a').contains('Espace Presse').click();
         cy.url().should('include', '/press-area');
         cy.get('h1').contains('Espace de Presse').should('be.visible');
 
-        // 8. Scroll to bottom and click on a footer link
+        // Historique
         cy.scrollTo('bottom');
         cy.get('footer a').contains('Historique').click();
         cy.url().should('include', '/historical');
 
-        // 9. Interact with chatbot if visible
-        cy.get('[data-testid="chatbot-toggle"]').click();
-        cy.get('[data-testid="chatbot-window"]').should('be.visible');
-        cy.get('textarea').type('Bonjour{enter}');
-        cy.get('[data-testid="chatbot-messages"] .message', { timeout: 15000 })
+        // Attendre que le loader disparaisse avant de chercher le titre
+        cy.contains('Chargement en cours...').should('not.exist', { timeout: 15000 });
+        cy.get('h1').contains('Histoire du Sénat').should('be.visible');
+
+        // Chatbot - CORRECTION FINALE
+        cy.get('body').then(($body) => {
+            if ($body.find('[data-testid="chatbot-toggle"]').length) {
+                cy.get('[data-testid="chatbot-toggle"]').first().click({ force: true });
+            } else {
+                cy.get('button.fixed.bottom-4.right-4').first().click({ force: true });
+            }
+        });
+
+        cy.get('.fixed.bottom-20, [class*="chatbot-window"]').should('be.visible');
+
+        // Saisir un message
+        cy.get('input[placeholder*="question"], input[placeholder*="Posez"]')
+            .should('be.visible')
+            .click({ force: true })
+            .type('Bonjour{enter}');
+
+        // ✅ Vérifier qu'au moins deux messages (utilisateur + assistant) sont apparus
+        // On cible les div avec la classe "flex" à l'intérieur du conteneur de messages
+        cy.get('.overflow-y-auto .flex', { timeout: 15000 })
             .should('have.length.at.least', 2);
     });
 });

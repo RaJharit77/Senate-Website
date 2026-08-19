@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "slug": "post-1",
+        "title": {
+            "rendered": "Article de test 1"
+        },
+        "content": {
+            "rendered": "<p>Contenu d'exemple pour tests</p>"
+        }
+    },
+    {
+        "id": 2,
+        "slug": "post-2",
+        "title": {
+            "rendered": "Article de test 2"
+        },
+        "content": {
+            "rendered": "<p>Second article de test</p>"
+        }
+    }
+]
