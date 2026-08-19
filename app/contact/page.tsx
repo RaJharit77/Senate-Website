@@ -95,13 +95,30 @@ export default function ContactPage() {
                                             <a href="mailto:contact@senat.mg" className="text-red-500 hover:underline">contact@senat.mg</a>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${CYAN}22` }}>
+                                    <div className="flex items-start gap-4 group/phone">
+                                        <div
+                                            className="w-12 h-12 rounded-xl hidden md:flex items-center justify-center shrink-0 transition-all duration-300 ease-out group-hover/phone:scale-105"
+                                            style={{ backgroundColor: `${CYAN}22` }}
+                                        >
+                                            <Phone size={22} style={{ color: CYAN }} className="transition-transform duration-300 ease-out" />
+                                        </div>
+                                        <div className="w-12 h-12 rounded-xl flex md:hidden items-center justify-center shrink-0" style={{ backgroundColor: `${CYAN}22` }}>
                                             <Phone size={22} style={{ color: CYAN }} />
                                         </div>
                                         <div>
                                             <p className="text-white/80 font-semibold text-sm">Téléphone</p>
-                                            <p className="text-white/60 text-sm">+261 34...</p>
+                                            <p className="text-white/60 text-sm md:hidden">+261 34...</p>
+                                            <p className="text-white/60 text-sm hidden md:block relative overflow-hidden" style={{ height: "1.25em" }}>
+                                                <span className="block transition-transform duration-300 ease-out group-hover/phone:-translate-y-full">
+                                                    +261 34...
+                                                </span>
+                                                <span
+                                                    className="absolute inset-0 block transition-transform duration-300 ease-out translate-y-full group-hover/phone:translate-y-0"
+                                                    style={{ color: CYAN }}
+                                                >
+                                                    +261 34 12 010 36
+                                                </span>
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-4">
