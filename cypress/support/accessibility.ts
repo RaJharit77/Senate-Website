@@ -9,7 +9,7 @@ Cypress.Commands.add('checkA11y', (context?: A11yContext, options?: A11yOptions)
     cy.injectAxe();
     cy.configureAxe({
         rules: [
-            { id: 'color-contrast', enabled: false }, // parfois nécessaire pour les sites avec fond sombre
+            { id: 'color-contrast', enabled: false },
         ],
     });
     return cy.checkA11y(context, options);

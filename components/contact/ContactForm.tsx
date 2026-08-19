@@ -60,6 +60,7 @@ export default function ContactForm() {
                     Votre nom
                 </Label>
                 <Input
+                    data-testid="contact-name"
                     id="name"
                     name="name"
                     value={form.name}
@@ -78,6 +79,7 @@ export default function ContactForm() {
                     Votre e-mail
                 </Label>
                 <Input
+                    data-testid="contact-email"
                     id="email"
                     name="email"
                     type="email"
@@ -114,6 +116,7 @@ export default function ContactForm() {
                     Votre message
                 </Label>
                 <Textarea
+                    data-testid="contact-message"
                     id="message"
                     name="message"
                     value={form.message}
@@ -138,6 +141,7 @@ export default function ContactForm() {
             )}
 
             <Button
+                data-testid="contact-submit"
                 type="submit"
                 disabled={submitting}
                 className="w-full bg-[#5CE65C] text-black font-semibold hover:bg-[#4bc94b] hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100 text-base py-3 h-auto"

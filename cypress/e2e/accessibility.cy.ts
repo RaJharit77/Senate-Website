@@ -2,8 +2,8 @@
 /// <reference types="cypress-axe" />
 
 describe('Tests d\'accessibilité', () => {
-    const isCI = Cypress.env('CI');
-    const testFn = isCI ? it.skip : it;
+    const shouldRun = Cypress.env('CI') === 'true';
+    const testFn = shouldRun ? it : it.skip;
 
     beforeEach(() => {
         cy.injectAxe();
@@ -26,13 +26,11 @@ describe('Tests d\'accessibilité', () => {
 
     testFn('vérifie l\'accessibilité d\'une page d\'article (si existante)', () => {
         cy.visit('/');
-        // Prendre le premier lien d'article et y naviguer
         cy.get('[data-testid="news-grid"] a').first().click();
         cy.url().should('match', /\/actualite\/.+/);
         cy.checkA11y();
     });
 
-    // On peut aussi cibler des éléments spécifiques
     testFn('vérifie l\'accessibilité du formulaire de contact', () => {
         cy.visit('/contact');
         cy.checkA11y('form');

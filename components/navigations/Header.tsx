@@ -292,6 +292,7 @@ export function Header() {
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center relative">
                   <input
+                    data-testid="search-input"
                     ref={searchInputRef}
                     type="text"
                     value={searchQuery}
@@ -358,6 +359,7 @@ export function Header() {
           <div className="lg:hidden px-4 py-2 bg-white/90 backdrop-blur-sm border-t border-gray-200">
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
               <input
+                data-testid="search-input"
                 ref={searchInputRef}
                 type="text"
                 value={searchQuery}
@@ -435,6 +437,7 @@ export function Header() {
                   </button>
                 ) : (
                   <Link
+                    data-testid="nav-about"
                     href={item.path}
                     className="flex items-center gap-1 px-5 py-4 transition-all duration-200 relative group/link"
                     style={{
@@ -583,6 +586,7 @@ export function Header() {
                       </>
                     ) : (
                       <Link
+                        data-testid="nav-about"
                         href={item.path}
                         className="block px-5 py-4 relative group/link-mobile"
                         style={{

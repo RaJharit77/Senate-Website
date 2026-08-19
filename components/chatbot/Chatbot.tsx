@@ -52,6 +52,7 @@ export default function Chatbot() {
     return (
         <>
             <button
+                data-testid="chatbot-toggle"
                 onClick={() => setIsOpen(!isOpen)}
                 className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition flex items-center justify-center"
             >
