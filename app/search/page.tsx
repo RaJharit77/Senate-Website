@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { searchSite } from "@/lib/api";
 import Link from "next/link";
+import { cleanText, stripHtml } from "@/utils/utility";
 
 interface SearchResult {
     id: string;
@@ -80,19 +81,23 @@ export default function SearchPage() {
                         {results.length === 0 ? (
                             <p className="text-gray-400">Aucun résultat trouvé.</p>
                         ) : (
-                            results.map((item) => (
-                                <div key={item.id} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                                    <Link href={item.path} className="text-cyan-400 text-xl font-semibold hover:underline">
-                                        {item.title || "Sans titre"}
-                                    </Link>
-                                    {item.excerpt && (
-                                        <p className="text-white/60 text-sm mt-1">{item.excerpt}</p>
-                                    )}
-                                    <p className="text-white/40 text-xs mt-2">
-                                        {item.source}
-                                    </p>
-                                </div>
-                            ))
+                            results.map((item) => {
+                                const title = cleanText(item.title || "Sans titre");
+                                const excerpt = item.excerpt ? stripHtml(cleanText(item.excerpt)) : "";
+                                return (
+                                    <div key={item.id} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                                        <Link href={item.path} className="text-cyan-400 text-xl font-semibold hover:underline">
+                                            {title}
+                                        </Link>
+                                        {excerpt && (
+                                            <p className="text-white/60 text-sm mt-1">{excerpt}</p>
+                                        )}
+                                        <p className="text-white/40 text-xs mt-2">
+                                            {item.source}
+                                        </p>
+                                    </div>
+                                );
+                            })
                         )}
                     </div>
                 )}
