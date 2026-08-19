@@ -44,6 +44,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dateTime, setDateTime] = useState(new Date());
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [phoneHovered, setPhoneHovered] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -208,11 +209,35 @@ export function Header() {
               href="https://wa.me/261341201036"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
+              onMouseEnter={() => setPhoneHovered(true)}
+              onMouseLeave={() => setPhoneHovered(false)}
+              className="hidden lg:flex items-center gap-2 group rounded-full transition-all duration-300 ease-out"
+              style={{
+                letterSpacing: "0.03em",
+                padding: "3px 10px 3px 3px",
+                backgroundColor: phoneHovered ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.22)",
+              }}
             >
-              <Phone size={14} />
-              <span className="hidden sm:inline">+261 34...</span>
+              <span
+                className="flex items-center justify-center rounded-full shrink-0 transition-all duration-300 ease-out"
+                style={{
+                  width: 22,
+                  height: 22,
+                  backgroundColor: phoneHovered ? COLOURS.black : "rgba(255,255,255,0.35)",
+                  transform: phoneHovered ? "scale(1.1)" : "scale(1)",
+                }}
+              >
+                <Phone
+                  size={12}
+                  style={{ color: phoneHovered ? COLOURS.cyan : COLOURS.black }}
+                />
+              </span>
+              <span
+                className="font-semibold whitespace-nowrap transition-all duration-300 ease-out"
+                style={{ fontSize: "0.72rem", color: COLOURS.black }}
+              >
+                {phoneHovered ? "+261 34 12 010 36" : "+261 34..."}
+              </span>
             </Link>
           </div>
         </div>
