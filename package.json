@@ -98,7 +98,7 @@
     "eslint-config-next": "16.3.1",
     "eslint-plugin-react": "^7.37.5",
     "lighthouse": "^12.8.2",
-    "mochawesome": "^7.1.4",
+    "mochawesome": "^8.0.1",
     "mochawesome-merge": "^4.4.1",
     "mochawesome-report-generator": "^6.3.2",
     "postcss": "8.5.23",
