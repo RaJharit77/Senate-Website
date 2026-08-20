@@ -95,15 +95,7 @@ export default function ContactPage() {
                                             <a href="mailto:contact@senat.mg" className="text-red-500 hover:underline">contact@senat.mg</a>
                                         </div>
                                     </div>
-                                    <div
-                                        className="hidden md:flex items-start gap-4 -mx-3 px-3 py-2 rounded-xl transition-colors duration-200"
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)";
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = "transparent";
-                                        }}
-                                    >
+                                    <div className="hidden md:flex items-start gap-4 -mx-3 px-3 py-2 rounded-xl transition-colors duration-200 hover:bg-white/[0.04]">
                                         <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${CYAN}22`, border: `1px solid ${CYAN}33` }}>
                                             <Phone size={22} style={{ color: CYAN }} />
                                         </div>
