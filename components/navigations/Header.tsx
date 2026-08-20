@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Calendar as CalendarIcon, Mail } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { navItems } from "@/lib/navigations/navigation";
+import HiddenPhoneNumber from "@/components/shared/HiddenPhoneNumber";
 
 const itemVariants = {
   open: {
@@ -44,7 +45,6 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dateTime, setDateTime] = useState(new Date());
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [phoneHovered, setPhoneHovered] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -205,40 +205,12 @@ export function Header() {
               <Mail size={14} />
               <span className="hidden sm:inline">contact@senat.mg</span>
             </Link>
-            <Link
-              href="https://wa.me/261341201036"
-              target="_blank"
-              rel="noopener noreferrer"
-              onMouseEnter={() => setPhoneHovered(true)}
-              onMouseLeave={() => setPhoneHovered(false)}
-              className="hidden lg:flex items-center gap-2 group rounded-full transition-all duration-300 ease-out"
-              style={{
-                letterSpacing: "0.03em",
-                padding: "3px 10px 3px 3px",
-                backgroundColor: phoneHovered ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.22)",
-              }}
-            >
-              <span
-                className="flex items-center justify-center rounded-full shrink-0 transition-all duration-300 ease-out"
-                style={{
-                  width: 22,
-                  height: 22,
-                  backgroundColor: phoneHovered ? COLOURS.black : "rgba(255,255,255,0.35)",
-                  transform: phoneHovered ? "scale(1.1)" : "scale(1)",
-                }}
-              >
-                <Phone
-                  size={12}
-                  style={{ color: phoneHovered ? COLOURS.cyan : COLOURS.black }}
-                />
-              </span>
-              <span
-                className="font-semibold whitespace-nowrap transition-all duration-300 ease-out"
-                style={{ fontSize: "0.72rem", color: COLOURS.black }}
-              >
-                {phoneHovered ? "+261 34 12 010 36" : "+261 34..."}
-              </span>
-            </Link>
+            <HiddenPhoneNumber
+              variant="header"
+              fullNumber="+261 34 12 010 36"
+              maskedNumber="+261 34..."
+              accentColor={COLOURS.cyan}
+            />
           </div>
         </div>
       </div>
