@@ -1,10 +1,9 @@
 import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
-import { Mail, MapPin, Clock } from "lucide-react";
+import { Mail, MapPin, Phone, Clock } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import HiddenPhoneNumber from "@/components/shared/HiddenPhoneNumber";
 
 export const metadata = buildMetadata({
     title: "Contact – Sénat de Madagascar",
@@ -96,12 +95,32 @@ export default function ContactPage() {
                                             <a href="mailto:contact@senat.mg" className="text-red-500 hover:underline">contact@senat.mg</a>
                                         </div>
                                     </div>
-                                    <HiddenPhoneNumber
-                                        variant="card"
-                                        fullNumber="+261 34 12 010 36"
-                                        maskedNumber="+261 34..."
-                                        accentColor={CYAN}
-                                    />
+                                    <div
+                                        className="hidden md:flex items-start gap-4 -mx-3 px-3 py-2 rounded-xl transition-colors duration-200"
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = "transparent";
+                                        }}
+                                    >
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${CYAN}22`, border: `1px solid ${CYAN}33` }}>
+                                            <Phone size={22} style={{ color: CYAN }} />
+                                        </div>
+                                        <div>
+                                            <p className="text-white/80 font-semibold text-sm">Téléphone</p>
+                                            <p className="text-white/60 text-sm tracking-wide">+261 34...</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex md:hidden items-start gap-4">
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${CYAN}22` }}>
+                                            <Phone size={22} style={{ color: CYAN }} />
+                                        </div>
+                                        <div>
+                                            <p className="text-white/80 font-semibold text-sm">Téléphone</p>
+                                            <p className="text-white/60 text-sm">+261 34...</p>
+                                        </div>
+                                    </div>
                                     <div className="flex items-start gap-4">
                                         <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${EMERALD}22` }}>
                                             <Clock size={22} style={{ color: EMERALD }} />

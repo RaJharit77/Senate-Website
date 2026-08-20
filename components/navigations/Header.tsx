@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Calendar as CalendarIcon, Mail } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,7 +13,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { navItems } from "@/lib/navigations/navigation";
-import HiddenPhoneNumber from "@/components/shared/HiddenPhoneNumber";
 
 const itemVariants = {
   open: {
@@ -205,12 +204,40 @@ export function Header() {
               <Mail size={14} />
               <span className="hidden sm:inline">contact@senat.mg</span>
             </Link>
-            <HiddenPhoneNumber
-              variant="header"
-              fullNumber="+261 34 12 010 36"
-              maskedNumber="+261 34..."
-              accentColor={COLOURS.cyan}
-            />
+            <Link
+              href="https://wa.me/261341201036"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-2 group transition-all duration-200 rounded-full pr-3 pl-1 py-1"
+              style={{
+                letterSpacing: "0.03em",
+                backgroundColor: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(0,0,0,0.08)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)";
+              }}
+            >
+              <span
+                className="flex items-center justify-center rounded-full shrink-0 transition-transform duration-200 group-hover:scale-110"
+                style={{
+                  width: 22,
+                  height: 22,
+                  backgroundColor: "rgba(255,255,255,0.5)",
+                }}
+              >
+                <Phone size={12} style={{ color: COLOURS.black }} />
+              </span>
+              <span
+                className="font-semibold"
+                style={{ fontSize: "0.72rem", color: COLOURS.black }}
+              >
+                +261 34...
+              </span>
+            </Link>
           </div>
         </div>
       </div>
