@@ -42,7 +42,7 @@ export default function GlobalError({
                     <Button
                         asChild
                         variant="outline"
-                        className="border-white/20 text-white hover:bg-white/10 hover:text-white transition"
+                        className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-cyan-400 transition"
                     >
                         <Link href="/">Retour à l&apos;accueil</Link>
                     </Button>
