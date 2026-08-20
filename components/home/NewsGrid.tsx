@@ -113,58 +113,59 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -direction * 50 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative aspect-3/2"
+          className="relative aspect-4/3 sm:aspect-3/2"
         >
           <Image
             src={imageSrc}
             alt={cleanText(article.title)}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             unoptimized={!isValidImage}
+            priority
           />
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)",
+              background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)",
             }}
           />
 
           <motion.div
-            className="absolute top-4 left-4 z-10"
+            className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring", stiffness: 300 }}
             whileHover={{ scale: 1.05 }}
           >
-            <Badge className="flex items-center gap-1.5 text-white text-xs font-bold uppercase tracking-wider bg-red-500/90 backdrop-blur-sm border-none">
+            <Badge className="flex items-center gap-1.5 text-white text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider bg-red-500/90 backdrop-blur-sm border-none px-2 py-0.5 sm:px-3 sm:py-1">
               <Sparkles size={12} className="animate-pulse" />
               À la une
             </Badge>
           </motion.div>
 
-          <div ref={textRef} className="absolute bottom-0 left-0 right-0 p-8">
-            <div className="flex items-center gap-3 mb-3">
+          <div ref={textRef} className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
               <Badge
-                className="flex items-center gap-1.5 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-sm border-none"
+                className="flex items-center gap-1 text-white text-[0.55rem] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-sm border-none px-2 py-0.5 sm:px-3 sm:py-1"
                 style={{ backgroundColor: `${article.categoryColor}cc` }}
               >
-                <Icon size={14} />
+                <Icon size={12} />
                 {cleanText(article.category)}
               </Badge>
-              <span className="flex items-center gap-1.5 text-white/60 text-sm">
-                <Calendar size={14} />
+              <span className="flex items-center gap-1 text-white/60 text-[0.6rem] sm:text-sm">
+                <Calendar size={12} />
                 {article.date}
               </span>
             </div>
             <h3
-              className="animate-text text-white mb-3 text-3xl font-bold leading-tight"
+              className="animate-text text-white mb-1 sm:mb-3 text-xl sm:text-2xl md:text-3xl font-bold leading-tight"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {cleanText(article.title)}
             </h3>
             <p
-              className="animate-text text-white/70 text-base line-clamp-2 mb-4"
+              className="animate-text text-white/70 text-sm sm:text-base line-clamp-2 mb-2 sm:mb-4 hidden sm:block"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {cleanText(article.excerpt)}
@@ -173,7 +174,7 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
               className="animate-text inline-flex items-center gap-2 text-white border-b-2 pb-1 transition-all hover:gap-4 group"
               style={{
                 fontFamily: "'Poppins', sans-serif",
-                fontSize: "0.8rem",
+                fontSize: "0.7rem",
                 fontWeight: 600,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
@@ -182,19 +183,20 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
             >
               <Link href={article.link || "#"} className="flex items-center gap-2">
                 Lire l&apos;article
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2 z-10">
         {articles.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
-            className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-white w-6" : "bg-white/40 hover:bg-white/60"}`}
+            className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${i === current ? "bg-white w-4 sm:w-6" : "bg-white/40 hover:bg-white/60"
+              }`}
             aria-label={`Aller à la slide ${i + 1}`}
           />
         ))}
@@ -202,14 +204,14 @@ function FeaturedCarousel({ articles }: { articles: Article[] }) {
 
       <button
         onClick={goPrev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition"
+        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition text-xs sm:text-base"
         aria-label="Précédent"
       >
         <IoMdArrowDropleft />
       </button>
       <button
         onClick={goNext}
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition"
+        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition text-xs sm:text-base"
         aria-label="Suivant"
       >
         <IoMdArrowDropright />
@@ -230,44 +232,44 @@ function CompactCard({ article }: { article: Article }) {
       whileHover={{ scale: 1.02, x: 4 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="flex gap-4 rounded-2xl p-4 cursor-pointer transition-all backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20">
-        <Link href={article.link || "#"} className="flex gap-4 w-full">
-          <div className="shrink-0 rounded-xl overflow-hidden relative" style={{ width: 100, height: 100 }}>
+      <Card className="flex gap-3 sm:gap-4 rounded-xl sm:rounded-2xl p-3 sm:p-4 cursor-pointer transition-all backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20">
+        <Link href={article.link || "#"} className="flex gap-3 sm:gap-4 w-full">
+          <div className="shrink-0 rounded-lg overflow-hidden relative w-20 h-20 sm:w-24 sm:h-24">
             <Image
               src={imageSrc}
               alt={cleanText(article.title)}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
-              sizes="100px"
+              sizes="80px"
               unoptimized={!isValidImage}
               priority
             />
           </div>
           <CardContent className="flex flex-col justify-center min-w-0 flex-1 p-0">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
               <span
-                className="text-[0.6rem] font-bold uppercase tracking-wider flex items-center gap-1"
+                className="text-[0.5rem] sm:text-[0.6rem] font-bold uppercase tracking-wider flex items-center gap-1"
                 style={{ color: CYAN }}
               >
-                <Icon size={12} />
+                <Icon size={10} />
                 {cleanText(article.category)}
               </span>
               <span
-                className="text-[0.6rem] flex items-center gap-1"
+                className="text-[0.5rem] sm:text-[0.6rem] flex items-center gap-1"
                 style={{ color: `${CYAN}99` }}
               >
-                <Calendar size={10} />
+                <Calendar size={9} />
                 {article.date}
               </span>
             </div>
             <h4
-              className="text-white text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
+              className="text-white text-sm sm:text-base font-semibold leading-tight line-clamp-2 group-hover:text-cyan-300 transition-colors"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {cleanText(article.title)}
             </h4>
             <div
-              className="mt-2 inline-flex items-center gap-1 text-white/50 text-xs transition-all hover:gap-2 group-hover:text-cyan-400"
+              className="mt-1 sm:mt-2 inline-flex items-center gap-1 text-white/50 text-[0.6rem] sm:text-xs transition-all hover:gap-2 group-hover:text-cyan-400"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               Lire
@@ -291,22 +293,22 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
 
   return (
     <motion.section
-      className="relative py-20 px-4 sm:px-6 bg-black/30 backdrop-blur-sm"
+      className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-black/30 backdrop-blur-sm"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}
       variants={staggerContainer}
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div className="flex items-end justify-between mb-12" variants={fadeUp}>
+        <motion.div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12" variants={fadeUp}>
           <div>
             <div className="flex gap-1.5 mb-3">
-              <div className="h-1 rounded-full w-8" style={{ backgroundColor: WHITE }} />
-              <div className="h-1 rounded-full w-8" style={{ backgroundColor: RED }} />
-              <div className="h-1 rounded-full w-8" style={{ backgroundColor: EMERALD }} />
+              <div className="h-1 rounded-full w-6 sm:w-8" style={{ backgroundColor: WHITE }} />
+              <div className="h-1 rounded-full w-6 sm:w-8" style={{ backgroundColor: RED }} />
+              <div className="h-1 rounded-full w-6 sm:w-8" style={{ backgroundColor: EMERALD }} />
             </div>
             <p
-              className="text-xs font-bold uppercase tracking-widest"
+              className="text-[0.6rem] sm:text-xs font-bold uppercase tracking-widest"
               style={{ fontFamily: "'Poppins', sans-serif", color: CYAN, marginBottom: "0.5rem" }}
             >
               Actualités du Sénat
@@ -315,7 +317,7 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
               className="text-white font-bold"
               style={{
                 fontFamily: "'Poppins', sans-serif",
-                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                fontSize: "clamp(1.5rem, 5vw, 2.8rem)",
                 lineHeight: 1.15,
               }}
             >
@@ -324,7 +326,7 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
           </div>
           <Button
             asChild
-            className="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg text-[0.8rem] font-semibold tracking-wide"
+            className="mt-4 sm:mt-0 inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg text-[0.7rem] sm:text-[0.8rem] font-semibold tracking-wide"
             style={{
               backgroundColor: CYAN,
               color: MARINA,
@@ -349,12 +351,12 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
           </div>
 
           <div className="space-y-4">
-            <Card className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 h-full">
-              <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
+            <Card className="bg-white/5 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/10 h-full">
+              <h4 className="text-white/60 text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4 flex items-center gap-2">
                 <span className="w-1 h-4 rounded-full bg-cyan-400"></span>
                 À ne pas manquer
               </h4>
-              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-custom">
+              <div className="space-y-3 sm:space-y-4 max-h-[400px] sm:max-h-[500px] overflow-y-auto pr-1 sm:pr-2 scrollbar-custom">
                 {sideList.length === 0 ? (
                   <p className="text-white/30 text-sm">Aucune actualité récente.</p>
                 ) : (
@@ -365,14 +367,14 @@ export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {
           </div>
         </div>
 
-        <motion.div className="mt-12 flex justify-center gap-2" variants={fadeUp}>
-          <div className="w-12 h-0.5 rounded-full bg-cyan-400/40" />
-          <div className="w-6 h-0.5 rounded-full bg-cyan-400/20" />
-          <div className="w-6 h-0.5 rounded-full bg-cyan-400/20" />
+        <motion.div className="mt-10 sm:mt-12 flex justify-center gap-2" variants={fadeUp}>
+          <div className="w-8 sm:w-12 h-0.5 rounded-full bg-cyan-400/40" />
+          <div className="w-4 sm:w-6 h-0.5 rounded-full bg-cyan-400/20" />
+          <div className="w-4 sm:w-6 h-0.5 rounded-full bg-cyan-400/20" />
         </motion.div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: 10 }}>
+      <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: 6 }}>
         <div className="flex-1" style={{ backgroundColor: WHITE }} />
         <div className="flex-1" style={{ backgroundColor: RED }} />
         <div className="flex-1" style={{ backgroundColor: EMERALD }} />
