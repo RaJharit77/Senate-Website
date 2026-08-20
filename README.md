@@ -89,6 +89,7 @@ Senate-Website/
 │   ├── others/
 │   ├── parliamentary/
 │   ├── press-area/
+|   ├── shared/
 │   ├── texts-and-laws/
 │   └── ui/                      # Composants génériques Shadcn UI
 ├── constants/                    # Constantes globales
