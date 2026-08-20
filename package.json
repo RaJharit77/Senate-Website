@@ -101,7 +101,7 @@
     "mochawesome": "^8.0.1",
     "mochawesome-merge": "^4.4.1",
     "mochawesome-report-generator": "^6.3.2",
-    "postcss": "8.5.23",
+    "postcss": "8.5.26",
     "shard": "1.1.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
