@@ -208,7 +208,7 @@ export function Header() {
               href="https://wa.me/261341201036"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden lg:flex items-center gap-2 group transition-all duration-200 rounded-full pr-3 pl-1 py-1"
+              className="flex items-center gap-2 group transition-all duration-200 rounded-full pr-0 lg:pr-3 pl-1 py-1"
               style={{
                 letterSpacing: "0.03em",
                 backgroundColor: "rgba(255,255,255,0.18)",
@@ -232,7 +232,7 @@ export function Header() {
                 <Phone size={12} style={{ color: COLOURS.black }} />
               </span>
               <span
-                className="font-semibold"
+                className="hidden lg:inline font-semibold"
                 style={{ fontSize: "0.72rem", color: COLOURS.black }}
               >
                 +261 34...
