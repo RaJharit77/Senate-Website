@@ -143,21 +143,69 @@ export function Header() {
               href="https://web.facebook.com/SenatdeMadagascar"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              className="flex items-center gap-2 group transition-all duration-200 rounded-full pr-0 sm:pr-3 pl-1 py-1"
+              style={{
+                letterSpacing: "0.03em",
+                backgroundColor: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(0,0,0,0.08)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)";
+              }}
             >
-              <FaFacebook size={14} />
-              <span className="hidden sm:inline">Sénat Madagascar</span>
+              <span
+                className="flex items-center justify-center rounded-full shrink-0 transition-transform duration-200 group-hover:scale-110"
+                style={{
+                  width: 22,
+                  height: 22,
+                  backgroundColor: "rgba(255,255,255,0.5)",
+                }}
+              >
+                <FaFacebook size={12} style={{ color: COLOURS.black }} />
+              </span>
+              <span
+                className="hidden sm:inline font-semibold"
+                style={{ fontSize: "0.72rem", color: COLOURS.black }}
+              >
+                Sénat Madagascar
+              </span>
             </Link>
             <Link
               href="https://www.youtube.com/@antenimierandoholona"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em", fontWeight: 500 }}
+              className="flex items-center gap-2 group transition-all duration-200 rounded-full pr-0 sm:pr-3 pl-1 py-1"
+              style={{
+                letterSpacing: "0.03em",
+                backgroundColor: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(0,0,0,0.08)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)";
+              }}
             >
-              <FaYoutube size={14} />
-              <span className="hidden sm:inline">Chaîne officielle</span>
+              <span
+                className="flex items-center justify-center rounded-full shrink-0 transition-transform duration-200 group-hover:scale-110"
+                style={{
+                  width: 22,
+                  height: 22,
+                  backgroundColor: "rgba(255,255,255,0.5)",
+                }}
+              >
+                <FaYoutube size={12} style={{ color: COLOURS.black }} />
+              </span>
+              <span
+                className="hidden sm:inline font-semibold"
+                style={{ fontSize: "0.72rem", color: COLOURS.black }}
+              >
+                Chaîne officielle
+              </span>
             </Link>
           </div>
 
@@ -198,11 +246,35 @@ export function Header() {
           <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
             <Link
               href="/contact"
-              className="flex items-center gap-1 transition-opacity hover:opacity-80"
-              style={{ fontSize: "0.7rem", color: COLOURS.black, letterSpacing: "0.03em" }}
+              className="flex items-center gap-2 group transition-all duration-200 rounded-full pr-0 sm:pr-3 pl-1 py-1"
+              style={{
+                letterSpacing: "0.03em",
+                backgroundColor: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(0,0,0,0.08)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)";
+              }}
             >
-              <Mail size={14} />
-              <span className="hidden sm:inline">contact@senat.mg</span>
+              <span
+                className="flex items-center justify-center rounded-full shrink-0 transition-transform duration-200 group-hover:scale-110"
+                style={{
+                  width: 22,
+                  height: 22,
+                  backgroundColor: "rgba(255,255,255,0.5)",
+                }}
+              >
+                <Mail size={12} style={{ color: COLOURS.black }} />
+              </span>
+              <span
+                className="hidden sm:inline font-semibold"
+                style={{ fontSize: "0.72rem", color: COLOURS.black }}
+              >
+                contact@senat.mg
+              </span>
             </Link>
             <Link
               href="https://wa.me/261341201036"
