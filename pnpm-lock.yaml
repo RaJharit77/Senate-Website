@@ -126,8 +126,8 @@ importers:
         specifier: 8.6.0
         version: 8.6.0(react@19.2.8)
       framer-motion:
-        specifier: ^13.1.0
-        version: 13.1.0(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
+        specifier: ^13.1.1
+        version: 13.1.1(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
       gsap:
         specifier: ^3.15.0
         version: 3.15.0
@@ -4057,8 +4057,8 @@ packages:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
 
-  framer-motion@13.1.0:
-    resolution: {integrity: sha512-QSZrF0Id3QGuHJ+OL+9PSY9pk86C8ERFalwAGSchzTm65+ZoGH/RM26lmEARLljcHj2lqhv0jZOOks+EI3COOw==}
+  framer-motion@13.1.1:
+    resolution: {integrity: sha512-B/xn2TPS4f61cEBLFjiYlQFnBZUW1YVj/LM+C+N4OP8Rs95VLEI2ot/RlfBg111la/EiyECFaJJi/A3FWA8MUA==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -4717,8 +4717,8 @@ packages:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
 
-  joi@18.2.4:
-    resolution: {integrity: sha512-5AxF2kdKOcmF3hg4xAyXqihV6A8pEOrsj71Ta7Clk5OJotLqXH9/QepFDqGEFTfatT5merg0KH0W/8cy4/IE+g==}
+  joi@18.2.5:
+    resolution: {integrity: sha512-+gEA7rLfaNWx9JzawWPrPetSZwT16NUqHtECDgjyAJreXcs4TM7tx2Pa+VVJJK0YHM83ybrVdaT6UekHH50FJQ==}
     engines: {node: '>= 20'}
 
   jose@6.2.9:
@@ -5169,8 +5169,8 @@ packages:
   module-details-from-path@1.0.4:
     resolution: {integrity: sha512-EGWKgxALGMgzvxYF1UyGTy0HXX/2vHLkw6+NvDKW2jypWbHpjQuj4UMcqQWXHERJhVGKikolT06G3bcKe4fi7w==}
 
-  motion-dom@13.0.0:
-    resolution: {integrity: sha512-Xk+SJas70uMAUIApg+m3lZDShxI3LBFHq7mFGbBKoRXc2PVPDyAKmzN64Bbzt4CZdP/CItTiJxWtn4TA0v53Ng==}
+  motion-dom@13.1.1:
+    resolution: {integrity: sha512-XSf8VYWSB6G/0IY3rWVbyLcxWXtAVHkN1PQE2agTaCv3u8RGvbwu56TyyR/MNzBqqNavEBTZzErcxI1TxBrjcA==}
 
   motion-utils@13.0.0:
     resolution: {integrity: sha512-7DnN7TmbLcYXcG4RVadXIihWlyuM9afoUww8Y5Agg431kGKiuL2/OMyP4mJ5wLz+pvN3t5ySClLOaVXJ+wekRQ==}
@@ -10948,9 +10948,9 @@ snapshots:
 
   forwarded@0.2.0: {}
 
-  framer-motion@13.1.0(react-dom@19.2.7(react@19.2.8))(react@19.2.8):
+  framer-motion@13.1.1(react-dom@19.2.7(react@19.2.8))(react@19.2.8):
     dependencies:
-      motion-dom: 13.0.0
+      motion-dom: 13.1.1
       motion-utils: 13.0.0
       tslib: 2.8.1
     optionalDependencies:
@@ -11593,7 +11593,7 @@ snapshots:
 
   jiti@2.7.0: {}
 
-  joi@18.2.4:
+  joi@18.2.5:
     dependencies:
       '@hapi/address': 5.1.1
       '@hapi/formula': 3.0.2
@@ -12085,7 +12085,7 @@ snapshots:
 
   module-details-from-path@1.0.4: {}
 
-  motion-dom@13.0.0:
+  motion-dom@13.1.1:
     dependencies:
       motion-utils: 13.0.0
 
@@ -12093,7 +12093,7 @@ snapshots:
 
   motion@13.1.0(react-dom@19.2.7(react@19.2.8))(react@19.2.8):
     dependencies:
-      framer-motion: 13.1.0(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
+      framer-motion: 13.1.1(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
       tslib: 2.8.1
     optionalDependencies:
       react: 19.2.8
@@ -13761,7 +13761,7 @@ snapshots:
   wait-on@9.1.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       axios: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      joi: 18.2.4
+      joi: 18.2.5
       lodash: 4.18.1
       minimist: 1.2.8
       rxjs: 7.8.2
