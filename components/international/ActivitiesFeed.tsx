@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import type { ActivityCategory } from "@/types/internationalType";
 import { PER_PAGE_ACTIVITIES_FEED } from "@/constants/constants";
 import { ActivityCard, ActivityCardSkeleton } from "./ActivityCard";
@@ -33,24 +35,37 @@ export function ActivitiesFeed({
 }) {
     const [filter, setFilter] = useState<"all" | ActivityCategory>("all");
     const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState("");
 
+    // 1. Filtrer par recherche (sur le titre)
+    const filteredBySearch = useMemo(() => {
+        if (!searchTerm.trim()) return items;
+        const term = searchTerm.toLowerCase().trim();
+        return items.filter((item) =>
+            item.title.toLowerCase().includes(term)
+        );
+    }, [items, searchTerm]);
+
+    // 2. Regrouper par catégorie après recherche
     const groupedBySection = useMemo(() => {
         const groups: Record<ActivityCategory, ActivityItem[]> = {
             audience: [],
             delegation: [],
             international: [],
         };
-        for (const item of items) {
+        for (const item of filteredBySearch) {
             groups[item.category].push(item);
         }
         return groups;
-    }, [items]);
+    }, [filteredBySearch]);
 
+    // 3. Appliquer le filtre de catégorie
     const relevantItems = useMemo(() => {
-        if (filter === "all") return items;
+        if (filter === "all") return filteredBySearch;
         return groupedBySection[filter];
-    }, [filter, items, groupedBySection]);
+    }, [filter, filteredBySearch, groupedBySection]);
 
+    // 4. Pagination
     const totalPages = useMemo(() => {
         if (filter !== "all") {
             return Math.max(1, Math.ceil(relevantItems.length / PER_PAGE_ACTIVITIES_FEED));
@@ -74,7 +89,7 @@ export function ActivitiesFeed({
         setPage(1);
     }
 
-    const hasAnyItems = items.length > 0;
+    const hasAnyItems = filteredBySearch.length > 0;
 
     if (isLoading) {
         return (
@@ -94,11 +109,51 @@ export function ActivitiesFeed({
     }
 
     if (!hasAnyItems) {
-        return <p className="py-12 text-center text-white/60">Aucune activité disponible pour le moment.</p>;
+        return (
+            <div className="py-12 text-center text-white/60">
+                {searchTerm ? (
+                    <>
+                        <p>Aucune activité ne correspond à votre recherche.</p>
+                        <p className="text-sm mt-2">Essayez d&apos;autres mots-clés.</p>
+                    </>
+                ) : (
+                    <p>Aucune activité disponible pour le moment.</p>
+                )}
+            </div>
+        );
     }
 
     return (
         <div>
+            {/* Barre de recherche */}
+            <div className="relative mb-6">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
+                <Input
+                    type="text"
+                    placeholder="Rechercher une activité..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setPage(1);
+                    }}
+                    className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-72 h-10 text-sm rounded-full focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 transition-shadow"
+                />
+                {searchTerm && (
+                    <button
+                        onClick={() => {
+                            setSearchTerm("");
+                            setPage(1);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition"
+                        aria-label="Effacer la recherche"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                )}
+            </div>
+
             <FilterButtons currentFilter={filter} onChange={handleFilterChange} />
 
             {filter === "all" && showSections ? (
