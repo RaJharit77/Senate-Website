@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "@/constants/constants";
 import { ActivityCard, ActivityCardSkeleton } from "./ActivityCard";
 import { PaginationControls } from "./FeedControls";
@@ -38,10 +39,10 @@ export function SimpleActivityGrid({
     if (isLoading) {
         return (
             <div>
-                <div className="mb-6">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
-                        <div className="h-10 w-full sm:w-72 rounded-full bg-white/10 animate-pulse" />
+                <div className="mb-6 flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        <div className="h-9 w-48 rounded-full bg-white/10 animate-pulse" />
+                        <div className="h-9 w-24 rounded-full bg-white/10 animate-pulse" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -70,33 +71,46 @@ export function SimpleActivityGrid({
 
     return (
         <div>
-            {/* Barre de recherche */}
-            <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
-                <Input
-                    type="text"
-                    placeholder="Rechercher une activité..."
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setPage(1);
-                    }}
-                    className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-72 h-10 text-sm rounded-full focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 transition-shadow"
-                />
-                {searchTerm && (
-                    <button
+            {/* Barre de recherche + Bouton */}
+            <div className="mb-6 flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
+                        <Input
+                            type="text"
+                            placeholder="Rechercher..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setPage(1);
+                            }}
+                            className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-48 md:w-56 h-9 text-sm rounded-full focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 transition-shadow"
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    setPage(1);
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition"
+                                aria-label="Effacer"
+                            >
+                                <X size={14} />
+                            </button>
+                        )}
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => {
-                            setSearchTerm("");
-                            setPage(1);
+                            setSearchTerm(searchTerm); // déclenche un re-render (déjà fait)
                         }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition"
-                        aria-label="Effacer la recherche"
+                        className="border-cyan-400 text-cyan-400 hover:bg-cyan-500/20 h-9 px-4 rounded-full text-sm"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                )}
+                        <Search className="w-4 h-4 mr-1" />
+                        Rechercher
+                    </Button>
+                </div>
             </div>
 
             <motion.div
