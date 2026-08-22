@@ -39,7 +39,6 @@ export function ActivitiesFeed({
     const [searchTerm, setSearchTerm] = useState("");
     const [activeSearch, setActiveSearch] = useState("");
 
-    // 1. Filtrer par recherche (sur le titre) – uniquement sur activeSearch
     const filteredBySearch = useMemo(() => {
         if (!activeSearch.trim()) return items;
         const term = activeSearch.toLowerCase().trim();
@@ -48,7 +47,6 @@ export function ActivitiesFeed({
         );
     }, [items, activeSearch]);
 
-    // 2. Regrouper par catégorie après recherche
     const groupedBySection = useMemo(() => {
         const groups: Record<ActivityCategory, ActivityItem[]> = {
             audience: [],
@@ -61,13 +59,11 @@ export function ActivitiesFeed({
         return groups;
     }, [filteredBySearch]);
 
-    // 3. Appliquer le filtre de catégorie
     const relevantItems = useMemo(() => {
         if (filter === "all") return filteredBySearch;
         return groupedBySection[filter];
     }, [filter, filteredBySearch, groupedBySection]);
 
-    // 4. Pagination
     const totalPages = useMemo(() => {
         if (filter !== "all") {
             return Math.max(1, Math.ceil(relevantItems.length / PER_PAGE_ACTIVITIES_FEED));
@@ -139,11 +135,12 @@ export function ActivitiesFeed({
 
     return (
         <div>
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                <FilterButtons currentFilter={filter} onChange={handleFilterChange} />
+            <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-2 flex-wrap">
+                    <FilterButtons currentFilter={filter} onChange={handleFilterChange} />
+                </div>
 
-                {/* Formulaire de recherche */}
-                <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
+                <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 shrink-0">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
                         <Input
@@ -151,7 +148,7 @@ export function ActivitiesFeed({
                             placeholder="Rechercher..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-48 sm:w-56 h-9 text-sm rounded-lg focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400"
+                            className="pl-9 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-48 sm:w-56 h-8 text-sm rounded-lg focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400"
                         />
                         {searchTerm && (
                             <button
@@ -170,7 +167,7 @@ export function ActivitiesFeed({
                         type="submit"
                         variant="default"
                         size="sm"
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white h-9 px-4 rounded-lg flex items-center gap-1"
+                        className="bg-cyan-500 hover:bg-cyan-600 text-white h-8 px-3 rounded-lg flex items-center gap-1"
                     >
                         <Search size={16} />
                         <span className="hidden sm:inline">Rechercher</span>

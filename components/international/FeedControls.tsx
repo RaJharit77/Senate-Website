@@ -19,7 +19,7 @@ export function FilterButtons({
     onChange: (filter: "all" | ActivityCategory) => void;
 }) {
     return (
-        <div className="mb-6 flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
             {FILTERS.map((f) => (
                 <Button
                     key={f.id}
@@ -28,8 +28,8 @@ export function FilterButtons({
                     onClick={() => onChange(f.id)}
                     className={
                         currentFilter === f.id
-                            ? "bg-cyan-500 text-white hover:bg-cyan-600 border-cyan-500"
-                            : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-gray-200 border-white/10"
+                            ? "bg-cyan-500 text-white hover:bg-cyan-600 border-cyan-500 h-8 px-3 text-xs"
+                            : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-gray-200 border-white/10 h-8 px-3 text-xs"
                     }
                 >
                     {f.label}
@@ -59,7 +59,7 @@ export function PaginationControls({
                 size="sm"
                 onClick={() => onChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="border-white/10 bg-transparent text-white/60 hover:bg-white/10 hover:text-white/80"
+                className="border-white/10 bg-transparent text-white/60 hover:bg-white/10 hover:text-white/80 h-8 px-3 text-xs"
             >
                 <MdKeyboardDoubleArrowLeft />
             </Button>
@@ -71,8 +71,8 @@ export function PaginationControls({
                     onClick={() => onChange(p)}
                     className={
                         p === currentPage
-                            ? "bg-cyan-500 text-white hover:bg-cyan-600"
-                            : "border-white/10 bg-transparent text-white/70 hover:bg-white/10 hover:text-white/90"
+                            ? "bg-cyan-500 text-white hover:bg-cyan-600 h-8 px-3 text-xs"
+                            : "border-white/10 bg-transparent text-white/70 hover:bg-white/10 hover:text-white/90 h-8 px-3 text-xs"
                     }
                 >
                     {p}
@@ -83,7 +83,7 @@ export function PaginationControls({
                 size="sm"
                 onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="border-white/10 bg-transparent text-white/60 hover:bg-white/10 hover:text-white/80"
+                className="border-white/10 bg-transparent text-white/60 hover:bg-white/10 hover:text-white/80 h-8 px-3 text-xs"
             >
                 <MdKeyboardDoubleArrowRight />
             </Button>
