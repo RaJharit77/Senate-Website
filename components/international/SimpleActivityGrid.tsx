@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "@/constants/constants";
@@ -19,15 +19,16 @@ export function SimpleActivityGrid({
 }) {
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
+    const [activeSearch, setActiveSearch] = useState("");
 
     // Filtrer par recherche
     const filteredItems = useMemo(() => {
-        if (!searchTerm.trim()) return items;
-        const term = searchTerm.toLowerCase().trim();
+        if (!activeSearch.trim()) return items;
+        const term = activeSearch.toLowerCase().trim();
         return items.filter((item) =>
             item.title.toLowerCase().includes(term)
         );
-    }, [items, searchTerm]);
+    }, [items, activeSearch]);
 
     const totalPages = useMemo(() => Math.ceil(filteredItems.length / PER_PAGE), [filteredItems.length]);
 
@@ -36,13 +37,26 @@ export function SimpleActivityGrid({
         return filteredItems.slice(start, start + PER_PAGE);
     }, [filteredItems, page]);
 
+    function handleSearchSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        setActiveSearch(searchTerm);
+        setPage(1);
+    }
+
+    function clearSearch() {
+        setSearchTerm("");
+        setActiveSearch("");
+        setPage(1);
+    }
+
     if (isLoading) {
         return (
             <div>
-                <div className="mb-6 flex flex-wrap items-center gap-3">
+                <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <div className="h-9 w-32 rounded-full bg-white/10 animate-pulse" />
                     <div className="flex items-center gap-2">
-                        <div className="h-9 w-48 rounded-full bg-white/10 animate-pulse" />
-                        <div className="h-9 w-24 rounded-full bg-white/10 animate-pulse" />
+                        <div className="h-9 w-48 sm:w-56 rounded-full bg-white/10 animate-pulse" />
+                        <div className="h-9 w-20 rounded-full bg-white/10 animate-pulse" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -57,7 +71,7 @@ export function SimpleActivityGrid({
     if (filteredItems.length === 0) {
         return (
             <div className="py-12 text-center text-white/60">
-                {searchTerm ? (
+                {activeSearch ? (
                     <>
                         <p>Aucune activité ne correspond à votre recherche.</p>
                         <p className="text-sm mt-2">Essayez d&apos;autres mots-clés.</p>
@@ -71,46 +85,44 @@ export function SimpleActivityGrid({
 
     return (
         <div>
-            {/* Barre de recherche + Bouton */}
-            <div className="mb-6 flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                {/* Espace pour un éventuel filtre (non utilisé ici) */}
+                <div className="text-white/20 text-sm">Toutes les activités</div>
+
+                {/* Formulaire de recherche */}
+                <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
                         <Input
                             type="text"
                             placeholder="Rechercher..."
                             value={searchTerm}
-                            onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setPage(1);
-                            }}
-                            className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-full sm:w-48 md:w-56 h-9 text-sm rounded-full focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400 transition-shadow"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-9 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/40 w-48 sm:w-56 h-9 text-sm rounded-lg focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400"
                         />
                         {searchTerm && (
                             <button
-                                onClick={() => {
-                                    setSearchTerm("");
-                                    setPage(1);
-                                }}
+                                type="button"
+                                onClick={clearSearch}
                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition"
-                                aria-label="Effacer"
+                                aria-label="Effacer la recherche"
                             >
-                                <X size={14} />
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                             </button>
                         )}
                     </div>
                     <Button
-                        variant="outline"
+                        type="submit"
+                        variant="default"
                         size="sm"
-                        onClick={() => {
-                            setSearchTerm(searchTerm); // déclenche un re-render (déjà fait)
-                        }}
-                        className="border-cyan-400 text-cyan-400 hover:bg-cyan-500/20 h-9 px-4 rounded-full text-sm"
+                        className="bg-cyan-500 hover:bg-cyan-600 text-white h-9 px-4 rounded-lg flex items-center gap-1"
                     >
-                        <Search className="w-4 h-4 mr-1" />
-                        Rechercher
+                        <Search size={16} />
+                        <span className="hidden sm:inline">Rechercher</span>
                     </Button>
-                </div>
+                </form>
             </div>
 
             <motion.div
