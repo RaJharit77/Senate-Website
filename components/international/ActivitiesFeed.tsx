@@ -106,7 +106,7 @@ export function ActivitiesFeed({
             <div>
                 <div className="mb-6 flex flex-wrap gap-2">
                     {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="w-24 h-9 rounded-full bg-white/10 animate-pulse" />
+                        <div key={i} className="w-24 h-8 rounded-full bg-white/10 animate-pulse" />
                     ))}
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -136,9 +136,7 @@ export function ActivitiesFeed({
     return (
         <div>
             <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <FilterButtons currentFilter={filter} onChange={handleFilterChange} />
-                </div>
+                <FilterButtons currentFilter={filter} onChange={handleFilterChange} />
 
                 <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 shrink-0">
                     <div className="relative">
@@ -167,7 +165,7 @@ export function ActivitiesFeed({
                         type="submit"
                         variant="default"
                         size="sm"
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white h-8 px-3 rounded-lg flex items-center gap-1"
+                        className="bg-cyan-500 hover:bg-cyan-600 text-white h-8 px-4 rounded-lg flex items-center gap-1"
                     >
                         <Search size={16} />
                         <span className="hidden sm:inline">Rechercher</span>

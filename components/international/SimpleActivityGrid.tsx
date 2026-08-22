@@ -21,7 +21,6 @@ export function SimpleActivityGrid({
     const [searchTerm, setSearchTerm] = useState("");
     const [activeSearch, setActiveSearch] = useState("");
 
-    // Filtrer par recherche
     const filteredItems = useMemo(() => {
         if (!activeSearch.trim()) return items;
         const term = activeSearch.toLowerCase().trim();
@@ -53,10 +52,10 @@ export function SimpleActivityGrid({
         return (
             <div>
                 <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                    <div className="h-9 w-32 rounded-full bg-white/10 animate-pulse" />
+                    <div className="h-8 w-32 rounded-full bg-white/10 animate-pulse" />
                     <div className="flex items-center gap-2">
-                        <div className="h-9 w-48 sm:w-56 rounded-full bg-white/10 animate-pulse" />
-                        <div className="h-9 w-20 rounded-full bg-white/10 animate-pulse" />
+                        <div className="h-8 w-48 sm:w-56 rounded-full bg-white/10 animate-pulse" />
+                        <div className="h-8 w-20 rounded-full bg-white/10 animate-pulse" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -86,12 +85,10 @@ export function SimpleActivityGrid({
     return (
         <div>
             <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 mb-6">
-                {/* Étiquette "Toutes les activités" alignée verticalement */}
-                <div className="text-white/20 text-sm h-9 flex items-center shrink-0">
+                <div className="text-white/20 text-sm h-8 flex items-center shrink-0">
                     Toutes les activités
                 </div>
 
-                {/* Formulaire de recherche */}
                 <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 shrink-0">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-4 h-4" />
