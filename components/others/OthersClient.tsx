@@ -23,7 +23,7 @@ import {
 import { CategoryType } from "@/types/categoryType";
 import { cleanText, getYouTubeThumbnail } from "@/utils/utility";
 import { MdArrowRightAlt } from "react-icons/md";
-import { CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION, CAT_VIDEO, perPage } from "@/constants/constants";
+import { CAT_DIVERS, CAT_PUBLICATION, CAT_VIDEO, perPage } from "@/constants/constants";
 
 export default function OthersClient() {
     const [allPosts, setAllPosts] = useState<WpPost[]>([]);
@@ -58,14 +58,24 @@ export default function OthersClient() {
 
     const filteredByCategory = useMemo(() => {
         if (filter === "tous") return allPosts;
-        const categoryIdMap: Record<CategoryType, number> = {
-            tous: 0,
+
+        // Filtre "Autres" : tous les posts qui ne sont ni vidéo, ni divers, ni publication
+        if (filter === "autres") {
+            return allPosts.filter(
+                (post) =>
+                    !post.categories?.includes(CAT_VIDEO) &&
+                    !post.categories?.includes(CAT_DIVERS) &&
+                    !post.categories?.includes(CAT_PUBLICATION)
+            );
+        }
+
+        // Filtres spécifiques par catégorie
+        const categoryIdMap: Record<Exclude<CategoryType, "tous" | "autres">, number> = {
             video: CAT_VIDEO,
             divers: CAT_DIVERS,
-            autres: CAT_AUTRE,
             publication: CAT_PUBLICATION,
         };
-        const targetId = categoryIdMap[filter];
+        const targetId = categoryIdMap[filter as Exclude<CategoryType, "tous" | "autres">];
         return allPosts.filter((post) => post.categories?.includes(targetId));
     }, [allPosts, filter]);
 
