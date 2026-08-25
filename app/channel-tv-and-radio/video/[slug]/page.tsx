@@ -2,10 +2,10 @@ import { getMediaBySlug, getAllChannelAndRadioMedia } from '@/lib/api';
 import { extractMediaItem } from '@/lib/media-mapper';
 import VideoPlayer from '@/components/media/VideoPlayer';
 import MediaList from '@/components/media/MediaList';
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { MdArrowBackIos } from 'react-icons/md';
 import { Metadata } from 'next';
+import NotFound from 'next/dist/client/components/builtin/not-found';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -40,8 +40,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function VideoDetailPage({ params }: PageProps) {
     const { slug } = await params;
     const resolved = await resolveVideo(slug);
+
     if (!resolved) {
-        notFound();
+        <NotFound />;
         return null;
     }
 
