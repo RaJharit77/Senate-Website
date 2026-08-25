@@ -1,0 +1,39 @@
+[
+    {
+        "id": "1",
+        "title": "Journal du Sénat - Émission du 21 août",
+        "type": "audio",
+        "url": "/audio/emission-2026-08-21.mp3",
+        "thumbnail": "/images/audio-thumb.jpg",
+        "description": "Revue de presse et actualités du Sénat",
+        "date": "2026-08-21T10:00:00Z",
+        "duration": "00:30:00"
+    },
+    {
+        "id": "2",
+        "title": "Séance plénière - 20 août 2026",
+        "type": "video",
+        "url": "/video/seance-2026-08-20.mp4",
+        "thumbnail": "/images/pleniere-thumb.jpg",
+        "description": "Débat sur le projet de loi de finances",
+        "date": "2026-08-20T14:00:00Z",
+        "duration": "02:15:00"
+    },
+    {
+        "id": "3",
+        "title": "Interview du Président du Sénat",
+        "type": "youtube",
+        "youtubeId": "dQw4w9WgXcQ",
+        "thumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+        "description": "Interview exclusive sur les orientations du Sénat",
+        "date": "2026-08-19T16:00:00Z"
+    },
+    {
+        "id": "4",
+        "title": "Direct - Commission des Lois",
+        "type": "live",
+        "streamUrl": "https://example.com/hls/stream.m3u8",
+        "thumbnail": "/images/live-thumb.jpg",
+        "description": "Diffusion en direct des travaux de la commission"
+    }
+]

@@ -30,7 +30,7 @@ export function Footer() {
   return (
     <footer style={{ backgroundColor: NAV_BG }}>
       <div className="py-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-12">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-6 gap-12">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-5">
               <motion.div
