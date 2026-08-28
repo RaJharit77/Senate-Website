@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { ActivityCategory } from "@/types/internationalType";
 import {
     Pagination,
@@ -27,23 +27,30 @@ export function FilterButtons({
     onChange: (filter: "all" | ActivityCategory) => void;
 }) {
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <ToggleGroup
+            type="single"
+            value={currentFilter}
+            onValueChange={(value) => {
+                if (value) onChange(value as "all" | ActivityCategory);
+            }}
+            className="flex flex-wrap items-center gap-2"
+        >
             {FILTERS.map((f) => (
-                <Button
+                <ToggleGroupItem
                     key={f.id}
+                    value={f.id}
                     variant="outline"
                     size="sm"
-                    onClick={() => onChange(f.id)}
                     className={
                         currentFilter === f.id
-                            ? "bg-cyan-500 text-white hover:bg-cyan-600 border-cyan-500 h-8 px-3 text-xs"
+                            ? "bg-cyan-500 text-white hover:bg-cyan-600 border-cyan-500 h-8 px-3 text-xs data-[state=on]:bg-cyan-500 data-[state=on]:text-white"
                             : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-gray-200 border-white/10 h-8 px-3 text-xs"
                     }
                 >
                     {f.label}
-                </Button>
+                </ToggleGroupItem>
             ))}
-        </div>
+        </ToggleGroup>
     );
 }
 
