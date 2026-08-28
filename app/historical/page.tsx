@@ -7,6 +7,8 @@ export const metadata = buildMetadata({
     path: "/historical",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default function HistoryPage() {
     return <HistoricalClient />;
 }

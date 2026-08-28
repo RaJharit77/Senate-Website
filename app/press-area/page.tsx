@@ -7,6 +7,8 @@ export const metadata = buildMetadata({
     path: "/press-area",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default function PressPage() {
     return <PressClient />;
 }

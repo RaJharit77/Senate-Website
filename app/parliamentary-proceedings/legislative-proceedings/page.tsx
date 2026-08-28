@@ -16,6 +16,8 @@ export const metadata = buildMetadata({
     path: "/parliamentary-proceedings/legislative-proceedings",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default async function LegislativeProceedingsPage() {
     const introPage = await getPageBySlug("travaux-legislatifs-2").catch(() => null);
 

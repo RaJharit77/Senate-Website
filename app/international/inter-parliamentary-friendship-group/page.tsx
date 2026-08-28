@@ -15,6 +15,8 @@ export const metadata = buildMetadata({
     path: "/international/inter-parliamentary-friendship-group",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default async function InterParliamentaryFriendshipGroupPage() {
     await delay(500);
 
