@@ -280,6 +280,7 @@ export default function ChannelAndRadioClient() {
                                 <PaginationContent>
                                     <PaginationItem>
                                         <PaginationPrevious
+                                            text="Précédent"
                                             onClick={() => handlePageChange(currentPage - 1)}
                                             className={
                                                 currentPage === 1
@@ -304,6 +305,7 @@ export default function ChannelAndRadioClient() {
                                     ))}
                                     <PaginationItem>
                                         <PaginationNext
+                                            text="Suivant"
                                             onClick={() => handlePageChange(currentPage + 1)}
                                             className={
                                                 currentPage === totalPages
