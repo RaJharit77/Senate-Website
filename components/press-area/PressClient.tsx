@@ -11,6 +11,15 @@ import ArticleCard from "@/components/press-area/ArticleCard";
 import { ArticleSkeleton } from "@/components/press-area/ArticleSkeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface ExtendedPost extends WpPost {
     isFeatured: boolean;
@@ -119,6 +128,7 @@ export default function PressClient() {
         currentPage * perPage
     );
 
+    // Génération des numéros de page avec ellipsis
     const getPageNumbers = (): Array<number | string> => {
         const delta = 3;
         const range: number[] = [];
@@ -289,40 +299,57 @@ export default function PressClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.5 }}
-                        className="flex justify-center items-center gap-2 mt-8 flex-wrap"
+                        className="mt-8"
                     >
-                        <Button
-                            onClick={handlePrev}
-                            disabled={currentPage === 1}
-                            variant="outline"
-                            className="border-white/10 bg-transparent text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:text-cyan-300"
-                        >
-                            Précédent
-                        </Button>
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={handlePrev}
+                                        text="Précédent"
+                                        className={
+                                            currentPage === 1
+                                                ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
+                                                : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                        }
+                                    />
+                                </PaginationItem>
 
-                        {getPageNumbers().map((page, index) => (
-                            <Button
-                                key={index}
-                                onClick={() => goToPage(page)}
-                                variant={page === currentPage ? "default" : "outline"}
-                                className={page === currentPage
-                                    ? 'bg-cyan-500 text-white hover:bg-cyan-600'
-                                    : 'border-white/10 bg-transparent text-gray-300 hover:bg-white/10 hover:text-cyan-300'
-                                }
-                                disabled={page === '...'}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                                {getPageNumbers().map((page, index) => (
+                                    page === "..." ? (
+                                        <PaginationItem key={`ellipsis-${index}`}>
+                                            <PaginationEllipsis className="text-white/40" />
+                                        </PaginationItem>
+                                    ) : (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink
+                                                isActive={page === currentPage}
+                                                onClick={() => goToPage(page)}
+                                                className={
+                                                    page === currentPage
+                                                        ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30 border-transparent hover:bg-cyan-600"
+                                                        : "text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                                }
+                                            >
+                                                {page}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    )
+                                ))}
 
-                        <Button
-                            onClick={handleNext}
-                            disabled={currentPage === totalPages}
-                            variant="outline"
-                            className="border-white/10 bg-transparent text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:text-cyan-300"
-                        >
-                            Suivant
-                        </Button>
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={handleNext}
+                                        text="Suivant"
+                                        className={
+                                            currentPage === totalPages
+                                                ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
+                                                : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                        }
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
                     </motion.div>
                 )}
             </div>
