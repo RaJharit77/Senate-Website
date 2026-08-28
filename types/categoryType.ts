@@ -1,1 +1,1 @@
-export type CategoryType = "tous" | "video" | "divers" | "autres" | "publication";
+export type CategoryType = "tous" | "divers" | "publication" | "galeries" | "autres";
