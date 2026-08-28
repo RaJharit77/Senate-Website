@@ -6,6 +6,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { MdArrowBackIos } from 'react-icons/md';
 import { Metadata } from 'next';
+import { EMERALD, RED, WHITE } from '@/utils/colors';
+import { cleanText } from '@/utils/utility';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -16,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const post = await getMediaBySlug(slug, 'montage');
     if (!post) return { title: 'Montage introuvable - Sénat de Madagascar' };
 
-    const title = post.title.rendered;
+    const title = cleanText(post.title.rendered);
     return {
         title: `${title} - Chaîne TV / Radio - Sénat de Madagascar`,
         description: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || undefined,
@@ -32,6 +34,7 @@ export default async function MontageDetailPage({ params }: PageProps) {
     }
 
     const montage = extractMediaItem(post, 'montage');
+    const cleanTitle = cleanText(montage.title);
 
     const otherMontages = await getMontages({ per_page: 12 }).catch(() => []);
     const suggestions = otherMontages
@@ -41,22 +44,34 @@ export default async function MontageDetailPage({ params }: PageProps) {
         .slice(0, 6);
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-5xl">
-            <Link
-                href="/chaine-tv-radio"
-                className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-6 transition"
-            >
-                <MdArrowBackIos className="w-3 h-3" />
-                Retour à la Chaîne TV / Radio
-            </Link>
+        <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
+            <div className="max-w-5xl mx-auto">
+                <Link
+                    href="/channel-tv-and-radio"
+                    className="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300 mb-6 transition"
+                >
+                    <MdArrowBackIos className="w-3 h-3" />
+                    Retour à la Chaîne TV / Radio
+                </Link>
 
-            <VideoPlayer video={montage} />
+                <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                    <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                    <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                    <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+                </div>
 
-            {suggestions.length > 0 && (
-                <section className="mt-12">
-                    <MediaList items={suggestions} type="video" title="Autres mises en boîte" />
-                </section>
-            )}
+                <h1 className="text-white text-3xl font-bold mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                    {cleanTitle}
+                </h1>
+
+                <VideoPlayer video={montage} className="w-full" />
+
+                {suggestions.length > 0 && (
+                    <section className="mt-12">
+                        <MediaList items={suggestions} type="video" title="Autres mises en boîte" />
+                    </section>
+                )}
+            </div>
         </div>
     );
 }

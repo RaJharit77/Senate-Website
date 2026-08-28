@@ -43,6 +43,15 @@ function LivePlayerContent({
     const Icon = kind === 'tv' ? Tv : Radio;
 
     const renderPlayer = () => {
+        // Si pas d'URL, on affiche un message
+        if (!streamUrl) {
+            return (
+                <div className="mt-4 text-center text-gray-400">
+                    Aucun flux disponible pour le moment.
+                </div>
+            );
+        }
+
         if (sourceType === 'facebook') {
             return (
                 <div className="mt-4 aspect-video">
@@ -126,7 +135,7 @@ function LivePlayerContent({
                             {title}
                         </h3>
                     </div>
-                    {!isEmbed && (
+                    {!isEmbed && streamUrl && (
                         <button
                             onClick={togglePlay}
                             disabled={!streamUrl}

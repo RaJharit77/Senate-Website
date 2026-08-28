@@ -34,6 +34,7 @@ const FILTER_LABELS: Record<ChannelFilter, string> = {
     tous: "Tous",
     youtube: "Chaîne YouTube",
     video: "Vidéos",
+    facebook: "Facebook Live",
     audio: "Podcasts",
     montage: "Mise en boîte",
     live: "Live",
@@ -41,7 +42,7 @@ const FILTER_LABELS: Record<ChannelFilter, string> = {
 
 // Le direct n'est pas un contenu qu'on filtre/liste ici (il a sa propre
 // section dédiée sur la page principale) : on ne propose pas ce filtre.
-const FILTER_OPTIONS: ChannelFilter[] = ["tous", "youtube", "video", "audio", "montage"];
+const FILTER_OPTIONS: ChannelFilter[] = ["tous", "youtube", "video", "facebook", "audio", "montage"];
 
 // Chemin de la page de détail selon le type de média.
 function detailHref(item: MediaItem): string {

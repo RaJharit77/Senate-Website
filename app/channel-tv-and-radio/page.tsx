@@ -11,9 +11,17 @@ export const metadata: Metadata = {
     description: 'Retrouvez les vidéos, podcasts, montages et le direct du Sénat de Madagascar.',
 };
 
-export default function ChannelAndRadioPage() {
-    const liveTv = getLiveStatus('tv');
-    const liveRadio = getLiveStatus('radio');
+export const dynamic = 'force-dynamic';
+
+export default async function ChannelAndRadioPage() {
+    // getLiveStatus('tv') interroge désormais la YouTube Data API (voir
+    // lib/api.ts) : la fonction est asynchrone, d'où l'await. Les deux
+    // appels sont indépendants (tv et radio n'ont aucune dépendance l'un
+    // envers l'autre) : Promise.all évite de les attendre en série.
+    const [liveTv, liveRadio] = await Promise.all([
+        getLiveStatus('tv'),
+        getLiveStatus('radio'),
+    ]);
 
     return (
         <>

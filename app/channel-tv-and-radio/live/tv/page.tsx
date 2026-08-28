@@ -10,8 +10,14 @@ export const metadata: Metadata = {
     description: 'Regardez le direct de la chaîne TV du Sénat de Madagascar.',
 };
 
-export default function LiveTvPage() {
-    const liveTv = getLiveStatus('tv');
+export const dynamic = 'force-dynamic';
+
+export default async function LiveTvPage() {
+    // getLiveStatus('tv') interroge la YouTube Data API puis, à défaut, lit
+    // LIVE_FACEBOOK_VIDEO_URL — voir lib/api.ts pour le détail de la
+    // priorité. D'où l'await : ce n'est plus une simple lecture de variable
+    // d'environnement synchrone.
+    const liveTv = await getLiveStatus('tv');
 
     return (
         <div className="min-h-screen bg-black/30 backdrop-blur-sm py-8 px-4">

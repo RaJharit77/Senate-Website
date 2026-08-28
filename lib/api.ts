@@ -4,6 +4,12 @@ import type { LiveStatus } from "@/types/media";
 import { ContactFormFields, ContactFormResult, WP_ROOT } from "@/types/contactType";
 import { PresidentActivity } from "@/types/internationalType";
 import { extractYoutubeId } from "./media-mapper";
+import {
+    LIVE_YOUTUBE_CHANNEL_ID,
+    LIVE_YOUTUBE_API_KEY,
+    LIVE_FACEBOOK_VIDEO_URL,
+    LIVE_AUDIO_STREAM_URL,
+} from '@/constants/constants';
 
 const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
 
@@ -333,35 +339,120 @@ export function getMontages(params: Params = {}) {
     return getPostsByCategory(CAT_MONTAGE, { _embed: true, ...params });
 }
 
+interface YoutubeLiveInfo {
+    videoId: string;
+    title?: string;
+    startedAt?: string;
+}
+
 /**
- * Statut du direct (TV vidéo ou radio audio). Pour l'instant dérivé des
- * variables d'environnement LIVE_STREAM_URL / LIVE_AUDIO_STREAM_URL :
- * on considère le direct actif dès qu'une URL de flux est configurée.
- * Si un jour WP expose un champ ACF "live_actif" sur un post dédié, cette
- * fonction est le seul endroit à modifier (route /api/live en dépend).
+ * Interroge la YouTube Data API v3 (search.list) pour savoir si la chaîne
+ * configurée diffuse actuellement un direct.
+ *
+ * Coût & fréquence : search.list coûte 100 unités de quota par appel, sur un
+ * quota gratuit de 10 000 unités/jour (100 appels/jour max, tous usages
+ * confondus sur le projet Google Cloud). Le cache Next.js ci-dessous
+ * (revalidate: 900) limite les appels réels à un toutes les 15 minutes max,
+ * soit au pire 96 appels/jour (9 600 unités) : sous le plafond, avec une
+ * marge volontaire. Conséquence acceptée : un direct qui démarre peut
+ * mettre jusqu'à 15 minutes avant d'apparaître sur le site.
+ *
+ * Pour aller plus vite sans dépasser le quota gratuit : demander une
+ * augmentation (gratuite) sur console.cloud.google.com, ou remplacer cette
+ * recherche par une lecture de la playlist "uploads" de la chaîne
+ * (playlistItems.list + videos.list, 2 unités au lieu de 100) — plus
+ * rapide, mais implémentation plus complexe et moins officiellement
+ * garantie que search.list + eventType=live.
+ *
+ * Ne lève jamais d'exception : toute erreur (réseau, quota dépassé, clé ou
+ * ID de chaîne absents) est traitée comme "pas de direct détecté", pour que
+ * getLiveStatus se replie sur Facebook plutôt que de faire planter la page.
  */
-export function getLiveStatus(kind: 'tv' | 'radio' = 'tv'): LiveStatus {
-    if (kind === 'tv') {
-        const sourceType = (process.env.LIVE_TV_SOURCE_TYPE || 'url') as 'url' | 'facebook' | 'youtube';
-        const streamUrl = process.env.LIVE_TV_STREAM_URL || '';
+async function checkYoutubeLive(): Promise<YoutubeLiveInfo | null> {
+    if (!LIVE_YOUTUBE_CHANNEL_ID || !LIVE_YOUTUBE_API_KEY) {
+        return null;
+    }
+
+    const url = new URL('https://www.googleapis.com/youtube/v3/search');
+    url.searchParams.set('part', 'snippet');
+    url.searchParams.set('channelId', LIVE_YOUTUBE_CHANNEL_ID);
+    url.searchParams.set('eventType', 'live');
+    url.searchParams.set('type', 'video');
+    url.searchParams.set('key', LIVE_YOUTUBE_API_KEY);
+
+    try {
+        const res = await fetch(url.toString(), {
+            next: { revalidate: 900 },
+        });
+
+        if (!res.ok) {
+            console.error(`[checkYoutubeLive] YouTube API a répondu ${res.status}`);
+            return null;
+        }
+
+        const data = await res.json();
+        const item = data.items?.[0];
+        if (!item?.id?.videoId) return null;
+
         return {
-            isLive: Boolean(streamUrl),
-            kind: 'tv',
-            streamUrl,
-            title: process.env.LIVE_TV_TITLE || 'Sénat en direct (TV)',
-            sourceType,
+            videoId: item.id.videoId,
+            title: item.snippet?.title,
+            startedAt: item.snippet?.publishTime,
         };
-    } else {
-        const sourceType = (process.env.LIVE_RADIO_SOURCE_TYPE || 'url') as 'url' | 'facebook' | 'youtube';
-        const streamUrl = process.env.LIVE_RADIO_STREAM_URL || '';
+    } catch (err) {
+        console.error('[checkYoutubeLive] Erreur réseau:', err);
+        return null;
+    }
+}
+
+/**
+ * Statut du direct pour un "kind" donné.
+ * - 'radio' : flux audio brut, indépendant de YouTube/Facebook.
+ * - 'tv'    : priorité à la détection réelle YouTube (checkYoutubeLive) ;
+ *             si rien n'est détecté, repli sur l'URL Facebook manuelle
+ *             (LIVE_FACEBOOK_VIDEO_URL). Si les deux sont en direct en même
+ *             temps, YouTube l'emporte — c'est la priorité demandée.
+ */
+export async function getLiveStatus(kind: 'tv' | 'radio'): Promise<LiveStatus> {
+    if (kind === 'radio') {
         return {
-            isLive: Boolean(streamUrl),
+            isLive: Boolean(LIVE_AUDIO_STREAM_URL),
             kind: 'radio',
-            streamUrl,
-            title: process.env.LIVE_RADIO_TITLE || 'Sénat en direct (Radio)',
-            sourceType,
+            streamUrl: LIVE_AUDIO_STREAM_URL,
+            sourceType: 'url',
+            title: 'Sénat Radio en direct',
         };
     }
+
+    const youtubeLive = await checkYoutubeLive();
+    if (youtubeLive) {
+        return {
+            isLive: true,
+            kind: 'tv',
+            streamUrl: `https://www.youtube.com/embed/${youtubeLive.videoId}?autoplay=1`,
+            sourceType: 'youtube',
+            title: youtubeLive.title || 'Sénat TV en direct',
+            startedAt: youtubeLive.startedAt,
+        };
+    }
+
+    if (LIVE_FACEBOOK_VIDEO_URL) {
+        return {
+            isLive: true,
+            kind: 'tv',
+            streamUrl: LIVE_FACEBOOK_VIDEO_URL,
+            sourceType: 'facebook',
+            title: 'Sénat TV en direct',
+        };
+    }
+
+    return {
+        isLive: false,
+        kind: 'tv',
+        streamUrl: '',
+        sourceType: 'url',
+        title: 'Sénat TV',
+    };
 }
 
 /**

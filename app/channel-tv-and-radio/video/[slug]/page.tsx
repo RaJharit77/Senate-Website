@@ -1,20 +1,16 @@
-import { getMediaBySlug, getAllChannelAndRadioMedia } from '@/lib/api';
+import { getMediaBySlug } from '@/lib/api';
 import { extractMediaItem } from '@/lib/media-mapper';
 import VideoPlayer from '@/components/media/VideoPlayer';
-import MediaList from '@/components/media/MediaList';
 import Link from 'next/link';
 import { MdArrowBackIos } from 'react-icons/md';
 import { Metadata } from 'next';
-import NotFound from 'next/dist/client/components/builtin/not-found';
+import { EMERALD, RED, WHITE } from '@/utils/colors';
+import { cleanText } from '@/utils/utility';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-// Une "vidéo" au sens de cette page peut venir de deux catégories WP
-// distinctes (CAT_VIDEO pour YouTube, CAT_VIDEO_HOSTED pour l'hébergée) qui
-// partagent le même segment d'URL /chaine-tv-radio/video/[slug]. On tente
-// youtube d'abord (contenu déjà en prod), puis hosted.
 async function resolveVideo(slug: string) {
     const youtubePost = await getMediaBySlug(slug, 'youtube');
     if (youtubePost) return { post: youtubePost, kind: 'youtube' as const };
@@ -30,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const resolved = await resolveVideo(slug);
     if (!resolved) return { title: 'Vidéo introuvable - Sénat de Madagascar' };
 
-    const title = resolved.post.title.rendered;
+    const title = cleanText(resolved.post.title.rendered);
     return {
         title: `${title} - Chaîne TV / Radio - Sénat de Madagascar`,
         description: resolved.post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || undefined,
@@ -42,40 +38,35 @@ export default async function VideoDetailPage({ params }: PageProps) {
     const resolved = await resolveVideo(slug);
 
     if (!resolved) {
-        <NotFound />;
-        return null;
+        return <div className="text-center py-12 text-gray-400">Vidéo introuvable</div>;
     }
 
     const video = extractMediaItem(resolved.post, resolved.kind);
-
-    // Suggestions : autres vidéos (YouTube + hébergées confondues), en
-    // excluant la vidéo courante.
-    const { youtube, hosted } = await getAllChannelAndRadioMedia({ per_page: 12 });
-    const suggestions = [
-        ...youtube.map((p) => extractMediaItem(p, 'youtube')),
-        ...hosted.map((p) => extractMediaItem(p, 'video')),
-    ]
-        .filter((item) => item.slug !== slug)
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .slice(0, 6);
+    const cleanTitle = cleanText(video.title);
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-5xl">
-            <Link
-                href="/channel-tv-and-radio"
-                className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-6 transition"
-            >
-                <MdArrowBackIos className="w-3 h-3" />
-                Retour à la Chaîne TV / Radio
-            </Link>
+        <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
+            <div className="max-w-4xl mx-auto">
+                <Link
+                    href="/channel-tv-and-radio"
+                    className="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300 mb-6 transition"
+                >
+                    <MdArrowBackIos className="w-3 h-3" />
+                    Retour à la Chaîne TV / Radio
+                </Link>
 
-            <VideoPlayer video={video} />
+                <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                    <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                    <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                    <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+                </div>
 
-            {suggestions.length > 0 && (
-                <section className="mt-12">
-                    <MediaList items={suggestions} type="video" title="À voir aussi" />
-                </section>
-            )}
+                <h1 className="text-white text-3xl font-bold mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                    {cleanTitle}
+                </h1>
+
+                <VideoPlayer video={video} className="w-full" />
+            </div>
         </div>
     );
 }
