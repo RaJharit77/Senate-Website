@@ -31,4 +31,15 @@ export const footerLinks = [
             { label: "Espace Presse", path: "/press-area" },
         ],
     },
+    {
+        title: "Médias",
+        color: RED,
+        links: [
+            { label: "Vidéos", path: "/channel-tv-and-radio" },
+            { label: "Podcasts", path: "/channel-tv-and-radio/audio" },
+            { label: "Montages", path: "/channel-tv-and-radio/montages" },
+            { label: "Espace de presse", path: "/press-area" },
+            { label: "Galeries", path: "/others" },
+        ],
+    },
 ];

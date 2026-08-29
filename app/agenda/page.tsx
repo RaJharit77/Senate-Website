@@ -4,6 +4,8 @@ import { getPostsByCategory, getPageBySlug } from "@/lib/api";
 import type { WpPost } from "@/lib/types";
 import NotFoundPage from "../not-found";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AgendaPage() {
     const page = await getPageBySlug("ordre-du-jour").catch(() => null);
     const pageTitle = page?.title?.rendered || "Ordre du Jour";

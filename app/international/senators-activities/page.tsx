@@ -20,6 +20,8 @@ export const metadata = buildMetadata({
     path: "/international/senators-activities",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default async function SenatorsActivitiesPage() {
     await delay(500);
 

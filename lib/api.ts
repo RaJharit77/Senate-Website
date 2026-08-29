@@ -1,7 +1,15 @@
-import { CF7_CONTAINER_POST, CF7_FORM_ID, CF7_LOCALE, CF7_UNIT_TAG, CF7_VERSION } from "@/constants/constants";
+import { CAT_AUDIO, CAT_AUDIO_PODCAST, CAT_MONTAGE, CAT_VIDEO, CAT_VIDEO_HOSTED, CF7_CONTAINER_POST, CF7_FORM_ID, CF7_LOCALE, CF7_UNIT_TAG, CF7_VERSION, LIVE_STREAM_URL } from "@/constants/constants";
 import type { WpCategory, WpPost } from "@/lib/types";
+import type { LiveStatus } from "@/types/media";
 import { ContactFormFields, ContactFormResult, WP_ROOT } from "@/types/contactType";
 import { PresidentActivity } from "@/types/internationalType";
+import { extractYoutubeId } from "./media-mapper";
+import {
+    LIVE_YOUTUBE_CHANNEL_ID,
+    LIVE_YOUTUBE_API_KEY,
+    LIVE_FACEBOOK_VIDEO_URL,
+    LIVE_AUDIO_STREAM_URL,
+} from '@/constants/constants';
 
 const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
 
@@ -265,6 +273,251 @@ export async function searchSite(query: string): Promise<unknown[]> {
 // ----- Media (optional) -----
 export function getMedia(id: number) {
     return fetchAPI(`/media/${id}`, {}, true);
+}
+
+// ----- Médias (vidéos, audios) -----
+export function getVideos(params: Params = {}) {
+    return getPostsByCategory(CAT_VIDEO, { _embed: true, ...params });
+}
+
+export function getAudios(params: Params = {}) {
+    return getPostsByCategory(CAT_AUDIO, { _embed: true, ...params });
+}
+
+/**
+ * Récupère le flux live (URL) depuis une variable d'environnement ou un post.
+ * Pour l'instant, on utilise une variable d'environnement.
+ */
+export function getLiveStreamUrl(): string {
+    return LIVE_STREAM_URL;
+}
+
+/**
+ * Récupère tous les médias (vidéos + audios) triés par date.
+ * Utile pour la page d'accueil de la chaîne.
+ */
+export async function getAllMedia(params: Params = {}) {
+    const [videos, audios] = await Promise.all([
+        getVideos(params).catch(() => []),
+        getAudios(params).catch(() => []),
+    ]);
+    const all = [...videos, ...audios];
+    all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return all;
+}
+
+// ----- Chaîne TV/Radio : contenus additionnels -----
+// getVideos()/getAudios() ci-dessus couvrent CAT_VIDEO (YouTube, déjà en
+// prod) et CAT_AUDIO. Les fonctions suivantes couvrent les vidéos hébergées
+// et les montages ("mise en boîte") : catégories WP à créer, cf. constants.ts.
+// Tant que CAT_VIDEO_HOSTED / CAT_MONTAGE valent 0, on court-circuite l'appel
+// réseau (categories=0 renverrait potentiellement tous les posts non
+// catégorisés côté WP) et on retourne [] proprement.
+
+export function getVideosHosted(params: Params = {}) {
+    if (!CAT_VIDEO_HOSTED) return Promise.resolve<WpPost[]>([]);
+    return getPostsByCategory(CAT_VIDEO_HOSTED, { _embed: true, ...params });
+}
+
+export function getVideosHostedBySlug(params: Params = {}) {
+    return getPostsByCategorySlug('video-hosted', { _embed: true, ...params });
+}
+
+// Alias explicite : CAT_AUDIO_PODCAST est la même catégorie que CAT_AUDIO
+// pour l'instant (35). On garde deux noms de fonctions pour que l'appelant
+// exprime son intention (podcast vs audio générique), le jour où WP sépare
+// réellement les deux catégories il suffira de changer la constante.
+export function getPodcasts(params: Params = {}) {
+    if (!CAT_AUDIO_PODCAST) return getAudios(params);
+    return getPostsByCategory(CAT_AUDIO_PODCAST, { _embed: true, ...params });
+}
+
+// "Mise en boîte" : rediffusions/montages vidéo édités (par opposition au
+// direct et à la vidéo YouTube brute).
+export function getMontages(params: Params = {}) {
+    if (!CAT_MONTAGE) return Promise.resolve<WpPost[]>([]);
+    return getPostsByCategory(CAT_MONTAGE, { _embed: true, ...params });
+}
+
+interface YoutubeLiveInfo {
+    videoId: string;
+    title?: string;
+    startedAt?: string;
+}
+
+/**
+ * Interroge la YouTube Data API v3 (search.list) pour savoir si la chaîne
+ * configurée diffuse actuellement un direct.
+ *
+ * Coût & fréquence : search.list coûte 100 unités de quota par appel, sur un
+ * quota gratuit de 10 000 unités/jour (100 appels/jour max, tous usages
+ * confondus sur le projet Google Cloud). Le cache Next.js ci-dessous
+ * (revalidate: 900) limite les appels réels à un toutes les 15 minutes max,
+ * soit au pire 96 appels/jour (9 600 unités) : sous le plafond, avec une
+ * marge volontaire. Conséquence acceptée : un direct qui démarre peut
+ * mettre jusqu'à 15 minutes avant d'apparaître sur le site.
+ *
+ * Pour aller plus vite sans dépasser le quota gratuit : demander une
+ * augmentation (gratuite) sur console.cloud.google.com, ou remplacer cette
+ * recherche par une lecture de la playlist "uploads" de la chaîne
+ * (playlistItems.list + videos.list, 2 unités au lieu de 100) — plus
+ * rapide, mais implémentation plus complexe et moins officiellement
+ * garantie que search.list + eventType=live.
+ *
+ * Ne lève jamais d'exception : toute erreur (réseau, quota dépassé, clé ou
+ * ID de chaîne absents) est traitée comme "pas de direct détecté", pour que
+ * getLiveStatus se replie sur Facebook plutôt que de faire planter la page.
+ */
+async function checkYoutubeLive(): Promise<YoutubeLiveInfo | null> {
+    if (!LIVE_YOUTUBE_CHANNEL_ID || !LIVE_YOUTUBE_API_KEY) {
+        return null;
+    }
+
+    const url = new URL('https://www.googleapis.com/youtube/v3/search');
+    url.searchParams.set('part', 'snippet');
+    url.searchParams.set('channelId', LIVE_YOUTUBE_CHANNEL_ID);
+    url.searchParams.set('eventType', 'live');
+    url.searchParams.set('type', 'video');
+    url.searchParams.set('key', LIVE_YOUTUBE_API_KEY);
+
+    try {
+        const res = await fetch(url.toString(), {
+            next: { revalidate: 900 },
+        });
+
+        if (!res.ok) {
+            console.error(`[checkYoutubeLive] YouTube API a répondu ${res.status}`);
+            return null;
+        }
+
+        const data = await res.json();
+        const item = data.items?.[0];
+        if (!item?.id?.videoId) return null;
+
+        return {
+            videoId: item.id.videoId,
+            title: item.snippet?.title,
+            startedAt: item.snippet?.publishTime,
+        };
+    } catch (err) {
+        console.error('[checkYoutubeLive] Erreur réseau:', err);
+        return null;
+    }
+}
+
+/**
+ * Statut du direct pour un "kind" donné.
+ * - 'radio' : flux audio brut, indépendant de YouTube/Facebook.
+ * - 'tv'    : priorité à la détection réelle YouTube (checkYoutubeLive) ;
+ *             si rien n'est détecté, repli sur l'URL Facebook manuelle
+ *             (LIVE_FACEBOOK_VIDEO_URL). Si les deux sont en direct en même
+ *             temps, YouTube l'emporte — c'est la priorité demandée.
+ */
+export async function getLiveStatus(kind: 'tv' | 'radio'): Promise<LiveStatus> {
+    if (kind === 'radio') {
+        return {
+            isLive: Boolean(LIVE_AUDIO_STREAM_URL),
+            kind: 'radio',
+            streamUrl: LIVE_AUDIO_STREAM_URL,
+            sourceType: 'url',
+            title: 'Sénat Radio en direct',
+        };
+    }
+
+    const youtubeLive = await checkYoutubeLive();
+    if (youtubeLive) {
+        return {
+            isLive: true,
+            kind: 'tv',
+            streamUrl: `https://www.youtube.com/embed/${youtubeLive.videoId}?autoplay=1`,
+            sourceType: 'youtube',
+            title: youtubeLive.title || 'Sénat TV en direct',
+            startedAt: youtubeLive.startedAt,
+        };
+    }
+
+    if (LIVE_FACEBOOK_VIDEO_URL) {
+        return {
+            isLive: true,
+            kind: 'tv',
+            streamUrl: LIVE_FACEBOOK_VIDEO_URL,
+            sourceType: 'facebook',
+            title: 'Sénat TV en direct',
+        };
+    }
+
+    return {
+        isLive: false,
+        kind: 'tv',
+        streamUrl: '',
+        sourceType: 'url',
+        title: 'Sénat TV',
+    };
+}
+
+/**
+ * Agrège toutes les sources de la page Chaîne TV/Radio.
+ * Ajoute une recherche dans tous les posts pour détecter les vidéos YouTube
+ * même si elles ne sont pas dans CAT_VIDEO.
+ */
+export async function getAllChannelAndRadioMedia(params: Params = {}) {
+    const perPage = typeof params.per_page === 'number' ? params.per_page : 100;
+
+    // Récupération des catégories dédiées
+    const [youtubeCat, hosted, podcasts, montages] = await Promise.all([
+        getVideos(params).catch(() => []),
+        getVideosHosted(params).catch(() => []),
+        getPodcasts(params).catch(() => []),
+        getMontages(params).catch(() => []),
+    ]);
+
+    // Récupération de tous les posts (pour détecter les vidéos YouTube manquantes)
+    const allPosts = await getPosts({ per_page: perPage, _embed: true }).catch(() => []);
+
+    // Filtrer les posts qui contiennent une vidéo YouTube (via extractYoutubeId)
+    const extraYoutubePosts = allPosts.filter(post => {
+        if (youtubeCat.some(p => p.id === post.id)) return false; // déjà dans la catégorie
+        const content = post.content?.rendered || '';
+        return extractYoutubeId(content) !== '';
+    });
+
+    // Fusionner et dédoublonner
+    const youtube = [...youtubeCat, ...extraYoutubePosts];
+    // Dédoublonner par id
+    const youtubeUnique = Array.from(new Map(youtube.map(p => [p.id, p])).values());
+
+    return {
+        youtube: youtubeUnique,
+        hosted,
+        podcasts,
+        montages,
+    };
+}
+
+/**
+ * Récupère un média (vidéo YouTube, vidéo hébergée, podcast ou montage) par
+ * son slug, en interrogeant uniquement la catégorie WP correspondante — pas
+ * besoin de charger les 4 catégories pour retrouver un seul item.
+ * Retourne null si non trouvé ou si la catégorie n'existe pas encore côté WP
+ * (CAT_VIDEO_HOSTED / CAT_AUDIO_PODCAST / CAT_MONTAGE valant 0).
+ */
+export async function getMediaBySlug(
+    slug: string,
+    kind: 'youtube' | 'video' | 'audio' | 'montage'
+): Promise<WpPost | null> {
+    const fetcher =
+        kind === 'youtube' ? getVideos :
+            kind === 'video' ? getVideosHosted :
+                kind === 'audio' ? getPodcasts :
+                    getMontages;
+
+    try {
+        const results = await fetcher({ slug, _embed: true });
+        return results[0] || null;
+    } catch (err) {
+        console.error(`[getMediaBySlug] Erreur pour "${slug}" (${kind}):`, err);
+        return null;
+    }
 }
 
 // Partners

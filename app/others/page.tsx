@@ -7,6 +7,8 @@ export const metadata = buildMetadata({
     path: "/others",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default function OthersPage() {
     return <OthersClient />;
 }

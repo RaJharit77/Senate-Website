@@ -30,5 +30,6 @@ export const navItems = [
     },
     { label: "Espace Presse", path: "/press-area" },
     { label: "Autres", path: "/others" },
+    { label: "Médias", path: "/channel-tv-and-radio" },
     { label: "Contact", path: "/contact" },
 ];

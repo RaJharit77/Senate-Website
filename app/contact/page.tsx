@@ -11,6 +11,8 @@ export const metadata = buildMetadata({
     path: "/contact",
 });
 
+export const dynamic = 'force-dynamic';
+
 export default function ContactPage() {
     const breadcrumb = buildBreadcrumbJsonLd([
         { name: "Accueil", url: SITE_URL },
