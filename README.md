@@ -15,12 +15,14 @@
 Le projet s'appuie sur une stack front-end moderne orientée composants, alliant performance, accessibilité et animations fluides.
 
 ### Core Stack
+
 ![Next.js](https://img.shields.io/badge/Next.js-16.2.12-000000?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2.7-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-11.20.0-F69220?style=for-the-badge&logo=pnpm&logoColor=white)
 
 ### UI & Styling
+
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-4.16.2-000000?style=for-the-badge&logo=shadcnui&logoColor=white)
 ![Radix UI](https://img.shields.io/badge/Radix_UI-1.6.7-161618?style=for-the-badge&logo=radix-ui&logoColor=white)
@@ -30,6 +32,7 @@ Le projet s'appuie sur une stack front-end moderne orientée composants, alliant
 ![Lenis](https://img.shields.io/badge/Lenis-Smooth_Scroll-000000?style=for-the-badge)
 
 ### Tests & Qualité Code
+
 ![Cypress](https://img.shields.io/badge/Cypress-15.20.0-17202C?style=for-the-badge&logo=cypress&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-1.62.1-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
 ![ESLint](https://img.shields.io/badge/ESLint-10.8.0-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
@@ -51,13 +54,27 @@ Senate-Website/
 │   │   └── [slug]/
 │   ├── api/                      # Endpoints API (BFF)
 │   │   ├── chat/
+|   |   ├── live/
+|   |   ├── media/
+|   |   ├── proxy/
 │   │   ├── release/
 │   │   └── search/
+│   ├── channel-tv-and-radio/     # Vidéos youtube, live, podcast,...
+|   |   ├── audio/
+|   |   └── [slug]/
+|   |   ├── live/
+|   |   └── radio/
+|   |   └── tv/
+|   |   ├── montage/
+|   |   └── [slug]/
+|   |   ├── proxy/
+│   │   ├── video/
+│   │   └── [slug]/
 │   ├── contact/                  # Formulaire de contact et coordonnées
 │   ├── historical/               # Histoire du Sénat
 │   │   ├── history/
 │   │   └── [slug]/
-│   ├── international/            # Groupes d'amitié & diplomatie parlementaire
+│   ├── international/          # Groupes d'amitié & diplomatie parlementaire
 │   │   ├── inter-parliamentary-friendship-group/
 │   │   ├── presidents-activities/
 │   │   └── senators-activities/
@@ -106,6 +123,11 @@ Senate-Website/
 ├── cypress.config.ts             # Configuration de Cypress
 ├── eslint.config.mjs             # Configuration ESLint
 ├── next.config.ts                # Configuration Next.js (optimisation images, etc.)
+├── LICENSE                       # LICENSE
 ├── package.json                  # Scripts et dépendances du projet
 ├── playwright.config.ts          # Configuration de Playwright
+├── pnpm-lock.yaml                # Dépéndances pnpm
+├── pnpm-workspace.yaml           # workspace pnpm
+├── postcss.config.mjs            # Configuration de postcss
 └── tsconfig.json                 # Configuration TypeScript
+```
