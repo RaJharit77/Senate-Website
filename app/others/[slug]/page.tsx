@@ -72,7 +72,7 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
                 <div className="max-w-4xl mx-auto">
                     <Button
                         variant="ghost"
-                        className="text-gray-400 hover:text-white hover:bg-white/10 mb-6"
+                        className="text-cyan-400 hover:text-white hover:bg-white/10 mb-6"
                         asChild
                     >
                         <Link href="/others" className="inline-flex items-center gap-2">

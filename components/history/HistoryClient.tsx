@@ -168,7 +168,7 @@ export default function HistoricalClient() {
 
                             <p className="font-poppins text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed">
                                 Le Sénat a été mis en place au lendemain de la naissance de la République
-                                Malgache, le 14 octobre 1958 ; plus précisément après l&apos;adoption de
+                                Malagasy, le 14 octobre 1958 ; plus précisément après l&apos;adoption de
                                 la Constitution du 29 avril 1959. Cependant, il a été mis en veilleuse
                                 pendant près de 30 ans pour ne réapparaître qu&apos;en mai 2001. Formant
                                 le Parlement avec l&apos;Assemblée Nationale, le Sénat est actuellement

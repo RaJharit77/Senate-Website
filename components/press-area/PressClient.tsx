@@ -217,7 +217,7 @@ export default function PressClient() {
                         className="bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus-visible:ring-cyan-400/50"
                         style={{ fontFamily: "'Poppins', sans-serif" }}
                     />
-                    <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition flex items-center gap-2">
+                    <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition flex items-center gap-2">
                         <Search size={18} />
                         Rechercher
                     </Button>
