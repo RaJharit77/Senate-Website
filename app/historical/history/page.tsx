@@ -1,5 +1,6 @@
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { getPageBySlug } from "@/lib/api";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } from "@/lib/seo";
+import { FaArrowAltCircleDown, FaArrowAltCircleRight } from "react-icons/fa";
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +17,8 @@ export const metadata = buildMetadata({
     description: "L'histoire détaillée du Sénat de Madagascar, de sa création à nos jours : évolutions institutionnelles, législatures et personnalités marquantes.",
     path: "/historical/history",
 });
+
+const HERO_IMAGE = "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg";
 
 export default async function HistoricalStoryPage() {
     const page = await getPageBySlug("historique-2");
@@ -46,7 +50,7 @@ export default async function HistoricalStoryPage() {
         title: cleanTitle,
         description,
         url: `${SITE_URL}/historical/history`,
-        image: "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg", // image de couverture
+        image: HERO_IMAGE,
         datePublished: page.date,
         dateModified: page.modified ?? page.date,
         author: "Sénat de Madagascar",
@@ -60,7 +64,7 @@ export default async function HistoricalStoryPage() {
                 <div className="max-w-5xl mx-auto">
                     <Button
                         variant="ghost"
-                        className="text-gray-400 hover:text-white hover:bg-white/10 mb-6"
+                        className="text-cyan-400 hover:text-white hover:bg-white/10 mb-6"
                         asChild
                     >
                         <Link href="/historical" className="inline-flex items-center gap-2">
@@ -68,6 +72,43 @@ export default async function HistoricalStoryPage() {
                             Retour à l&apos;histoire
                         </Link>
                     </Button>
+
+                    <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl mb-8 bg-gray-900">
+                        <div className="relative w-full h-[60vh] md:h-[70vh]">
+                            <Image
+                                src={HERO_IMAGE}
+                                alt="Le Sénat de Madagascar"
+                                fill
+                                className="object-cover"
+                                //sizes="100vw"
+                                quality={90}
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/60 to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-r from-black/30 via-transparent to-black/30" />
+
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 md:p-10">
+                                <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                                    <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                                    <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                                    <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+                                </div>
+
+                                <h1 className="text-gray-100 text-3xl sm:text-4xl md:text-6xl font-bold font-poppins max-w-3xl drop-shadow-lg leading-tight">
+                                    {cleanTitle}
+                                </h1>
+
+                                <p className="text-gray-300 text-base sm:text-lg md:text-xl mt-4 max-w-2xl font-poppins drop-shadow-md font-light tracking-wide">
+                                    Découvrez l&apos;histoire complète du Sénat de Madagascar
+                                </p>
+
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-cyan-300 text-sm font-poppins animate-bounce">
+                                    <span><FaArrowAltCircleDown /></span>
+                                    <span className="hidden sm:inline">Défiler</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <Card className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden">
                         <CardContent className="p-6 md:p-8">
@@ -77,9 +118,6 @@ export default async function HistoricalStoryPage() {
                                     <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
                                     <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                                 </div>
-                                <h1 className="text-white text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                                    {cleanTitle}
-                                </h1>
                                 <div className="flex items-center gap-3 mt-3 text-gray-400 text-sm">
                                     <Calendar className="w-4 h-4" />
                                     <span>Mis à jour le {date}</span>
@@ -108,13 +146,14 @@ export default async function HistoricalStoryPage() {
                                 dangerouslySetInnerHTML={{ __html: page.content.rendered }}
                             />
 
-                            <div className="mt-8 flex justify-center">
+                            <div className="mt-7 flex justify-center">
                                 <Button
                                     asChild
-                                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8 py-3 rounded-full transition shadow-lg hover:shadow-emerald-500/30"
+                                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8 py-4 rounded-lg transition shadow-lg hover:shadow-emerald-500/30"
                                 >
                                     <Link href="/historical">
                                         Explorer les républiques
+                                        <span className="inline-block"><FaArrowAltCircleRight /></span>
                                     </Link>
                                 </Button>
                             </div>

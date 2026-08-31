@@ -28,17 +28,18 @@ export const footerLinks = [
             { label: "Relations internationales", path: "/international" },
             { label: "Groupe d'amitié", path: "/international/inter-parliamentary-friendship-group" },
             { label: "Coopération APF", path: "/international" },
-            { label: "Espace Presse", path: "/press-area" },
+            
         ],
     },
     {
         title: "Médias",
         color: RED,
         links: [
+            { label: "Espace de presse", path: "/press-area" },
             { label: "Vidéos", path: "/channel-tv-and-radio" },
             { label: "Podcasts", path: "/channel-tv-and-radio/audio" },
-            { label: "Montages", path: "/channel-tv-and-radio/montages" },
-            { label: "Espace de presse", path: "/press-area" },
+            { label: "Live TV", path: "/channel-tv-and-radio/tv" },
+            { label: "Live Radio", path: "/channel-tv-and-radio/radio" },
             { label: "Galeries", path: "/others" },
         ],
     },
