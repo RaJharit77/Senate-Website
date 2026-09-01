@@ -1,5 +1,3 @@
-// app/channel-tv-and-radio/video/[slug]/page.tsx
-
 import { getMediaBySlug } from '@/lib/api';
 import { extractMediaItem } from '@/lib/media-mapper';
 import VideoPlayer from '@/components/media/VideoPlayer';
@@ -8,7 +6,7 @@ import { MdArrowBackIos } from 'react-icons/md';
 import { Metadata } from 'next';
 import { EMERALD, RED, WHITE } from '@/utils/colors';
 import { cleanText } from '@/utils/utility';
-import { notFound } from 'next/navigation';
+import NotFound from '@/app/not-found';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -41,7 +39,7 @@ export default async function VideoDetailPage({ params }: PageProps) {
     const resolved = await resolveVideo(slug);
 
     if (!resolved) {
-        notFound();
+        <NotFound />;
         return null;
     }
 
