@@ -12,6 +12,8 @@ interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 async function resolveVideo(slug: string) {
     const youtubePost = await getMediaBySlug(slug, 'youtube');
     if (youtubePost) return { post: youtubePost, kind: 'youtube' as const };
