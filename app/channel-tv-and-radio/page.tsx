@@ -14,10 +14,6 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function ChannelAndRadioPage() {
-    // getLiveStatus('tv') interroge désormais la YouTube Data API (voir
-    // lib/api.ts) : la fonction est asynchrone, d'où l'await. Les deux
-    // appels sont indépendants (tv et radio n'ont aucune dépendance l'un
-    // envers l'autre) : Promise.all évite de les attendre en série.
     const [liveTv, liveRadio] = await Promise.all([
         getLiveStatus('tv'),
         getLiveStatus('radio'),
@@ -33,7 +29,6 @@ export default async function ChannelAndRadioPage() {
                         Directs
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Bouton TV */}
                         <Link href="/channel-tv-and-radio/live/tv" className="block">
                             <Card className="bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/20 transition-colors cursor-pointer">
                                 <CardContent className="p-6 flex items-center justify-between">
@@ -60,7 +55,6 @@ export default async function ChannelAndRadioPage() {
                             </Card>
                         </Link>
 
-                        {/* Bouton Radio */}
                         <Link href="/channel-tv-and-radio/live/radio" className="block">
                             <Card className="bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/20 transition-colors cursor-pointer">
                                 <CardContent className="p-6 flex items-center justify-between">

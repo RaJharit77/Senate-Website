@@ -13,9 +13,6 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function LiveRadioPage() {
-    // getLiveStatus est désormais asynchrone pour tous les "kind" (même si
-    // la branche 'radio' ne fait aucun appel réseau elle-même) : la
-    // signature de la fonction est partagée avec 'tv', qui lui en a besoin.
     const liveRadio = await getLiveStatus('radio');
 
     return (

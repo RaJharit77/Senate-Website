@@ -123,7 +123,7 @@ Senate-Website/
 ├── cypress.config.ts             # Configuration de Cypress
 ├── eslint.config.mjs             # Configuration ESLint
 ├── next.config.ts                # Configuration Next.js (optimisation images, etc.)
-├── LICENSE                       # LICENSE
+├── LICENSE                       # LICENCE MIT
 ├── package.json                  # Scripts et dépendances du projet
 ├── playwright.config.ts          # Configuration de Playwright
 ├── pnpm-lock.yaml                # Dépéndances pnpm

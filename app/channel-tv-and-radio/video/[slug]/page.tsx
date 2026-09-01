@@ -6,10 +6,13 @@ import { MdArrowBackIos } from 'react-icons/md';
 import { Metadata } from 'next';
 import { EMERALD, RED, WHITE } from '@/utils/colors';
 import { cleanText } from '@/utils/utility';
+import { notFound } from 'next/navigation';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
+
+export const dynamic = 'force-dynamic';
 
 async function resolveVideo(slug: string) {
     const youtubePost = await getMediaBySlug(slug, 'youtube');
@@ -38,7 +41,8 @@ export default async function VideoDetailPage({ params }: PageProps) {
     const resolved = await resolveVideo(slug);
 
     if (!resolved) {
-        return <div className="text-center py-12 text-gray-400">Vidéo introuvable</div>;
+        notFound();
+        return null;
     }
 
     const video = extractMediaItem(resolved.post, resolved.kind);

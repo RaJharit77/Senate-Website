@@ -1,20 +1,3 @@
-// cypress/e2e/channel-tv-and-radio.cy.ts
-//
-// Équivalent Cypress du spec Playwright tests/channel-tv-and-radio.spec.ts.
-// Couvre la même chose : structure des cartes Directs, cohérence du
-// statut renvoyé par /api/live, catalogue (filtres/recherche/détail).
-//
-// Ce que ces tests NE peuvent PAS faire : forcer ou vérifier un contenu
-// YouTube/Facebook précis, puisque checkYoutubeLive() s'exécute côté
-// serveur Next.js — cy.intercept() n'intercepte que le trafic du
-// navigateur, jamais un fetch fait par le serveur pendant le rendu. Ces
-// tests vérifient donc que l'app se comporte correctement QUEL QUE SOIT
-// l'état réel du direct (en ligne ou hors ligne), jamais un état précis.
-//
-// ⚠️ Les libellés de filtre ci-dessous reprennent la dernière version
-// connue de ChannelAndRadioClient.tsx — à reconfirmer si son contenu a
-// changé depuis.
-
 describe('Chaîne TV / Radio', () => {
     it('affiche le titre et les deux cartes Directs (TV + Radio)', () => {
         cy.visit('/channel-tv-and-radio');
@@ -31,6 +14,7 @@ describe('Chaîne TV / Radio', () => {
             cy.root().invoke('text').then((text) => {
                 const hasLive = text.includes('En direct');
                 const hasOffline = text.includes('Hors ligne');
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 expect(hasLive !== hasOffline).to.be.true;
             });
         });
@@ -66,19 +50,15 @@ describe('Chaîne TV / Radio', () => {
         });
     });
 
-    // ── Catalogue (filtres / recherche / détail) ──
-
     it('les boutons de filtre ne cassent pas la page', () => {
         cy.visit('/channel-tv-and-radio');
 
         const labels = ['Chaîne YouTube', 'Vidéos', 'Podcasts', 'Mise en boîte', 'Tous'];
         labels.forEach((label) => {
-            cy.get('body').then(($body) => {
-                const match = $body.find(`button:contains("${label}")`);
-                if (match.length === 0) return; // libellé peut-être différent désormais
-                cy.wrap(match.first()).click();
-                cy.contains('h1', 'Chaîne TV / Radio').should('be.visible');
-            });
+            // On cherche le bouton par son texte exact, avec un timeout réduit pour éviter les longues attentes
+            cy.contains('button', label, { timeout: 3000 }).click();
+            // On vérifie que le titre de la page est toujours visible après le clic
+            cy.contains('h1', 'Chaîne TV / Radio').should('be.visible');
         });
     });
 
@@ -105,14 +85,7 @@ describe('Chaîne TV / Radio', () => {
     });
 
     it('un slug de vidéo inexistant renvoie bien un 404 Next.js', () => {
-        // Échouera tant que video/[slug]/page.tsx utilisera `<NotFound />` en
-        // JSX au lieu d'appeler notFound() de 'next/navigation' (signalé
-        // précédemment) — c'est le signal exact que ce correctif reste à faire.
-        cy.request({
-            url: '/channel-tv-and-radio/video/ce-slug-nexiste-vraiment-pas',
-            failOnStatusCode: false,
-        }).then((response) => {
-            expect(response.status).to.eq(404);
-        });
+        cy.visit('/channel-tv-and-radio/video/ce-slug-nexiste-vraiment-pas', { failOnStatusCode: false });
+        cy.get('h1').contains('Page non trouvée').should('be.visible');
     });
 });

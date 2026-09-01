@@ -13,10 +13,6 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function LiveTvPage() {
-    // getLiveStatus('tv') interroge la YouTube Data API puis, à défaut, lit
-    // LIVE_FACEBOOK_VIDEO_URL — voir lib/api.ts pour le détail de la
-    // priorité. D'où l'await : ce n'est plus une simple lecture de variable
-    // d'environnement synchrone.
     const liveTv = await getLiveStatus('tv');
 
     return (

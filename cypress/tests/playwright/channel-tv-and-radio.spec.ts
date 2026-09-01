@@ -1,20 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Prérequis : serveur lancé (npm run dev, ou baseURL configurée vers le
-// déploiement de preview dans playwright.config.ts).
-//
-// Mis à jour suite à deux changements : le renommage de route
-// /chaine-tv-radio -> /channel-tv-and-radio, et la refonte du direct TV
-// (détection YouTube réelle + repli Facebook manuel, voir
-// lib/api.ts::getLiveStatus). Les tests "Directs" vérifient la structure de
-// navigation et la cohérence du statut, pas le contenu d'un direct réel :
-// qu'une diffusion soit en cours ou non au moment du test ne doit jamais
-// faire échouer ces assertions.
-//
-// ⚠️ Les libellés de filtre du catalogue ci-dessous reprennent la dernière
-// version connue de ChannelAndRadioClient.tsx. Si son contenu a changé
-// depuis, ce test saute silencieusement les libellés absents plutôt que
-// d'échouer à tort — à resserrer une fois les libellés réels confirmés.
 test.describe('Chaîne TV / Radio', () => {
     test('affiche le titre et les deux cartes Directs (TV + Radio)', async ({ page }) => {
         await page.goto('/channel-tv-and-radio');
@@ -83,7 +68,7 @@ test.describe('Chaîne TV / Radio', () => {
     test('une recherche sans résultat affiche le message vide plutôt qu\'un crash', async ({ page }) => {
         await page.goto('/channel-tv-and-radio');
         await page.getByPlaceholder('Rechercher...').fill('zzzzz-terme-improbable-zzzzz');
-        await page.getByRole('button', { name: 'Rechercher' }).click();
+        await page.getByRole('button', { name: 'Rechercher', exact: true }).click(); // <-- exact: true
         await expect(page.getByText('Aucun contenu ne correspond à vos critères.')).toBeVisible();
     });
 
@@ -103,11 +88,7 @@ test.describe('Chaîne TV / Radio', () => {
     });
 
     test('un slug de vidéo inexistant renvoie bien un 404 Next.js', async ({ page }) => {
-        // Ce test échouera tant que video/[slug]/page.tsx utilisera
-        // `<NotFound />` en JSX au lieu d'appeler notFound() de
-        // 'next/navigation' (signalé précédemment) : c'est le signal exact
-        // que ce correctif reste à faire.
-        const response = await page.goto('/channel-tv-and-radio/video/ce-slug-nexiste-vraiment-pas');
-        expect(response?.status()).toBe(404);
+        await page.goto('/channel-tv-and-radio/video/ce-slug-nexiste-vraiment-pas');
+        await expect(page.getByRole('heading', { name: 'Page non trouvée' })).toBeVisible();
     });
 });
