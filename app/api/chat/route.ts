@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY_SENAT_DE_MADAGASCAR;
 const MODEL = 'openai/gpt-oss-20b';
+// const MODEL = 'qwen-3.5-9b';
 
 type Language = 'fr' | 'mg';
 
