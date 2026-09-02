@@ -54,7 +54,7 @@ export default function Chatbot() {
             <button
                 data-testid="chatbot-toggle"
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition flex items-center justify-center"
+                className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition flex items-center justify-center cursor-pointer"
             >
                 {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
             </button>
