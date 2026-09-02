@@ -9,11 +9,6 @@ import type { MediaItem } from '@/types/media';
 // GET /api/media?type=audio     -> uniquement les podcasts
 // GET /api/media?type=montage   -> uniquement les montages ("mise en boîte")
 // GET /api/media?per_page=20    -> transmis tel quel à WordPress pour chaque catégorie
-//
-// Remplace l'ancienne route statique qui lisait data/media.json : les
-// données viennent maintenant de WordPress via lib/api.ts, mais la forme de
-// réponse (MediaItem[]) reste identique pour ne rien casser côté clients
-// existants de cette route.
 export async function GET(req: NextRequest) {
     const typeFilter = req.nextUrl.searchParams.get('type');
     const perPageParam = req.nextUrl.searchParams.get('per_page');

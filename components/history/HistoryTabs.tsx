@@ -69,8 +69,8 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
                             key={tab.id}
                             onClick={() => handleTabClick(tab.id)}
                             className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${isActive
-                                ? "text-white shadow-lg scale-105"
-                                : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80"
+                                ? "text-white shadow-lg scale-105 cursor-pointer"
+                                : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80 cursor-pointer"
                                 }`}
                             style={{
                                 backgroundColor: isActive ? tab.color : "transparent",
