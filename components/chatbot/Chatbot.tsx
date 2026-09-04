@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChatbot } from '@/hooks/useChatbot';
 
 type Language = 'fr' | 'mg';
+
+const MARKDOWN_LINK_RE = /\[([^\]]+)\]\((\/[^\s)]+)\)/g;
 
 const WELCOME_MESSAGES: Record<Language, string> = {
     fr: 'Bonjour ! Je suis l’assistant du Sénat de Madagascar. Comment puis-je vous aider ?',
@@ -49,6 +52,41 @@ export default function Chatbot() {
         setInput('');
     };
 
+    // Découpe le texte d'un message autour des liens [Label](/chemin) et
+    // rend chaque lien comme un <Link> Next.js cliquable, plutôt que
+    // d'afficher un chemin brut inerte dans la bulle de chat. Ferme le
+    // widget au clic pour ne pas laisser le panneau flottant recouvrir la
+    // page de destination.
+    const renderMessageContent = (content: string) => {
+        const parts: React.ReactNode[] = [];
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+        let key = 0;
+        const linkRegex = new RegExp(MARKDOWN_LINK_RE.source, MARKDOWN_LINK_RE.flags);
+
+        while ((match = linkRegex.exec(content)) !== null) {
+            const [full, label, href] = match;
+            if (match.index > lastIndex) {
+                parts.push(content.slice(lastIndex, match.index));
+            }
+            parts.push(
+                <Link
+                    key={`link-${key++}`}
+                    href={href}
+                    onClick={() => setIsOpen(false)}
+                    className="underline decoration-cyan-400 text-cyan-300 hover:text-cyan-200 font-medium"
+                >
+                    {label}
+                </Link>
+            );
+            lastIndex = match.index + full.length;
+        }
+        if (lastIndex < content.length) {
+            parts.push(content.slice(lastIndex));
+        }
+        return parts;
+    };
+
     return (
         <>
             <button
@@ -68,7 +106,7 @@ export default function Chatbot() {
                         className="fixed bottom-20 right-4 left-4 sm:left-auto z-50 w-[calc(100%-2rem)] sm:w-96 max-h-[80vh] sm:max-h-125 bg-dark/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden font-poppins"
                     >
                         <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
-                            <h3 className="font-semibold text-cyan-500">Assistant du Sénat de Madagascar</h3>
+                            <h3 className="font-semibold text-cyan-500">Assistant virtuel du Sénat de Madagascar</h3>
                             <div className="flex rounded-lg border border-white/20 overflow-hidden text-xs shrink-0">
                                 <button
                                     type="button"
@@ -101,7 +139,7 @@ export default function Chatbot() {
                                         className={`max-w-[80%] p-3 rounded-xl ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-white/10 text-gray-200'
                                             }`}
                                     >
-                                        {msg.content}
+                                        {renderMessageContent(msg.content)}
                                     </div>
                                 </div>
                             ))}
