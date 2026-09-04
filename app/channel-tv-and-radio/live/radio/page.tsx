@@ -2,13 +2,14 @@ import { getLiveStatus } from '@/lib/api';
 import LivePlayer from '@/components/media/LivePlayer';
 import Link from 'next/link';
 import { MdArrowBackIos } from 'react-icons/md';
-import { Metadata } from 'next';
 import { EMERALD, RED, WHITE } from '@/utils/colors';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata ({
     title: 'Sénat Radio - Direct - Sénat de Madagascar',
     description: 'Écoutez le direct de la radio du Sénat de Madagascar.',
-};
+    path: "/channel-tv-and-radio/live/radio",
+});
 
 export const dynamic = 'force-dynamic';
 

@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
     title: "Autres activités du Sénat",
-    description: "Découvrez les vidéos, les actualités diverses, les publications et les autres activités du Sénat de Madagascar.",
+    description: "Découvrez les galéries, les actualités diverses, les publications et les autres activités du Sénat de Madagascar.",
     path: "/others",
 });
 

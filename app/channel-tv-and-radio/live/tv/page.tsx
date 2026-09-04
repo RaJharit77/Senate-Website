@@ -2,13 +2,14 @@ import { getLiveStatus } from '@/lib/api';
 import LivePlayer from '@/components/media/LivePlayer';
 import Link from 'next/link';
 import { MdArrowBackIos } from 'react-icons/md';
-import { Metadata } from 'next';
+import { buildMetadata } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from '@/utils/colors';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata ({
     title: 'Sénat TV - Direct - Sénat de Madagascar',
     description: 'Regardez le direct de la chaîne TV du Sénat de Madagascar.',
-};
+    path: "/channel-tv-and-radio/live/tv",
+});
 
 export const dynamic = 'force-dynamic';
 
