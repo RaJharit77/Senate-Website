@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     return buildMetadata({
         title: `${title} – Espace Presse du Sénat`,
-        description,
+        description: cleanText(description),
         path: `/press-area/news/${slug}`,
         image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
     });
@@ -40,6 +40,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     });
 
     const cleanTitle = cleanText(post.title.rendered);
+    const cleanExcerpt = post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || '';
 
     const breadcrumb = buildBreadcrumbJsonLd([
         { name: "Accueil", url: SITE_URL },
@@ -49,7 +50,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
     const articleJsonLd = buildArticleJsonLd({
         title: cleanTitle,
-        description: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || `Article de presse du Sénat.`,
+        description: cleanText(cleanExcerpt),
         url: `${SITE_URL}/press-area/news/${slug}`,
         image: imageUrl || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
         datePublished: post.date,
@@ -81,19 +82,24 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             className="text-white text-3xl md:text-4xl font-bold"
                             style={{ fontFamily: "'Poppins', sans-serif" }}
                         >
-                            {post.title.rendered}
+                            {cleanTitle}
                         </h1>
                         <div className="flex items-center gap-3 mt-3 text-gray-400 text-sm">
                             <Calendar size={16} />
                             <span>{date}</span>
                         </div>
+                        {cleanExcerpt && (
+                            <p className="mt-4 text-gray-300 text-base leading-relaxed">
+                                {cleanText(cleanExcerpt)}
+                            </p>
+                        )}
                     </div>
 
                     {imageUrl && (
                         <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl">
                             <Image
                                 src={imageUrl}
-                                alt={post.title.rendered}
+                                alt={cleanTitle}
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, 50vw"

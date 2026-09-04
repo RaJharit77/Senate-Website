@@ -25,9 +25,6 @@ import { cleanText } from "@/utils/utility";
 import { MdArrowRightAlt } from "react-icons/md";
 import { perPage } from "@/constants/constants";
 
-// Filtre de la page Chaîne TV/Radio : mêmes valeurs que MediaType, plus
-// "tous". On réutilise le pattern de CategoryType (types/categoryType.ts)
-// sans en dépendre directement puisque les catégories couvertes diffèrent.
 type ChannelFilter = "tous" | MediaType;
 
 const FILTER_LABELS: Record<ChannelFilter, string> = {
@@ -40,11 +37,8 @@ const FILTER_LABELS: Record<ChannelFilter, string> = {
     live: "Live",
 };
 
-// Le direct n'est pas un contenu qu'on filtre/liste ici (il a sa propre
-// section dédiée sur la page principale) : on ne propose pas ce filtre.
 const FILTER_OPTIONS: ChannelFilter[] = ["tous", "youtube", "video", "facebook", "audio", "montage"];
 
-// Chemin de la page de détail selon le type de média.
 function detailHref(item: MediaItem): string {
     const segment = item.mediaType === "youtube" ? "video" : item.mediaType;
     return `/channel-tv-and-radio/${segment}/${item.slug}`;
@@ -203,8 +197,6 @@ export default function ChannelAndRadioClient() {
                                 const Icon = mediaIcon(item.mediaType);
                                 const isAudio = item.mediaType === "audio";
 
-                                // Vignette : miniature WP si présente, sinon
-                                // fallback YouTube via l'ID vidéo.
                                 const imageUrl =
                                     item.thumbnail ||
                                     (item.mediaType === "youtube" && item.youtubeId
