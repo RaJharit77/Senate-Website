@@ -4,12 +4,13 @@ import ChannelAndRadioClient from '@/components/media/ChannelAndRadioClient';
 import { Tv, Radio, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Metadata } from 'next';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata ({
     title: 'Chaîne TV / Radio - Sénat de Madagascar',
     description: 'Retrouvez les vidéos, podcasts, montages et le direct du Sénat de Madagascar.',
-};
+    path: "/channel-tv-and-radio",
+});
 
 export const dynamic = 'force-dynamic';
 
