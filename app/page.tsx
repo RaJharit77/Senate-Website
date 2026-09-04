@@ -48,7 +48,7 @@ export default async function HomePage() {
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
         image: imageUrl,
         color: REDS,
-        link: `/actualite/${item.slug}`,
+        link: `/press-area/news/${item.slug}`,
       };
     })
   );
@@ -74,7 +74,7 @@ export default async function HomePage() {
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
         image: imageUrl,
         featured: true,
-        link: `/actualite/${item.slug}`,
+        link:  `/press-area/news/${item.slug}`,
         index,
       };
     })
@@ -101,7 +101,7 @@ export default async function HomePage() {
         excerpt: item.excerpt?.rendered?.replace(/<[^>]+>/g, "") || "",
         image: imageUrl,
         featured: false,
-        link: `/actualite/${item.slug}`,
+        link: `/press-area/news/${item.slug}`,
       };
     })
   );
