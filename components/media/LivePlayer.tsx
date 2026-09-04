@@ -69,6 +69,7 @@ function LivePlayerContent({
                 </div>
             );
         }
+
         if (sourceType === 'youtube') {
             return (
                 <div className="mt-4 aspect-video">
@@ -84,7 +85,7 @@ function LivePlayerContent({
                 </div>
             );
         }
-        // 'url' : flux vidéo ou audio
+
         if (kind === 'tv') {
             return (
                 <video
