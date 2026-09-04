@@ -43,11 +43,11 @@ function LivePlayerContent({
     const Icon = kind === 'tv' ? Tv : Radio;
 
     const renderPlayer = () => {
-        // Si pas d'URL, on affiche un message
         if (!streamUrl) {
             return (
                 <div className="mt-4 text-center text-gray-400">
-                    Aucun flux disponible pour le moment.
+                    <p className="text-lg">Aucun flux disponible pour le moment.</p>
+                    <p className="text-sm">Revenez plus tard pour suivre le direct.</p>
                 </div>
             );
         }
@@ -150,14 +150,16 @@ function LivePlayerContent({
                 {renderPlayer()}
 
                 {!streamUrl && (
-                    <p className="text-sm text-yellow-300/90 mt-3">
-                        ⚠️ Veuillez configurer l&apos;URL du live dans les variables d&apos;environnement.
-                    </p>
+                    <div className="mt-3 text-sm text-yellow-300/90">
+                        <p>⚠️ Le direct n&apos;est pas encore disponible.</p>
+                        <p className="text-xs text-gray-400">Si le problème persiste, contactez l&apos;équipe technique.</p>
+                    </div>
                 )}
                 {hasError && (
-                    <p className="text-sm text-red-300/90 mt-3">
-                        ⚠️ Le flux est momentanément indisponible. Réessayez dans quelques instants.
-                    </p>
+                    <div className="mt-3 text-sm text-red-300/90">
+                        <p>⚠️ Une erreur est survenue lors de la lecture du flux.</p>
+                        <p className="text-xs text-gray-400">Veuillez réessayer dans quelques instants.</p>
+                    </div>
                 )}
             </CardContent>
         </Card>
