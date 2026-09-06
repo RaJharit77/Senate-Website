@@ -40,8 +40,7 @@ export default function Chatbot() {
     const handleLanguageChange = (lang: Language) => {
         if (lang === language) return;
         setLanguage(lang);
-        // On repart sur une conversation propre dans la nouvelle langue,
-        // pour éviter tout mélange de contexte entre les deux langues.
+        // Repart sur une conversation propre pour éviter le mélange de langues.
         resetConversation([{ role: 'assistant', content: WELCOME_MESSAGES[lang] }]);
     };
 
@@ -52,11 +51,7 @@ export default function Chatbot() {
         setInput('');
     };
 
-    // Découpe le texte d'un message autour des liens [Label](/chemin) et
-    // rend chaque lien comme un <Link> Next.js cliquable, plutôt que
-    // d'afficher un chemin brut inerte dans la bulle de chat. Ferme le
-    // widget au clic pour ne pas laisser le panneau flottant recouvrir la
-    // page de destination.
+    // Transforme [Label](/chemin) en lien cliquable ; ferme le widget au clic.
     const renderMessageContent = (content: string) => {
         const parts: React.ReactNode[] = [];
         let lastIndex = 0;

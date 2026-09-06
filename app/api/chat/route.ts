@@ -19,19 +19,15 @@ interface SiteMapEntry {
     level: number;
 }
 
-// Chemin de la recherche interne du site (voir potentialAction/SearchAction dans layout.tsx,
-// et searchSite() dans lib/api.ts qui interroge cette même route côté client).
+// Recherche interne du site (cf. searchSite() dans lib/api.ts).
 const SEARCH_PATH = '/search?q=';
 const SEARCH_API_PATH = '/api/search';
 
 /* ------------------------------------------------------------------------ */
-/* PLAN DU SITE (structure : quelles pages existent)                        */
+/* PLAN DU SITE                                                             */
 /* ------------------------------------------------------------------------ */
 
-/**
- * Aplati navItems (menu principal, avec ses sous-menus) en une liste plate d'entrées.
- * C'est la source PRIORITAIRE : en cas de conflit avec footerLinks, ces entrées gagnent.
- */
+/** Aplatit navItems en liste plate. Prioritaire sur footerLinks. */
 function flattenNavItems(items: typeof navItems): SiteMapEntry[] {
     const entries: SiteMapEntry[] = [];
     for (const item of items) {
@@ -45,12 +41,7 @@ function flattenNavItems(items: typeof navItems): SiteMapEntry[] {
     return entries;
 }
 
-/**
- * Ajoute les entrées du footer qui apportent une PAGE RÉELLEMENT NOUVELLE
- * et ignore silencieusement les doublons (même libellé, ou même chemin déjà
- * couvert), pour éviter d'envoyer au modèle un plan avec des chemins
- * contradictoires pour un même libellé.
- */
+/** Ajoute les pages du footer absentes du menu, sans doublon de libellé/chemin. */
 function mergeFooterEntries(base: SiteMapEntry[], sections: typeof footerLinks): SiteMapEntry[] {
     const labelsSeen = new Set(base.map((e) => e.label.trim().toLowerCase()));
     const pathsSeen = new Set(base.map((e) => e.path));
@@ -74,20 +65,16 @@ function formatSiteMap(entries: SiteMapEntry[]): string {
     return entries.map((e) => `${'    '.repeat(e.level)}- ${e.label} : ${e.path}`).join('\n');
 }
 
-// Plan du site calculé UNE SEULE FOIS au chargement du module, directement à partir
-// des vraies sources de navigation. Toute page ajoutée à l'un de ces deux fichiers
-// apparaît automatiquement dans les réponses du chatbot.
+// Calculé une fois au chargement, à jour automatiquement.
 const SITE_MAP_ENTRIES: SiteMapEntry[] = flattenNavItems(navItems);
 SITE_MAP_ENTRIES.push(...mergeFooterEntries(SITE_MAP_ENTRIES, footerLinks));
 const SITE_MAP = formatSiteMap(SITE_MAP_ENTRIES);
 
 /* ------------------------------------------------------------------------ */
-/* CONTENU RÉEL (quoi dire : extraits d'actualités, textes de lois, etc.)   */
+/* CONTENU RÉEL                                                             */
 /* ------------------------------------------------------------------------ */
 
-// Forme exacte renvoyée par app/api/search/route.ts (UnifiedSearchResult).
-// excerpt est déjà nettoyé côté API (HTML retiré, entités décodées via
-// cleanText()) : pas besoin de le retraiter ici.
+// Forme renvoyée par /api/search (UnifiedSearchResult), excerpt déjà nettoyé.
 interface SearchApiResult {
     id: string;
     title: string;
@@ -105,9 +92,7 @@ interface ContentSnippet {
     source: string;
 }
 
-// Résultats qui n'apportent aucun contenu réel (juste un libellé de menu qui
-// matche la requête) : déjà couverts par SITE_MAP, on ne les fait pas
-// concurrencer de vrais extraits dans le budget MAX_SNIPPETS.
+// Navigation pure, sans contenu réel : déjà couverte par SITE_MAP.
 const CONTENT_SOURCES_EXCLUDED = new Set(['Navigation du site']);
 
 const CONTENT_SEARCH_TIMEOUT_MS = 3000;
@@ -127,16 +112,10 @@ function toContentSnippet(r: SearchApiResult): ContentSnippet {
 /* ------------------------------------------------------------------------ */
 /* EXTRACTION DE MOTS-CLÉS                                                  */
 /* ------------------------------------------------------------------------ */
-// /api/search transmet la requête telle quelle à WordPress, qui découpe la
-// chaîne en mots et exige (comportement par défaut de WP_Query, hors mode
-// "sentence") que TOUS les mots apparaissent dans le titre/extrait/contenu.
-// Envoyer une phrase conversationnelle brute ("Est-ce que tu peux donner un
-// extrait de lois ?") fait donc échouer la recherche entière : aucun article
-// ne contient littéralement "tu", "peux" ou "donner". On extrait ici les
-// mots réellement porteurs de sens avant d'interroger /api/search.
+// WordPress exige que tous les mots soient présents (mode AND) : on retire
+// les mots sans valeur de recherche avant d'interroger /api/search.
 
-// Mots grammaticaux (articles, pronoms, auxiliaires, interrogatifs...) qui
-// ne décrivent jamais le SUJET recherché.
+// Mots sans valeur de recherche (articles, pronoms, verbes de requête...).
 const GRAMMATICAL_STOPWORDS = new Set([
     'le', 'la', 'les', 'un', 'une', 'des', 'de', 'du', 'au', 'aux',
     'ce', 'cet', 'cette', 'ces', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes',
@@ -166,12 +145,7 @@ const GRAMMATICAL_STOPWORDS = new Set([
     'tout', 'toute', 'tous', 'toutes', 'quelque', 'quelques', 'aujourd', 'hui',
 ]);
 
-// Mots qui décrivent le TYPE de réponse voulu (un résumé, un extrait...)
-// plutôt que le sujet recherché. Les garder nuit au rappel : ils
-// n'apparaissent presque jamais tels quels dans le contenu réel des pages.
-// "article" est volontairement exclu par prudence bien qu'ambigu (peut
-// désigner un article de loi) : le reste de la requête (ex: "budget") reste
-// un signal plus fiable que ce mot seul.
+// Décrivent le type de réponse voulu, pas le sujet recherché.
 const META_REQUEST_WORDS = new Set([
     'extrait', 'extraits', 'exemple', 'exemples', 'détail', 'détails',
     'information', 'informations', 'renseignement', 'renseignements',
@@ -186,30 +160,15 @@ function tokenize(text: string): string[] {
         .toLowerCase()
         .normalize('NFC')
         .replace(/[?!.,;:"“”«»()[\]]/g, ' ')
-        // Le trait d'union sépare aussi les tokens : gère nativement les
-        // inversions verbe-pronom ("peux-tu", "sait-il", "est-ce-que"), qui
-        // se décomposent en mots déjà couverts par GRAMMATICAL_STOPWORDS,
-        // sans avoir à lister chaque inversion possible une par une.
+        // Scinde aussi sur "-" : gère "peux-tu", "sait-il" sans les lister.
         .replace(/-/g, ' ')
         .split(/\s+/)
-        // Élisions ("l'État" -> "état", "d'amitié" -> "amitié") : sinon le
-        // mot utile reste soudé à une particule grammaticale qu'on ne
-        // reconnaît plus comme stopword.
+        // Élisions : "l'État" -> "état".
         .map((tok) => tok.replace(/^(l|d|qu|n|j|c|m|t|s)['’]/i, ''))
         .filter(Boolean);
 }
 
-/**
- * Réduit un message conversationnel à ses mots-clés de contenu, pour une
- * recherche WordPress fiable. Retourne '' si rien de significatif ne
- * subsiste (ex: simple salutation) : le code appelant doit alors sauter la
- * recherche plutôt que d'envoyer une chaîne vide ou du bruit.
- *
- * Limite connue : reste un filtrage lexical simple (pas de lemmatisation).
- * "lois" (pluriel) ne matchera pas un article titré "Loi" (singulier) côté
- * WordPress — au-delà de ça, il faudrait un vrai moteur de recherche
- * (Relevanssi, etc.) côté WordPress plutôt qu'un correctif ici.
- */
+/** Réduit un message à ses mots-clés de contenu. '' si rien de significatif. */
 function extractSearchKeywords(message: string): string {
     const keywords = tokenize(message).filter(
         (tok) =>
@@ -220,13 +179,7 @@ function extractSearchKeywords(message: string): string {
     return keywords.join(' ');
 }
 
-/**
- * Reconstruit l'origine absolue de la requête entrante (protocole + host),
- * car les Route Handlers Next.js n'ont pas d'origine implicite côté serveur
- * (contrairement à searchSite() dans lib/api.ts, prévu pour le client avec
- * un fetch relatif). Fonctionne en local, preview et prod sans variable
- * d'environnement à maintenir.
- */
+/** Reconstruit l'origine absolue de la requête (Route Handlers = pas d'origine implicite). */
 function getOrigin(req: Request): string {
     const host = req.headers.get('host');
     if (!host) {
@@ -236,18 +189,7 @@ function getOrigin(req: Request): string {
     return `${proto}://${host}`;
 }
 
-/**
- * Interroge la recherche interne du site (app/api/search/route.ts, déjà en
- * place — cf. searchSite() dans lib/api.ts) pour trouver du contenu réel
- * pertinent à la question posée : actualités, textes et lois, activités du
- * Président, historique, etc. Contrairement à SITE_MAP (qui ne connaît que
- * la liste des pages), ceci retourne de vrais extraits de texte que le
- * modèle peut utiliser pour répondre.
- *
- * GET /api/search?q=... renvoie directement un tableau de UnifiedSearchResult
- * (pas d'enveloppe { results: [...] }), avec un excerpt déjà nettoyé côté
- * serveur (cleanText : HTML retiré, entités décodées).
- */
+/** Interroge /api/search pour du contenu réel (actualités, lois, historique...). */
 async function searchSiteContent(query: string, origin: string): Promise<ContentSnippet[]> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), CONTENT_SEARCH_TIMEOUT_MS);
@@ -272,9 +214,7 @@ async function searchSiteContent(query: string, origin: string): Promise<Content
             .slice(0, MAX_SNIPPETS)
             .map(toContentSnippet);
     } catch (err) {
-        // Timeout, réseau, JSON invalide... on ne fait jamais échouer la
-        // conversation pour ça : le bot retombe sur le comportement sans
-        // contenu (redirection vers la page / recherche).
+        // Ne bloque jamais la conversation en cas d'échec réseau/timeout.
         console.error('[searchSiteContent] Erreur:', err);
         return [];
     } finally {
@@ -297,7 +237,7 @@ function formatContentContext(snippets: ContentSnippet[]): string {
 /* PROMPT SYSTÈME                                                           */
 /* ------------------------------------------------------------------------ */
 
-// Nombre de tours (user+assistant) conservés dans l'historique envoyé au modèle.
+// Tours d'historique conservés pour le modèle.
 const MAX_HISTORY_TURNS = 6;
 
 function buildSystemPrompt(language: Language, contentContext: string): string {
@@ -435,11 +375,7 @@ export async function POST(req: Request) {
         const lang: Language = language === 'mg' ? 'mg' : 'fr';
         const conversationHistory = sanitizeHistory(history);
 
-        // Recherche du contenu réel AVANT d'appeler le modèle : le résultat
-        // est injecté dans le prompt système, donc doit être prêt en amont.
-        // On envoie des mots-clés, pas la phrase brute (voir extractSearchKeywords) :
-        // sinon un seul mot vide de sens ("tu", "peux"...) fait échouer toute
-        // la recherche côté WordPress (AND sur tous les termes).
+        // Mots-clés extraits, pas la phrase brute (voir extractSearchKeywords).
         const origin = getOrigin(req);
         const keywords = extractSearchKeywords(trimmedMessage);
         console.log('[chat] mots-clés de recherche:', keywords || '(aucun -> recherche ignorée)');
