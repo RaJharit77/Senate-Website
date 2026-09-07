@@ -10,7 +10,9 @@
     "lint:fix": "eslint --fix",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:run:chrome": "cypress run --browser chrome",
     "cypress:run:ci": "cypress run --headless --reporter mochawesome --reporter-options reportDir=cypress/reports,overwrite=false,html=false,json=true",
+    "test:a11y": "CYPRESS_CI=true pnpm cypress:run --spec \"cypress/e2e/accessibility.cy.ts\" --browser chrome",
     "playwright test": "playwright test",
     "playwright test:report": "playwright show-report",
     "playwright test --ui": "playwright test --ui"
@@ -93,7 +95,7 @@
     "@types/node": "^26.4.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
-    "cypress": "^15.21.1",
+    "cypress": "^16.0.0",
     "cypress-axe": "^1.7.0",
     "cypress-lighthouse": "^0.1.0",
     "eslint": "^10.10.0",

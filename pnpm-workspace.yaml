@@ -5,3 +5,4 @@ allowBuilds:
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+sideEffectsCache: false
