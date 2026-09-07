@@ -13,7 +13,6 @@ export default defineConfig({
         manageBrowserMemory: true,
         numTestsKeptInMemory: 1,
         chromeWebSecurity: false,
-        preloadAssets: false,
         videoCompression: false,
         retries: {
             runMode: 2,
