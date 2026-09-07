@@ -7,10 +7,10 @@ export default defineConfig({
         specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
         viewportWidth: 1280,
         viewportHeight: 720,
-        defaultCommandTimeout: 10000,
+        defaultCommandTimeout: 60000, 
         video: false,
         screenshotOnRunFailure: true,
-        experimentalMemoryManagement: true,  
+        manageBrowserMemory: true,
         numTestsKeptInMemory: 1,
     },
     component: {

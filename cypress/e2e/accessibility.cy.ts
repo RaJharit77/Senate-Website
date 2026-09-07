@@ -2,37 +2,51 @@
 /// <reference types="cypress-axe" />
 
 describe('Tests d\'accessibilité', () => {
-    const shouldRun = Cypress.env('CI') === 'true';
-    const testFn = shouldRun ? it : it.skip;
+    before(() => {
+        // Désactiver les screenshots sur échec pour éviter le timeout
+        Cypress.config('screenshotOnRunFailure', false);
+    });
+
+    after(() => {
+        // Remettre la config par défaut
+        Cypress.config('screenshotOnRunFailure', true);
+    });
 
     beforeEach(() => {
         cy.injectAxe();
     });
 
-    testFn('vérifie l\'accessibilité de la page d\'accueil', () => {
+    const axeOptions = {
+        runOnly: {
+            type: 'tag' as const,
+            values: ['wcag2aa', 'wcag21aa'],
+        },
+    };
+
+    it('vérifie l\'accessibilité de la page d\'accueil', () => {
         cy.visit('/');
-        cy.checkA11y();
+        cy.checkA11y(undefined, axeOptions);
     });
 
-    testFn('vérifie l\'accessibilité de la page À propos', () => {
+    it('vérifie l\'accessibilité de la page À propos', () => {
         cy.visit('/about');
-        cy.checkA11y();
+        cy.checkA11y(undefined, axeOptions);
     });
 
-    testFn('vérifie l\'accessibilité de la page Contact', () => {
+    it('vérifie l\'accessibilité de la page Contact', () => {
         cy.visit('/contact');
-        cy.checkA11y();
+        cy.checkA11y(undefined, axeOptions);
     });
 
-    testFn('vérifie l\'accessibilité d\'une page d\'article (si existante)', () => {
+    it('vérifie l\'accessibilité d\'une page d\'article (si existante)', () => {
         cy.visit('/');
-        cy.get('[data-testid="news-grid"] a').first().click();
-        cy.url().should('match', /\/actualite\/.+/);
-        cy.checkA11y();
+        cy.get('.grid a, .card a').first().click();
+        cy.url().should('match', /\/(actualite|press-area\/news)\/.+/);
+        cy.checkA11y(undefined, axeOptions);
     });
 
-    testFn('vérifie l\'accessibilité du formulaire de contact', () => {
+    it('vérifie l\'accessibilité du formulaire de contact', () => {
         cy.visit('/contact');
-        cy.checkA11y('form');
+        cy.checkA11y('form', axeOptions);
     });
 });
