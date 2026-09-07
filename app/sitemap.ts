@@ -65,12 +65,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         getInternational({ per_page: 100 }).catch(() => []),
         getAllRepubliques({ per_page: 100 }).catch(() => []),
         getPages({ per_page: 100 }).catch(() => []),
-        getPosts({ categories: 11, per_page: 100 }).catch(() => []),  
-        getPosts({ categories: 53, per_page: 100 }).catch(() => []),  
-        getPosts({ categories: 14, per_page: 100 }).catch(() => []),  
-        getVideos({ per_page: 100 }).catch(() => []),                 
-        getAudios({ per_page: 100 }).catch(() => []),                 
-        getMontages({ per_page: 100 }).catch(() => []),               
+        getPosts({ categories: 11, per_page: 100 }).catch(() => []),
+        getPosts({ categories: 53, per_page: 100 }).catch(() => []),
+        getPosts({ categories: 14, per_page: 100 }).catch(() => []),
+        getVideos({ per_page: 100 }).catch(() => []),
+        getAudios({ per_page: 100 }).catch(() => []),
+        getMontages({ per_page: 100 }).catch(() => []),
     ]);
 
     const allPosts = [
