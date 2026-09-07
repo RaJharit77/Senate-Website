@@ -1,11 +1,9 @@
 import { useState } from 'react';
-
+import { Language } from '@/types/chatbotType';
 interface Message {
     role: 'user' | 'assistant';
     content: string;
 }
-
-type Language = 'fr' | 'mg';
 
 export function useChatbot(initialMessages: Message[] = []) {
     const [messages, setMessages] = useState<Message[]>(initialMessages);

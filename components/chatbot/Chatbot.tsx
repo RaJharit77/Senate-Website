@@ -5,20 +5,8 @@ import Link from 'next/link';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChatbot } from '@/hooks/useChatbot';
-
-type Language = 'fr' | 'mg';
-
-const MARKDOWN_LINK_RE = /\[([^\]]+)\]\((\/[^\s)]+)\)/g;
-
-const WELCOME_MESSAGES: Record<Language, string> = {
-    fr: 'Bonjour ! Je suis l’assistant du Sénat de Madagascar. Comment puis-je vous aider ?',
-    mg: 'Manao ahoana ! Ny mpanampy an’ny Antenimieran-doholona no aho. Inona no azoko atao ho anao ?',
-};
-
-const PLACEHOLDER: Record<Language, string> = {
-    fr: 'Posez votre question...',
-    mg: 'Apetraho eto ny fanontanianao...',
-};
+import { Language } from '@/types/chatbotType';
+import { MARKDOWN_LINK_RE, PLACEHOLDER, WELCOME_MESSAGES } from '@/utils/chatbotMessage';
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
