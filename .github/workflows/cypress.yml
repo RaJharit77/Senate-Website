@@ -38,6 +38,7 @@ jobs:
         env:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_CI: true
+          NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: Upload Cypress screenshots and videos (on failure)
         uses: actions/upload-artifact@v4
