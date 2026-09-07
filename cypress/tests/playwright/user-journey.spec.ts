@@ -7,7 +7,7 @@ test.describe('User Journey Simulation', () => {
 
         const firstNews = page.locator('.grid a, .card a').first();
         await firstNews.click();
-        await expect(page).toHaveURL(/\/actualite\/.+/);
+        await expect(page).toHaveURL(/\/(actualite|press-area\/news)\/.+/);
         await page.goBack();
 
         // Navigation À propos
