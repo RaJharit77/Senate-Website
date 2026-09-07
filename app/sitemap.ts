@@ -1,4 +1,4 @@
-import { getAllRepubliques, getPages, getActualite, getAlaune, getAudiences, getDelegations, getInternational, getPosts } from '@/lib/api';
+import { getAllRepubliques, getPages, getActualite, getAlaune, getAudiences, getDelegations, getInternational, getPosts, getVideos, getAudios, getMontages } from '@/lib/api';
 import type { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -43,7 +43,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === '' ? 1 : 0.8,
     }));
 
-    const [alaune, actualite, audiences, delegations, international, republiques, agenda, deliberation, lois, pages] = await Promise.all([
+    const [
+        alaune,
+        actualite,
+        audiences,
+        delegations,
+        international,
+        republiques,
+        agenda,
+        deliberation,
+        lois,
+        pages,
+        videos,
+        audios,
+        montages
+    ] = await Promise.all([
         getAlaune({ per_page: 100 }).catch(() => []),
         getActualite({ per_page: 100 }).catch(() => []),
         getAudiences({ per_page: 100 }).catch(() => []),
@@ -51,15 +65,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         getInternational({ per_page: 100 }).catch(() => []),
         getAllRepubliques({ per_page: 100 }).catch(() => []),
         getPages({ per_page: 100 }).catch(() => []),
-        getPosts({ categories: 11, per_page: 100 }).catch(() => []),
-        getPosts({ categories: 53, per_page: 100 }).catch(() => []),
-        getPosts({ categories: 14, per_page: 100 }).catch(() => []),
+        getPosts({ categories: 11, per_page: 100 }).catch(() => []),  
+        getPosts({ categories: 53, per_page: 100 }).catch(() => []),  
+        getPosts({ categories: 14, per_page: 100 }).catch(() => []),  
+        getVideos({ per_page: 100 }).catch(() => []),                 
+        getAudios({ per_page: 100 }).catch(() => []),                 
+        getMontages({ per_page: 100 }).catch(() => []),               
     ]);
 
     const allPosts = [
         ...alaune, ...actualite, ...audiences, ...delegations, ...international,
         ...republiques, ...agenda, ...deliberation, ...lois, ...pages
     ];
+
     const postUrls = allPosts.map(post => ({
         url: `${baseUrl}/actualite/${post.slug}`,
         lastModified: new Date(post.date),
@@ -67,5 +85,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
     }));
 
-    return [...staticPages, ...postUrls];
+    const mediaUrls = [
+        ...videos.map(post => ({
+            url: `${baseUrl}/channel-tv-and-radio/video/${post.slug}`,
+            lastModified: new Date(post.date),
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+        })),
+        ...audios.map(post => ({
+            url: `${baseUrl}/channel-tv-and-radio/audio/${post.slug}`,
+            lastModified: new Date(post.date),
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+        })),
+        ...montages.map(post => ({
+            url: `${baseUrl}/channel-tv-and-radio/editing/${post.slug}`, // dossier 'editing'
+            lastModified: new Date(post.date),
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+        })),
+    ];
+
+    return [...staticPages, ...postUrls, ...mediaUrls];
 }
