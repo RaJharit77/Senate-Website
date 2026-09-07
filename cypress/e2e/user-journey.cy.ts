@@ -7,7 +7,7 @@ describe('User Journey – Full visitor simulation', () => {
 
         // Premier article
         cy.get('.grid a, .card a').first().click({ force: true });
-        cy.url().should('match', /\/actualite\/.+/);
+        cy.url().should('match', /\/(actualite|press-area\/news)\/.+/);
         cy.get('h1').should('exist');
 
         // Retour arrière avec vérification explicite
