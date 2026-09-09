@@ -34,7 +34,7 @@ jobs:
           npx wait-on http://localhost:3000
 
       - name: Run Cypress tests
-        run: pnpm run cypress:run:ci:chrome
+        run: pnpm run cypress:run:ci
         env:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_CI: true
