@@ -99,7 +99,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.6,
         })),
         ...montages.map(post => ({
-            url: `${baseUrl}/channel-tv-and-radio/editing/${post.slug}`, // dossier 'editing'
+            url: `${baseUrl}/channel-tv-and-radio/editing/${post.slug}`,
             lastModified: new Date(post.date),
             changeFrequency: 'monthly' as const,
             priority: 0.6,
