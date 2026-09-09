@@ -47,3 +47,6 @@ docs/*.txt
 app/texts-and-laws/constitutional-texts
 components/texts-and-laws/ConstitutionalTexts.tsx
 *.mp4
+
+playwright-report/*
+test-results/*
