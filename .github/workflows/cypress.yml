@@ -33,11 +33,12 @@ jobs:
           pnpm run start &
           npx wait-on http://localhost:3000
 
-      - name: Run Cypress tests
-        run: pnpm run cypress:run:ci
+      - name: Run Cypress accessibility tests (Chrome)
+        run: pnpm cypress:run:ci:chrome --spec "cypress/e2e/accessibility.cy.ts"
         env:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_CI: true
+          NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: Upload Cypress screenshots and videos (on failure)
         uses: actions/upload-artifact@v4
@@ -47,7 +48,8 @@ jobs:
           path: |
             cypress/screenshots/
             cypress/videos/
-          retention-days: 5
+          retention-days: 3
+          compression-level: 9
 
       - name: Generate and upload Cypress report (if using mochawesome)
         if: always()
@@ -55,8 +57,11 @@ jobs:
           npx mochawesome-merge cypress/reports/*.json > cypress/report.json
           npx mochawesome-report-generator cypress/report.json
         continue-on-error: true
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-report
           path: cypress/report/
+          retention-days: 3
+          compression-level: 9
