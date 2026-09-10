@@ -1,7 +1,23 @@
-import { CAT_AUDIO, CAT_AUDIO_PODCAST, CAT_MONTAGE, CAT_VIDEO, CAT_VIDEO_HOSTED, CF7_CONTAINER_POST, CF7_FORM_ID, CF7_LOCALE, CF7_UNIT_TAG, CF7_VERSION, LIVE_STREAM_URL } from "@/constants/constants";
+import {
+    CAT_AUDIO,
+    CAT_AUDIO_PODCAST,
+    CAT_MONTAGE,
+    CAT_VIDEO,
+    CAT_VIDEO_HOSTED,
+    CF7_CONTAINER_POST,
+    CF7_FORM_ID,
+    CF7_LOCALE,
+    CF7_UNIT_TAG,
+    CF7_VERSION,
+    LIVE_STREAM_URL,
+} from "@/constants/constants";
 import type { WpCategory, WpPost } from "@/lib/types";
 import type { LiveStatus } from "@/types/media";
-import { ContactFormFields, ContactFormResult, WP_ROOT } from "@/types/contactType";
+import {
+    ContactFormFields,
+    ContactFormResult,
+    WP_ROOT,
+} from "@/types/contactType";
 import { PresidentActivity } from "@/types/internationalType";
 import { extractYoutubeId } from "./media-mapper";
 import {
@@ -9,22 +25,29 @@ import {
     LIVE_YOUTUBE_API_KEY,
     LIVE_FACEBOOK_VIDEO_URL,
     LIVE_AUDIO_STREAM_URL,
-} from '@/constants/constants';
+} from "@/constants/constants";
 
 const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
 
-const isClient = typeof window !== 'undefined';
+const isClient = typeof window !== "undefined";
 
 type Params = Record<string, string | number | boolean>;
 
 class WpApiError extends Error {
-    constructor(message: string, public status?: number, public url?: string) {
+    constructor(
+        message: string,
+        public status?: number,
+        public url?: string,
+    ) {
         super(message);
         this.name = "WpApiError";
     }
 }
 
-async function fetchViaProxy<T>(endpoint: string, params: Params = {}): Promise<T> {
+async function fetchViaProxy<T>(
+    endpoint: string,
+    params: Params = {},
+): Promise<T> {
     const url = new URL(`/api/proxy/${endpoint}`, window.location.origin);
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -38,12 +61,17 @@ async function fetchViaProxy<T>(endpoint: string, params: Params = {}): Promise<
     return res.json();
 }
 
-async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolean = false): Promise<T> {
+async function fetchAPI<T>(
+    endpoint: string,
+    params: Params = {},
+    silent: boolean = false,
+): Promise<T> {
     if (isClient) {
         try {
             return await fetchViaProxy<T>(endpoint, params);
         } catch (err) {
-            if (!silent) console.error(`[fetchAPI] Proxy error for ${endpoint}:`, err);
+            if (!silent)
+                console.error(`[fetchAPI] Proxy error for ${endpoint}:`, err);
             throw new WpApiError(`Proxy error for ${endpoint}`, undefined, endpoint);
         }
     }
@@ -75,22 +103,21 @@ async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolea
         throw new WpApiError(
             `Network error while fetching ${url.toString()}`,
             undefined,
-            url.toString()
+            url.toString(),
         );
     }
-
 
     if (!res.ok) {
         const bodyPreview = await res.text().catch(() => "<unreadable body>");
         if (!silent) {
             console.error(
-                `[fetchAPI] HTTP ${res.status} for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`
+                `[fetchAPI] HTTP ${res.status} for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`,
             );
         }
         throw new WpApiError(
             `Failed to fetch ${url.toString()}: ${res.status}`,
             res.status,
-            url.toString()
+            url.toString(),
         );
     }
 
@@ -100,12 +127,12 @@ async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolea
         // mais avec une page HTML (challenge anti-bot, maintenance, etc.)
         const bodyPreview = await res.text().catch(() => "<unreadable body>");
         console.error(
-            `[fetchAPI] Unexpected content-type "${contentType}" for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`
+            `[fetchAPI] Unexpected content-type "${contentType}" for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`,
         );
         throw new WpApiError(
             `Unexpected non-JSON response from ${url.toString()}`,
             res.status,
-            url.toString()
+            url.toString(),
         );
     }
 
@@ -116,7 +143,7 @@ async function fetchAPI<T>(endpoint: string, params: Params = {}, silent: boolea
         throw new WpApiError(
             `Invalid JSON from ${url.toString()}`,
             res.status,
-            url.toString()
+            url.toString(),
         );
     }
 }
@@ -199,7 +226,9 @@ export async function getAllRepubliques(params: Params = {}) {
     });
 
     return results
-        .filter((r): r is PromiseFulfilledResult<WpPost[]> => r.status === "fulfilled")
+        .filter(
+            (r): r is PromiseFulfilledResult<WpPost[]> => r.status === "fulfilled",
+        )
         .flatMap((r) => r.value)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
@@ -320,7 +349,7 @@ export function getVideosHosted(params: Params = {}) {
 }
 
 export function getVideosHostedBySlug(params: Params = {}) {
-    return getPostsByCategorySlug('video-hosted', { _embed: true, ...params });
+    return getPostsByCategorySlug("video-hosted", { _embed: true, ...params });
 }
 
 // Alias explicite : CAT_AUDIO_PODCAST est la même catégorie que CAT_AUDIO
@@ -350,23 +379,14 @@ interface YoutubeLiveInfo {
  * configurée diffuse actuellement un direct.
  *
  * Coût & fréquence : search.list coûte 100 unités de quota par appel, sur un
- * quota gratuit de 10 000 unités/jour (100 appels/jour max, tous usages
- * confondus sur le projet Google Cloud). Le cache Next.js ci-dessous
- * (revalidate: 900) limite les appels réels à un toutes les 15 minutes max,
- * soit au pire 96 appels/jour (9 600 unités) : sous le plafond, avec une
- * marge volontaire. Conséquence acceptée : un direct qui démarre peut
- * mettre jusqu'à 15 minutes avant d'apparaître sur le site.
- *
- * Pour aller plus vite sans dépasser le quota gratuit : demander une
- * augmentation (gratuite) sur console.cloud.google.com, ou remplacer cette
- * recherche par une lecture de la playlist "uploads" de la chaîne
- * (playlistItems.list + videos.list, 2 unités au lieu de 100) — plus
- * rapide, mais implémentation plus complexe et moins officiellement
- * garantie que search.list + eventType=live.
+ * quota gratuit de 10 000 unités/jour (100 appels/jour max). Le cache
+ * Next.js ci-dessous (revalidate: 900) limite les appels réels à un toutes
+ * les 15 minutes max, soit au pire 96 appels/jour (9 600 unités) — sous le
+ * plafond, avec une marge volontaire.
  *
  * Ne lève jamais d'exception : toute erreur (réseau, quota dépassé, clé ou
  * ID de chaîne absents) est traitée comme "pas de direct détecté", pour que
- * getLiveStatus se replie sur Facebook plutôt que de faire planter la page.
+ * getTvLiveStatus se replie sur Facebook plutôt que de faire planter la page.
  */
 async function checkYoutubeLive(): Promise<YoutubeLiveInfo | null> {
     if (!LIVE_YOUTUBE_CHANNEL_ID || !LIVE_YOUTUBE_API_KEY) {
@@ -406,24 +426,10 @@ async function checkYoutubeLive(): Promise<YoutubeLiveInfo | null> {
 }
 
 /**
- * Statut du direct pour un "kind" donné.
- * - 'radio' : flux audio brut, indépendant de YouTube/Facebook.
- * - 'tv'    : priorité à la détection réelle YouTube (checkYoutubeLive) ;
- *             si rien n'est détecté, repli sur l'URL Facebook manuelle
- *             (LIVE_FACEBOOK_VIDEO_URL). Si les deux sont en direct en même
- *             temps, YouTube l'emporte — c'est la priorité demandée.
+ * Statut du direct TV : priorité à la détection réelle YouTube, repli sur
+ * l'URL Facebook manuelle si configurée.
  */
-export async function getLiveStatus(kind: 'tv' | 'radio'): Promise<LiveStatus> {
-    if (kind === 'radio') {
-        return {
-            isLive: Boolean(LIVE_AUDIO_STREAM_URL),
-            kind: 'radio',
-            streamUrl: LIVE_AUDIO_STREAM_URL,
-            sourceType: 'url',
-            title: 'Sénat Radio en direct',
-        };
-    }
-
+async function getTvLiveStatus(): Promise<LiveStatus> {
     const youtubeLive = await checkYoutubeLive();
     if (youtubeLive) {
         return {
@@ -446,13 +452,46 @@ export async function getLiveStatus(kind: 'tv' | 'radio'): Promise<LiveStatus> {
         };
     }
 
+    return { isLive: false, kind: 'tv', streamUrl: '', sourceType: 'url', title: 'Sénat TV' };
+}
+
+/**
+ * Statut du direct radio : un vrai flux audio dédié (LIVE_AUDIO_STREAM_URL)
+ * prime toujours. À défaut, si un direct TV est en cours, on renvoie ce même
+ * statut sous kind='radio' — c'est LivePlayer.tsx qui décide alors de le
+ * rendre en audio seul (react-player masqué) plutôt qu'en vidéo visible.
+ */
+async function getRadioLiveStatus(): Promise<LiveStatus> {
+    if (LIVE_AUDIO_STREAM_URL) {
+        return {
+            isLive: true,
+            kind: "radio",
+            streamUrl: LIVE_AUDIO_STREAM_URL,
+            sourceType: "url",
+            title: "Sénat Radio en direct",
+        };
+    }
+
+    const tv = await getTvLiveStatus();
+    if (tv.isLive) {
+        return {
+            ...tv,
+            kind: "radio",
+            title: "Aucun flux radio dédié — le direct est disponible ci-dessous",
+        };
+    }
+
     return {
         isLive: false,
-        kind: 'tv',
-        streamUrl: '',
-        sourceType: 'url',
-        title: 'Sénat TV',
+        kind: "radio",
+        streamUrl: "",
+        sourceType: "url",
+        title: "Sénat Radio",
     };
+}
+
+export async function getLiveStatus(kind: "tv" | "radio"): Promise<LiveStatus> {
+    return kind === "tv" ? getTvLiveStatus() : getRadioLiveStatus();
 }
 
 /**
@@ -461,7 +500,7 @@ export async function getLiveStatus(kind: 'tv' | 'radio'): Promise<LiveStatus> {
  * même si elles ne sont pas dans CAT_VIDEO.
  */
 export async function getAllChannelAndRadioMedia(params: Params = {}) {
-    const perPage = typeof params.per_page === 'number' ? params.per_page : 100;
+    const perPage = typeof params.per_page === "number" ? params.per_page : 100;
 
     // Récupération des catégories dédiées
     const [youtubeCat, hosted, podcasts, montages] = await Promise.all([
@@ -472,19 +511,23 @@ export async function getAllChannelAndRadioMedia(params: Params = {}) {
     ]);
 
     // Récupération de tous les posts (pour détecter les vidéos YouTube manquantes)
-    const allPosts = await getPosts({ per_page: perPage, _embed: true }).catch(() => []);
+    const allPosts = await getPosts({ per_page: perPage, _embed: true }).catch(
+        () => [],
+    );
 
     // Filtrer les posts qui contiennent une vidéo YouTube (via extractYoutubeId)
-    const extraYoutubePosts = allPosts.filter(post => {
-        if (youtubeCat.some(p => p.id === post.id)) return false; // déjà dans la catégorie
-        const content = post.content?.rendered || '';
-        return extractYoutubeId(content) !== '';
+    const extraYoutubePosts = allPosts.filter((post) => {
+        if (youtubeCat.some((p) => p.id === post.id)) return false; // déjà dans la catégorie
+        const content = post.content?.rendered || "";
+        return extractYoutubeId(content) !== "";
     });
 
     // Fusionner et dédoublonner
     const youtube = [...youtubeCat, ...extraYoutubePosts];
     // Dédoublonner par id
-    const youtubeUnique = Array.from(new Map(youtube.map(p => [p.id, p])).values());
+    const youtubeUnique = Array.from(
+        new Map(youtube.map((p) => [p.id, p])).values(),
+    );
 
     return {
         youtube: youtubeUnique,
@@ -503,13 +546,16 @@ export async function getAllChannelAndRadioMedia(params: Params = {}) {
  */
 export async function getMediaBySlug(
     slug: string,
-    kind: 'youtube' | 'video' | 'audio' | 'montage'
+    kind: "youtube" | "video" | "audio" | "montage",
 ): Promise<WpPost | null> {
     const fetcher =
-        kind === 'youtube' ? getVideos :
-            kind === 'video' ? getVideosHosted :
-                kind === 'audio' ? getPodcasts :
-                    getMontages;
+        kind === "youtube"
+            ? getVideos
+            : kind === "video"
+                ? getVideosHosted
+                : kind === "audio"
+                    ? getPodcasts
+                    : getMontages;
 
     try {
         const results = await fetcher({ slug, _embed: true });
@@ -523,11 +569,13 @@ export async function getMediaBySlug(
 // Partners
 export async function getPartners() {
     try {
-        const data = await fetchAPI<Array<{
-            title?: { rendered?: string };
-            acf?: { abbreviation?: string };
-            _embedded?: { ["wp:featuredmedia"]?: Array<{ source_url?: string }> };
-        }>>("/partenaires", { per_page: 20, _embed: true });
+        const data = await fetchAPI<
+            Array<{
+                title?: { rendered?: string };
+                acf?: { abbreviation?: string };
+                _embedded?: { ["wp:featuredmedia"]?: Array<{ source_url?: string }> };
+            }>
+        >("/partenaires", { per_page: 20, _embed: true });
         return data.map((item) => ({
             name: item.title?.rendered || "Partenaire",
             abbr: item.acf?.abbreviation || "P",
@@ -554,7 +602,7 @@ export function getBureau() {
 // séparé, mais toujours dans ce fichier "api" pour centraliser tous les
 // appels réseau côté WordPress.
 export async function submitContactForm(
-    fields: ContactFormFields
+    fields: ContactFormFields,
 ): Promise<ContactFormResult> {
     const url = `${WP_ROOT}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`;
 
@@ -580,7 +628,11 @@ export async function submitContactForm(
         });
     } catch (err) {
         console.error("[submitContactForm] Network error:", err);
-        throw new WpApiError("Network error while submitting contact form", undefined, url);
+        throw new WpApiError(
+            "Network error while submitting contact form",
+            undefined,
+            url,
+        );
     }
 
     let data: {
@@ -592,13 +644,20 @@ export async function submitContactForm(
         data = await res.json();
     } catch (err) {
         console.error("[submitContactForm] JSON parse error:", err);
-        throw new WpApiError("Invalid JSON from contact form endpoint", res.status, url);
+        throw new WpApiError(
+            "Invalid JSON from contact form endpoint",
+            res.status,
+            url,
+        );
     }
 
-    const invalidFields = data.invalid_fields?.reduce<Record<string, string>>((acc, f) => {
-        acc[f.field] = f.message;
-        return acc;
-    }, {});
+    const invalidFields = data.invalid_fields?.reduce<Record<string, string>>(
+        (acc, f) => {
+            acc[f.field] = f.message;
+            return acc;
+        },
+        {},
+    );
 
     return {
         status: data.status || "mail_failed",
@@ -608,7 +667,9 @@ export async function submitContactForm(
 }
 
 // Récupérer une catégorie par son slug
-export async function getCategoryBySlug(slug: string): Promise<WpCategory | null> {
+export async function getCategoryBySlug(
+    slug: string,
+): Promise<WpCategory | null> {
     const data = await fetchAPI<WpCategory[]>("/categories", { slug });
     if (!Array.isArray(data) || data.length === 0) {
         console.warn(`[getCategoryBySlug] No category found for slug "${slug}"`);
@@ -625,22 +686,34 @@ export async function getCategoryById(id: number) {
 // Récupérer les posts d'une catégorie identifiée par son slug
 // (plus robuste qu'un ID en dur : l'ID d'une catégorie peut changer
 // d'un environnement WordPress à l'autre, le slug est stable).
-export async function getPostsByCategorySlug(slug: string, params: Params = {}) {
+export async function getPostsByCategorySlug(
+    slug: string,
+    params: Params = {},
+) {
     const category = await getCategoryBySlug(slug);
     if (!category) {
-        console.warn(`[getPostsByCategorySlug] "${slug}" → catégorie introuvable, retour []`);
+        console.warn(
+            `[getPostsByCategorySlug] "${slug}" → catégorie introuvable, retour []`,
+        );
         return [];
     }
-    console.log(`[getPostsByCategorySlug] "${slug}" → category id=${category.id}, count=${category.count}`);
+    console.log(
+        `[getPostsByCategorySlug] "${slug}" → category id=${category.id}, count=${category.count}`,
+    );
     const posts = await getPostsByCategory(category.id, params);
-    console.log(`[getPostsByCategorySlug] "${slug}" (id=${category.id}) → ${posts.length} posts trouvés`);
+    console.log(
+        `[getPostsByCategorySlug] "${slug}" (id=${category.id}) → ${posts.length} posts trouvés`,
+    );
     return posts;
 }
 
 // Récupère les articles du custom post type "international" pour une
 // catégorie donnée (alternative à getPostsByCategorySlug si le contenu
 // est stocké dans le CPT "international" plutôt que dans les posts standards).
-export async function getInternationalByCategorySlug(slug: string, params: Params = {}) {
+export async function getInternationalByCategorySlug(
+    slug: string,
+    params: Params = {},
+) {
     const category = await getCategoryBySlug(slug);
     if (!category) return [];
     return fetchAPI<WpPost[]>(`/international`, {
@@ -651,9 +724,18 @@ export async function getInternationalByCategorySlug(slug: string, params: Param
 }
 
 // International
-export async function getInternationalByType(type: string, params: Params = {}) {
-    const items = await getInternational({ per_page: 50, _embed: true, ...params });
-    return items.filter((item) => (item.acf as Record<string, unknown>)?.type === type);
+export async function getInternationalByType(
+    type: string,
+    params: Params = {},
+) {
+    const items = await getInternational({
+        per_page: 50,
+        _embed: true,
+        ...params,
+    });
+    return items.filter(
+        (item) => (item.acf as Record<string, unknown>)?.type === type,
+    );
 }
 
 export async function getPresidentActivities(): Promise<PresidentActivity[]> {
@@ -666,45 +748,74 @@ export async function getPresidentActivities(): Promise<PresidentActivity[]> {
     const items: PresidentActivity[] = [];
 
     if (audiences.status === "fulfilled") {
-        items.push(...audiences.value.map((post) => ({ id: post.id, category: "audience" as const, post })));
+        items.push(
+            ...audiences.value.map((post) => ({
+                id: post.id,
+                category: "audience" as const,
+                post,
+            })),
+        );
     } else {
-        console.error("[getPresidentActivities] CPT 'audience' failed:", audiences.reason);
+        console.error(
+            "[getPresidentActivities] CPT 'audience' failed:",
+            audiences.reason,
+        );
     }
 
     if (delegations.status === "fulfilled") {
-        items.push(...delegations.value.map((post) => ({ id: post.id, category: "delegation" as const, post })));
+        items.push(
+            ...delegations.value.map((post) => ({
+                id: post.id,
+                category: "delegation" as const,
+                post,
+            })),
+        );
     } else {
         console.warn(
             "[getPresidentActivities] CPT 'delegation' indisponible (endpoint absent ou vide) :",
-            delegations.reason
+            delegations.reason,
         );
     }
 
     if (deplacements.status === "fulfilled") {
-        items.push(...deplacements.value.map((post) => ({ id: post.id, category: "international" as const, post })));
+        items.push(
+            ...deplacements.value.map((post) => ({
+                id: post.id,
+                category: "international" as const,
+                post,
+            })),
+        );
     } else {
-        console.error("[getPresidentActivities] CPT 'international' failed:", deplacements.reason);
+        console.error(
+            "[getPresidentActivities] CPT 'international' failed:",
+            deplacements.reason,
+        );
     }
 
-    return items.sort((a, b) => new Date(b.post.date).getTime() - new Date(a.post.date).getTime());
+    return items.sort(
+        (a, b) => new Date(b.post.date).getTime() - new Date(a.post.date).getTime(),
+    );
 }
 
-
 // Actus
-export async function getActualitesWithPagination(page: number = 1, perPage: number = 6): Promise<{
+export async function getActualitesWithPagination(
+    page: number = 1,
+    perPage: number = 6,
+): Promise<{
     items: WpPost[];
     total: number;
     totalPages: number;
 }> {
     const url = new URL(`${API_BASE}/actualite`);
-    url.searchParams.set('per_page', String(perPage));
-    url.searchParams.set('page', String(page));
-    url.searchParams.set('_embed', 'true');
+    url.searchParams.set("per_page", String(perPage));
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("_embed", "true");
 
     const res = await fetch(url.toString(), {
         headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)',
-            Accept: 'application/json',
+            "User-Agent":
+                "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
+            Accept: "application/json",
         },
     });
 
@@ -712,35 +823,41 @@ export async function getActualitesWithPagination(page: number = 1, perPage: num
         throw new Error(`Failed to fetch actualites: ${res.status}`);
     }
 
-    const total = parseInt(res.headers.get('X-WP-Total') || '0', 10);
-    const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '0', 10);
+    const total = parseInt(res.headers.get("X-WP-Total") || "0", 10);
+    const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "0", 10);
     const items = await res.json();
 
     return { items, total, totalPages };
 }
 
-export async function getPostBySlug(slug: string, type: "alaune" | "actualite" = "alaune") {
+export async function getPostBySlug(
+    slug: string,
+    type: "alaune" | "actualite" = "alaune",
+) {
     const data = await fetchAPI<WpPost[]>(`/${type}`, { slug, _embed: true });
     return data[0] || null;
 }
 
-export async function getPostBySlugNoCache(slug: string): Promise<WpPost | null> {
-    console.log('[getPostBySlugNoCache] slug reçu :', slug);
+export async function getPostBySlugNoCache(
+    slug: string,
+): Promise<WpPost | null> {
+    console.log("[getPostBySlugNoCache] slug reçu :", slug);
 
-    const endpoints = ['alaune', 'actualite'];
+    const endpoints = ["alaune", "actualite"];
     for (const type of endpoints) {
         try {
             const url = new URL(`${API_BASE}/${type}`);
-            url.searchParams.set('slug', slug);
-            url.searchParams.set('_embed', 'true');
+            url.searchParams.set("slug", slug);
+            url.searchParams.set("_embed", "true");
             console.log(`[getPostBySlugNoCache] requête ${type} :`, url.toString());
 
             const res = await fetch(url.toString(), {
                 headers: {
-                    'User-Agent': 'Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)',
-                    Accept: 'application/json',
+                    "User-Agent":
+                        "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
+                    Accept: "application/json",
                 },
-                cache: 'no-store',
+                cache: "no-store",
             });
 
             if (!res.ok) {
@@ -781,7 +898,9 @@ export async function getAllRelevantPosts() {
         allPosts.push(deliberationPosts[0]);
     }
 
-    allPosts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    allPosts.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
     return allPosts;
 }
 
@@ -792,20 +911,26 @@ export async function getAllRelevantPosts() {
 export async function getDeliberationPosts(params: Params = {}) {
     const categories = [11, 53, 14];
     const results = await Promise.allSettled(
-        categories.map(cat =>
-            getPostsByCategory(cat, { per_page: 100, _embed: true, ...params }).catch(() => [])
-        )
+        categories.map((cat) =>
+            getPostsByCategory(cat, { per_page: 100, _embed: true, ...params }).catch(
+                () => [],
+            ),
+        ),
     );
 
     const allPosts = results
-        .filter((r): r is PromiseFulfilledResult<WpPost[]> => r.status === 'fulfilled')
-        .flatMap(r => r.value);
+        .filter(
+            (r): r is PromiseFulfilledResult<WpPost[]> => r.status === "fulfilled",
+        )
+        .flatMap((r) => r.value);
 
     const unique = allPosts.filter(
-        (post, index, self) => index === self.findIndex(p => p.id === post.id)
+        (post, index, self) => index === self.findIndex((p) => p.id === post.id),
     );
 
-    unique.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    unique.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
     return unique;
 }
 
@@ -817,13 +942,13 @@ export async function getPostsByCategoryWithPagination(
     categoryId: number,
     page: number = 1,
     perPage: number = 10,
-    params: Params = {}
+    params: Params = {},
 ): Promise<{ items: WpPost[]; total: number; totalPages: number }> {
     const url = new URL(`${API_BASE}/posts`);
-    url.searchParams.set('categories', String(categoryId));
-    url.searchParams.set('page', String(page));
-    url.searchParams.set('per_page', String(perPage));
-    url.searchParams.set('_embed', 'true');
+    url.searchParams.set("categories", String(categoryId));
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("per_page", String(perPage));
+    url.searchParams.set("_embed", "true");
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
             url.searchParams.set(key, String(value));
@@ -832,8 +957,9 @@ export async function getPostsByCategoryWithPagination(
 
     const res = await fetch(url.toString(), {
         headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)',
-            Accept: 'application/json',
+            "User-Agent":
+                "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
+            Accept: "application/json",
         },
         next: { revalidate: 3600 },
     });
@@ -842,8 +968,8 @@ export async function getPostsByCategoryWithPagination(
         throw new Error(`Failed to fetch posts: ${res.status}`);
     }
 
-    const total = parseInt(res.headers.get('X-WP-Total') || '0', 10);
-    const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '0', 10);
+    const total = parseInt(res.headers.get("X-WP-Total") || "0", 10);
+    const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "0", 10);
     const items = await res.json();
 
     return { items, total, totalPages };
@@ -853,17 +979,21 @@ export async function getPostsByCategoryWithPagination(
  * Récupère un article de la catégorie "PL adoptes" (ID 14) par son slug.
  * Utilise l'API REST de WordPress.
  */
-export async function getTextAndLawBySlug(slug: string): Promise<WpPost | null> {
+export async function getTextAndLawBySlug(
+    slug: string,
+): Promise<WpPost | null> {
     try {
         const res = await fetch(
             `${API_BASE}/posts?categories=14&slug=${slug}&_embed=true&per_page=1`,
-            { next: { revalidate: 3600 } }
+            { next: { revalidate: 3600 } },
         );
         if (res.ok) {
             const posts = await res.json();
             return posts.length > 0 ? posts[0] : null;
         }
-        console.error(`[getTextAndLawBySlug] HTTP ${res.status} pour le slug "${slug}"`);
+        console.error(
+            `[getTextAndLawBySlug] HTTP ${res.status} pour le slug "${slug}"`,
+        );
         return null;
     } catch (err) {
         console.error(`[getTextAndLawBySlug] Erreur pour le slug "${slug}":`, err);
@@ -875,18 +1005,20 @@ export async function getTextAndLawBySlug(slug: string): Promise<WpPost | null> 
  * Récupère les extraits des articles de la catégorie "PL adoptes" (ID 14)
  * pour la section "Textes de référence" de la page d'accueil.
  */
-export async function getLawsExcerpts(limit: number = 4): Promise<{
-    id: number;
-    slug: string;
-    title: string;
-    excerpt: string;
-    link: string;
-    date: string;
-}[]> {
+export async function getLawsExcerpts(limit: number = 4): Promise<
+    {
+        id: number;
+        slug: string;
+        title: string;
+        excerpt: string;
+        link: string;
+        date: string;
+    }[]
+> {
     try {
         const res = await fetch(
             `${API_BASE}/posts?categories=14&_embed=true&per_page=${limit}`,
-            { next: { revalidate: 3600 } }
+            { next: { revalidate: 3600 } },
         );
         if (!res.ok) return [];
         const posts = (await res.json()) as WpPost[];
@@ -894,7 +1026,9 @@ export async function getLawsExcerpts(limit: number = 4): Promise<{
             id: post.id,
             slug: post.slug,
             title: post.title.rendered,
-            excerpt: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || "Aucun extrait disponible.",
+            excerpt:
+                post.excerpt?.rendered?.replace(/<[^>]+>/g, "") ||
+                "Aucun extrait disponible.",
             link: post.link || `/texts-and-laws/${post.slug}`,
             date: post.date,
         }));
@@ -941,10 +1075,15 @@ export async function getReferencePages(): Promise<{
             }),
         ]);
 
-    return { dispositions, loisOrganiques, sourcesReglementaires, textesServices };
+    return {
+        dispositions,
+        loisOrganiques,
+        sourcesReglementaires,
+        textesServices,
+    };
 }
 
-// Release 
+// Release
 interface ReleaseData {
     tag_name: string;
     html_url: string;
@@ -955,7 +1094,7 @@ export async function release(): Promise<ReleaseData> {
     const timeout = setTimeout(() => controller.abort(), 5000);
 
     try {
-        const res = await fetch('/api/release', { signal: controller.signal });
+        const res = await fetch("/api/release", { signal: controller.signal });
         clearTimeout(timeout);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
