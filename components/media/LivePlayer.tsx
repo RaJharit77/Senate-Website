@@ -27,7 +27,7 @@ function toReactPlayerUrl(sourceType: 'youtube' | 'facebook', streamUrl: string)
         const videoId = match?.[1];
         return videoId ? `https://www.youtube.com/watch?v=${videoId}` : streamUrl;
     }
-    return streamUrl; // Facebook : LIVE_FACEBOOK_VIDEO_URL est déjà le bon format.
+    return streamUrl;
 }
 
 function LivePlayerContent({
