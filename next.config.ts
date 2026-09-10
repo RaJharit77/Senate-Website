@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/vi/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'figma.com',
+        port: '',
+        pathname: '/design/**',
+      },
     ],
     qualities: [100, 30, 75, 90],
   },
