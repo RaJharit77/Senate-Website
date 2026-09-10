@@ -48,7 +48,8 @@ jobs:
           path: |
             cypress/screenshots/
             cypress/videos/
-          retention-days: 5
+          retention-days: 3
+          compression-level: 9
 
       - name: Generate and upload Cypress report (if using mochawesome)
         if: always()
@@ -56,9 +57,11 @@ jobs:
           npx mochawesome-merge cypress/reports/*.json > cypress/report.json
           npx mochawesome-report-generator cypress/report.json
         continue-on-error: true
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-report
           path: cypress/report/
-          retention-days: 5
+          retention-days: 3
+          compression-level: 9
