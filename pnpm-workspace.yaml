@@ -1,8 +1,6 @@
 allowBuilds:
+  code-to-figma: false
   cypress: true
   sharp: true
   unrs-resolver: true
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
 sideEffectsCache: false

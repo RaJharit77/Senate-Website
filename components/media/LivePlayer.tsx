@@ -1,9 +1,12 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Play, Pause, Radio, Tv } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 interface LivePlayerProps {
     streamUrl: string;
@@ -11,6 +14,20 @@ interface LivePlayerProps {
     title?: string;
     kind?: 'tv' | 'radio';
     className?: string;
+}
+
+/**
+ * Convertit l'URL stockée par getLiveStatus (embed YouTube construit par
+ * lib/api.ts, ou permalien Facebook brut) vers ce qu'attend react-player :
+ * une URL "watch" YouTube, ou le permalien Facebook tel quel.
+ */
+function toReactPlayerUrl(sourceType: 'youtube' | 'facebook', streamUrl: string): string {
+    if (sourceType === 'youtube') {
+        const match = streamUrl.match(/\/embed\/([a-zA-Z0-9_-]{11})/);
+        const videoId = match?.[1];
+        return videoId ? `https://www.youtube.com/watch?v=${videoId}` : streamUrl;
+    }
+    return streamUrl;
 }
 
 function LivePlayerContent({
@@ -24,8 +41,29 @@ function LivePlayerContent({
     const [hasError, setHasError] = useState(false);
     const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
 
+    // Radio sans flux audio dédié : getRadioLiveStatus (lib/api.ts) renvoie
+    // alors le statut du direct TV tel quel, sous kind='radio'. Dans ce cas
+    // précis, on veut le son sans l'image : react-player masqué (voir plus
+    // bas), pas l'iframe visible utilisée pour la TV.
+    const isRadioMirroringTv = kind === 'radio' && (sourceType === 'youtube' || sourceType === 'facebook');
+
+    // Chrome natif visible (contrôles YouTube/Facebook) uniquement pour
+    // l'iframe TV pleine taille — jamais pour le cas radio masqué ci-dessus,
+    // où il n'y a plus aucun contrôle visible du tout.
+    const hasVisibleNativeControls = kind === 'tv' && (sourceType === 'youtube' || sourceType === 'facebook');
+
     const togglePlay = () => {
-        if (!streamUrl || !mediaRef.current) return;
+        if (!streamUrl) return;
+
+        // react-player (radio masqué) : contrôle déclaratif via l'état, pas
+        // de ref DOM à appeler directement.
+        if (isRadioMirroringTv) {
+            setIsPlaying((prev) => !prev);
+            return;
+        }
+
+        // <video>/<audio> brut (sourceType 'url') : contrôle impératif classique.
+        if (!mediaRef.current) return;
         if (isPlaying) {
             mediaRef.current.pause();
             setIsPlaying(false);
@@ -48,6 +86,36 @@ function LivePlayerContent({
                 <div className="mt-4 text-center text-gray-400">
                     <p className="text-lg">Aucun flux disponible pour le moment.</p>
                     <p className="text-sm">Revenez plus tard pour suivre le direct.</p>
+                </div>
+            );
+        }
+
+        if (isRadioMirroringTv) {
+            return (
+                <div className="mt-4">
+                    <div style={{ width: 1, height: 1, overflow: 'hidden' }}>
+                        <ReactPlayer
+                            src={toReactPlayerUrl(sourceType as 'youtube' | 'facebook', streamUrl)}
+                            playing={isPlaying}
+                            muted={false}
+                            controls={false}
+                            width="1px"
+                            height="1px"
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                            onError={() => setHasError(true)}
+                        />
+                    </div>
+                    {isPlaying ? (
+                        <p className="text-sm text-cyan-300 flex items-center gap-2 mt-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                            Lecture audio en cours…
+                        </p>
+                    ) : (
+                        <p className="text-sm text-gray-400 mt-2">
+                            Appuyez sur le bouton ci-dessus pour écouter le direct.
+                        </p>
+                    )}
                 </div>
             );
         }
@@ -98,21 +166,19 @@ function LivePlayerContent({
                     onError={() => setHasError(true)}
                 />
             );
-        } else {
-            return (
-                <audio
-                    ref={mediaRef as React.RefObject<HTMLAudioElement>}
-                    src={streamUrl}
-                    className="hidden"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onError={() => setHasError(true)}
-                />
-            );
         }
-    };
 
-    const isEmbed = sourceType === 'facebook' || sourceType === 'youtube';
+        return (
+            <audio
+                ref={mediaRef as React.RefObject<HTMLAudioElement>}
+                src={streamUrl}
+                className="hidden"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onError={() => setHasError(true)}
+            />
+        );
+    };
 
     return (
         <Card className={`bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden hover:shadow-2xl transition-shadow ${className}`}>
@@ -136,7 +202,7 @@ function LivePlayerContent({
                             {title}
                         </h3>
                     </div>
-                    {!isEmbed && streamUrl && (
+                    {!hasVisibleNativeControls && streamUrl && (
                         <button
                             onClick={togglePlay}
                             disabled={!streamUrl}
