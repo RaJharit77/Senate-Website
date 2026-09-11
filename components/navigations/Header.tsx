@@ -102,17 +102,11 @@ export function Header() {
     return pathname === path;
   };
 
-  /**
-   * Vérifie si un item parent a un enfant actif. Permet de marquer visuellement
-   * le menu parent (underline + couleur) quand on est sur une de ses sous-pages.
-   */
   const hasActiveChild = (item: { path: string; children?: { path: string }[] }) => {
     if (!item.children) return false;
-    // Le path parent doit être différent de "/" pour éviter de tout activer
     return item.children.some((child) => pathname.startsWith(child.path));
   };
 
-  /** Renvoie true si l'item (ou l'un de ses enfants) correspond à la route active. */
   const isItemActive = (item: { path: string; children?: { path: string }[] }) =>
     isActive(item.path) || hasActiveChild(item);
 
