@@ -61,24 +61,25 @@ Senate-Website/
 │   │   └── search/
 │   ├── channel-tv-and-radio/     # Vidéos youtube, live, podcast,...
 |   |   ├── audio/
-|   |   └── [slug]/
+|   |   |   └── [slug]/
 |   |   ├── live/
-|   |   └── radio/
-|   |   └── tv/
+|   |   |   ├──  radio/
+|   |   |   └── tv/
 |   |   ├── montage/
-|   |   └── [slug]/
+|   |   |   └── [slug]/
 |   |   ├── proxy/
-│   │   ├── video/
-│   │   └── [slug]/
+│   │   └── video/
+│   │       └── [slug]/
 │   ├── contact/                  # Formulaire de contact et coordonnées
 │   ├── historical/               # Histoire du Sénat
 │   │   ├── history/
 │   │   └── [slug]/
-│   ├── international/          # Groupes d'amitié & diplomatie parlementaire
+│   ├── international/            # Groupes d'amitié & diplomatie parlementaire
 │   │   ├── inter-parliamentary-friendship-group/
 │   │   ├── presidents-activities/
 │   │   └── senators-activities/
-│   ├── parliamentary-proceedings/# Travaux et démarches parlementaires
+│   ├── parliamentary-proceedings/  # Travaux et démarches parlementaires
+|   |   ├── [slug]/
 │   │   └── legislative-proceedings/
 │   │       ├── deliberation-and-agenda/
 │   │       └── [slug]/
@@ -87,7 +88,9 @@ Senate-Website/
 │   │       └── [slug]/
 │   ├── search/                   # Moteur de recherche interne
 │   ├── texts-and-laws/           # Textes législatifs et lois
+|   |   └── [slug]/
 │   ├── others/                   # Contenus annexes
+|   |   └── [slug]/
 │   ├── error.tsx                 # Gestionnaire d'erreurs global
 │   ├── layout.tsx                # Structure principale du site
 │   ├── loading.tsx               # Interface de chargement
