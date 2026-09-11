@@ -102,6 +102,20 @@ export function Header() {
     return pathname === path;
   };
 
+  /**
+   * Vérifie si un item parent a un enfant actif. Permet de marquer visuellement
+   * le menu parent (underline + couleur) quand on est sur une de ses sous-pages.
+   */
+  const hasActiveChild = (item: { path: string; children?: { path: string }[] }) => {
+    if (!item.children) return false;
+    // Le path parent doit être différent de "/" pour éviter de tout activer
+    return item.children.some((child) => pathname.startsWith(child.path));
+  };
+
+  /** Renvoie true si l'item (ou l'un de ses enfants) correspond à la route active. */
+  const isItemActive = (item: { path: string; children?: { path: string }[] }) =>
+    isActive(item.path) || hasActiveChild(item);
+
   const formattedDate = dateTime.toLocaleDateString("fr-FR", {
     weekday: "long",
     day: "numeric",
@@ -135,7 +149,7 @@ export function Header() {
         boxShadow: isScrolled ? "0 4px 30px rgba(0,0,0,0.3)" : "none",
       }}
     >
-      {/* --- BARRE CYAN RESPONSIVE --- */}
+      {/* Barre en couleur cyan */}
       <div style={{ backgroundColor: COLOURS.cyan }}>
         <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between py-1 sm:py-2">
           <div className="flex items-center gap-2 sm:gap-5 flex-1 justify-start">
@@ -314,7 +328,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* --- BARRE PRINCIPALE --- */}
+      {/* Barre principale */}
       <div
         className="transition-colors duration-300"
         style={{
@@ -502,6 +516,7 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center">
           {navItems.map((item) => {
             const hasChildren = !!item.children;
+            const active = isItemActive(item);
             return (
               <div
                 key={item.label}
@@ -511,25 +526,38 @@ export function Header() {
               >
                 {hasChildren ? (
                   <button
-                    className="flex items-center gap-1 px-5 py-4 transition-colors relative"
+                    className="flex items-center gap-1 px-5 py-4 transition-colors relative group/navlink"
                     style={{
                       fontFamily: "'Poppins', sans-serif",
                       fontSize: "0.9rem",
                       fontWeight: 500,
                       letterSpacing: "0.02em",
-                      color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
-                      backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
+                      color: active ? COLOURS.white : "rgba(255,255,255,0.8)",
+                      backgroundColor: active ? COLOURS.navHover : "transparent",
                       transition: "background-color 0.2s ease, color 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.color = COLOURS.white;
+                        e.currentTarget.style.backgroundColor = COLOURS.navHover;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }
                     }}
                   >
                     {item.label}
-                    <ChevronDown size={12} className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`} />
-                    {isActive(item.path) && (
-                      <span
-                        className="absolute bottom-0 left-0 right-0 h-0.5"
-                        style={{ backgroundColor: COLOURS.cyan }}
-                      />
-                    )}
+                    <ChevronDown
+                      size={12}
+                      className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                    />
+                    <span
+                      className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out ${active ? "w-full" : "w-0 group-hover/navlink:w-full"
+                        }`}
+                    />
                   </button>
                 ) : (
                   <Link
@@ -541,19 +569,19 @@ export function Header() {
                       fontSize: "0.9rem",
                       fontWeight: 500,
                       letterSpacing: "0.02em",
-                      color: isActive(item.path) ? COLOURS.white : "rgba(255,255,255,0.8)",
-                      backgroundColor: isActive(item.path) ? COLOURS.navHover : "transparent",
+                      color: active ? COLOURS.white : "rgba(255,255,255,0.8)",
+                      backgroundColor: active ? COLOURS.navHover : "transparent",
                       transform: "scale(1)",
                     }}
                     onMouseEnter={(e) => {
-                      if (!isActive(item.path)) {
+                      if (!active) {
                         e.currentTarget.style.color = COLOURS.white;
                         e.currentTarget.style.backgroundColor = COLOURS.navHover;
                       }
                       e.currentTarget.style.transform = "scale(1.05)";
                     }}
                     onMouseLeave={(e) => {
-                      if (!isActive(item.path)) {
+                      if (!active) {
                         e.currentTarget.style.color = "rgba(255,255,255,0.8)";
                         e.currentTarget.style.backgroundColor = "transparent";
                       }
@@ -562,8 +590,8 @@ export function Header() {
                   >
                     <span className="relative z-10">{item.label}</span>
                     <span
-                      className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out 
-                        ${isActive(item.path) ? "w-full" : "w-0 group-hover/link:w-full"}`}
+                      className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out ${active ? "w-full" : "w-0 group-hover/link:w-full"
+                        }`}
                     />
                   </Link>
                 )}
@@ -578,29 +606,36 @@ export function Header() {
                       borderTop: `3px solid ${COLOURS.cyan}`,
                     }}
                   >
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.label}
-                        href={child.path}
-                        className="flex items-center px-5 py-3 transition-colors"
-                        style={{
-                          fontFamily: "'Poppins', sans-serif",
-                          fontSize: "0.85rem",
-                          color: CYAN,
-                          borderLeft: "3px solid transparent",
-                        }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.backgroundColor = ALICE_BLUE;
-                          (e.currentTarget as HTMLElement).style.borderLeftColor = CYAN;
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
-                          (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
-                        }}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
+                    {item.children.map((child) => {
+                      const childActive = isActive(child.path);
+                      return (
+                        <Link
+                          key={child.label}
+                          href={child.path}
+                          className="flex items-center px-5 py-3 transition-colors"
+                          style={{
+                            fontFamily: "'Poppins', sans-serif",
+                            fontSize: "0.85rem",
+                            color: childActive ? COLOURS.cyan : CYAN,
+                            fontWeight: childActive ? 600 : 400,
+                            borderLeft: `3px solid ${childActive ? COLOURS.cyan : "transparent"}`,
+                            backgroundColor: childActive ? ALICE_BLUE : "transparent",
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.backgroundColor = ALICE_BLUE;
+                            (e.currentTarget as HTMLElement).style.borderLeftColor = CYAN;
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!childActive) {
+                              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                              (e.currentTarget as HTMLElement).style.borderLeftColor = "transparent";
+                            }
+                          }}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -629,6 +664,7 @@ export function Header() {
             >
               {navItems.map((item) => {
                 const hasChildren = !!item.children;
+                const active = isItemActive(item);
                 return (
                   <motion.div
                     key={item.label}
@@ -638,15 +674,23 @@ export function Header() {
                     {hasChildren ? (
                       <>
                         <button
-                          className="w-full text-left px-5 py-4 flex items-center justify-between"
-                          style={{ fontSize: "0.95rem", fontWeight: 500, color: COLOURS.white }}
+                          className="w-full text-left px-5 py-4 flex items-center justify-between relative group/parent-mobile"
+                          style={{
+                            fontSize: "0.95rem",
+                            fontWeight: active ? 600 : 500,
+                            color: active ? COLOURS.cyan : COLOURS.white,
+                          }}
                           onClick={() => setOpenMenu(openMenu === item.label ? null : item.label)}
                         >
-                          {item.label}
+                          <span className="relative z-10">{item.label}</span>
                           <ChevronDown
                             size={14}
                             style={{ color: COLOURS.cyan }}
                             className={`transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
+                          />
+                          <span
+                            className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out ${active ? "w-full" : "w-0 group-hover/parent-mobile:w-full"
+                              }`}
                           />
                         </button>
                         <AnimatePresence>
@@ -687,20 +731,20 @@ export function Header() {
                         className="block px-5 py-4 relative group/link-mobile"
                         style={{
                           fontSize: "0.95rem",
-                          fontWeight: isActive(item.path) ? 600 : 500,
-                          color: isActive(item.path) ? COLOURS.cyan : COLOURS.white,
+                          fontWeight: active ? 600 : 500,
+                          color: active ? COLOURS.cyan : COLOURS.white,
                           transform: "scale(1)",
                           transition: "transform 0.2s ease, color 0.2s ease",
                         }}
                         onClick={() => setMobileOpen(false)}
                         onMouseEnter={(e) => {
-                          if (!isActive(item.path)) {
+                          if (!active) {
                             e.currentTarget.style.color = COLOURS.cyan;
                           }
                           e.currentTarget.style.transform = "scale(1.02)";
                         }}
                         onMouseLeave={(e) => {
-                          if (!isActive(item.path)) {
+                          if (!active) {
                             e.currentTarget.style.color = COLOURS.white;
                           }
                           e.currentTarget.style.transform = "scale(1)";
@@ -714,8 +758,8 @@ export function Header() {
                       >
                         <span className="relative z-10">{item.label}</span>
                         <span
-                          className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out 
-                            ${isActive(item.path) ? "w-full" : "w-0 group-hover/link-mobile:w-full"}`}
+                          className={`absolute bottom-0 left-0 h-0.5 bg-cyan-400 transition-all duration-300 ease-out ${active ? "w-full" : "w-0 group-hover/link-mobile:w-full"
+                            }`}
                         />
                       </Link>
                     )}
