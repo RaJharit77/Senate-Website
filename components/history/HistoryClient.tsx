@@ -10,7 +10,7 @@ import {
     getRepubliqueIII,
     getRepubliqueIV,
 } from "@/lib/api";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
 import { RED, WHITE, EMERALD } from "@/utils/colors";
 import { HistoryTabs } from "@/components/history/HistoryTabs";

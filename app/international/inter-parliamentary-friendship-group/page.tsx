@@ -1,7 +1,7 @@
 import { getPostsByCategorySlug, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { formatDate } from "@/utils/utility";
 import type { ActivityCategory, SimpleActivityItem } from "@/types/internationalType";
 import JsonLd from "@/components/JsonLd";

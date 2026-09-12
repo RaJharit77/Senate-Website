@@ -9,7 +9,7 @@ import {
     getInternational,
     getAllRepubliques,
 } from "@/lib/api";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { navItems } from "@/lib/navigations/navigation";
 
 export const dynamic = "force-dynamic";

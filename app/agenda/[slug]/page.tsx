@@ -4,7 +4,7 @@ import { formatDate, cleanText } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { Card, CardContent } from "@/components/ui/card";
 import { CAT_ORDRE_JOUR } from "@/constants/constants";
 import NotFoundPage from "@/app/not-found";

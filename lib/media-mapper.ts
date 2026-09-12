@@ -1,4 +1,4 @@
-import type { WpPost } from '@/lib/types';
+import type { WpPost } from '@/lib/wp-types';
 import type { MediaItem, MediaType } from '@/types/media';
 
 /**

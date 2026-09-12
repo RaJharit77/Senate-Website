@@ -2,7 +2,7 @@ import { getPostsByCategorySlug, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import { ActivitiesFeed, type ActivityItem } from "@/components/international/ActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { formatDate } from "@/utils/utility";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";

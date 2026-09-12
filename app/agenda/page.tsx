@@ -1,7 +1,7 @@
 import { AgendaClient } from "@/components/agenda/AgendaClient";
 import { CAT_ORDRE_JOUR } from "@/constants/constants";
 import { getPostsByCategory, getPageBySlug } from "@/lib/api";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import NotFoundPage from "../not-found";
 
 export const dynamic = 'force-dynamic';

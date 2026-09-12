@@ -12,7 +12,7 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { Calendar, Search, Download, PlayCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";

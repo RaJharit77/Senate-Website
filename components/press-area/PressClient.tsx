@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { getAlaune, getActualite } from "@/lib/api";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { Search } from "lucide-react";
 import { extractFirstImageFromContent } from "@/lib/extractImage";

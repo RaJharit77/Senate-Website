@@ -1,20 +1,10 @@
-/**
- * Utilitaires pour transformer le HTML WordPress des cartes sénateur
- * (contenu injecté via dangerouslySetInnerHTML dans HistoryTabs) :
- * générer un slug de profil, nettoyer les espaces, et poser un lien
- * interne cohérent vers /historical/[slug] sur chaque carte.
- */
-
-/** Sélecteur CSS d'une "carte sénateur" : une colonne WP contenant un avatar rond. */
+/** Sélecteur d'une carte sénateur : colonne WP contenant un avatar rond. */
 const SENATOR_CARD_SELECTOR = '[class*="col-"]:has(.rounded-circle)';
 
-/** Classe appliquée à chaque lien de nom de sénateur, qu'il soit généré ou déjà présent. */
+/** Classe appliquée au lien de nom de sénateur. */
 const SENATOR_LINK_CLASSNAME = "hover:text-cyan-300 transition-colors cursor-pointer";
 
-/**
- * Génère un slug URL-safe à partir d'un nom (minuscules, sans accents, tirets).
- * Doit rester cohérent avec le slug résolu par getSenatorBySlug côté API.
- */
+/** Génère un slug URL-safe à partir d'un nom (accents et espaces retirés). */
 export function generateSlug(name: string): string {
     return name
         .normalize("NFD")
@@ -25,20 +15,12 @@ export function generateSlug(name: string): string {
         .toLowerCase();
 }
 
-/**
- * Normalise les espaces d'un texte issu de WordPress : les \u00A0 (espaces
- * insécables, &nbsp;) comptent comme des espaces classiques pour \s en JS,
- * donc ceci évite les slugs ou textes bizarres causés par ces caractères.
- */
+/** Normalise les espaces d'un texte (dont les espaces insécables \u00A0). */
 export function cleanWhitespace(text: string): string {
     return text.replace(/\s+/g, " ").trim();
 }
 
-/**
- * Pose (ou met à jour) le lien interne d'une carte sénateur, en s'assurant
- * qu'il pointe vers /historical/[slug] plutôt que vers une éventuelle URL
- * externe héritée du contenu WordPress d'origine.
- */
+/** Pose le lien interne /historical/[slug] sur une carte sénateur donnée. */
 function linkifySenatorCard(card: Element): void {
     const titleEl = card.querySelector("h3, h4") as HTMLElement | null;
     if (!titleEl) return;
@@ -68,15 +50,7 @@ function linkifySenatorCard(card: Element): void {
     titleEl.appendChild(link);
 }
 
-/**
- * Parcourt le HTML WordPress d'un onglet République et pose un lien interne
- * vers /historical/[slug] sur chaque carte sénateur trouvée.
- *
- * Ne fait volontairement AUCUNE déduplication : le contenu WordPress répète
- * certains sénateurs à travers la chronologie (le Bureau Permanent est
- * réaffiché après chaque changement de composition), et supprimer les
- * "doublons" supprime en réalité des sénateurs bien réels.
- */
+/** Ajoute un lien interne vers /historical/[slug] sur chaque carte sénateur trouvée. */
 export function addSenatorLinks(html: string): string {
     if (!html || typeof document === "undefined") return html;
 

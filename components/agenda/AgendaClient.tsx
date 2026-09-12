@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronRight, Search, X, Calendar } from "lucide-react";
 import { formatDate, cleanText } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
