@@ -4,21 +4,12 @@ import { useState } from "react";
 import { Phone } from "lucide-react";
 
 interface HiddenPhoneNumberProps {
-    /** Numéro complet, ex: "+261 34 12 010 36" */
     fullNumber: string;
-    /** Numéro tronqué affiché par défaut, ex: "+261 34..." */
     maskedNumber: string;
-    /** Couleur d'accent pour l'icône (fond + icône) */
     accentColor: string;
-    /** Variante d'affichage : "header" (pastille ronde + lien wa.me) ou "card" (carte coordonnées) */
     variant: "header" | "card";
 }
 
-/**
- * Affiche un numéro de téléphone masqué ("+261 34...") qui se révèle
- * uniquement au survol de la souris, et uniquement en desktop (≥ lg).
- * Le href reste toujours le numéro complet (utile pour variant="header" avec wa.me).
- */
 export default function HiddenPhoneNumber({
     fullNumber,
     maskedNumber,
@@ -28,7 +19,6 @@ export default function HiddenPhoneNumber({
     const [isHovered, setIsHovered] = useState(false);
 
     if (variant === "header") {
-        // Format Header.tsx : pastille ronde + lien cliquable vers wa.me (numéro complet en href)
         const digitsOnly = fullNumber.replace(/[^\d+]/g, "");
         return (
             <a
@@ -60,7 +50,6 @@ export default function HiddenPhoneNumber({
         );
     }
 
-    // Format page.tsx (Contact) : carte "Coordonnées", non cliquable, visible desktop seulement
     return (
         <div
             className="hidden lg:flex items-start gap-4"
