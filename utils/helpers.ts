@@ -1,4 +1,4 @@
-import { WpPost } from "@/lib/types";
+import { WpPost } from "@/lib/wp-types";
 
 export function formatDate(dateStr: string): string {
     const d = new Date(dateStr);

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Calendar, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 
 interface CategorySectionProps {
     title: string;

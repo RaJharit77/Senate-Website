@@ -1,3 +1,4 @@
+/** Catégorie WordPress (endpoint /categories). */
 export interface WpCategory {
     id: number;
     count: number;
@@ -6,6 +7,7 @@ export interface WpCategory {
     parent: number;
 }
 
+/** Article WordPress générique (post, page ou custom post type). */
 export interface WpPost {
     id: number;
     date: string;
@@ -22,7 +24,7 @@ export interface WpPost {
         rendered: string;
     };
     modified?: string;
-    // Use unknown instead of any to avoid unexpected any and force explicit typing when accessed
+    // unknown plutôt que any : force un typage explicite à l'usage.
     acf?: Record<string, unknown>;
     _embedded?: {
         "wp:featuredmedia"?: Array<{

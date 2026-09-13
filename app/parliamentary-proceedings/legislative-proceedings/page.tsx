@@ -3,7 +3,7 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { Card, CardContent } from "@/components/ui/card";
 import { CategorySection } from "@/components/parliamentary/CategorySection";
 import { DeliberationTable } from "@/components/parliamentary/DeliberationTable";
-import type { WpCategory, WpPost } from "@/lib/types";
+import type { WpCategory, WpPost } from "@/lib/wp-types";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { PARENT_CATEGORY_ID } from "@/constants/constants";

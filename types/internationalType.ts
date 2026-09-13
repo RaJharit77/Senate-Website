@@ -1,19 +1,9 @@
-import { WpPost } from "@/lib/types";
+import { WpPost } from "@/lib/wp-types";
 
 // ----- Activités du Président : agrégation des 3 CPT -----
-// Sur senat.mg, "Activités du Président" agrège trois custom post types
-// distincts (et non un champ ACF "type" sur un seul CPT) :
-//   - "audience"     → Audiences
-//   - "delegation"   → Accueil des délégations parlementaires étrangères
-//   - "international"→ Déplacements à l'étranger
-// Chaque CPT est interrogé indépendamment et les échecs sont neutralisés
-// (Promise.allSettled) : si un endpoint n'existe pas encore côté WP
-// (ex. "delegation" n'a peut-être pas été créé), on retourne simplement un
-
-// tableau vide pour ce groupe plutôt que de casser toute la page.
 export type ActivityCategory = "audience" | "delegation" | "international";
 
-
+/** Activité normalisée pour affichage (carte, liste...). */
 export interface ActivityItem {
     id: number;
     slug: string;
@@ -25,6 +15,7 @@ export interface ActivityItem {
     link: string;
 }
 
+/** Variante de ActivityItem (mêmes champs, ordre différent). */
 export interface SimpleActivityItem {
     id: number;
     slug: string;
@@ -36,6 +27,7 @@ export interface SimpleActivityItem {
     category: ActivityCategory;
 }
 
+/** Activité brute avant normalisation : post WordPress + catégorie source. */
 export interface PresidentActivity {
     id: number;
     category: ActivityCategory;

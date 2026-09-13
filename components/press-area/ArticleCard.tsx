@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import Image from "next/image";
 import { Calendar, ImageIcon } from "lucide-react";
 import Link from "next/link";

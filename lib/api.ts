@@ -11,7 +11,7 @@ import {
     CF7_VERSION,
     LIVE_STREAM_URL,
 } from "@/constants/constants";
-import type { WpCategory, WpPost } from "@/lib/types";
+import type { WpCategory, WpPost } from "@/lib/wp-types";
 import type { LiveStatus } from "@/types/media";
 import {
     ContactFormFields,
@@ -26,12 +26,7 @@ import {
     LIVE_FACEBOOK_VIDEO_URL,
     LIVE_AUDIO_STREAM_URL,
 } from "@/constants/constants";
-
-const API_BASE = process.env.WP_API_URL || "https://senat.mg/wp-json/wp/v2";
-
-const isClient = typeof window !== "undefined";
-
-type Params = Record<string, string | number | boolean>;
+import { API_BASE, isClient, Params } from "./wordpress";
 
 class WpApiError extends Error {
     constructor(
@@ -86,10 +81,8 @@ async function fetchAPI<T>(
     let res: Response;
     try {
         res = await fetch(url.toString(), {
-            // Le User-Agent "Next.js" peut être bloqué/filtré par certains
-            // hébergeurs ou plugins de sécurité WordPress (Wordfence, CDN, etc.),
-            // alors qu'un UA de navigateur passe. On aligne sur ce qui fonctionne
-            // en curl pour éviter les réponses vides/HTML silencieuses.
+            // UA "Next.js" parfois bloqué par WP (Wordfence, CDN...) : on
+            // utilise un UA navigateur pour éviter les réponses HTML silencieuses.
             headers: {
                 "User-Agent":
                     "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
@@ -123,8 +116,7 @@ async function fetchAPI<T>(
 
     const contentType = res.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
-        // Symptôme classique d'un blocage silencieux : on reçoit du 200 OK
-        // mais avec une page HTML (challenge anti-bot, maintenance, etc.)
+        // Blocage silencieux typique : 200 OK mais page HTML (anti-bot, maintenance...)
         const bodyPreview = await res.text().catch(() => "<unreadable body>");
         console.error(
             `[fetchAPI] Unexpected content-type "${contentType}" for ${url.toString()}\nBody preview: ${bodyPreview.slice(0, 300)}`,
@@ -172,21 +164,18 @@ export function getInternational(params: Params = {}) {
     return fetchAPI<WpPost[]>("/international", { _embed: true, ...params });
 }
 
-// CPT "audience" : visites de courtoisie, audiences accordées par le
-// Président du Sénat (cf. https://senat.mg/activites-du-president/).
+// CPT "audience" : audiences et visites de courtoisie du Président du Sénat.
 export function getAudiences(params: Params = {}) {
     return fetchAPI<WpPost[]>("/audience", { _embed: true, ...params });
 }
 
-// CPT "delegation" (slug supposé) : accueil de délégations parlementaires
-// étrangères. L'endpoint peut ne pas exister selon l'environnement WP ;
-// on neutralise l'erreur au point d'appel (cf. getPresidentActivities)
-// pour ne pas casser le rendu de la page si le CPT diffère ou est vide.
+// CPT "delegation" (slug non confirmé) : accueil de délégations étrangères.
+// Erreur neutralisée côté appelant (getPresidentActivities) si l'endpoint diffère ou est absent.
 export function getDelegations(params: Params = {}) {
     return fetchAPI<WpPost[]>("/delegation", { _embed: true, ...params });
 }
 
-// Historical
+// Historique
 export function getRepubliqueI(params: Params = {}) {
     return fetchAPI<WpPost[]>("/republiquei", { _embed: true, ...params });
 }
@@ -207,9 +196,7 @@ export function getRepubliqueV(params: Params = {}) {
 **/
 
 // ----- Républiques (textes constitutionnels) -----
-// Agrège les 4 post-types "republiquei" à "republiqueiv" en une seule liste,
-// triée du plus récent au plus ancien. Utile pour la page "Textes et Lois"
-// qui doit présenter l'historique constitutionnel.
+// Agrège les 4 CPT "republiquei" à "iv" en une liste triée du plus récent au plus ancien.
 export async function getAllRepubliques(params: Params = {}) {
     const results = await Promise.allSettled([
         getRepubliqueI(params),
@@ -284,13 +271,12 @@ export function search(query: string) {
     return fetchAPI<unknown[]>("/search", { search: query });
 }
 
-// Recherche unifiée sur tout le site : interroge /api/search (voir
-// app/api/search/route.ts), qui agrège pages, textes et lois, actualités,
-// activités du Président, historique, etc. en parallèle et associe à
-// chaque résultat un chemin Next.js interne garanti — plutôt que de
-// déduire une route à partir du `url`/`subtype` WordPress.
-// Pensée pour un appel côté client (fetch relatif) : ne pas l'utiliser
-// depuis un composant serveur (pas d'origine implicite côté serveur).
+/**
+ * Recherche unifiée (voir app/api/search/route.ts) : agrège pages, textes et
+ * lois, actualités, activités du Président, historique... et fournit un
+ * chemin Next.js garanti par résultat, plutôt qu'une route déduite du WordPress.
+ * Client uniquement (fetch relatif) — pas d'appel depuis un composant serveur.
+ */
 export async function searchSite(query: string): Promise<unknown[]> {
     const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) {
@@ -313,18 +299,12 @@ export function getAudios(params: Params = {}) {
     return getPostsByCategory(CAT_AUDIO, { _embed: true, ...params });
 }
 
-/**
- * Récupère le flux live (URL) depuis une variable d'environnement ou un post.
- * Pour l'instant, on utilise une variable d'environnement.
- */
+/** Récupère l'URL du flux live TV (variable d'environnement). */
 export function getLiveStreamUrl(): string {
     return LIVE_STREAM_URL;
 }
 
-/**
- * Récupère tous les médias (vidéos + audios) triés par date.
- * Utile pour la page d'accueil de la chaîne.
- */
+/** Récupère tous les médias (vidéos + audios), triés du plus récent au plus ancien. */
 export async function getAllMedia(params: Params = {}) {
     const [videos, audios] = await Promise.all([
         getVideos(params).catch(() => []),
@@ -336,13 +316,9 @@ export async function getAllMedia(params: Params = {}) {
 }
 
 // ----- Chaîne TV/Radio : contenus additionnels -----
-// getVideos()/getAudios() ci-dessus couvrent CAT_VIDEO (YouTube, déjà en
-// prod) et CAT_AUDIO. Les fonctions suivantes couvrent les vidéos hébergées
-// et les montages ("mise en boîte") : catégories WP à créer, cf. constants.ts.
-// Tant que CAT_VIDEO_HOSTED / CAT_MONTAGE valent 0, on court-circuite l'appel
-// réseau (categories=0 renverrait potentiellement tous les posts non
-// catégorisés côté WP) et on retourne [] proprement.
-
+// Complète getVideos()/getAudios() (CAT_VIDEO/CAT_AUDIO) avec les vidéos
+// hébergées et montages — catégories WP à créer (cf. constants.ts). Tant que
+// leur ID vaut 0, l'appel réseau est court-circuité pour éviter categories=0.
 export function getVideosHosted(params: Params = {}) {
     if (!CAT_VIDEO_HOSTED) return Promise.resolve<WpPost[]>([]);
     return getPostsByCategory(CAT_VIDEO_HOSTED, { _embed: true, ...params });
@@ -352,17 +328,14 @@ export function getVideosHostedBySlug(params: Params = {}) {
     return getPostsByCategorySlug("video-hosted", { _embed: true, ...params });
 }
 
-// Alias explicite : CAT_AUDIO_PODCAST est la même catégorie que CAT_AUDIO
-// pour l'instant (35). On garde deux noms de fonctions pour que l'appelant
-// exprime son intention (podcast vs audio générique), le jour où WP sépare
-// réellement les deux catégories il suffira de changer la constante.
+// Alias intentionnel : CAT_AUDIO_PODCAST = CAT_AUDIO (35) pour l'instant.
+// Permet à l'appelant d'exprimer "podcast" vs "audio" avant séparation côté WP.
 export function getPodcasts(params: Params = {}) {
     if (!CAT_AUDIO_PODCAST) return getAudios(params);
     return getPostsByCategory(CAT_AUDIO_PODCAST, { _embed: true, ...params });
 }
 
-// "Mise en boîte" : rediffusions/montages vidéo édités (par opposition au
-// direct et à la vidéo YouTube brute).
+// "Mise en boîte" : rediffusions/montages édités (≠ direct, ≠ vidéo brute).
 export function getMontages(params: Params = {}) {
     if (!CAT_MONTAGE) return Promise.resolve<WpPost[]>([]);
     return getPostsByCategory(CAT_MONTAGE, { _embed: true, ...params });
@@ -375,18 +348,10 @@ interface YoutubeLiveInfo {
 }
 
 /**
- * Interroge la YouTube Data API v3 (search.list) pour savoir si la chaîne
- * configurée diffuse actuellement un direct.
- *
- * Coût & fréquence : search.list coûte 100 unités de quota par appel, sur un
- * quota gratuit de 10 000 unités/jour (100 appels/jour max). Le cache
- * Next.js ci-dessous (revalidate: 900) limite les appels réels à un toutes
- * les 15 minutes max, soit au pire 96 appels/jour (9 600 unités) — sous le
- * plafond, avec une marge volontaire.
- *
- * Ne lève jamais d'exception : toute erreur (réseau, quota dépassé, clé ou
- * ID de chaîne absents) est traitée comme "pas de direct détecté", pour que
- * getTvLiveStatus se replie sur Facebook plutôt que de faire planter la page.
+ * Interroge YouTube Data API v3 pour détecter un direct sur la chaîne.
+ * Coût : 100 unités/appel (quota 10 000/jour) ; le cache Next (revalidate 900s)
+ * plafonne à ~96 appels/jour, sous la limite. Ne lève jamais : toute erreur
+ * est traitée comme "pas de direct" pour laisser getTvLiveStatus se replier sur Facebook.
  */
 async function checkYoutubeLive(): Promise<YoutubeLiveInfo | null> {
     if (!LIVE_YOUTUBE_CHANNEL_ID || !LIVE_YOUTUBE_API_KEY) {
@@ -425,10 +390,7 @@ async function checkYoutubeLive(): Promise<YoutubeLiveInfo | null> {
     }
 }
 
-/**
- * Statut du direct TV : priorité à la détection réelle YouTube, repli sur
- * l'URL Facebook manuelle si configurée.
- */
+/** Statut du direct TV : détection YouTube en priorité, repli Facebook sinon. */
 async function getTvLiveStatus(): Promise<LiveStatus> {
     const youtubeLive = await checkYoutubeLive();
     if (youtubeLive) {
@@ -456,10 +418,8 @@ async function getTvLiveStatus(): Promise<LiveStatus> {
 }
 
 /**
- * Statut du direct radio : un vrai flux audio dédié (LIVE_AUDIO_STREAM_URL)
- * prime toujours. À défaut, si un direct TV est en cours, on renvoie ce même
- * statut sous kind='radio' — c'est LivePlayer.tsx qui décide alors de le
- * rendre en audio seul (react-player masqué) plutôt qu'en vidéo visible.
+ * Statut du direct radio : LIVE_AUDIO_STREAM_URL prime si défini, sinon
+ * reprend le statut TV en kind='radio' (LivePlayer.tsx l'affiche alors en audio seul).
  */
 async function getRadioLiveStatus(): Promise<LiveStatus> {
     if (LIVE_AUDIO_STREAM_URL) {
@@ -495,9 +455,8 @@ export async function getLiveStatus(kind: "tv" | "radio"): Promise<LiveStatus> {
 }
 
 /**
- * Agrège toutes les sources de la page Chaîne TV/Radio.
- * Ajoute une recherche dans tous les posts pour détecter les vidéos YouTube
- * même si elles ne sont pas dans CAT_VIDEO.
+ * Agrège toutes les sources de la page Chaîne TV/Radio, en complétant
+ * CAT_VIDEO par une recherche des vidéos YouTube dans tous les posts.
  */
 export async function getAllChannelAndRadioMedia(params: Params = {}) {
     const perPage = typeof params.per_page === "number" ? params.per_page : 100;
@@ -522,9 +481,8 @@ export async function getAllChannelAndRadioMedia(params: Params = {}) {
         return extractYoutubeId(content) !== "";
     });
 
-    // Fusionner et dédoublonner
+    // Fusion + dédoublonnage par id
     const youtube = [...youtubeCat, ...extraYoutubePosts];
-    // Dédoublonner par id
     const youtubeUnique = Array.from(
         new Map(youtube.map((p) => [p.id, p])).values(),
     );
@@ -538,11 +496,8 @@ export async function getAllChannelAndRadioMedia(params: Params = {}) {
 }
 
 /**
- * Récupère un média (vidéo YouTube, vidéo hébergée, podcast ou montage) par
- * son slug, en interrogeant uniquement la catégorie WP correspondante — pas
- * besoin de charger les 4 catégories pour retrouver un seul item.
- * Retourne null si non trouvé ou si la catégorie n'existe pas encore côté WP
- * (CAT_VIDEO_HOSTED / CAT_AUDIO_PODCAST / CAT_MONTAGE valant 0).
+ * Récupère un média par slug en interrogeant uniquement sa catégorie WP
+ * (pas besoin de charger les 4). Renvoie null si absent ou catégorie non créée.
  */
 export async function getMediaBySlug(
     slug: string,
@@ -566,7 +521,7 @@ export async function getMediaBySlug(
     }
 }
 
-// Partners
+// Partenaires
 export async function getPartners() {
     try {
         const data = await fetchAPI<
@@ -582,25 +537,20 @@ export async function getPartners() {
             logo: item._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
         }));
     } catch (err) {
-        // Si l'endpoint n'existe pas (ou erreur réseau/parsing), on logge
-        // pour garder une trace, mais on retourne un tableau vide pour ne
-        // pas casser le rendu de la page d'accueil.
+        // Endpoint absent ou erreur réseau/parsing : logge et retourne [] sans casser la page.
         console.error("[getPartners] Failed to load partners:", err);
         return [];
     }
 }
 
-// Office
+// Bureau
 export function getBureau() {
     return fetchAPI("/bureau", { _embed: true });
 }
 
 // ----- Contact Form 7 -----
-// Le endpoint CF7 n'utilise pas fetchAPI() car il ne tape pas vers
-// API_BASE (/wp-json/wp/v2) mais vers /wp-json/contact-form-7/v1, et il
-// attend du multipart/form-data (pas de JSON en entrée). On le garde donc
-// séparé, mais toujours dans ce fichier "api" pour centraliser tous les
-// appels réseau côté WordPress.
+// N'utilise pas fetchAPI() : endpoint hors API_BASE (/contact-form-7/v1) et
+// multipart/form-data en entrée, pas JSON.
 export async function submitContactForm(
     fields: ContactFormFields,
 ): Promise<ContactFormResult> {
@@ -683,9 +633,8 @@ export async function getCategoryById(id: number) {
     return fetchAPI<unknown>(`/categories/${id}`);
 }
 
-// Récupérer les posts d'une catégorie identifiée par son slug
-// (plus robuste qu'un ID en dur : l'ID d'une catégorie peut changer
-// d'un environnement WordPress à l'autre, le slug est stable).
+// Posts d'une catégorie par son slug (plus robuste qu'un ID en dur,
+// qui peut varier d'un environnement WordPress à l'autre).
 export async function getPostsByCategorySlug(
     slug: string,
     params: Params = {},
@@ -707,9 +656,8 @@ export async function getPostsByCategorySlug(
     return posts;
 }
 
-// Récupère les articles du custom post type "international" pour une
-// catégorie donnée (alternative à getPostsByCategorySlug si le contenu
-// est stocké dans le CPT "international" plutôt que dans les posts standards).
+// Articles du CPT "international" pour une catégorie donnée (alternative à
+// getPostsByCategorySlug quand le contenu n'est pas dans les posts standards).
 export async function getInternationalByCategorySlug(
     slug: string,
     params: Params = {},
@@ -878,12 +826,12 @@ export async function getPostBySlugNoCache(
     return null;
 }
 
-// Categories by parent
+// Catégories par parent
 export function getCategoriesByParent(parentId: number, params: Params = {}) {
     return fetchAPI<WpCategory[]>("/categories", { parent: parentId, ...params });
 }
 
-// Relevant Posts
+// Articles pertinents
 export async function getAllRelevantPosts() {
     const [ordreJourPosts, deliberationPosts, loisAdoptees] = await Promise.all([
         getPostsByCategory(11, { per_page: 100, _embed: true }).catch(() => []),
@@ -905,9 +853,9 @@ export async function getAllRelevantPosts() {
 }
 
 /**
- *  Récupère tous les articles pertinents pour les pages "Délibérations et ordres du jour"
-    (catégories 11, 53 et 14), triés du plus ancien au plus récent.
-*/
+ * Articles des pages "Délibérations et ordres du jour" (catégories 11, 53,
+ * 14), triés du plus ancien au plus récent.
+ */
 export async function getDeliberationPosts(params: Params = {}) {
     const categories = [11, 53, 14];
     const results = await Promise.allSettled(
@@ -975,10 +923,7 @@ export async function getPostsByCategoryWithPagination(
     return { items, total, totalPages };
 }
 
-/**
- * Récupère un article de la catégorie "PL adoptes" (ID 14) par son slug.
- * Utilise l'API REST de WordPress.
- */
+/** Récupère un article "PL adoptés" (catégorie 14) par son slug. */
 export async function getTextAndLawBySlug(
     slug: string,
 ): Promise<WpPost | null> {
@@ -1038,9 +983,8 @@ export async function getLawsExcerpts(limit: number = 4): Promise<
 }
 
 /**
- * Récupère les quatre pages de référence pour la section "Textes de référence"
- * en fonction de leurs slugs.
- * Retourne un objet avec les quatre pages (ou null si non trouvées).
+ * Récupère les quatre pages de référence de la section "Textes de référence"
+ * par leur slug (null pour celles non trouvées).
  */
 export async function getReferencePages(): Promise<{
     dispositions: WpPost | null;
@@ -1083,7 +1027,7 @@ export async function getReferencePages(): Promise<{
     };
 }
 
-// Release
+// Version (release GitHub)
 interface ReleaseData {
     tag_name: string;
     html_url: string;

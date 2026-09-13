@@ -2,22 +2,19 @@
 
 import { useState } from "react";
 import { Phone } from "lucide-react";
+import Link from "next/link";
 
 interface HiddenPhoneNumberProps {
-    /** Numéro complet, ex: "+261 34 12 010 36" */
     fullNumber: string;
-    /** Numéro tronqué affiché par défaut, ex: "+261 34..." */
     maskedNumber: string;
-    /** Couleur d'accent pour l'icône (fond + icône) */
     accentColor: string;
-    /** Variante d'affichage : "header" (pastille ronde + lien wa.me) ou "card" (carte coordonnées) */
     variant: "header" | "card";
 }
 
 /**
- * Affiche un numéro de téléphone masqué ("+261 34...") qui se révèle
- * uniquement au survol de la souris, et uniquement en desktop (≥ lg).
- * Le href reste toujours le numéro complet (utile pour variant="header" avec wa.me).
+ * Numéro de téléphone masqué par défaut (protection anti-scraping), révélé
+ * au survol. Deux variantes : "header" (lien WhatsApp cliquable) et "card"
+ * (affichage simple, non cliquable).
  */
 export default function HiddenPhoneNumber({
     fullNumber,
@@ -27,11 +24,12 @@ export default function HiddenPhoneNumber({
 }: HiddenPhoneNumberProps) {
     const [isHovered, setIsHovered] = useState(false);
 
+    // Variante barre d'en-tête : lien cliquable vers WhatsApp.
     if (variant === "header") {
-        // Format Header.tsx : pastille ronde + lien cliquable vers wa.me (numéro complet en href)
+        // wa.me attend un numéro E.164 sans le "+" de tête.
         const digitsOnly = fullNumber.replace(/[^\d+]/g, "");
         return (
-            <a
+            <Link
                 href={`https://wa.me/${digitsOnly.replace("+", "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -56,11 +54,11 @@ export default function HiddenPhoneNumber({
                 >
                     {isHovered ? fullNumber : maskedNumber}
                 </span>
-            </a>
+            </Link>
         );
     }
 
-    // Format page.tsx (Contact) : carte "Coordonnées", non cliquable, visible desktop seulement
+    // Variante carte : affichage simple, non cliquable.
     return (
         <div
             className="hidden lg:flex items-start gap-4"

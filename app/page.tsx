@@ -5,7 +5,7 @@ import { ParliamentaryWork } from "@/components/home/ParliamentaryWork";
 import { PartnersBand } from "@/components/home/PartnersBand";
 import { getAlaune, getActualite, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
-import type { WpPost } from "@/lib/types";
+import type { WpPost } from "@/lib/wp-types";
 import { formatDate } from "@/utils/utility";
 import { GREENS, REDS } from "@/utils/colors";
 import JsonLd from '@/components/JsonLd';
