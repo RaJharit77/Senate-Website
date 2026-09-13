@@ -248,6 +248,52 @@ export async function getSenatorBySlug(slug: string): Promise<WpPost | null> {
     return null;
 }
 
+/**
+ * Récupère l'introduction de la page Historique (post "histoire-du-senat",
+ * catégorie 40). Renvoie le titre, l'URL de l'image héro (extraite du
+ * contenu car featured_media = 0) et le texte d'intro.
+ */
+export interface HistoryIntro {
+    title: string;
+    image: string | null;
+    intro: string;
+}
+
+export async function getHistoryIntro(): Promise<HistoryIntro | null> {
+    try {
+        const posts = await fetchAPI<WpPost[]>("/posts", {
+            slug: "histoire-du-senat",
+            _embed: true,
+            per_page: 1,
+        });
+
+        const post = posts[0];
+        if (!post) return null;
+
+        const html = post.content.rendered;
+
+        // Image : première <img> du contenu (featured_media vaut 0 côté WP)
+        const imgMatch = html.match(/<img[^>]+src="([^"]+)"/);
+        const image =
+            imgMatch?.[1] ||
+            post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+            null;
+
+        // Intro : premier paragraphe textuel du contenu (hors titre/image)
+        const pMatch = html.match(/<p[^>]*>([\s\S]*?)<\/p>/);
+        const intro = pMatch?.[1]?.replace(/<[^>]+>/g, "").trim() || "";
+
+        return {
+            title: post.title.rendered,
+            image,
+            intro,
+        };
+    } catch (err) {
+        console.error("[getHistoryIntro] Erreur:", err);
+        return null;
+    }
+}
+
 // ----- Pages -----
 export function getPages(params: Params = {}) {
     return fetchAPI<WpPost[]>("/pages", { _embed: true, ...params });

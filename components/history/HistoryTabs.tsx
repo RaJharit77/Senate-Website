@@ -21,9 +21,8 @@ interface HistoryTabsProps {
 }
 
 /**
- * Onglets "Républiques" de la page Historique : affiche le contenu WordPress
- * de la république active (avec liens internes posés sur les cartes sénateur)
- * et garde l'onglet actif synchronisé avec le paramètre d'URL ?tab=.
+ * Onglets "Républiques" de la page Historique. Affiche le contenu WordPress
+ * de l'onglet actif, synchronisé avec le paramètre d'URL ?tab=.
  */
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const router = useRouter();
@@ -35,16 +34,14 @@ export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProp
     const [activeTab, setActiveTab] = useState(activeTabFromQuery);
     const [isClient, setIsClient] = useState(false);
 
-    // Ajustement d'état pendant le rendu (pattern React officiel) plutôt qu'un
-    // useEffect : évite un rendu intermédiaire où l'ancien onglet reste visible
-    // le temps que l'effet se déclenche.
+    // Ajustement d'état pendant le rendu (pattern React) : évite un flash de
+    // l'ancien onglet avant qu'un useEffect ne se déclenche.
     if (activeTabFromQuery !== activeTab) {
         setActiveTab(activeTabFromQuery);
     }
 
-    // addSenatorLinks manipule le DOM : on ne l'exécute qu'après le montage
-    // pour que le HTML du rendu serveur et du tout premier rendu client
-    // restent identiques (pas de mismatch d'hydratation).
+    // addSenatorLinks manipule le DOM : exécuté seulement après le montage
+    // pour éviter un mismatch d'hydratation (HTML serveur ≠ premier rendu client).
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsClient(true);
