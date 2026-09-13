@@ -22,8 +22,8 @@ import { TABS } from "@/utils/data/historical";
 type RepublicId = Exclude<TabId, "transition">;
 type ContentMap = Record<TabId, string>;
 
-// Les fonctions d'API utilisent la numérotation romaine (I, II, III, IV),
-// les clés internes des ordinaux anglais : cette table fait le lien.
+// L'API utilise la numérotation romaine (I-IV), les clés internes des
+// ordinaux anglais : cette table fait le lien.
 const REPUBLIC_IDS: RepublicId[] = ["first", "second", "third", "fourth"];
 
 const REPUBLIC_FETCHERS: Record<RepublicId, () => Promise<WpPost[]>> = {
@@ -44,9 +44,8 @@ const EMPTY_CONTENT: ContentMap = {
 };
 
 /**
- * Construit la ContentMap à partir des résultats de Promise.allSettled :
- * range le contenu de chaque république, et regroupe tous les blocs de
- * transition trouvés dans un seul onglet "transition".
+ * Construit la ContentMap depuis les résultats de Promise.allSettled, en
+ * regroupant tous les blocs de transition dans un seul onglet "transition".
  */
 function buildContentMap(
     ids: RepublicId[],
