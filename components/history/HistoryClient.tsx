@@ -9,6 +9,7 @@ import {
     getRepubliqueII,
     getRepubliqueIII,
     getRepubliqueIV,
+    getHistoryIntro,
 } from "@/lib/api";
 import type { WpPost } from "@/lib/wp-types";
 import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
@@ -18,6 +19,7 @@ import { TabId } from "@/types/tabId";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { TABS } from "@/utils/data/historical";
+import { cleanText } from "@/utils/utility";
 
 type RepublicId = Exclude<TabId, "transition">;
 type ContentMap = Record<TabId, string>;
@@ -32,8 +34,6 @@ const REPUBLIC_FETCHERS: Record<RepublicId, () => Promise<WpPost[]>> = {
     third: getRepubliqueIII,
     fourth: getRepubliqueIV,
 };
-
-const HERO_IMAGE = "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg";
 
 const EMPTY_CONTENT: ContentMap = {
     first: "",
@@ -76,16 +76,29 @@ function buildContentMap(
 export default function HistoricalClient() {
     const [contents, setContents] = useState<ContentMap>(EMPTY_CONTENT);
     const [loading, setLoading] = useState(true);
+    const [heroImage, setHeroImage] = useState<string | null>(null);
+    const [heroIntro, setHeroIntro] = useState<string>("");
 
     useEffect(() => {
         let cancelled = false;
 
         const fetchData = async () => {
             try {
-                const results = await Promise.allSettled(
-                    REPUBLIC_IDS.map((id) => REPUBLIC_FETCHERS[id]())
-                );
-                if (!cancelled) setContents(buildContentMap(REPUBLIC_IDS, results));
+                const [results, intro] = await Promise.all([
+                    Promise.allSettled(
+                        REPUBLIC_IDS.map((id) => REPUBLIC_FETCHERS[id]())
+                    ),
+                    getHistoryIntro(),
+                ]);
+
+                if (cancelled) return;
+
+                setContents(buildContentMap(REPUBLIC_IDS, results));
+
+                if (intro) {
+                    setHeroImage(intro.image);
+                    setHeroIntro(cleanText(intro.intro));
+                }
             } catch (error) {
                 console.error("[HistoryPage] Erreur chargement:", error);
             } finally {
@@ -108,7 +121,8 @@ export default function HistoricalClient() {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         name: "Histoire du Sénat de Madagascar",
-        description: "Présentation chronologique des républiques et du Sénat à travers l'histoire de Madagascar.",
+        description:
+            "Présentation chronologique des républiques et du Sénat à travers l'histoire de Madagascar.",
         url: `${SITE_URL}/historical`,
         inLanguage: "fr-FR",
     };
@@ -131,48 +145,49 @@ export default function HistoricalClient() {
                     </div>
 
                     <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 mb-12 overflow-hidden">
-                        <div className="absolute inset-0 opacity-20">
-                            <Image
-                                src={HERO_IMAGE}
-                                alt="Senate Structures"
-                                fill
-                                priority
-                                className="object-cover"
-                                sizes="100vw"
-                                quality={30}
-                            />
-                        </div>
+                        {heroImage && (
+                            <div className="absolute inset-0 opacity-20">
+                                <Image
+                                    src={heroImage}
+                                    alt="Senate Structures"
+                                    fill
+                                    priority
+                                    className="object-cover"
+                                    sizes="100vw"
+                                    quality={30}
+                                />
+                            </div>
+                        )}
 
                         <div className="relative z-10">
                             <h2 className="font-poppins text-white text-2xl font-bold text-center mb-6">
                                 Le Sénat à travers les Républiques
                             </h2>
 
-                            <div className="flex justify-center">
-                                <div
-                                    className="relative w-full max-w-4xl aspect-4/3 rounded-xl shadow-2xl overflow-hidden"
-                                    style={{ minHeight: 300 }}
-                                >
-                                    <Image
-                                        src={HERO_IMAGE}
-                                        alt="Le Sénat de Madagascar à travers les Républiques"
-                                        fill
-                                        className="object-contain"
-                                        sizes="(max-width: 768px) 100vw, 896px"
-                                        quality={90}
-                                        priority
-                                    />
+                            {heroImage && (
+                                <div className="flex justify-center">
+                                    <div
+                                        className="relative w-full max-w-4xl aspect-4/3 rounded-xl shadow-2xl overflow-hidden"
+                                        style={{ minHeight: 300 }}
+                                    >
+                                        <Image
+                                            src={heroImage}
+                                            alt="Le Sénat de Madagascar à travers les Républiques"
+                                            fill
+                                            className="object-contain"
+                                            sizes="(max-width: 768px) 100vw, 896px"
+                                            quality={90}
+                                            priority
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
-                            <p className="font-poppins text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed">
-                                Le Sénat a été mis en place au lendemain de la naissance de la République
-                                Malagasy, le 14 octobre 1958 ; plus précisément après l&apos;adoption de
-                                la Constitution du 29 avril 1959. Cependant, il a été mis en veilleuse
-                                pendant près de 30 ans pour ne réapparaître qu&apos;en mai 2001. Formant
-                                le Parlement avec l&apos;Assemblée Nationale, le Sénat est actuellement
-                                dans la deuxième législature de la Quatrième République.
-                            </p>
+                            {heroIntro && (
+                                <p className="font-poppins text-gray-300 text-lg text-center max-w-3xl mx-auto mt-6 leading-relaxed">
+                                    {heroIntro}
+                                </p>
+                            )}
 
                             <div className="flex justify-center mt-8">
                                 <Link
