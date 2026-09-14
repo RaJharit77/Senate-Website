@@ -22,9 +22,9 @@ export default async function PresidentMessagePage() {
     const { name, title, mandateStart, mandateEnd, photoUrl } = presidentMeta;
 
     const breadcrumb = buildBreadcrumbJsonLd([
-        { name: 'Accueil', url: SITE_URL || 'https://senat-de-madagascar.vercel.app' },
-        { name: 'À propos', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about` },
-        { name: 'Message du Président', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about/president-message` },
+        { name: 'Accueil', url: SITE_URL },
+        { name: 'À propos', url: `${SITE_URL}/about` },
+        { name: 'Message du Président', url: `${SITE_URL}/about/president-message` },
     ]);
 
     const webPageJsonLd = {

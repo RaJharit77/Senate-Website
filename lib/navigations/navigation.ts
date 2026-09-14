@@ -7,6 +7,7 @@ export const navItems = [
             { label: "Missions et attributions", path: "/about/missions-and-responsibilities" },
             { label: "Structures", path: "/about/structures" },
             { label: "Textes de référence", path: "/about/reference-texts" },
+            { label: "Fonctionnement du sénat", path: "/about/functioning" },
         ],
     },
     { label: "Historique", path: "/historical?tab=first" },
@@ -15,6 +16,7 @@ export const navItems = [
         path: "/parliamentary-proceedings",
         children: [
             { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
+            //{ label: "Vos Sénateurs", path: "/parliamentary-proceedings/your-senators" },
             { label: "Calendrier Parlementaire", path: "/agenda" },
             { label: "Textes et lois", path: "/texts-and-laws" },
         ],

@@ -20,9 +20,9 @@ export default async function TextesPage() {
     if (!page) return <NotFoundPage />;
 
     const breadcrumb = buildBreadcrumbJsonLd([
-        { name: 'Accueil', url: SITE_URL || 'https://senat-de-madagascar.vercel.app' },
-        { name: 'À propos', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about` },
-        { name: 'Textes de référence', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about/reference-texts` },
+        { name: 'Accueil', url: SITE_URL },
+        { name: 'À propos', url: `${SITE_URL}/about` },
+        { name: 'Textes de référence', url: `${SITE_URL}/about/reference-texts` },
     ]);
 
     const webPageJsonLd = {

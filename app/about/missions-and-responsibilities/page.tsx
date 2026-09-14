@@ -20,9 +20,9 @@ export default async function MissionsPage() {
     if (!page) return <NotFoundPage />;
 
     const breadcrumb = buildBreadcrumbJsonLd([
-        { name: 'Accueil', url: SITE_URL || 'https://senat-de-madagascar.vercel.app' },
-        { name: 'À propos', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about` },
-        { name: 'Missions et attributions', url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about/missions-and-responsibilities` },
+        { name: 'Accueil', url: SITE_URL },
+        { name: 'À propos', url: `${SITE_URL}/about` },
+        { name: 'Missions et attributions', url: `${SITE_URL}/about/missions-and-responsibilities` },
     ]);
 
     const webPageJsonLd = {

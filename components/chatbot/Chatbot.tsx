@@ -28,7 +28,6 @@ export default function Chatbot() {
     const handleLanguageChange = (lang: Language) => {
         if (lang === language) return;
         setLanguage(lang);
-        // Repart sur une conversation propre pour éviter le mélange de langues.
         resetConversation([{ role: 'assistant', content: WELCOME_MESSAGES[lang] }]);
     };
 
@@ -39,7 +38,6 @@ export default function Chatbot() {
         setInput('');
     };
 
-    // Transforme [Label](/chemin) en lien cliquable ; ferme le widget au clic.
     const renderMessageContent = (content: string) => {
         const parts: React.ReactNode[] = [];
         let lastIndex = 0;
