@@ -5,11 +5,8 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText } from "@/utils/utility";
 
 interface StructuresClientProps {
-    /** HTML déjà rendu par WordPress (post.content.rendered). */
     content: string;
-    /** Titre du post WordPress (déjà nettoyé côté serveur, mais re-nettoyé ici par sécurité). */
     title: string;
-    /** Date de dernière mise à jour du post. */
     updatedAt?: string;
 }
 
@@ -18,15 +15,12 @@ export default function StructuresClient({
     title,
     updatedAt,
 }: StructuresClientProps) {
-    // cleanText décode les entités HTML (&rsquo;, &nbsp;, &#8230;, …) pour
-    // que les apostrophes et espaces insécables s'affichent correctement.
     const cleanTitle = cleanText(title);
     const cleanContent = content ? cleanText(content) : "";
 
     return (
         <Card className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden shadow-2xl">
             <CardContent className="p-6 md:p-10">
-                {/* En-tête de la carte : barre tricolore + titre + date */}
                 <div className="mb-8 pb-6 border-b border-white/10">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />

@@ -16,8 +16,6 @@ export const metadata = buildMetadata({
     path: "/about/structures",
 });
 
-// Points clés affichés dans le bandeau de synthèse (statiques, mais purement
-// descriptifs : ils ne remplacent pas le contenu WordPress, ils le résument).
 const HIGHLIGHTS = [
     {
         icon: Building2,
@@ -80,7 +78,6 @@ export default async function StructuresPage() {
             <JsonLd data={articleJsonLd} />
             <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
                 <div className="max-w-5xl mx-auto">
-                    {/* ---------- EN-TÊTE ---------- */}
                     <header className="mb-10">
                         <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                             <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
@@ -97,7 +94,6 @@ export default async function StructuresPage() {
                         </p>
                     </header>
 
-                    {/* ---------- BANDEAU DE SYNTHÈSE ---------- */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                         {HIGHLIGHTS.map(({ icon: Icon, label, desc }) => (
                             <div
@@ -129,7 +125,6 @@ export default async function StructuresPage() {
                         ))}
                     </div>
 
-                    {/* ---------- CONTENU WORDPRESS ---------- */}
                     <StructuresClient
                         content={post.content.rendered}
                         title={cleanTitle}
