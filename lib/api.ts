@@ -303,6 +303,10 @@ export function getPageBySlug(slug: string) {
     return getPages({ slug }).then((pages) => pages[0] || null);
 }
 
+export function getPageById(id: number) {
+    return fetchAPI<WpPost>(`/pages/${id}`, { _embed: true });
+}
+
 // ----- Menus -----
 export function getMenus() {
     return fetchAPI<unknown[]>("/menus");
@@ -1071,6 +1075,41 @@ export async function getReferencePages(): Promise<{
         sourcesReglementaires,
         textesServices,
     };
+}
+
+// ----- Structures administratives -----
+/**
+ * Récupère le post "la-structure-administrative-du-senat" (catégorie 42,
+ * "structures"). Contient l'organigramme textuel : Cabinet du Président,
+ * Secrétariat Général, six Directions rattachées, etc.
+ */
+export async function getStructureAdministrative(): Promise<WpPost | null> {
+    try {
+        const posts = await fetchAPI<WpPost[]>("/posts", {
+            slug: "la-structure-administrative-du-senat",
+            _embed: true,
+            per_page: 1,
+        });
+        return posts[0] || null;
+    } catch (err) {
+        console.error("[getStructureAdministrative] Erreur:", err);
+        return null;
+    }
+}
+
+/**
+ * Récupère tous les posts de la catégorie "structures" (ID 42), triés
+ * du plus ancien au plus récent. Utile pour lister les pages liées à la
+ * structure interne du Sénat (Bureau, commissions, etc.).
+ */
+export function getStructuresPosts(params: Params = {}) {
+    return getPostsByCategory(42, { _embed: true, ...params });
+}
+
+// ----- Sénateurs -----
+/** Récupère la page "Vos Sénateurs" (slug: vos-senateurs) via getPageBySlug. */
+export async function getYourSenatorsPage(): Promise<WpPost | null> {
+    return getPageBySlug("vos-senateurs");
 }
 
 // Version (release GitHub)

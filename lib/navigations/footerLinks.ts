@@ -10,6 +10,7 @@ export const footerLinks = [
             { label: "Missions et attributions", path: "/about/mission-and-responsibilities" },
             { label: "Structures", path: "/about/structures" },
             { label: "Textes de référence", path: "/about/reference-texts" },
+            { label: "Structures administratives", path: "/about/administrative-structures" },
         ],
     },
     {
@@ -17,6 +18,7 @@ export const footerLinks = [
         color: RED,
         links: [
             { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
+            //{ label: "Vos Sénateurs", path: "/your-senators" },
             { label: "Calendrier parlementaire", path: "/parliamentary-proceedings" },
             { label: "Textes adoptés", path: "/parliamentary-proceedings" },
         ],
