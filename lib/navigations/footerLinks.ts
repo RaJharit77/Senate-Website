@@ -5,7 +5,7 @@ export const footerLinks = [
         title: "Institution",
         color: CYAN,
         links: [
-            { label: "À propos du Sénat", path: "/about" },
+            { label: "À propos du Sénat", path: "/about/functioning" },
             { label: "Historique", path: "/historical" },
             { label: "Missions et attributions", path: "/about/mission-and-responsibilities" },
             { label: "Structures", path: "/about/structures" },
