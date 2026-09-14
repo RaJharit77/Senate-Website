@@ -21,7 +21,7 @@ export default async function FunctionningPage() {
     const breadcrumb = buildBreadcrumbJsonLd([
         { name: "Accueil", url: SITE_URL },
         { name: "À propos", url: `${SITE_URL}/about` },
-        { name: "Historique", url: `${SITE_URL}/about/historic` },
+        { name: "Fonctionnement du sénat", url: `${SITE_URL}/about/functioning` },
     ]);
 
     const articleJsonLd = buildArticleJsonLd({
