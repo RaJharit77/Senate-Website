@@ -1,10 +1,17 @@
 openapi: 3.0.0
 info:
-  title: API Chat du Sénat de Madagascar
+  title: API du site du Sénat de Madagascar
   description: |
-    Endpoint de conversation utilisant le modèle Groq `llama-3.1-8b-instant`.
-    L’assistant répond en français aux questions sur le Sénat.
-  version: 1.0.0
+    Ensemble des endpoints internes du site officiel du Sénat de Madagascar
+    (Antenimierandoholona).
+
+    - `/chat`   : assistant conversationnel (Groq, modèle `openai/gpt-oss-20b`).
+    - `/search` : recherche unifiée (pages, textes et lois, actualités, activités du Président, historique).
+    - `/media`  : agrégation des médias (YouTube, vidéos hébergées, podcasts, montages).
+    - `/live`   : statut du direct TV/Radio (détection YouTube + repli Facebook manuel).
+    - `/release`: dernière release GitHub du site (affichée dans le footer).
+    - `/proxy`  : proxy vers l'API REST WordPress (contourne CORS côté client).
+  version: 1.2.1
   contact:
     name: Support technique
     email: contact@senat.mg
@@ -15,12 +22,33 @@ servers:
   - url: http://localhost:3000/api
     description: Serveur de développement
 
+tags:
+  - name: Chat
+    description: Assistant conversationnel du site
+  - name: Search
+    description: Recherche unifiée multi-sources
+  - name: Médias
+    description: Vidéos, podcasts, montages, direct TV/Radio
+  - name: Site
+    description: Métadonnées et proxy WordPress
+
 paths:
+
+  # ------------------------------------------------------------------ #
+  # CHAT                                                               #
+  # ------------------------------------------------------------------ #
   /chat:
     post:
-      summary: Envoyer un message à l’assistant
+      tags: [Chat]
+      summary: Envoyer un message à l'assistant
       description: |
-        Reçoit un message utilisateur et retourne une réponse générée par l’IA.
+        Reçoit un message utilisateur (et optionnellement un historique) et
+        retourne une réponse générée par le modèle Groq `openai/gpt-oss-20b`.
+
+        L'assistant est strictement limité au périmètre du site du Sénat :
+        il s'appuie sur le plan du site et sur les résultats de `/search`
+        pour orienter l'utilisateur. Il répond en français (`fr`) ou en
+        malagasy (`mg`) selon le paramètre `language` (défaut : `fr`).
       operationId: sendChatMessage
       requestBody:
         required: true
@@ -29,35 +57,349 @@ paths:
             schema:
               $ref: '#/components/schemas/ChatRequest'
             examples:
-              exemple1:
+              questionPratique:
+                summary: Question pratique sur le Sénat
                 value:
                   message: "Quelles sont les missions du Sénat ?"
+                  language: "fr"
+              avecHistorique:
+                summary: Conversation multi-tours
+                value:
+                  message: "Et pour les textes de loi ?"
+                  language: "fr"
+                  history:
+                    - role: "user"
+                      content: "Bonjour, que fait le Sénat ?"
+                    - role: "assistant"
+                      content: "Le Sénat est la chambre haute du Parlement..."
       responses:
         '200':
-          description: Réponse de l’assistant
+          description: Réponse de l'assistant (toujours en 200, même en cas d'erreur Groq pour ne pas casser le chat)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatResponse'
               examples:
-                exemple:
+                reponse:
                   value:
-                    reply: "Le Sénat de Madagascar a pour missions de voter les lois, contrôler l’action du gouvernement et représenter les collectivités territoriales."
+                    reply: "Le Sénat de Madagascar vote les lois, contrôle l'action du gouvernement et représente les collectivités territoriales. Retrouvez plus de détails sur la page [Structures](/about/structures)."
         '400':
-          description: Requête invalide (message manquant)
+          description: Requête invalide (message manquant ou vide)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                messageManquant:
+                  value:
+                    error: "Message requis"
         '500':
-          description: Erreur interne du serveur ou échec de l’appel à Groq
+          description: Erreur interne ou configuration serveur manquante (`GROQ_API_KEY_SENAT_DE_MADAGASCAR`)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  # ------------------------------------------------------------------ #
+  # SEARCH                                                             #
+  # ------------------------------------------------------------------ #
+  /search:
+    get:
+      tags: [Search]
+      summary: Recherche unifiée sur tout le site
+      description: |
+        Agrège en parallèle plusieurs sources WordPress (pages, textes et
+        lois, actualités, activités du Président, historique, etc.) et
+        renvoie une liste normalisée de résultats avec un **chemin Next.js
+        interne garanti** (`path`), plutôt qu'une URL WordPress brute.
+
+        Inclut également les entrées de navigation statique (`navItems`)
+        comme source complémentaire.
+      operationId: unifiedSearch
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Terme de recherche
+          schema:
+            type: string
+            example: "budget"
+      responses:
+        '200':
+          description: Liste des résultats de recherche (tableau vide si aucun résultat ou si `q` est absent)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+              examples:
+                resultats:
+                  value:
+                    - id: "law-4821"
+                      title: "Loi de finances 2026"
+                      excerpt: "Texte adopté par le Sénat le 12 décembre 2025..."
+                      date: "2025-12-12T10:30:00"
+                      path: "/texts-and-laws/loi-de-finances-2026"
+                      source: "Texte de loi"
+                    - id: "nav-/texts-and-laws"
+                      title: "Textes et lois"
+                      excerpt: "Page de navigation : Textes et lois"
+                      date: null
+                      path: "/texts-and-laws"
+                      source: "Navigation du site"
+
+  # ------------------------------------------------------------------ #
+  # MEDIA                                                              #
+  # ------------------------------------------------------------------ #
+  /media:
+    get:
+      tags: [Médias]
+      summary: Liste agrégée des médias (YouTube, hébergés, podcasts, montages)
+      description: |
+        Fusionne en une seule liste les vidéos YouTube, les vidéos hébergées,
+        les podcasts et les montages, triées par date décroissante.
+
+        Les catégories WordPress non encore créées (ID = 0) sont ignorées
+        côté serveur, sans erreur.
+      operationId: listMedia
+      parameters:
+        - name: type
+          in: query
+          required: false
+          description: Filtrer par type de média
+          schema:
+            type: string
+            enum: [youtube, video, audio, montage]
+            example: youtube
+        - name: per_page
+          in: query
+          required: false
+          description: Nombre d'éléments demandés par catégorie WordPress
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+      responses:
+        '200':
+          description: Liste des médias (tableau vide si aucun contenu)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaItem'
+        '502':
+          description: Échec de l'agrégation (API WordPress injoignable, réponse non-JSON, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                erreurWordpress:
+                  value:
+                    error: "Impossible de récupérer les médias"
+
+  # ------------------------------------------------------------------ #
+  # LIVE                                                               #
+  # ------------------------------------------------------------------ #
+  /live:
+    get:
+      tags: [Médias]
+      summary: Statut du direct TV ou Radio
+      description: |
+        Renvoie le statut actuel du direct :
+
+        - `kind=tv` (défaut) : détection automatique d'un live YouTube via
+          la Data API v3 ; repli sur l'URL Facebook manuelle
+          (`LIVE_FACEBOOK_VIDEO_URL`) si aucune diffusion YouTube n'est
+          détectée.
+        - `kind=radio` : utilise `LIVE_AUDIO_STREAM_URL` s'il est configuré ;
+          sinon reprend le statut TV en mode audio seul.
+
+        La réponse est toujours en `Cache-Control: no-store` pour refléter
+        l'état courant (le cache qui compte, pour respecter le quota YouTube,
+        est celui du `fetch` interne).
+      operationId: getLiveStatus
+      parameters:
+        - name: kind
+          in: query
+          required: false
+          description: Type de direct
+          schema:
+            type: string
+            enum: [tv, radio]
+            default: tv
+      responses:
+        '200':
+          description: Statut du direct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveStatus'
+              examples:
+                tvEnDirect:
+                  value:
+                    isLive: true
+                    kind: "tv"
+                    streamUrl: "https://www.youtube.com/embed/abcd1234?autoplay=1"
+                    sourceType: "youtube"
+                    title: "Session extraordinaire du Sénat"
+                    startedAt: "2026-01-19T08:00:00Z"
+                tvHorsLigne:
+                  value:
+                    isLive: false
+                    kind: "tv"
+                    streamUrl: ""
+                    sourceType: "url"
+                    title: "Sénat TV"
+                radioEnDirect:
+                  value:
+                    isLive: true
+                    kind: "radio"
+                    streamUrl: "https://stream.senat.mg/live.mp3"
+                    sourceType: "url"
+                    title: "Sénat Radio en direct"
+
+  # ------------------------------------------------------------------ #
+  # RELEASE                                                            #
+  # ------------------------------------------------------------------ #
+  /release:
+    get:
+      tags: [Site]
+      summary: Dernière release GitHub du site
+      description: |
+        Récupère (via l'API GitHub, avec `GITHUB_TOKEN` optionnel pour
+        repousser la limite de débit) le tag et l'URL de la dernière release
+        publiée. Utilisé par le footer pour afficher la version courante.
+      operationId: getLatestRelease
+      responses:
+        '200':
+          description: Informations sur la release
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseInfo'
+              examples:
+                version:
+                  value:
+                    tag_name: "v1.4.2"
+                    html_url: "https://github.com/RaJharit77/RedesignSenateWebsite/releases/tag/v1.4.2"
+        '500':
+          description: Variable `GITHUB_API` non configurée, ou erreur réseau/parsing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        default:
+          description: Statut renvoyé par l'API GitHub en cas d'échec
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ------------------------------------------------------------------ #
+  # PROXY WORDPRESS                                                    #
+  # ------------------------------------------------------------------ #
+  /proxy/{path}:
+    get:
+      tags: [Site]
+      summary: Proxy vers l'API REST WordPress
+      description: |
+        Relaie les requêtes vers `${WP_API_URL}` (par défaut
+        `https://senat.mg/wp-json/wp/v2`). Utilisé côté client pour
+        contourner les restrictions CORS et uniformiser l'UA envoyé à
+        WordPress.
+
+        Tous les paramètres de query sont transmis tels quels à WordPress.
+      operationId: proxyWordPressGet
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: |
+            Chemin relatif vers la ressource WordPress (peut contenir
+            plusieurs segments, ex. `posts/4821`, `pages`, `categories`).
+          schema:
+            type: string
+          example: posts/4821
+        - name: _embed
+          in: query
+          required: false
+          description: Paramètre WordPress natif (transmis tel quel)
+          schema:
+            type: string
+        - name: per_page
+          in: query
+          required: false
+          description: Paramètre WordPress natif (transmis tel quel)
+          schema:
+            type: integer
+        - name: search
+          in: query
+          required: false
+          description: Paramètre WordPress natif (transmis tel quel)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Réponse JSON de WordPress, relayée telle quelle
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '502':
+          description: |
+            WordPress a répondu avec un content-type non-JSON (page HTML de
+            challenge anti-bot, page de maintenance, etc.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                nonJson:
+                  value:
+                    error: "Unexpected non-JSON response from WordPress"
+        '500':
+          description: Erreur réseau lors de l'appel à WordPress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        default:
+          description: Statut HTTP renvoyé par WordPress en cas d'échec
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [Site]
+      summary: Méthode non autorisée sur le proxy
+      description: Le proxy ne supporte que `GET`. Toute autre méthode renvoie 405.
+      operationId: proxyWordPressPost
+      responses:
+        '405':
+          description: Méthode non autorisée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                interdit:
+                  value:
+                    error: "Method not allowed"
+
+# ---------------------------------------------------------------------- #
+# COMPOSANTS                                                             #
+# ---------------------------------------------------------------------- #
 components:
+
   schemas:
+
+    # ------------------------ Chat ------------------------ #
     ChatRequest:
       type: object
       required:
@@ -65,21 +407,154 @@ components:
       properties:
         message:
           type: string
-          description: Question ou instruction de l’utilisateur
+          description: Question ou instruction de l'utilisateur (max 1500 caractères, tronqué au-delà)
+          maxLength: 1500
           example: "Quand a lieu la prochaine session parlementaire ?"
+        language:
+          type: string
+          description: Langue de réponse souhaitée (défaut `fr`)
+          enum: [fr, mg]
+          default: fr
+        history:
+          type: array
+          description: |
+            Historique de conversation (max 6 tours utilisateur/assistant
+            conservés, 1000 caractères par message).
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+
+    ChatMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+          maxLength: 1000
 
     ChatResponse:
       type: object
       properties:
         reply:
           type: string
-          description: Réponse textuelle de l’assistant
+          description: Réponse textuelle de l'assistant
           example: "La prochaine session ordinaire aura lieu en octobre 2026."
 
+    # ------------------------ Search ------------------------ #
+    SearchResult:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'Identifiant unique du résultat (préfixé par sa source : `law-`, `nav-`, `page-`, etc.)'
+          example: "law-4821"
+        title:
+          type: string
+          example: "Loi de finances 2026"
+        excerpt:
+          type: string
+          description: Extrait nettoyé (HTML et entités décodées)
+          example: "Texte adopté par le Sénat le 12 décembre 2025..."
+        date:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date de publication ISO 8601, ou `null` pour les entrées de navigation
+        path:
+          type: string
+          description: Chemin Next.js interne vers lequel rediriger l'utilisateur
+          example: "/texts-and-laws/loi-de-finances-2026"
+        source:
+          type: string
+          description: Source d'origine (Page, Texte de loi, Activité du Président, Actualité, Historique, Navigation du site...)
+          example: "Texte de loi"
+
+    # ------------------------ Médias ------------------------ #
+    MediaItem:
+      type: object
+      description: |
+        Représentation unifiée d'un média extrait d'un post WordPress
+        (`extractMediaItem` dans `lib/media-mapper.ts`).
+      properties:
+        id:
+          type: integer
+          example: 4821
+        slug:
+          type: string
+          example: "interview-president-senat"
+        title:
+          type: string
+          example: "Interview du Président du Sénat"
+        excerpt:
+          type: string
+          example: "Retour sur les priorités de la session parlementaire..."
+        date:
+          type: string
+          format: date-time
+          example: "2025-12-12T10:30:00"
+        mediaType:
+          type: string
+          enum: [youtube, video, audio, montage]
+          example: "youtube"
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://img.youtube.com/vi/abcd1234/hqdefault.jpg"
+        url:
+          type: string
+          format: uri
+          description: URL externe du média (YouTube, MP4, flux audio, etc.)
+          nullable: true
+
+    # ------------------------ Live ------------------------ #
+    LiveStatus:
+      type: object
+      required: [isLive, kind, streamUrl, sourceType, title]
+      properties:
+        isLive:
+          type: boolean
+          description: "`true` si un direct est actuellement détecté"
+        kind:
+          type: string
+          enum: [tv, radio]
+        streamUrl:
+          type: string
+          description: URL du flux (embed YouTube, URL Facebook, flux audio, ou chaîne vide si hors ligne)
+        sourceType:
+          type: string
+          enum: [url, youtube, facebook]
+          description: Origine technique du flux
+        title:
+          type: string
+          example: "Sénat TV en direct"
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date/heure de début du direct (uniquement si détecté via YouTube)
+
+    # ------------------------ Release ------------------------ #
+    ReleaseInfo:
+      type: object
+      properties:
+        tag_name:
+          type: string
+          example: "v1.0.0"
+        html_url:
+          type: string
+          format: uri
+          example: "https://github.com/RaJharit77/RedesignSenateWebsite/releases/tag/v1.0.0"
+
+    # ------------------------ Erreurs ------------------------ #
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
-          description: Description de l’erreur
+          description: Description de l'erreur
           example: "Message requis"
