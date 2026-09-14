@@ -44,7 +44,6 @@ export default async function FunctionningPage() {
                         title="Fonctionnement du Sénat"
                         subtitle="Nature, missions et fonctionnement de l'institution"
                         breadcrumb={[
-                            { label: "Accueil", href: "/" },
                             { label: "À propos", href: "/about" },
                             { label: "Fonctionnement", href: "/about/functioning" },
                         ]}
