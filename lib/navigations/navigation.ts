@@ -7,7 +7,7 @@ export const navItems = [
             { label: "Missions et attributions", path: "/about/missions-and-responsibilities" },
             { label: "Structures", path: "/about/structures" },
             { label: "Textes de référence", path: "/about/reference-texts" },
-            { label: "Fonctionnement", path: "/about/functioning" },
+            { label: "Fonctionnement du sénat", path: "/about/functioning" },
         ],
     },
     { label: "Historique", path: "/historical?tab=first" },

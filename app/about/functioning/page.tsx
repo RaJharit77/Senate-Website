@@ -8,7 +8,7 @@ import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } fr
 export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
-    title: "À propos du Sénat",
+    title: "Fonctionnement du Sénat",
     description: "Nature, missions et fonctionnement du Sénat de Madagascar.",
     path: "/about/functioning",
 });
@@ -25,9 +25,9 @@ export default async function FunctionningPage() {
     ]);
 
     const articleJsonLd = buildArticleJsonLd({
-        title: "Historique du Sénat",
+        title: "Fonctionnement du Sénat",
         description: "Nature, missions et fonctionnement du Sénat de Madagascar.",
-        url: `${SITE_URL}/about/historic`,
+        url: `${SITE_URL}/about/functioning`,
         image: "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
         datePublished: page.date,
         dateModified: page.modified ?? page.date,
@@ -41,12 +41,12 @@ export default async function FunctionningPage() {
             <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
                 <div className="max-w-5xl mx-auto">
                     <PageHeader
-                        title="Historique du Sénat"
+                        title="Fonctionnement du Sénat"
                         subtitle="Nature, missions et fonctionnement de l'institution"
                         breadcrumb={[
                             { label: "Accueil", href: "/" },
                             { label: "À propos", href: "/about" },
-                            { label: "Historique", href: "/about/historic" },
+                            { label: "Fonctionnement", href: "/about/functioning" },
                         ]}
                         className="mb-10"
                     />
