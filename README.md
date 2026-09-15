@@ -134,3 +134,13 @@ Senate-Website/
 ├── postcss.config.mjs            # Configuration de postcss
 └── tsconfig.json                 # Configuration TypeScript
 ```
+
+## License
+
+This project is proprietary software of the
+Sénat de Madagascar / DSIC.
+
+All rights reserved.
+
+Access and modification are restricted to authorized
+contributors.
