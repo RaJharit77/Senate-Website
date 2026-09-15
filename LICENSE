@@ -1,21 +1,27 @@
-MIT License
+Copyright © 2026 Sénat de Madagascar / Direction des Systèmes d’Information et de la Communication (DSIC) — République de Madagascar.
 
-Copyright (c) 2026 Sénat de Madagascar / DSIC - République de Madagascar
+ALL RIGHTS RESERVED.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and its source code are proprietary and confidential.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The source code of this project is intended exclusively for the institutional use of the Senate of Madagascar and its authorized personnel.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+No permission is granted to any person or organization to:
+
+* copy or reproduce the source code, in whole or in part;
+* distribute, publish, sublicense, or sell the software or any portion thereof;
+* modify, adapt, or create derivative works from the software;
+* reuse the source code or substantial portions of it in another project;
+* make the source code available to unauthorized third parties;
+
+without prior written authorization from the Sénat de Madagascar / DSIC.
+
+Access to and modification of this repository may be granted by the DSIC to authorized developers, employees, interns, contractors, or other designated contributors solely for the purpose of developing, maintaining, deploying, or improving the Senate of Madagascar website.
+
+Authorized contributors do not acquire ownership of the software or source code merely by accessing, modifying, or contributing to this repository.
+
+All third-party dependencies, libraries, frameworks, fonts, images, and other external materials remain subject to their respective licenses and terms.
+
+This license does not grant any rights to the names, logos, trademarks, emblems, official symbols, or other protected elements of the Sénat de Madagascar or the République de Madagascar.
+
+All rights not expressly granted herein are reserved.
