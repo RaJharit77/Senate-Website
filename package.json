@@ -122,7 +122,7 @@
     "postcss": "8.5.28",
     "shard": "1.1.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "wait-on": "^9.1.0"
   },
   "packageManager": "pnpm@12.3.4"
