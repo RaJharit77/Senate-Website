@@ -1,21 +1,72 @@
-
-# Basic `dependabot.yml` file with
-# minimum configuration for two package managers
+# Dependabot : mises à jour automatiques des dépendances
+# Documentation : https://docs.github.com/code-security/dependabot/dependabot-version-updates
 
 version: 2
+
 updates:
-  # Enable version updates for npm
+  # ------------------------------------------------------------------ #
+  # Dépendances npm (package.json + lockfile à la racine)              #
+  # ------------------------------------------------------------------ #
   - package-ecosystem: "npm"
-    # Look for `package.json` and `lock` files in the `root` directory
     directory: "/"
-    # Check the npm registry for updates every day (weekdays)
     schedule:
       interval: "daily"
+      time: "06:00"
+      timezone: "Indian/Antananarivo"
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "npm"
+    reviewers:
+      - "RaJharit77"
+    # Regroupe les mises à jour mineures et patchs en une seule PR
+    # pour limiter le bruit. Les majeures restent en PR individuelles.
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
 
-  # Enable version updates for Docker
+  # ------------------------------------------------------------------ #
+  # Dépendances Docker (Dockerfile à la racine)                        #
+  # ------------------------------------------------------------------ #
   - package-ecosystem: "docker"
-    # Look for a `Dockerfile` in the `root` directory
     directory: "/"
-    # Check for updates once a week
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Indian/Antananarivo"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(docker)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "docker"
+    reviewers:
+      - "RaJharit77"
+
+  # ------------------------------------------------------------------ #
+  # GitHub Actions (.github/workflows/)                                #
+  # ------------------------------------------------------------------ #
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Indian/Antananarivo"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
