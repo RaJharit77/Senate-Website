@@ -1112,6 +1112,36 @@ export async function getYourSenatorsPage(): Promise<WpPost | null> {
     return getPageBySlug("vos-senateurs");
 }
 
+// ----- Questions écrites -----
+/**
+ * Récupère le post "questions-ecrites" (catégorie 7, "gouvernement").
+ * Le champ `content.rendered` est vide côté WordPress, mais on le
+ * récupère quand même pour rester souple si du contenu y est ajouté
+ * plus tard.
+ */
+export async function getWrittenQuestions(): Promise<WpPost | null> {
+    try {
+        const posts = await fetchAPI<WpPost[]>("/posts", {
+            slug: "questions-ecrites",
+            _embed: true,
+            per_page: 1,
+        });
+        return posts[0] || null;
+    } catch (err) {
+        console.error("[getWrittenQuestions] Erreur:", err);
+        return null;
+    }
+}
+
+/**
+ * Liste les posts de la catégorie "gouvernement" (ID 7) — utile pour
+ * afficher les questions écrites elles-mêmes quand le post parent
+ * "questions-ecrites" ne contient pas de contenu éditorial.
+ */
+export function getGouvernementPosts(params: Params = {}) {
+    return getPostsByCategory(7, { _embed: true, ...params });
+}
+
 // Version (release GitHub)
 interface ReleaseData {
     tag_name: string;

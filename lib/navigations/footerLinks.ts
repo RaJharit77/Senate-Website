@@ -6,7 +6,7 @@ export const footerLinks = [
         color: CYAN,
         links: [
             { label: "À propos du Sénat", path: "/about/functioning" },
-            { label: "Historique", path: "/historical" },
+            { label: "Historique du Sénat", path: "/historical" },
             { label: "Missions et attributions", path: "/about/mission-and-responsibilities" },
             { label: "Structures", path: "/about/structures" },
             { label: "Textes de référence", path: "/about/reference-texts" },
@@ -21,6 +21,7 @@ export const footerLinks = [
             //{ label: "Vos Sénateurs", path: "/your-senators" },
             { label: "Calendrier parlementaire", path: "/parliamentary-proceedings" },
             { label: "Textes adoptés", path: "/parliamentary-proceedings" },
+            { label: "Question écrites", path: "/parliamentary-proceedings/written-questions" },
         ],
     },
     {
@@ -30,7 +31,7 @@ export const footerLinks = [
             { label: "Relations internationales", path: "/international" },
             { label: "Groupe d'amitié", path: "/international/inter-parliamentary-friendship-group" },
             { label: "Coopération APF", path: "/international" },
-            
+            { label: "Activités Sénatoriales", path: "/international/senators-activities" },
         ],
     },
     {
