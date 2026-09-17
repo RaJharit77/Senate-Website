@@ -315,7 +315,7 @@ export function Header() {
                 className="hidden lg:inline font-semibold"
                 style={{ fontSize: "0.72rem", color: COLOURS.black }}
               >
-                +261 34...
+                +261 34 12 01 036
               </span>
             </Link>
           </div>
