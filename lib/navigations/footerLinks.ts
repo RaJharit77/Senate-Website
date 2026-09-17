@@ -18,7 +18,7 @@ export const footerLinks = [
         color: RED,
         links: [
             { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
-            //{ label: "Vos Sénateurs", path: "/your-senators" },
+            { label: "Vos Sénateurs", path: "/your-senators" },
             { label: "Calendrier parlementaire", path: "/parliamentary-proceedings" },
             { label: "Textes adoptés", path: "/parliamentary-proceedings" },
             { label: "Question écrites", path: "/parliamentary-proceedings/written-questions" },

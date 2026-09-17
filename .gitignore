@@ -49,4 +49,4 @@ components/texts-and-laws/ConstitutionalTexts.tsx
 *.mp4
 
 playwright-report/*
-test-results/*.idea/
+test-results/*
