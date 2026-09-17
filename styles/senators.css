@@ -1,0 +1,124 @@
+/* ==========================================================================
+   Styles pour le contenu WordPress injecté dans YourSenatorsClient.tsx.
+   Le HTML vient de WP avec des classes Bootstrap (.row, .col-md-*, .bg-danger,
+   .rounded-circle...) : on les redessine en CSS pur pour éviter les erreurs
+   d'@apply avec variantes responsives.
+   ========================================================================== */
+
+.senators-content {
+    color: #d1d5db;
+    line-height: 1.7;
+    width: 100%;
+}
+
+/* Bandeaux rouges "bg-danger" (titres de section) */
+.senators-content .bg-danger {
+    background-color: #c8102e !important;
+    color: #ffffff !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 0.75rem !important;
+    display: block !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem !important;
+    margin: 2rem auto 1.5rem auto !important;
+    box-shadow: 0 4px 20px rgba(200, 16, 46, 0.3);
+}
+
+/* Grille */
+.senators-content .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 1.5rem !important;
+    margin: 1.5rem 0 !important;
+}
+
+.senators-content [class*="col-"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 1rem !important;
+}
+
+/* Photos rondes des sénateurs */
+.senators-content .rounded-circle,
+.senators-content img.rounded-circle {
+    border-radius: 9999px !important;
+    width: 180px !important;
+    height: 180px !important;
+    object-fit: cover !important;
+    border: 4px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    margin-bottom: 0.75rem !important;
+    transition: transform 0.3s ease !important;
+}
+
+.senators-content img.rounded-circle:hover {
+    transform: scale(1.05) !important;
+}
+
+/* Images non-rondes (ex: flèche de transition) */
+.senators-content img:not(.rounded-circle) {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 0.75rem !important;
+}
+
+/* Noms des sénateurs */
+.senators-content h3.h5,
+.senators-content h4.h5,
+.senators-content h4,
+.senators-content h3 {
+    color: #ffffff !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0.5rem 0 0.25rem 0 !important;
+    line-height: 1.3 !important;
+}
+
+/* Rôles / fonctions */
+.senators-content p {
+    color: #d1d5db !important;
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* Liens (noms cliquables) */
+.senators-content a {
+    color: #22d3ee !important;
+    text-decoration: none !important;
+    transition: color 0.2s !important;
+}
+
+.senators-content a:hover {
+    color: #67e8f9 !important;
+    text-decoration: underline !important;
+}
+
+/* Listes */
+.senators-content ul {
+    list-style: disc !important;
+    padding-left: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.senators-content li {
+    color: #d1d5db !important;
+    font-size: 0.9rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Paragraphes descriptifs */
+.senators-content > p {
+    font-size: 0.95rem !important;
+    text-align: justify !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Conteneur principal */
+.senators-content .container {
+    width: 100% !important;
+}
