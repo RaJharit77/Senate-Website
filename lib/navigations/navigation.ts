@@ -20,6 +20,7 @@ export const navItems = [
             //{ label: "Vos Sénateurs", path: "/your-senators" },
             { label: "Calendrier Parlementaire", path: "/agenda" },
             { label: "Textes et lois", path: "/texts-and-laws" },
+            { label: "Question écrites", path: "/parliamentary-proceedings/written-questions" },
         ],
     },
     {
