@@ -66,3 +66,15 @@ export const LIVE_YOUTUBE_API_KEY = process.env.LIVE_YOUTUBE_API_KEY || '';
 // Repli manuel : URL de la vidéo Facebook live. À renseigner avant chaque
 // diffusion et à vider ensuite pour éviter d'afficher une rediffusion.
 export const LIVE_FACEBOOK_VIDEO_URL = process.env.LIVE_FACEBOOK_VIDEO_URL || '';
+
+// Senators types
+export const WP_INTRO_POST_ID = 1123;
+/**
+ * CPT WordPress contenant les fiches sénateurs (République IV).
+ * Endpoint : /wp-json/wp/v2/republiqueiv
+ */
+export const SENATOR_CPT = "/republiqueiv";
+
+export const PER_PAGES = 100;
+export const MAX_PAGES = 20; // garde-fou (2000 sénateurs max)
+export const REVALIDATE = 3600; // 1 h

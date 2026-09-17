@@ -17,9 +17,10 @@ export const navItems = [
         path: "/parliamentary-proceedings",
         children: [
             { label: "Travaux législatifs", path: "/parliamentary-proceedings/legislative-proceedings" },
-            //{ label: "Vos Sénateurs", path: "/your-senators" },
+            { label: "Vos Sénateurs", path: "/your-senators" },
             { label: "Calendrier Parlementaire", path: "/agenda" },
             { label: "Textes et lois", path: "/texts-and-laws" },
+            { label: "Question écrites", path: "/parliamentary-proceedings/written-questions" },
         ],
     },
     {
