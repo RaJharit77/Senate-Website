@@ -50,3 +50,7 @@ components/texts-and-laws/ConstitutionalTexts.tsx
 
 playwright-report/*
 test-results/*
+
+# IDEs and editors
+.idea/
+.vscode/
