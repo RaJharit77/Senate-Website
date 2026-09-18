@@ -81,11 +81,11 @@ export default async function YourSenatorsPage() {
                             />
                         </div>
 
-                        <h1 className="font-poppins text-white text-4xl font-bold mb-3">
+                        <h1 className="font-poppins text-gray-100 text-4xl font-bold mb-3">
                             {cleanTitle}
                         </h1>
 
-                        <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-3xl">
+                        <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-3xl">
                             Découvrez les Sénateurs de Madagascar, les membres du
                             Bureau Permanent et la répartition par province. Chaque
                             profil présente la fonction, l&apos;âge, le mode de

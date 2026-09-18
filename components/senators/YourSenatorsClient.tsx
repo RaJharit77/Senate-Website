@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Crown } from "lucide-react";
+import { Landmark } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SenatorCard from "./SenatorCard";
 import CommissionAccordion from "./CommissionAccordion";
@@ -92,7 +92,7 @@ export default function YourSenatorsClient({
                                                 }`}
                                         >
                                             {pres && (
-                                                <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                                <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                                             )}
                                             <span className="truncate">
                                                 {s.name}
@@ -146,7 +146,7 @@ export default function YourSenatorsClient({
                                                 }`}
                                         >
                                             {pres && (
-                                                <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                                <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                                             )}
                                             <span className="truncate">
                                                 {s.name}

@@ -9,7 +9,7 @@ import {
     Flag,
     Briefcase,
     Users,
-    Crown,
+    Landmark,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Senateur } from "@/types/senatorsType";
@@ -27,7 +27,6 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
 
     const commissions = senator.commissions;
 
-    // 🎨 Fond garanti par inline style (impossible à écraser par shadcn)
     const cardBackground = president
         ? "linear-gradient(180deg, rgba(245, 158, 11, 0.10) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.02) 100%)"
         : "linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.02) 100%)";
@@ -47,7 +46,6 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                     : "0 10px 40px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.02) inset",
             }}
         >
-            {/* Liseré supérieur pour le Président */}
             {president && (
                 <div
                     className="h-1 w-full"
@@ -59,9 +57,7 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
             )}
 
             <CardContent className="p-6 sm:p-7">
-                {/* ═══════════ EN-TÊTE : photo + nom ═══════════ */}
                 <div className="flex items-start gap-5 mb-6">
-                    {/* Photo */}
                     <div className="relative shrink-0">
                         <div
                             className="absolute -inset-2 rounded-full blur-xl opacity-50"
@@ -73,11 +69,10 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                         />
                         {senator.image ? (
                             <div
-                                className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 shadow-lg ${
-                                    president
-                                        ? "border-amber-400/60 ring-2 ring-amber-400/20"
-                                        : "border-white/25 ring-2 ring-white/5"
-                                }`}
+                                className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 shadow-lg ${president
+                                    ? "border-amber-400/60 ring-2 ring-amber-400/20"
+                                    : "border-white/25 ring-2 ring-white/5"
+                                    }`}
                             >
                                 <Image
                                     src={senator.image}
@@ -90,11 +85,10 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                             </div>
                         ) : (
                             <div
-                                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center border-2 ${
-                                    president
-                                        ? "border-amber-400/60 ring-2 ring-amber-400/20"
-                                        : "border-white/25 ring-2 ring-white/5"
-                                }`}
+                                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center border-2 ${president
+                                    ? "border-amber-400/60 ring-2 ring-amber-400/20"
+                                    : "border-white/25 ring-2 ring-white/5"
+                                    }`}
                                 style={{
                                     background: "rgba(255, 255, 255, 0.05)",
                                 }}
@@ -103,7 +97,6 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                             </div>
                         )}
 
-                        {/* Badge couronne */}
                         {president && (
                             <div
                                 className="absolute -top-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white/20"
@@ -114,12 +107,11 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                                         "0 4px 12px rgba(245, 158, 11, 0.5)",
                                 }}
                             >
-                                <Crown className="w-4 h-4 text-white" />
+                                <Landmark className="w-4 h-4 text-white" />
                             </div>
                         )}
                     </div>
 
-                    {/* Nom + fonction */}
                     <div className="min-w-0 flex-1 pt-1">
                         <h3 className="text-white text-lg sm:text-xl font-bold font-poppins leading-tight mb-2">
                             {senator.name}
@@ -133,11 +125,10 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                                         ? "rgba(245, 158, 11, 0.15)"
                                         : "rgba(239, 68, 68, 0.15)",
                                     color: president ? "#fcd34d" : "#fca5a5",
-                                    border: `1px solid ${
-                                        president
-                                            ? "rgba(245, 158, 11, 0.4)"
-                                            : "rgba(239, 68, 68, 0.35)"
-                                    }`,
+                                    border: `1px solid ${president
+                                        ? "rgba(245, 158, 11, 0.4)"
+                                        : "rgba(239, 68, 68, 0.35)"
+                                        }`,
                                 }}
                             >
                                 <Briefcase className="w-3 h-3 shrink-0" />
@@ -149,7 +140,6 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                     </div>
                 </div>
 
-                {/* ═══════════ CHIPS D'INFOS ═══════════ */}
                 {infoRows.length > 0 && (
                     <div className="grid grid-cols-2 gap-2 mb-5">
                         {infoRows.map(({ icon: Icon, label, value }) => (
@@ -184,7 +174,6 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                     </div>
                 )}
 
-                {/* ═══════════ COMMISSIONS ═══════════ */}
                 {commissions.length > 0 && (
                     <div className="mb-5">
                         <div className="flex items-center gap-2 mb-2.5">
@@ -218,7 +207,6 @@ export default function SenatorCard({ senator }: { senator: Senateur }) {
                     </div>
                 )}
 
-                {/* ═══════════ CTA ═══════════ */}
                 <div
                     className="flex justify-center pt-4"
                     style={{

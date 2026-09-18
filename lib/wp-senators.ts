@@ -7,9 +7,11 @@ import type {
     SenatorsApiPayload,
 } from "@/types/senatorsType";
 
-/* ------------------------------------------------------------------ */
-/* Utilitaires                                                         */
-/* ------------------------------------------------------------------ */
+const EXCLUDED_SLUGS = new Set<string>([
+    "rakotondrazafy-lalatiana",
+    "ravalomanana-richard",
+]);
+
 
 function decodeEntities(s: string): string {
     return s
@@ -38,11 +40,8 @@ function stripHtml(s: string): string {
         .replace(/<\/div>/gi, "\n")
         .replace(/<[^>]*>/g, " ")
         .replace(/\u00a0/g, " ")
-        // Collapse horizontal whitespace UNIQUEMENT (pas les \n)
         .replace(/[^\S\n]+/g, " ")
-        // Éviter les lignes vides consécutives
         .replace(/\n[ \t]*\n+/g, "\n")
-        // Trim autour des \n
         .replace(/[ \t]*\n[ \t]*/g, "\n")
         .trim();
 }
@@ -157,34 +156,31 @@ function isSenatorPage(page: WPPage): boolean {
 }
 
 /**
- * Un sénateur est "en fonction" s'il présente AU MOINS UN marqueur
- * d'activité parlementaire en cours (commission, déclaration, rôle
- * institutionnel). Les anciens sénateurs comme RAVALOMANANA Richard
- * ou RAKOTONDRAZAFY Lalatiana n'en ont aucun.
+ * Un sénateur a un MANDAT ACTIF si et seulement si :
+ *   1) son slug n'est PAS dans EXCLUDED_SLUGS (décisions HCC)
+ *   2) son profil contient un marqueur FORT d'activité parlementaire :
+ *      - Rôle du Bureau Permanent (Président, VP, Questeur, Rapporteur)
+ *      - Commission suivie d'un chiffre romain (I, II, III, IV)
+ *      - Président du Groupe Parlementaire / d'Amitié
  */
-function isCurrentSenator(page: WPPage): boolean {
-    const text = stripHtml(page.content?.rendered ?? "");
+function hasActiveMandate(s: Senateur): boolean {
+    if (EXCLUDED_SLUGS.has(s.id)) return false;
 
-    const markers: RegExp[] = [
-        // Commission numérotée (I, II, III, IV...) → mandat législatif actif
-        /Commission\s+[IVX]+\b/i,
+    const blob = `${s.fonction} ${s.commissions.join(" ")}`;
 
-        // Déclaration de patrimoine → obligation en cours
-        /Déclaration\s+de\s+Patrimoine/i,
-
-        // Rôles du Bureau Permanent NON ambigus
-        /Président\s+du\s+Sénat\s+par\s+intérim/i,
-        /Vice[-\s]?Président\s+du\s+Sénat/i,
+    const patterns: RegExp[] = [
+        /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i,
+        /Vice[-\s]*Président\s+du\s+Sénat/i,
         /(?:^|\s)Questeur(?:\s|$|,)/i,
         /Rapporteur\s+Général/i,
 
-        // Présidence de commission ou de groupe parlementaire
-        /Président\s+de\s+la\s+Commission\s+[IVX]+/i,
+        /Commission\s+[IVX]+\b/i,
+
         /Président\s+du\s+Groupe\s+Parlementaire/i,
         /Président\s+du\s+Groupe\s+d['’]Amitié/i,
     ];
 
-    return markers.some((re) => re.test(text));
+    return patterns.some((re) => re.test(blob));
 }
 
 /* ------------------------------------------------------------------ */
@@ -213,24 +209,41 @@ function extractMainImage(html: string): string | null {
 }
 
 function extractFonction(text: string): string {
-    const lines = text.split("\n").map((l) => l.trim());
+    const lines = text
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean);
 
-    const startIdx = lines.findIndex((l) =>
+    const parts: string[] = [];
+
+    // Rôles avant "Age :" (rôles institutionnels du Bureau)
+    const ageIdx = lines.findIndex((l) => /^Age\s*[:：]/i.test(l));
+    if (ageIdx > 0) {
+        for (let i = 0; i < ageIdx; i++) {
+            const line = lines[i];
+            if (/^(Nom|Prénoms)\s*[:：]/i.test(line)) continue;
+            parts.push(line);
+        }
+    }
+
+    // Rôles après "Au titre du Parti/Président" (rôles de Commission)
+    const partiIdx = lines.findIndex((l) =>
         /^(?:Au titre du Parti|Parti|Au titre du Président)/i.test(l)
     );
-    if (startIdx === -1) return "";
-
-    const roleLines: string[] = [];
-    for (let i = startIdx + 1; i < lines.length; i++) {
-        const line = lines[i];
-        if (!line) continue;
-        if (
-            /^(?:Déclaration|Biographie|Nom\s*:|Prénoms\s*:)/i.test(line)
-        )
-            break;
-        roleLines.push(line);
+    if (partiIdx !== -1) {
+        for (let i = partiIdx + 1; i < lines.length; i++) {
+            const line = lines[i];
+            if (
+                /^(?:Déclaration|Biographie|Nom\s*:|Prénoms\s*:|Age\s*[:：])/i.test(
+                    line
+                )
+            )
+                break;
+            parts.push(line);
+        }
     }
-    return roleLines.join(" ").trim();
+
+    return parts.join(" ").replace(/\s+/g, " ").trim();
 }
 
 function extractCommissions(fonction: string): string[] {
@@ -290,15 +303,38 @@ function parseSenatorPage(page: WPPage): Senateur | null {
 }
 
 /* ------------------------------------------------------------------ */
-/* Tri : Président → Vice-Présidents → Questeur → Rapporteur → autres  */
+/* Tri hiérarchique                                                    */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Rang d'affichage :
+ *   0 = Président du Sénat (par intérim)
+ *   1 = Vice-Président du Sénat
+ *   2 = Questeur
+ *   3 = Rapporteur Général
+ *   100 = autres sénateurs
+ *
+ * ⚠️ Ordre IMPORTANT : "Vice-Président du Sénat" contient la sous-chaîne
+ * "Président du Sénat". On doit donc :
+ *   1. D'abord tester "Vice-Président du Sénat" → rank 1
+ *   2. Puis retirer ce mot du texte avant de chercher "Président du Sénat"
+ */
 function senatorRank(s: Senateur): number {
-    const f = s.fonction || "";
-    if (/Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(f)) return 0;
-    if (/Vice[-\s]?Président\s+du\s+Sénat/i.test(f)) return 1;
+    let f = s.fonction || "";
+
+    // 1) Vice-Président → rank 1 (testé en premier)
+    if (/Vice[-\s]*Président\s+du\s+Sénat/i.test(f)) return 1;
+
+    // 2) Président du Sénat → rank 0
+    f = f.replace(/Vice[-\s]*Président\s+du\s+Sénat/gi, "");
+    if (/Président\s+du\s+Sénat/i.test(f)) return 0;
+
+    // 3) Questeur
     if (/(?:^|\s)Questeur(?:\s|$|,)/i.test(f)) return 2;
+
+    // 4) Rapporteur Général
     if (/Rapporteur\s+Général/i.test(f)) return 3;
+
     return 100;
 }
 
@@ -315,8 +351,8 @@ function compareSenateurs(a: Senateur, b: Senateur): number {
 
 function buildBureau(senateurs: Senateur[]): Senateur[] {
     const BUREAU_ROLES: RegExp[] = [
+        /Vice[-\s]*Président\s+du\s+Sénat/i,
         /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i,
-        /Vice[-\s]?Président\s+du\s+Sénat/i,
         /(?:^|\s)Questeur(?:\s|$|,)/i,
         /Rapporteur\s+Général/i,
     ];
@@ -384,55 +420,43 @@ function buildProvinces(senateurs: Senateur[]): Province[] {
 /* ------------------------------------------------------------------ */
 /* Point d'entrée public                                               */
 /* ------------------------------------------------------------------ */
+
 export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
     const [allPages, introHtml] = await Promise.all([
         fetchAllPages(),
         fetchIntroHtml(),
     ]);
 
-    // 1) Filtre structurel : pages qui ressemblent à une fiche sénateur
     const senatorPages = allPages.filter(isSenatorPage);
 
-    // 2) Filtre période : on exclut les anciens sénateurs sans mandat
-    const currentPages = senatorPages.filter(isCurrentSenator);
+    const parsed = senatorPages
+        .map(parseSenatorPage)
+        .filter((s): s is Senateur => s !== null && !!s.name);
 
-    const excluded = senatorPages
-        .filter((p) => !isCurrentSenator(p))
-        .map((p) => p.slug);
+    const senateurs = parsed
+        .filter(hasActiveMandate)
+        .sort(compareSenateurs);
+
+    const excluded = parsed
+        .filter((s) => !hasActiveMandate(s))
+        .map((s) => s.id);
 
     if (excluded.length > 0) {
         console.log(
-            `[wp-senators] Exclus (hors mandat) : ${excluded.join(", ")}`
+            `[wp-senators] Exclus (mandat terminé / HCC) : ${excluded.join(", ")}`
         );
     }
 
-    // 3) Parsing + tri + GARDE-FOU
-    const senateurs: Senateur[] = currentPages
-        .map(parseSenatorPage)
-        .filter((s): s is Senateur => s !== null && !!s.name)
-        // 🛡️ Garde-fou final : on exclut tout sénateur qui n'a
-        //    NI fonction NI commission. Ces fiches correspondent à
-        //    d'anciens sénateurs (RAVALOMANANA Richard, RAKOTONDRAZAFY
-        //    Lalatiana, etc.) dont la page WP existe encore mais qui
-        //    ne siègent plus.
-        .filter(
-            (s) =>
-                s.fonction.trim().length > 0 ||
-                s.commissions.length > 0
-        )
-        .sort(compareSenateurs);
-
-    // 4) Agrégation
     const bureau = buildBureau(senateurs);
     const commissions = buildCommissions(senateurs);
     const provinces = buildProvinces(senateurs);
 
     console.log(
         `[wp-senators] ${senateurs.length} sénateurs en fonction, ` +
-        `${bureau.length} membres du Bureau, ` +
-        `${commissions.length} commissions, ` +
-        `${provinces.length} provinces ` +
-        `(sur ${senatorPages.length} fiches détectées)`
+            `${bureau.length} membres du Bureau, ` +
+            `${commissions.length} commissions, ` +
+            `${provinces.length} provinces ` +
+            `(sur ${senatorPages.length} fiches détectées)`
     );
     if (senateurs.length > 0) {
         console.log(
@@ -447,7 +471,7 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
 }
 
 /* ------------------------------------------------------------------ */
-/* Détail d'un sénateur (page /your-senators/[slug])                   */
+/* Détail d'un sénateur                                                */
 /* ------------------------------------------------------------------ */
 
 export interface SenatorDetailData {
@@ -481,6 +505,8 @@ export async function getSenatorDetail(
 
         const senator = parseSenatorPage(page);
         if (!senator) return null;
+
+        if (!hasActiveMandate(senator)) return null;
 
         const bioText = extractBioText(page.content?.rendered ?? "");
 
