@@ -1,4 +1,4 @@
-import { WP_INTRO_POST_ID } from "@/constants/constants";
+import { MAX_PAGES, PER_PAGES, REVALIDATE, WP_INTRO_POST_ID } from "@/constants/constants";
 import { API_BASE } from "./wordpress";
 import type {
     Senateur,
@@ -8,62 +8,17 @@ import type {
 } from "@/types/senatorsType";
 
 /* ------------------------------------------------------------------ */
-/* Configuration                                                       */
-/* ------------------------------------------------------------------ */
-
-const PER_PAGE = 100;
-const MAX_PAGES = 5; // 62 pages max → 1 page suffit, garde-fou à 5
-const REVALIDATE = 3600; // 1 h
-
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
-
-interface WPPage {
-    id: number;
-    slug: string;
-    link: string;
-    title: { rendered: string };
-    content: { rendered: string };
-}
-
-export interface ParsedSenator {
-    id: string;
-    name: string;
-    image: string | null;
-    link: string;
-    age: string;
-    type: string;
-    province: string;
-    party: string;
-    role: string;
-    fonction: string;
-    commissions: string[];
-}
-
-export interface AggregatedSenators {
-    introHtml: string;
-    senateurs: ParsedSenator[];
-    totalFromWp: number;
-}
-
-/* ------------------------------------------------------------------ */
 /* Utilitaires                                                         */
 /* ------------------------------------------------------------------ */
 
-function stripHtml(s: string): string {
+function decodeEntities(s: string): string {
     return s
-        .replace(/<br\s*\/?>/gi, "\n")
-        .replace(/<\/p>/gi, "\n")
-        .replace(/<\/div>/gi, "\n")
-        .replace(/<[^>]*>/g, " ")
         .replace(/&nbsp;/g, " ")
         .replace(/&amp;/g, "&")
         .replace(/&#8217;|&rsquo;/g, "'")
         .replace(/&#8211;|&ndash;/g, "–")
         .replace(/&hellip;/g, "…")
         .replace(/&quot;/g, '"')
-        .replace(/\u00a0/g, " ")
         .replace(/&eacute;/g, "é")
         .replace(/&egrave;/g, "è")
         .replace(/&agrave;/g, "à")
@@ -72,46 +27,66 @@ function stripHtml(s: string): string {
         .replace(/&ocirc;/g, "ô")
         .replace(/&icirc;/g, "î")
         .replace(/&ucirc;/g, "û")
-        .replace(/&ugrave;/g, "ù");
+        .replace(/&ugrave;/g, "ù")
+        .replace(/\u00a0/g, " ");
 }
 
-function cleanWpTitle(title: string): string {
-    return stripHtml(title)
+function stripHtml(s: string): string {
+    return s
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<\/p>/gi, "\n")
+        .replace(/<\/div>/gi, "\n")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\u00a0/g, " ")
+        // Collapse horizontal whitespace UNIQUEMENT (pas les \n)
+        .replace(/[^\S\n]+/g, " ")
+        // Éviter les lignes vides consécutives
+        .replace(/\n[ \t]*\n+/g, "\n")
+        // Trim autour des \n
+        .replace(/[ \t]*\n[ \t]*/g, "\n")
+        .trim();
+}
+
+function cleanText(s: string): string {
+    return decodeEntities(s.replace(/<[^>]*>/g, " "))
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function cleanTitle(title: string): string {
+    return cleanText(title)
         .replace(/\s*[-–—|]\s*(Antenimierandoholona|Sénat.*|Senat.*)$/i, "")
         .replace(/\s+/g, " ")
         .trim();
 }
 
-async function wpFetch<T>(url: string): Promise<T | null> {
-    try {
-        const res = await fetch(url, {
-            next: { revalidate: REVALIDATE },
-            headers: {
-                Accept: "application/json",
-                "User-Agent":
-                    "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
-            },
-        });
-        if (!res.ok) return null;
-        return (await res.json()) as T;
-    } catch {
-        return null;
-    }
+/* ------------------------------------------------------------------ */
+/* Types WP                                                            */
+/* ------------------------------------------------------------------ */
+
+interface WPPage {
+    id: number;
+    slug: string;
+    link: string;
+    modified?: string;
+    date?: string;
+    title: { rendered: string };
+    content: { rendered: string };
+    categories?: number[];
 }
 
 /* ------------------------------------------------------------------ */
-/* Récupération des pages WordPress                                    */
+/* Fetch WordPress                                                     */
 /* ------------------------------------------------------------------ */
 
-async function fetchAllPages(): Promise<{ pages: WPPage[]; total: number }> {
+async function fetchAllPages(): Promise<WPPage[]> {
     const pages: WPPage[] = [];
     let page = 1;
-    let total = 0;
 
     while (page <= MAX_PAGES) {
         const url =
-            `${API_BASE}/pages?per_page=${PER_PAGE}&page=${page}` +
-            `&_fields=id,slug,link,title,content`;
+            `${API_BASE}/pages?per_page=${PER_PAGES}&page=${page}` +
+            `&_fields=id,slug,link,modified,date,title,content,categories`;
 
         try {
             const res = await fetch(url, {
@@ -130,16 +105,10 @@ async function fetchAllPages(): Promise<{ pages: WPPage[]; total: number }> {
                 break;
             }
 
-            if (page === 1) {
-                const t = parseInt(res.headers.get("X-WP-Total") || "0", 10);
-                if (!Number.isNaN(t)) total = t;
-            }
-
             const data = (await res.json()) as WPPage[];
             if (!Array.isArray(data) || data.length === 0) break;
-
             pages.push(...data);
-            if (data.length < PER_PAGE) break;
+            if (data.length < PER_PAGES) break;
             page++;
         } catch (err) {
             console.error(`[wp-senators] Erreur page ${page}:`, err);
@@ -147,17 +116,38 @@ async function fetchAllPages(): Promise<{ pages: WPPage[]; total: number }> {
         }
     }
 
-    return { pages, total: total || pages.length };
+    return pages;
 }
 
-/**
- * Un sénateur = une page avec :
- *   Nom : …, Prénoms : …, Age : NN, Province : …
- */
+async function fetchIntroHtml(): Promise<string> {
+    try {
+        const res = await fetch(
+            `${API_BASE}/posts/${WP_INTRO_POST_ID}?_fields=content`,
+            {
+                next: { revalidate: REVALIDATE },
+                headers: {
+                    Accept: "application/json",
+                    "User-Agent":
+                        "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
+                },
+            }
+        );
+        if (!res.ok) return "";
+        const data = (await res.json()) as { content?: { rendered?: string } };
+        return data?.content?.rendered ?? "";
+    } catch {
+        return "";
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* Détection des fiches sénateur                                       */
+/* ------------------------------------------------------------------ */
+
+/** Un sénateur = page avec Nom, Prénoms, Age, Province */
 function isSenatorPage(page: WPPage): boolean {
-    const html = page.content?.rendered ?? "";
-    if (!html || html.length < 50) return false;
-    const text = stripHtml(html);
+    const text = stripHtml(page.content?.rendered ?? "");
+    if (!text || text.length < 40) return false;
     return (
         /Nom\s*[:：]/i.test(text) &&
         /Pr[ée]?noms\s*[:：]/i.test(text) &&
@@ -166,15 +156,35 @@ function isSenatorPage(page: WPPage): boolean {
     );
 }
 
-/* ------------------------------------------------------------------ */
-/* Texte introductif (post 1123)                                       */
-/* ------------------------------------------------------------------ */
+/**
+ * Un sénateur est "en fonction" s'il présente AU MOINS UN marqueur
+ * d'activité parlementaire en cours (commission, déclaration, rôle
+ * institutionnel). Les anciens sénateurs comme RAVALOMANANA Richard
+ * ou RAKOTONDRAZAFY Lalatiana n'en ont aucun.
+ */
+function isCurrentSenator(page: WPPage): boolean {
+    const text = stripHtml(page.content?.rendered ?? "");
 
-export async function fetchIntroText(): Promise<string> {
-    const data = await wpFetch<{ content: { rendered: string } }>(
-        `${API_BASE}/posts/${WP_INTRO_POST_ID}?_fields=content`
-    );
-    return data?.content?.rendered ?? "";
+    const markers: RegExp[] = [
+        // Commission numérotée (I, II, III, IV...) → mandat législatif actif
+        /Commission\s+[IVX]+\b/i,
+
+        // Déclaration de patrimoine → obligation en cours
+        /Déclaration\s+de\s+Patrimoine/i,
+
+        // Rôles du Bureau Permanent NON ambigus
+        /Président\s+du\s+Sénat\s+par\s+intérim/i,
+        /Vice[-\s]?Président\s+du\s+Sénat/i,
+        /(?:^|\s)Questeur(?:\s|$|,)/i,
+        /Rapporteur\s+Général/i,
+
+        // Présidence de commission ou de groupe parlementaire
+        /Président\s+de\s+la\s+Commission\s+[IVX]+/i,
+        /Président\s+du\s+Groupe\s+Parlementaire/i,
+        /Président\s+du\s+Groupe\s+d['’]Amitié/i,
+    ];
+
+    return markers.some((re) => re.test(text));
 }
 
 /* ------------------------------------------------------------------ */
@@ -206,7 +216,7 @@ function extractFonction(text: string): string {
     const lines = text.split("\n").map((l) => l.trim());
 
     const startIdx = lines.findIndex((l) =>
-        /^(?:Au titre du Parti|Parti)\s*[:：]/i.test(l)
+        /^(?:Au titre du Parti|Parti|Au titre du Président)/i.test(l)
     );
     if (startIdx === -1) return "";
 
@@ -214,7 +224,10 @@ function extractFonction(text: string): string {
     for (let i = startIdx + 1; i < lines.length; i++) {
         const line = lines[i];
         if (!line) continue;
-        if (/^(?:Déclaration|Biographie|Nom\s*:|Prénoms\s*:)/i.test(line)) break;
+        if (
+            /^(?:Déclaration|Biographie|Nom\s*:|Prénoms\s*:)/i.test(line)
+        )
+            break;
         roleLines.push(line);
     }
     return roleLines.join(" ").trim();
@@ -233,11 +246,11 @@ function extractCommissions(fonction: string): string[] {
     return commissions;
 }
 
-export function parseSenatorPost(post: WPPage): ParsedSenator | null {
-    const html = post.content?.rendered ?? "";
+function parseSenatorPage(page: WPPage): Senateur | null {
+    const html = page.content?.rendered ?? "";
     if (!html) return null;
 
-    const name = cleanWpTitle(post.title.rendered);
+    const name = cleanTitle(page.title.rendered);
     if (!name) return null;
 
     const image = extractMainImage(html);
@@ -256,78 +269,66 @@ export function parseSenatorPost(post: WPPage): ParsedSenator | null {
         "Elu\\s*/\\s*Désigné",
     ]);
     const province = pickLine(text, ["Province"]);
-    const party = pickLine(text, ["Au titre du Parti", "Parti"]);
+    const party =
+        pickLine(text, ["Au titre du Parti", "Parti"]) ||
+        pickLine(text, ["Au titre du Président"]);
 
     const fonction = extractFonction(text);
     const commissions = extractCommissions(fonction);
 
     return {
-        id: post.slug,
+        id: page.slug,
         name,
         image,
-        link: post.link,
-        age,
-        type,
-        province,
-        party,
-        role: fonction,
         fonction,
+        province,
+        age,
+        eluDesigne: type,
+        parti: party,
         commissions,
     };
 }
 
 /* ------------------------------------------------------------------ */
-/* Agrégation brute                                                    */
+/* Tri : Président → Vice-Présidents → Questeur → Rapporteur → autres  */
 /* ------------------------------------------------------------------ */
 
-export async function fetchAndAggregate(): Promise<AggregatedSenators> {
-    const [introHtml, pagesResult] = await Promise.all([
-        fetchIntroText(),
-        fetchAllPages(),
-    ]);
+function senatorRank(s: Senateur): number {
+    const f = s.fonction || "";
+    if (/Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(f)) return 0;
+    if (/Vice[-\s]?Président\s+du\s+Sénat/i.test(f)) return 1;
+    if (/(?:^|\s)Questeur(?:\s|$|,)/i.test(f)) return 2;
+    if (/Rapporteur\s+Général/i.test(f)) return 3;
+    return 100;
+}
 
-    const totalFromWp = pagesResult.total;
-
-    const senateurs = pagesResult.pages
-        .filter(isSenatorPage)
-        .map(parseSenatorPost)
-        .filter((s): s is ParsedSenator => s !== null && !!s.name)
-        .sort((a, b) =>
-            a.name.localeCompare(b.name, "fr", { sensitivity: "base" })
-        );
-
-    return { introHtml, senateurs, totalFromWp };
+function compareSenateurs(a: Senateur, b: Senateur): number {
+    const ra = senatorRank(a);
+    const rb = senatorRank(b);
+    if (ra !== rb) return ra - rb;
+    return a.name.localeCompare(b.name, "fr", { sensitivity: "base" });
 }
 
 /* ------------------------------------------------------------------ */
-/* Builders (payload final)                                            */
+/* Builders                                                            */
 /* ------------------------------------------------------------------ */
-
-function toSenateur(s: ParsedSenator): Senateur {
-    return {
-        id: s.id,
-        name: s.name,
-        image: s.image,
-        fonction: s.fonction,
-        province: s.province,
-        age: s.age,
-        eluDesigne: s.type,
-        parti: s.party,
-        commissions: s.commissions,
-    };
-}
 
 function buildBureau(senateurs: Senateur[]): Senateur[] {
+    const BUREAU_ROLES: RegExp[] = [
+        /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i,
+        /Vice[-\s]?Président\s+du\s+Sénat/i,
+        /(?:^|\s)Questeur(?:\s|$|,)/i,
+        /Rapporteur\s+Général/i,
+    ];
     return senateurs.filter((s) =>
-        /(président|vice[-\s]?président|questeur|rapporteur)/i.test(s.fonction)
+        BUREAU_ROLES.some((re) => re.test(s.fonction))
     );
 }
 
-function buildCommissions(
-    senators: Array<{ name: string; commissions: string[] }>
-): Commission[] {
+function buildCommissions(senateurs: Senateur[]): Commission[] {
     const map = new Map<string, Commission>();
-    for (const s of senators) {
+
+    for (const s of senateurs) {
         for (const raw of s.commissions) {
             const titleMatch = raw.match(
                 /Commission\s+[IVX]+[^:]*?(?::\s*)?([A-Za-zÀ-ÿ][^,]*)?/i
@@ -343,113 +344,172 @@ function buildCommissions(
             );
             const role = roleMatch?.[1] ?? "";
 
-            if (!map.has(title)) map.set(title, { title, members: [] });
+            if (!map.has(title)) {
+                map.set(title, { title, members: [] });
+            }
             const bucket = map.get(title)!;
             if (!bucket.members.some((m) => m.name === s.name)) {
                 bucket.members.push({ name: s.name, role });
             }
         }
     }
+
     return Array.from(map.values()).sort((a, b) =>
         a.title.localeCompare(b.title, "fr")
     );
 }
 
-function buildProvinces(
-    senators: Array<{ name: string; province: string; image: string | null }>
-): Province[] {
+function buildProvinces(senateurs: Senateur[]): Province[] {
     const map = new Map<string, Province>();
-    for (const s of senators) {
+
+    for (const s of senateurs) {
         const key = s.province.trim();
         if (!key) continue;
-        if (!map.has(key)) map.set(key, { name: key, senators: [] });
+        if (!map.has(key)) {
+            map.set(key, { name: key, senators: [] });
+        }
         map.get(key)!.senators.push({ name: s.name, image: s.image });
     }
-    return Array.from(map.values()).sort((a, b) =>
-        a.name.localeCompare(b.name, "fr")
-    );
+
+    return Array.from(map.values())
+        .map((p) => ({
+            ...p,
+            senators: p.senators.sort((a, b) =>
+                a.name.localeCompare(b.name, "fr", { sensitivity: "base" })
+            ),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name, "fr"));
 }
 
 /* ------------------------------------------------------------------ */
 /* Point d'entrée public                                               */
 /* ------------------------------------------------------------------ */
-
 export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
-    const { introHtml, senateurs: parsed, totalFromWp } =
-        await fetchAndAggregate();
+    const [allPages, introHtml] = await Promise.all([
+        fetchAllPages(),
+        fetchIntroHtml(),
+    ]);
 
-    const senateurs: Senateur[] = parsed.map(toSenateur);
+    // 1) Filtre structurel : pages qui ressemblent à une fiche sénateur
+    const senatorPages = allPages.filter(isSenatorPage);
+
+    // 2) Filtre période : on exclut les anciens sénateurs sans mandat
+    const currentPages = senatorPages.filter(isCurrentSenator);
+
+    const excluded = senatorPages
+        .filter((p) => !isCurrentSenator(p))
+        .map((p) => p.slug);
+
+    if (excluded.length > 0) {
+        console.log(
+            `[wp-senators] Exclus (hors mandat) : ${excluded.join(", ")}`
+        );
+    }
+
+    // 3) Parsing + tri + GARDE-FOU
+    const senateurs: Senateur[] = currentPages
+        .map(parseSenatorPage)
+        .filter((s): s is Senateur => s !== null && !!s.name)
+        // 🛡️ Garde-fou final : on exclut tout sénateur qui n'a
+        //    NI fonction NI commission. Ces fiches correspondent à
+        //    d'anciens sénateurs (RAVALOMANANA Richard, RAKOTONDRAZAFY
+        //    Lalatiana, etc.) dont la page WP existe encore mais qui
+        //    ne siègent plus.
+        .filter(
+            (s) =>
+                s.fonction.trim().length > 0 ||
+                s.commissions.length > 0
+        )
+        .sort(compareSenateurs);
+
+    // 4) Agrégation
+    const bureau = buildBureau(senateurs);
+    const commissions = buildCommissions(senateurs);
+    const provinces = buildProvinces(senateurs);
 
     console.log(
-        `[wp-senators] ${senateurs.length} sénateurs sur ${totalFromWp} pages WP`
+        `[wp-senators] ${senateurs.length} sénateurs en fonction, ` +
+        `${bureau.length} membres du Bureau, ` +
+        `${commissions.length} commissions, ` +
+        `${provinces.length} provinces ` +
+        `(sur ${senatorPages.length} fiches détectées)`
     );
+    if (senateurs.length > 0) {
+        console.log(
+            `[wp-senators] Ordre : ${senateurs
+                .slice(0, 5)
+                .map((s) => s.name)
+                .join(" > ")} …`
+        );
+    }
 
-    return {
-        introHtml,
-        senateurs,
-        bureau: buildBureau(senateurs),
-        commissions: buildCommissions(parsed),
-        provinces: buildProvinces(parsed),
-    };
+    return { introHtml, senateurs, bureau, commissions, provinces };
 }
 
 /* ------------------------------------------------------------------ */
-/* Récupération d'un sénateur par slug                                 */
+/* Détail d'un sénateur (page /your-senators/[slug])                   */
 /* ------------------------------------------------------------------ */
 
 export interface SenatorDetailData {
-    senator: Senateur;      // ✅ type UI (eluDesigne, parti, ...)
+    senator: Senateur;
     bioText: string;
     rawHtml: string;
 }
 
-/**
- * Récupère une fiche sénateur complète par son slug.
- * Renvoie le sénateur au format Senateur (prêt pour l'UI),
- * + la biographie extraite + le HTML brut (debug).
- */
 export async function getSenatorDetail(
     slug: string
 ): Promise<SenatorDetailData | null> {
     const url =
         `${API_BASE}/pages?slug=${encodeURIComponent(slug)}` +
-        `&_fields=id,slug,link,title,content&per_page=1`;
+        `&_fields=id,slug,link,modified,date,title,content&per_page=1`;
 
-    const pages = await wpFetch<WPPage[]>(url);
-    if (!pages || pages.length === 0) return null;
+    try {
+        const res = await fetch(url, {
+            next: { revalidate: REVALIDATE },
+            headers: {
+                Accept: "application/json",
+                "User-Agent":
+                    "Mozilla/5.0 (compatible; SenatWebsiteBot/1.0; +https://senat.mg)",
+            },
+        });
+        if (!res.ok) return null;
+        const pages = (await res.json()) as WPPage[];
+        if (!Array.isArray(pages) || pages.length === 0) return null;
+        const page = pages[0];
 
-    const page = pages[0];
-    if (!isSenatorPage(page)) return null;
+        if (!isSenatorPage(page)) return null;
 
-    const parsed = parseSenatorPost(page);
-    if (!parsed) return null;
+        const senator = parseSenatorPage(page);
+        if (!senator) return null;
 
-    const rawHtml = page.content?.rendered ?? "";
-    const bioText = extractBioText(rawHtml);
+        const bioText = extractBioText(page.content?.rendered ?? "");
 
-    // ✅ Conversion ParsedSenator → Senateur (même que dans getSenatorsPayload)
-    const senator: Senateur = {
-        id: parsed.id,
-        name: parsed.name,
-        image: parsed.image,
-        fonction: parsed.fonction,
-        province: parsed.province,
-        age: parsed.age,
-        eluDesigne: parsed.type,
-        parti: parsed.party,
-        commissions: parsed.commissions,
-    };
-
-    return { senator, bioText, rawHtml };
+        return { senator, bioText, rawHtml: page.content?.rendered ?? "" };
+    } catch (err) {
+        console.error("[wp-senators] getSenatorDetail error:", err);
+        return null;
+    }
 }
 
-/**
- * Extrait le texte après "Biographie :" dans le contenu WP.
- * Renvoie "" si absent.
- */
 function extractBioText(html: string): string {
-    const plain = stripHtml(html);
+    const plain = stripHtml(html).replace(/\s+/g, " ").trim();
     const match = plain.match(/Biographie\s*:?\s*([\s\S]*)$/i);
     if (!match) return "";
     return match[1].replace(/\s+/g, " ").trim();
 }
+
+export function isPresident(s: Senateur): boolean {
+    return /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(s.fonction);
+}
+
+/*export function isVicePresident(s: Senateur): boolean {
+    return /Vice[-\s]?Président\s+du\s+Sénat/i.test(s.fonction);
+}
+
+export function isQuesteur(s: Senateur): boolean {
+    return /(?:^|\s)Questeur(?:\s|$|,)/i.test(s.fonction);
+}
+
+export function isRapporteurGeneral(s: Senateur): boolean {
+    return /Rapporteur\s+Général/i.test(s.fonction);
+}*/

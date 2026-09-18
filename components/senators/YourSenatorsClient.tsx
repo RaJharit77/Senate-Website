@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Crown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SenatorCard from "./SenatorCard";
 import CommissionAccordion from "./CommissionAccordion";
@@ -15,6 +16,11 @@ interface Props {
     bureau: Senateur[];
     commissions: Commission[];
     provinces: Province[];
+}
+
+/** Détecte le Président du Sénat (en titre ou par intérim) */
+function isPresident(s: Senateur): boolean {
+    return /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(s.fonction);
 }
 
 export default function YourSenatorsClient({
@@ -31,11 +37,15 @@ export default function YourSenatorsClient({
         [senateurs, selectedId]
     );
 
-    const selectedInBureau = useMemo(
-        () =>
-            selected && bureau.some((b) => b.id === selected.id) ? selected : null,
-        [selected, bureau]
-    );
+    const [bureauSelectedId, setBureauSelectedId] = useState<string | null>(null);
+    const selectedInBureau = useMemo(() => {
+        const found = bureau.find((b) => b.id === bureauSelectedId);
+        if (found) return found;
+
+        return selected && bureau.some((b) => b.id === selected.id)
+            ? selected
+            : bureau[0] ?? null;
+    }, [bureau, bureauSelectedId, selected]);
 
     return (
         <div>
@@ -69,18 +79,27 @@ export default function YourSenatorsClient({
                                 Liste alphabétique des Sénateurs de Madagascar
                             </p>
                             <div className="space-y-1 max-h-[600px] overflow-y-auto pr-2 scrollbar-custom">
-                                {senateurs.map((s) => (
-                                    <button
-                                        key={s.id}
-                                        onClick={() => setSelectedId(s.id)}
-                                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors font-poppins ${selected?.id === s.id
-                                            ? "bg-red-500/20 text-red-300 border border-red-400/30"
-                                            : "text-white/70 hover:bg-white/5 hover:text-white"
-                                            }`}
-                                    >
-                                        {s.name}
-                                    </button>
-                                ))}
+                                {senateurs.map((s) => {
+                                    const isSel = selected?.id === s.id;
+                                    const pres = isPresident(s);
+                                    return (
+                                        <button
+                                            key={s.id}
+                                            onClick={() => setSelectedId(s.id)}
+                                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors font-poppins flex items-center gap-2 ${isSel
+                                                ? "bg-red-500/20 text-red-300 border border-red-400/30"
+                                                : "text-white/70 hover:bg-white/5 hover:text-white border border-transparent"
+                                                }`}
+                                        >
+                                            {pres && (
+                                                <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                            )}
+                                            <span className="truncate">
+                                                {s.name}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                                 {senateurs.length === 0 && (
                                     <p className="text-white/40 italic">
                                         Aucun sénateur disponible.
@@ -114,18 +133,27 @@ export default function YourSenatorsClient({
                                 Les membres du Bureau Permanent
                             </p>
                             <div className="space-y-1">
-                                {bureau.map((s) => (
-                                    <button
-                                        key={s.id}
-                                        onClick={() => setSelectedId(s.id)}
-                                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors font-poppins ${selected?.id === s.id
-                                            ? "bg-red-500/20 text-red-300 border border-red-400/30"
-                                            : "text-white/70 hover:bg-white/5 hover:text-white"
-                                            }`}
-                                    >
-                                        {s.name}
-                                    </button>
-                                ))}
+                                {bureau.map((s) => {
+                                    const isSel = selectedInBureau?.id === s.id;
+                                    const pres = isPresident(s);
+                                    return (
+                                        <button
+                                            key={s.id}
+                                            onClick={() => setBureauSelectedId(s.id)}
+                                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors font-poppins flex items-center gap-2 ${isSel
+                                                ? "bg-red-500/20 text-red-300 border border-red-400/30"
+                                                : "text-white/70 hover:bg-white/5 hover:text-white border border-transparent"
+                                                }`}
+                                        >
+                                            {pres && (
+                                                <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                            )}
+                                            <span className="truncate">
+                                                {s.name}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                                 {bureau.length === 0 && (
                                     <p className="text-white/40 italic">
                                         Aucun membre du bureau trouvé.
