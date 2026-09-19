@@ -78,3 +78,8 @@ export const SENATOR_CPT = "/republiqueiv";
 export const PER_PAGES = 100;
 export const MAX_PAGES = 20; // garde-fou (2000 sénateurs max)
 export const REVALIDATE = 3600; // 1 h
+
+// Catégories WordPress reprises telles quelles depuis lib/api.ts
+// (voir getAllRelevantPosts / getDeliberationPosts) pour rester cohérent
+// avec le reste du site plutôt que de réintroduire des constantes séparées.
+export const CAT_ORDRE_DU_JOUR = 11;

@@ -10,7 +10,12 @@ import {
     getAllRepubliques,
 } from "@/lib/api";
 import type { WpPost } from "@/lib/wp-types";
-import { navItems } from "@/lib/navigations/navigation";
+import { 
+    CAT_DELIBERATION, 
+    CAT_LOIS, 
+    CAT_LOIS_ADOPTES, 
+    CAT_ORDRE_DU_JOUR 
+} from "@/constants/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -22,14 +27,6 @@ interface UnifiedSearchResult {
     path: string;
     source: string;
 }
-
-const PAGE_SLUG_MAP: Record<string, string> = {
-    "textes-et-lois": "/texts-and-laws",
-    "dispositions-constitutionnelles": "/about/reference-texts",
-    "lois-organiques": "/about/reference-texts",
-    "sources-reglementaires": "/about/reference-texts",
-    "textes-sur-les-services": "/about/reference-texts",
-};
 
 const NAMED_ENTITIES: Record<string, string> = {
     "&amp;": "&",
@@ -64,50 +61,22 @@ function toResult(post: WpPost, path: string, source: string, idPrefix: string):
     };
 }
 
-/** 
- * Recherche dans les menus statiques du site 
- */
-function getStaticNavResults(query: string): UnifiedSearchResult[] {
-    const normalizedQuery = query.toLowerCase();
-    const flatNav: { label: string; path: string }[] = [];
-
-    // Aplatir le menu (parents + enfants)
-    for (const item of navItems) {
-        flatNav.push({ label: item.label, path: item.path });
-        if (item.children) {
-            for (const child of item.children) {
-                flatNav.push({ label: child.label, path: child.path });
-            }
-        }
-    }
-
-    // Filtrer et formatter pour correspondre à UnifiedSearchResult
-    return flatNav
-        .filter(item => item.label.toLowerCase().includes(normalizedQuery))
-        .map(item => ({
-            id: `nav-${item.path.replace(/\//g, "-")}`,
-            title: item.label,
-            excerpt: `Page de navigation : ${item.label}`,
-            date: null,
-            path: item.path,
-            source: "Navigation du site",
-        }));
-}
-
 export async function GET(request: NextRequest) {
     const query = request.nextUrl.searchParams.get("q")?.trim() || "";
     if (!query) {
         return NextResponse.json([]);
     }
 
-    // Récupérer les résultats du menu de navigation
-    const staticResults = getStaticNavResults(query);
-
+    // Laisser WordPress filtrer côté serveur (?search=...&orderby=relevance)
+    // plutôt que de tout rapatrier puis filtrer côté Next — c'est ce qui
+    // permettait déjà à l'ancien site de trouver "article HCC" correctement.
     const params = { search: query, per_page: 20, orderby: "relevance" };
 
     const [
         pagesRes,
-        lawsRes,
+        loisRes,
+        ordreJourRes,
+        deliberationRes,
         audiencesRes,
         delegationsRes,
         internationalRes,
@@ -116,7 +85,10 @@ export async function GET(request: NextRequest) {
         alauneRes,
     ] = await Promise.allSettled([
         getPages(params),
-        getPostsByCategory(14, params),
+        getPostsByCategory(CAT_LOIS, params),
+        getPostsByCategory(CAT_LOIS_ADOPTES, params),
+        getPostsByCategory(CAT_ORDRE_DU_JOUR, params),
+        getPostsByCategory(CAT_DELIBERATION, params),
         getAudiences(params),
         getDelegations(params),
         getInternational(params),
@@ -125,13 +97,9 @@ export async function GET(request: NextRequest) {
         getAlaune(params),
     ]);
 
-    // Initialiser les résultats avec ceux de la navigation statique
-    const results: UnifiedSearchResult[] = [...staticResults];
+    const results: UnifiedSearchResult[] = [];
+    const seenPaths = new Set<string>();
 
-    // On garde en mémoire les chemins (URL) déjà ajoutés pour éviter les doublons
-    const seenPaths = new Set(results.map(r => r.path));
-
-    // Fonction utilitaire pour éviter l'insertion de doublons
     const addUniqueResult = (post: WpPost, path: string, source: string, idPrefix: string) => {
         if (!seenPaths.has(path)) {
             results.push(toResult(post, path, source, idPrefix));
@@ -139,12 +107,15 @@ export async function GET(request: NextRequest) {
         }
     };
 
-    // ----- Pages : seulement celles qu'on sait router avec certitude -----
+    // ----- Pages WordPress -----
+    // Pas de table slug→route fiable pour les pages génériques sur le nouveau
+    // site (contrairement à l'ancien PAGE_SLUG_MAP) : on utilise le permalien
+    // WordPress (post.link) comme lien de repli qui fonctionne toujours.
+    // À remplacer par un chemin Next.js interne dès que vous confirmez la route.
     if (pagesRes.status === "fulfilled") {
         for (const page of pagesRes.value) {
-            const path = PAGE_SLUG_MAP[page.slug];
-            if (path) {
-                addUniqueResult(page, path, "Page", "page");
+            if (page.link) {
+                addUniqueResult(page, page.link, "Page", "page");
             }
         }
     } else {
@@ -152,12 +123,35 @@ export async function GET(request: NextRequest) {
     }
 
     // ----- Textes et lois (catégorie 14) -----
-    if (lawsRes.status === "fulfilled") {
-        for (const post of lawsRes.value) {
+    if (loisRes.status === "fulfilled") {
+        for (const post of loisRes.value) {
             addUniqueResult(post, `/texts-and-laws/${post.slug}`, "Texte de loi", "law");
         }
     } else {
-        console.error("[/api/search] getPostsByCategory(14) a échoué:", lawsRes.reason);
+        console.error("[/api/search] Textes et lois a échoué:", loisRes.reason);
+    }
+
+    // ----- Ordre du jour (catégorie 11) -----
+    if (ordreJourRes.status === "fulfilled") {
+        for (const post of ordreJourRes.value) {
+            addUniqueResult(post, `/agenda/${post.slug}`, "Ordre du jour", "agenda");
+        }
+    } else {
+        console.error("[/api/search] Ordre du jour a échoué:", ordreJourRes.reason);
+    }
+
+    // ----- Délibérations (catégorie 53) -----
+    if (deliberationRes.status === "fulfilled") {
+        for (const post of deliberationRes.value) {
+            addUniqueResult(
+                post,
+                `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${post.slug}`,
+                "Délibération",
+                "deliberation"
+            );
+        }
+    } else {
+        console.error("[/api/search] Délibérations a échoué:", deliberationRes.reason);
     }
 
     // ----- Activités du Président (audiences + délégations + international) -----
