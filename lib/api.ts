@@ -56,7 +56,7 @@ async function fetchViaProxy<T>(
     return res.json();
 }
 
-async function fetchAPI<T>(
+export async function fetchAPI<T>(
     endpoint: string,
     params: Params = {},
     silent: boolean = false,

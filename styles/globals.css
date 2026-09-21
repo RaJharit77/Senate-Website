@@ -3,7 +3,7 @@
 @import './theme.css';
 @import 'lenis/dist/lenis.css';
 @import './historyTabs.css';
-
+@import './senators.css';
 
 .font-poppins {
     font-family: 'Poppins', sans-serif;
