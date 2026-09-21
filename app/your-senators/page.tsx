@@ -3,7 +3,7 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import YourSenatorsClient from "@/components/senators/YourSenatorsClient";
-import type { SenatorsApiResponse } from "@/types/senatorsType";
+import { getSenatorsPayload } from "@/lib/wp-senators";
 
 export const dynamic = "force-dynamic";
 
@@ -14,33 +14,21 @@ export const metadata = buildMetadata({
     path: "/your-senators",
 });
 
-/** URL absolue pour fetch server-side */
-function apiUrl(path: string): string {
-    const base =
-        process.env.NEXT_PUBLIC_SITE_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-        "http://localhost:3000";
-    return `${base.replace(/\/$/, "")}${path}`;
-}
-
 export default async function YourSenatorsPage() {
-    let json: SenatorsApiResponse | null = null;
+    let payload;
     try {
-        const res = await fetch(apiUrl("/api/senators"), {
-            next: { revalidate: 3600 },
-        });
-        if (res.ok) {
-            json = (await res.json()) as SenatorsApiResponse;
-        }
+        payload = await getSenatorsPayload();
     } catch (err) {
-        console.error("Erreur /api/senators :", err);
-    }
-
-    if (!json?.success || !json.data || json.data.senateurs.length === 0) {
+        console.error("[your-senators] getSenatorsPayload a échoué :", err);
         return <NotFoundPage />;
     }
 
-    const { introHtml, senateurs, bureau, commissions, provinces } = json.data;
+    if (!payload || payload.senateurs.length === 0) {
+        console.warn("[your-senators] Aucun sénateur → 404");
+        return <NotFoundPage />;
+    }
+
+    const { introHtml, senateurs, bureau, commissions, provinces } = payload;
 
     const cleanTitle = "Vos Sénateurs";
 
