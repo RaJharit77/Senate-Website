@@ -10,6 +10,7 @@ import type {
 const EXCLUDED_SLUGS = new Set<string>([
     "rakotondrazafy-lalatiana",
     "ravalomanana-richard",
+    "raharinirina-sidonie",
 ]);
 
 
@@ -147,12 +148,29 @@ async function fetchIntroHtml(): Promise<string> {
 function isSenatorPage(page: WPPage): boolean {
     const text = stripHtml(page.content?.rendered ?? "");
     if (!text || text.length < 40) return false;
-    return (
-        /Nom\s*[:：]/i.test(text) &&
-        /Pr[ée]?noms\s*[:：]/i.test(text) &&
-        /Age\s*[:：]\s*\d+/i.test(text) &&
-        /Province\s*[:：]/i.test(text)
-    );
+
+    // 1) Marqueur obligatoire : "Nom :"
+    const hasNom = /Nom\s*[:：]/i.test(text);
+    if (!hasNom) return false;
+
+    // 2) Marqueurs secondaires (2 sur 3 suffisent)
+    const hasPrenoms = /Pr[ée]?noms\s*[:：]/i.test(text);
+    const hasAge = /[ÂA]ges?\s*[:：]\s*\d+/i.test(text);
+    const hasProvince = /Province\s*[:：]/i.test(text);
+
+    const score = [hasPrenoms, hasAge, hasProvince].filter(Boolean).length;
+
+    // Si au moins 2 marqueurs sur 3 → accepté
+    if (score >= 2) return true;
+
+    // Cas limite : on log pour debug (aide à identifier les fiches atypiques)
+    if (score === 1) {
+        console.warn(
+            `[wp-senators] Fiche candidate rejetée : ${page.slug} ` +
+            `(nom=${hasNom}, prenoms=${hasPrenoms}, age=${hasAge}, province=${hasProvince})`
+        );
+    }
+    return false;
 }
 
 /**
@@ -427,6 +445,27 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
         fetchIntroHtml(),
     ]);
 
+    if (process.env.NODE_ENV === "development") {
+        const nearMisses = allPages.filter((p) => {
+            const text = stripHtml(p.content?.rendered ?? "");
+            return /Nom\s*[:：]/i.test(text) && !isSenatorPage(p);
+        });
+        if (nearMisses.length > 0) {
+            console.warn(
+                `[wp-senators] ${nearMisses.length} fiche(s) proche(s) mais rejetée(s) :`
+            );
+            nearMisses.forEach((p) => {
+                const text = stripHtml(p.content?.rendered ?? "");
+                const hasPrenoms = /Pr[ée]?noms\s*[:：]/i.test(text);
+                const hasAge = /[ÂA]ges?\s*[:：]\s*\d+/i.test(text);
+                const hasProvince = /Province\s*[:：]/i.test(text);
+                console.warn(
+                    `   - ${p.slug} | prénoms=${hasPrenoms} age=${hasAge} province=${hasProvince}`
+                );
+            });
+        }
+    }
+
     const senatorPages = allPages.filter(isSenatorPage);
 
     const parsed = senatorPages
@@ -453,10 +492,10 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
 
     console.log(
         `[wp-senators] ${senateurs.length} sénateurs en fonction, ` +
-            `${bureau.length} membres du Bureau, ` +
-            `${commissions.length} commissions, ` +
-            `${provinces.length} provinces ` +
-            `(sur ${senatorPages.length} fiches détectées)`
+        `${bureau.length} membres du Bureau, ` +
+        `${commissions.length} commissions, ` +
+        `${provinces.length} provinces ` +
+        `(sur ${senatorPages.length} fiches détectées)`
     );
     if (senateurs.length > 0) {
         console.log(
