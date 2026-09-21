@@ -46,7 +46,7 @@ jobs:
         env:
           CI: true
       - name: Upload Playwright report (on failure only)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
@@ -54,7 +54,7 @@ jobs:
           retention-days: 3   
           compression-level: 9  
       - name: Upload Playwright screenshots (on failure only)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-screenshots
