@@ -125,16 +125,35 @@ const CATEGORY_ROUTES: CategoryRoute[] = [
             `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${slug}`,
         detail: true,
     },
+    // Pas de route dynamique sous app/about : on renvoie vers la page de section.
     { ids: [CAT_STRUCTURES], source: "Structures", path: () => "/about/structures", detail: false },
+    // app/parliamentary-proceedings/written-questions/[slug]
     {
         ids: [CAT_GOUVERNEMENT],
         source: "Questions écrites",
-        path: () => "/parliamentary-proceedings/written-questions",
-        detail: false,
+        path: (slug) => `/parliamentary-proceedings/written-questions/${slug}`,
+        detail: true,
     },
-    { ids: [CAT_CALENDRIER], source: "Calendrier parlementaire", path: () => "/agenda", detail: false },
-    { ids: [CAT_AUDIO], source: "Médias – audio", path: () => "/channel-tv-and-radio/audio", detail: false },
-    { ids: [CAT_VIDEO], source: "Médias – vidéo", path: () => "/channel-tv-and-radio", detail: false },
+    // app/agenda/[slug]
+    {
+        ids: [CAT_CALENDRIER],
+        source: "Calendrier parlementaire",
+        path: (slug) => `/agenda/${slug}`,
+        detail: true,
+    },
+    // app/channel-tv-and-radio/{audio,video,editing}/[slug]
+    {
+        ids: [CAT_AUDIO],
+        source: "Médias – audio",
+        path: (slug) => `/channel-tv-and-radio/audio/${slug}`,
+        detail: true,
+    },
+    {
+        ids: [CAT_VIDEO],
+        source: "Médias – vidéo",
+        path: (slug) => `/channel-tv-and-radio/video/${slug}`,
+        detail: true,
+    },
     // app/others/[slug] existe (vérifié dans l'arborescence app/).
     {
         ids: [CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION],
