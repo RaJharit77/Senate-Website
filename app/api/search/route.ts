@@ -55,7 +55,12 @@ interface ResolvedRoute {
     detail: boolean;
 }
 
-type WpPostWithCategories = WpPost & { categories?: number[] };
+type WpPostWithCategories = WpPost & {
+    categories?: number[];
+    type?: string;
+    parent?: number;
+    template?: string;
+};
 
 interface SearchSource {
     key: string;
@@ -89,6 +94,30 @@ const SLUG_ROUTES: Record<string, { path: string; source: string }> = {
     "sources-reglementaires": { path: "/about/reference-texts", source: "Textes de référence" },
     "textes-sur-les-services": { path: "/about/reference-texts", source: "Textes de référence" },
     "vos-senateurs": { path: "/your-senators", source: "Page" },
+    // Page WP "Les Sénateurs durant la deuxième Législature de la Quatrième République".
+    // TODO : remplacer par /historical?tab=<clé> une fois la clé d'onglet de la
+    // Quatrième République connue (voir app/historical/history/page.tsx).
+    "historique-v2": { path: "/historical", source: "Historique" },
+    // Pages WP du menu de l'ancien site (slugs relevés sur senat.mg) → routes Next.
+    "historique": { path: "/about", source: "À propos du Sénat" },
+    "nature-et-missions-2": { path: "/about/missions-and-responsibilities", source: "Missions et attributions" },
+    "structures": { path: "/about/structures", source: "Structures" },
+    "textes-de-reference": { path: "/about/reference-texts", source: "Textes de référence" },
+    "historique-2": { path: "/historical?tab=first", source: "Historique" },
+    "travaux-parlementaires": { path: "/parliamentary-proceedings", source: "Travaux parlementaires" },
+    "travaux-legislatifs-2": {
+        path: "/parliamentary-proceedings/legislative-proceedings",
+        source: "Travaux législatifs",
+    },
+    "international": { path: "/international", source: "International" },
+    "activites-du-president": { path: "/international/presidents-activities", source: "Activités du Président" },
+    "activites-des-senateurs": { path: "/international/senators-activities", source: "Activités des Sénateurs" },
+    "groupe-interparlementaire-damitie": {
+        path: "/international/inter-parliamentary-friendship-group",
+        source: "Groupe d'amitié",
+    },
+    "espace-presse": { path: "/press-area", source: "Espace Presse" },
+    "autres": { path: "/others", source: "Autres" },
     "la-structure-administrative-du-senat": {
         path: "/about/administrative-structures",
         source: "Structures administratives",
@@ -163,6 +192,11 @@ const CATEGORY_ROUTES: CategoryRoute[] = [
     },
 ];
 
+/** "RABEMANANJARA Jean Paul Nicolas", "RAKOTOBE RAMAROSOA Emiline" : NOM(S) en capitales puis prénom(s). */
+function looksLikePersonName(title: string): boolean {
+    return /^\p{Lu}{2,}(?:[ '’-]\p{Lu}{2,})*\s+\p{Lu}\p{Ll}/u.test(title);
+}
+
 /** Résolution générique pour les pages et articles standards. */
 function resolveByContent(post: WpPostWithCategories): ResolvedRoute | null {
     // 1. Slug connu
@@ -184,6 +218,14 @@ function resolveByContent(post: WpPostWithCategories): ResolvedRoute | null {
     // 4. Catégorie sans détail connu : page de section
     const section = matches[0];
     if (section) return { path: section.path(post.slug), source: section.source, detail: false };
+
+    // 5. Fiche de sénateur : page WP (sans catégorie) titrée "NOM Prénom(s)".
+    //    Rendue par app/your-senators/[slug] (getSenatorBySlug lit d'abord les pages).
+    //    Heuristique sur le titre ; si les fiches partagent un `parent` ou un
+    //    `template` WP, remplacer par un test sur ce champ (visible avec &debug=1).
+    if (post.type === "page" && looksLikePersonName(cleanText(post.title?.rendered))) {
+        return { path: `/your-senators/${post.slug}`, source: "Sénateur", detail: true };
+    }
 
     return null;
 }
@@ -393,7 +435,7 @@ export async function GET(request: NextRequest) {
         orderby: "relevance",
         // Pas besoin de l'embed, et on limite le payload aux champs utilisés.
         _embed: false,
-        _fields: "id,slug,date,title,excerpt,content,categories,type",
+        _fields: "id,slug,date,title,excerpt,content,categories,type,parent,template",
     };
 
     const settled = await Promise.allSettled(SOURCES.map((s) => s.load(params)));
@@ -426,6 +468,8 @@ export async function GET(request: NextRequest) {
                     title: cleanText(post.title?.rendered),
                     type: (post as { type?: string }).type,
                     categories: (post as WpPostWithCategories).categories,
+                    parent: (post as WpPostWithCategories).parent,
+                    template: (post as WpPostWithCategories).template,
                 });
                 continue;
             }
