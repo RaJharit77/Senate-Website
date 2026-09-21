@@ -135,7 +135,13 @@ const CATEGORY_ROUTES: CategoryRoute[] = [
     { ids: [CAT_CALENDRIER], source: "Calendrier parlementaire", path: () => "/agenda", detail: false },
     { ids: [CAT_AUDIO], source: "Médias – audio", path: () => "/channel-tv-and-radio/audio", detail: false },
     { ids: [CAT_VIDEO], source: "Médias – vidéo", path: () => "/channel-tv-and-radio", detail: false },
-    { ids: [CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION], source: "Autres", path: () => "/others", detail: false },
+    // app/others/[slug] existe (vérifié dans l'arborescence app/).
+    {
+        ids: [CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION],
+        source: "Autres",
+        path: (slug) => `/others/${slug}`,
+        detail: true,
+    },
 ];
 
 /** Résolution générique pour les pages et articles standards. */
