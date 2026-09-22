@@ -7,7 +7,7 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { Calendar, Search, PlayCircle, Music2, Clapperboard } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import type { MediaItem, MediaType } from "@/types/media";
+import { type ChannelFilter, type MediaItem, type MediaType } from "@/types/media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -24,25 +24,7 @@ import {
 import { cleanText } from "@/utils/utility";
 import { MdArrowRightAlt } from "react-icons/md";
 import { perPage } from "@/constants/constants";
-
-type ChannelFilter = "tous" | MediaType;
-
-const FILTER_LABELS: Record<ChannelFilter, string> = {
-    tous: "Tous",
-    youtube: "Chaîne YouTube",
-    video: "Vidéos",
-    facebook: "Facebook Live",
-    audio: "Podcasts",
-    montage: "Mise en boîte",
-    live: "Live",
-};
-
-const FILTER_OPTIONS: ChannelFilter[] = ["tous", "youtube", "video", "facebook", "audio", "montage"];
-
-function detailHref(item: MediaItem): string {
-    const segment = item.mediaType === "youtube" ? "video" : item.mediaType;
-    return `/channel-tv-and-radio/${segment}/${item.slug}`;
-}
+import { detailHref, FILTER_LABELS, FILTER_OPTIONS } from "@/utils/media";
 
 function mediaIcon(type: MediaType) {
     if (type === "audio") return Music2;

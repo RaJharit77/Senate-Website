@@ -465,7 +465,7 @@ async function getRadioLiveStatus(): Promise<LiveStatus> {
         return {
             ...tv,
             kind: "radio",
-            title: "Aucun flux radio dédié — le direct est disponible ci-dessous",
+            title: "Le direct est disponible ci-dessous",
         };
     }
 
