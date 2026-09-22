@@ -83,3 +83,9 @@ export const REVALIDATE = 3600; // 1 h
 // (voir getAllRelevantPosts / getDeliberationPosts) pour rester cohérent
 // avec le reste du site plutôt que de réintroduire des constantes séparées.
 export const CAT_ORDRE_DU_JOUR = 11;
+
+/* ------------------------------------------------------------------ */
+/* Dimensions de la carte (viewBox)                                    */
+/* ------------------------------------------------------------------ */
+export const MAP_W = 405;
+export const MAP_H = 800;
