@@ -83,3 +83,30 @@ export const REVALIDATE = 3600; // 1 h
 // (voir getAllRelevantPosts / getDeliberationPosts) pour rester cohérent
 // avec le reste du site plutôt que de réintroduire des constantes séparées.
 export const CAT_ORDRE_DU_JOUR = 11;
+
+/* ------------------------------------------------------------------ */
+/* Dimensions de la carte (viewBox)                                    */
+/* ------------------------------------------------------------------ */
+export const MAP_W = 405;
+export const MAP_H = 800;
+
+/* -------------------------------------------------------------------------- */
+/*  Configuration                                                              */
+/* -------------------------------------------------------------------------- */
+export const MAX_QUERY_LENGTH = 100;
+export const PER_SOURCE = 15;
+export const MAX_RESULTS = 60;
+
+// Catégories WP non exposées dans constants.ts.
+// Attention : constants.ts nomme CAT_LOIS = 42, alors que api.ts documente
+// 42 comme la catégorie "structures" : on suit api.ts.
+export const CAT_STRUCTURES = 42;
+export const CAT_GOUVERNEMENT = 7;
+
+
+/* -------------------------------------------------------------------------- */
+/*  Extrait & score de pertinence                                              */
+/* -------------------------------------------------------------------------- */
+
+export const SNIPPET_BEFORE = 100;
+export const SNIPPET_AFTER = 160;
