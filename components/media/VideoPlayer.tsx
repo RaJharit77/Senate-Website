@@ -23,24 +23,7 @@ export default function VideoPlayer({ video, className = '' }: VideoPlayerProps)
             );
         }
 
-        if (video.mediaType === 'facebook' && video.embedUrl) {
-            return (
-                <div className="relative w-full aspect-video">
-                    <iframe
-                        src={video.embedUrl}
-                        width="100%"
-                        height="100%"
-                        style={{ border: 'none', overflow: 'hidden' }}
-                        scrolling="no"
-                        frameBorder="0"
-                        allowFullScreen
-                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                        title={video.title}
-                        className="absolute inset-0 w-full h-full rounded-lg"
-                    />
-                </div>
-            );
-        }
+        
 
         if (video.mediaType === 'live' && video.embedUrl) {
             return (
@@ -126,11 +109,6 @@ export default function VideoPlayer({ video, className = '' }: VideoPlayerProps)
                 {video.mediaType === 'montage' && (
                     <span className="inline-block text-xs font-medium text-purple-500 uppercase tracking-wide mb-1">
                         Mise en boîte
-                    </span>
-                )}
-                {video.mediaType === 'facebook' && (
-                    <span className="inline-block text-xs font-medium text-blue-500 uppercase tracking-wide mb-1">
-                        Facebook
                     </span>
                 )}
             </div>

@@ -54,11 +54,10 @@ export function extractFacebookUrl(value: unknown): string {
 export function extractMediaItem(post: WpPost, mediaType: MediaType): MediaItem {
     const acf = (post.acf || {}) as Record<string, unknown>;
     let youtubeId = '';
-    let facebookUrl = '';
     let detectedType = mediaType;
 
     // On tente de détecter YouTube en premier (priorité)
-    if (mediaType === 'youtube' || mediaType === 'video' || mediaType === 'facebook') {
+    if (mediaType === 'youtube' || mediaType === 'video') {
         youtubeId = extractYoutubeId(acf.youtube_id);
         if (!youtubeId && acf.media_url) {
             youtubeId = extractYoutubeId(acf.media_url);
@@ -68,15 +67,6 @@ export function extractMediaItem(post: WpPost, mediaType: MediaType): MediaItem 
         }
         if (youtubeId) {
             detectedType = 'youtube';
-        } else {
-            // Détection Facebook
-            const fbUrl = extractFacebookUrl(acf.facebook_url)
-                || extractFacebookUrl(acf.media_url)
-                || extractFacebookUrl(post.content?.rendered);
-            if (fbUrl) {
-                facebookUrl = fbUrl;
-                detectedType = 'facebook';
-            }
         }
     }
 
@@ -91,9 +81,7 @@ export function extractMediaItem(post: WpPost, mediaType: MediaType): MediaItem 
     let embedUrl = '';
     if (detectedType === 'youtube' && youtubeId) {
         embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`;
-    } else if (detectedType === 'facebook' && facebookUrl) {
-        embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(facebookUrl)}&show_text=0&width=560`;
-    }
+    } 
 
     return {
         id: post.id,
