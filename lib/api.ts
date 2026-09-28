@@ -23,8 +23,6 @@ import { extractYoutubeId } from "./media-mapper";
 import {
     LIVE_YOUTUBE_CHANNEL_ID,
     LIVE_YOUTUBE_API_KEY,
-    LIVE_FACEBOOK_VIDEO_URL,
-    LIVE_AUDIO_STREAM_URL,
 } from "@/constants/constants";
 import { API_BASE, isClient, Params } from "./wordpress";
 
@@ -454,16 +452,6 @@ async function getTvLiveStatus(): Promise<LiveStatus> {
         };
     }
 
-    if (LIVE_FACEBOOK_VIDEO_URL) {
-        return {
-            isLive: true,
-            kind: 'tv',
-            streamUrl: LIVE_FACEBOOK_VIDEO_URL,
-            sourceType: 'facebook',
-            title: 'Sénat TV en direct',
-        };
-    }
-
     return { isLive: false, kind: 'tv', streamUrl: '', sourceType: 'url', title: 'Sénat TV' };
 }
 
@@ -472,22 +460,12 @@ async function getTvLiveStatus(): Promise<LiveStatus> {
  * reprend le statut TV en kind='radio' (LivePlayer.tsx l'affiche alors en audio seul).
  */
 async function getRadioLiveStatus(): Promise<LiveStatus> {
-    if (LIVE_AUDIO_STREAM_URL) {
-        return {
-            isLive: true,
-            kind: "radio",
-            streamUrl: LIVE_AUDIO_STREAM_URL,
-            sourceType: "url",
-            title: "Sénat Radio en direct",
-        };
-    }
-
     const tv = await getTvLiveStatus();
     if (tv.isLive) {
         return {
             ...tv,
             kind: "radio",
-            title: "Aucun flux radio dédié — le direct est disponible ci-dessous",
+            title: "Le direct est disponible ci-dessous",
         };
     }
 
@@ -496,7 +474,7 @@ async function getRadioLiveStatus(): Promise<LiveStatus> {
         kind: "radio",
         streamUrl: "",
         sourceType: "url",
-        title: "Sénat Radio",
+        title: "Sénat Radio en direct",
     };
 }
 

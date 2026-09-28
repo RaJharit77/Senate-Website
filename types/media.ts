@@ -1,6 +1,7 @@
 import { WpPost } from "@/lib/wp-types";
 
-export type MediaType = 'video' | 'audio' | 'youtube' | 'live' | 'montage' | 'facebook';
+export type MediaType = 'video' | 'audio' | 'youtube' | 'live' | 'montage';
+export type ChannelFilter = "tous" | MediaType;
 
 /** Média normalisé (vidéo, audio, direct...) pour affichage dans l'UI. */
 export interface MediaItem {
@@ -24,6 +25,6 @@ export interface LiveStatus {
     kind: 'tv' | 'radio';
     streamUrl: string;
     title: string;
-    sourceType: 'url' | 'facebook' | 'youtube';
+    sourceType: 'url' | 'youtube';
     startedAt?: string;
 }
