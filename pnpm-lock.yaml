@@ -480,8 +480,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       wait-on:
-        specifier: ^9.1.0
-        version: 9.1.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: ^9.4.0
+        version: 9.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
 
 packages:
 
@@ -5900,8 +5900,8 @@ packages:
   vimeo-video-element@1.7.3:
     resolution: {integrity: sha512-Ed2ZFhe6WCmyvLC8j87UKtppgTP/BOdHe6C6J2xKNVt+KpWw/DrSvZjvZMUt0XD5GkY9hZoEbaNpFo8zk3FgaQ==}
 
-  wait-on@9.1.0:
-    resolution: {integrity: sha512-PymrLXHLBM1Ju/Xspb2ADUhbPSMvbnuNvy/mN2hWtpbJ3da0h3Ky1LqwKPG5QSVR57liyO0iUpfipYl/s5qNvA==}
+  wait-on@9.4.0:
+    resolution: {integrity: sha512-70vjt46idCEqR3THCRFOVTcEeAhzHTMwDvhZyixUYAGmLbQ05acRTbs9E/Jk1hrL3oiAn09C+uNTopbzgMt3ng==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -11963,12 +11963,11 @@ snapshots:
       '@vimeo/player': 2.29.0
       media-played-ranges-mixin: 0.1.0
 
-  wait-on@9.1.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  wait-on@9.4.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       joi: 18.2.9
       lodash: 4.18.1
-      minimist: 1.2.8
       rxjs: 7.8.2
     transitivePeerDependencies:
       - debug
