@@ -2,11 +2,6 @@ export const MAX_QUERY_LENGTH = 100;
 export const PER_SOURCE = 15;
 export const MAX_RESULTS = 60;
 
-/**
- * Cas particuliers : un slug WP précis → une page Next précise.
- * Prioritaire sur les catégories. C'est ici qu'on ajoute une page WP
- * quand un log "[/api/search] non routé" apparaît en développement.
- */
 export const SLUG_ROUTES: Record<string, { path: string; source: string }> = {
     "textes-et-lois": { path: "/texts-and-laws", source: "Page" },
     "dispositions-constitutionnelles": { path: "/about/reference-texts", source: "Textes de référence" },
