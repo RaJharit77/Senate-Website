@@ -1,15 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { MediaItem } from '@/types/media';
 import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX } from 'lucide-react';
 import { cleanText } from '@/utils/utility';
-
-interface AudioPlayerProps {
-    tracks: MediaItem[];
-    initialTrackIndex?: number;
-    className?: string;
-}
+import { AudioPlayerProps } from '@/types/media';
 
 export default function AudioPlayer({ tracks, initialTrackIndex = 0, className = '' }: AudioPlayerProps) {
     const [currentIndex, setCurrentIndex] = useState(initialTrackIndex);

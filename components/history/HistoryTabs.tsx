@@ -4,26 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { addSenatorLinks } from "@/lib/senatorLinks";
+import { HistoryTabsProps } from "@/types/historyType";
 
-export interface TabConfig {
-    id: string;
-    label: string;
-    color: string;
-    textColor: string;
-    period: string;
-    intro: string;
-}
-
-interface HistoryTabsProps {
-    tabs: TabConfig[];
-    contents: Record<string, string>;
-    loading?: boolean;
-}
-
-/**
- * Onglets "Républiques" de la page Historique. Affiche le contenu WordPress
- * de l'onglet actif, synchronisé avec le paramètre d'URL ?tab=.
- */
 export function HistoryTabs({ tabs, contents, loading = false }: HistoryTabsProps) {
     const router = useRouter();
     const pathname = usePathname();

@@ -1,34 +1,11 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { Play, Pause, Radio, Tv } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
-
-interface LivePlayerProps {
-    streamUrl: string;
-    sourceType?: 'url' | 'facebook' | 'youtube';
-    title?: string;
-    kind?: 'tv' | 'radio';
-    className?: string;
-}
-
-/**
- * Convertit l'URL stockée par getLiveStatus (embed YouTube construit par
- * lib/api.ts, ou permalien Facebook brut) vers ce qu'attend react-player :
- * une URL "watch" YouTube, ou le permalien Facebook tel quel.
- */
-function toReactPlayerUrl(sourceType: 'youtube' | 'facebook', streamUrl: string): string {
-    if (sourceType === 'youtube') {
-        const match = streamUrl.match(/\/embed\/([a-zA-Z0-9_-]{11})/);
-        const videoId = match?.[1];
-        return videoId ? `https://www.youtube.com/watch?v=${videoId}` : streamUrl;
-    }
-    return streamUrl;
-}
+import { LivePlayerProps, ReactPlayer, toReactPlayerUrl } from '@/lib/media';
+import { IoIosWarning } from 'react-icons/io';
 
 function LivePlayerContent({
     streamUrl,
@@ -41,28 +18,18 @@ function LivePlayerContent({
     const [hasError, setHasError] = useState(false);
     const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
 
-    // Radio sans flux audio dédié : getRadioLiveStatus (lib/api.ts) renvoie
-    // alors le statut du direct TV tel quel, sous kind='radio'. Dans ce cas
-    // précis, on veut le son sans l'image : react-player masqué (voir plus
-    // bas), pas l'iframe visible utilisée pour la TV.
-    const isRadioMirroringTv = kind === 'radio' && (sourceType === 'youtube' || sourceType === 'facebook');
+    const isRadioMirroringTv = kind === 'radio' && (sourceType === 'youtube');
 
-    // Chrome natif visible (contrôles YouTube/Facebook) uniquement pour
-    // l'iframe TV pleine taille — jamais pour le cas radio masqué ci-dessus,
-    // où il n'y a plus aucun contrôle visible du tout.
-    const hasVisibleNativeControls = kind === 'tv' && (sourceType === 'youtube' || sourceType === 'facebook');
+    const hasVisibleNativeControls = kind === 'tv' && (sourceType === 'youtube');
 
     const togglePlay = () => {
         if (!streamUrl) return;
 
-        // react-player (radio masqué) : contrôle déclaratif via l'état, pas
-        // de ref DOM à appeler directement.
         if (isRadioMirroringTv) {
             setIsPlaying((prev) => !prev);
             return;
         }
 
-        // <video>/<audio> brut (sourceType 'url') : contrôle impératif classique.
         if (!mediaRef.current) return;
         if (isPlaying) {
             mediaRef.current.pause();
@@ -218,13 +185,13 @@ function LivePlayerContent({
 
                 {!streamUrl && (
                     <div className="mt-3 text-sm text-yellow-300/90">
-                        <p>⚠️ Le direct n&apos;est pas encore disponible.</p>
+                        <p><IoIosWarning />Le direct n&apos;est pas encore disponible.</p>
                         <p className="text-xs text-gray-400">Si le problème persiste, contactez l&apos;équipe technique.</p>
                     </div>
                 )}
                 {hasError && (
                     <div className="mt-3 text-sm text-red-300/90">
-                        <p>⚠️ Une erreur est survenue lors de la lecture du flux.</p>
+                        <p><IoIosWarning /> Une erreur est survenue lors de la lecture du flux.</p>
                         <p className="text-xs text-gray-400">Veuillez réessayer dans quelques instants.</p>
                     </div>
                 )}

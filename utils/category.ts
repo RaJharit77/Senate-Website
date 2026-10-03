@@ -1,7 +1,33 @@
-import { CAT_AUDIO, CAT_AUTRE, CAT_CALENDRIER, CAT_DELIBERATION, CAT_DIVERS, CAT_LOIS_ADOPTES, CAT_ORDRE_JOUR, CAT_PUBLICATION, CAT_VIDEO, SNIPPET_AFTER, SNIPPET_BEFORE } from "@/constants/constants";
-import { CAT_GOUVERNEMENT, CAT_STRUCTURES, SLUG_ROUTES } from "./search";
-import { ResolvedRoute, ScoredResult, SearchSource, WpPostWithCategories } from "@/types/searchTypes";
-import { getActualite, getAlaune, getAllRepubliques, getAudiences, getDelegations, getInternational, getPages, getPosts } from "@/lib/api";
+import { 
+    CAT_AUDIO, 
+    CAT_AUTRE, 
+    CAT_CALENDRIER, 
+    CAT_DELIBERATION, 
+    CAT_DIVERS, 
+    CAT_GOUVERNEMENT, 
+    CAT_LOIS_ADOPTES, 
+    CAT_ORDRE_JOUR, 
+    CAT_PUBLICATION, 
+    CAT_STRUCTURES, 
+    CAT_VIDEO, 
+    SNIPPET_AFTER, 
+    SNIPPET_BEFORE } from "@/constants/constants";
+import { SLUG_ROUTES } from "./search";
+import { 
+    ResolvedRoute, 
+    ScoredResult, 
+    SearchSource, 
+    WpPostWithCategories 
+} from "@/types/searchTypes";
+import { 
+    getActualite, 
+    getAlaune, 
+    getAllRepubliques, 
+    getAudiences, 
+    getDelegations, 
+    getInternational, 
+    getPages, 
+    getPosts } from "@/lib/api";
 import type { WpPost } from "@/lib/wp-types";
 import { navItems } from "@/lib/navigations/navigation";
 
@@ -12,11 +38,6 @@ export interface CategoryRoute {
     detail: boolean;
 }
 
-/**
- * Catégorie WP → route Next. Le premier bloc qui correspond gagne.
- * Quand le site n'a pas de page de détail connue, on renvoie vers la page de
- * section (detail: false) plutôt que d'inventer une URL qui ferait un 404.
- */
 export const CATEGORY_ROUTES: CategoryRoute[] = [
     {
         ids: [CAT_LOIS_ADOPTES],
@@ -31,23 +52,19 @@ export const CATEGORY_ROUTES: CategoryRoute[] = [
             `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${slug}`,
         detail: true,
     },
-    // Pas de route dynamique sous app/about : on renvoie vers la page de section.
     { ids: [CAT_STRUCTURES], source: "Structures", path: () => "/about/structures", detail: false },
-    // app/parliamentary-proceedings/written-questions/[slug]
     {
         ids: [CAT_GOUVERNEMENT],
         source: "Questions écrites",
         path: (slug) => `/parliamentary-proceedings/written-questions/${slug}`,
         detail: true,
     },
-    // app/agenda/[slug]
     {
         ids: [CAT_CALENDRIER],
         source: "Calendrier parlementaire",
         path: (slug) => `/agenda/${slug}`,
         detail: true,
     },
-    // app/channel-tv-and-radio/{audio,video,editing}/[slug]
     {
         ids: [CAT_AUDIO],
         source: "Médias – audio",
@@ -60,7 +77,6 @@ export const CATEGORY_ROUTES: CategoryRoute[] = [
         path: (slug) => `/channel-tv-and-radio/video/${slug}`,
         detail: true,
     },
-    // app/others/[slug] existe (vérifié dans l'arborescence app/).
     {
         ids: [CAT_AUTRE, CAT_DIVERS, CAT_PUBLICATION],
         source: "Autres",
@@ -69,7 +85,7 @@ export const CATEGORY_ROUTES: CategoryRoute[] = [
     },
 ];
 
-/** "RABEMANANJARA Jean Paul Nicolas", "RAKOTOBE RAMAROSOA Emiline" : NOM(S) en capitales puis prénom(s). */
+/** Ex:"RABEMANANJARA Jean Paul Nicolas", "RAKOTOBE RAMAROSOA Emiline" : NOM(S) en capitales puis prénom(s). */
 export function looksLikePersonName(title: string): boolean {
     return /^\p{Lu}{2,}(?:[ '’-]\p{Lu}{2,})*\s+\p{Lu}\p{Ll}/u.test(title);
 }
@@ -145,9 +161,7 @@ export const SOURCES: SearchSource[] = [
     { key: "republique", load: getAllRepubliques, resolve: fixedRoute((s) => `/historical/${s}`, "Historique") },
 ];
 
-/* -------------------------------------------------------------------------- */
-/*  Nettoyage de texte                                                         */
-/* -------------------------------------------------------------------------- */
+/* Nettoyage de texte */
 
 export const NAMED_ENTITIES: Record<string, string> = {
     amp: "&",
@@ -244,9 +258,7 @@ export function computeScore(title: string, excerpt: string, phrase: string, tok
     return score;
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Navigation statique                                                        */
-/* -------------------------------------------------------------------------- */
+/* Navigation statique */
 
 /** libellé de menu normalisé → chemin (sert à router les pages dont le titre = un item du menu). */
 export const NAV_BY_TITLE: Map<string, string> = (() => {

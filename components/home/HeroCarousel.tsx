@@ -8,25 +8,8 @@ import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cleanText } from "@/utils/utility";
-
-const PLACEHOLDER_IMAGE =
-  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
-
-interface Slide {
-  id: number;
-  category: string;
-  date: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  color: string;
-  link?: string;
-}
-
-function truncateExcerpt(text: string, maxLength: number = 120): string {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + "…";
-}
+import { Slide } from "@/types/homeType";
+import { PLACEHOLDER_IMAGE, truncateExcerpt } from "@/utils/home";
 
 export function HeroCarousel({ slides }: { slides: Slide[] }) {
   const [current, setCurrent] = useState(0);

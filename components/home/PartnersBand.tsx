@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 
-const loopedPartners = [...partners, ...partners];
-
 export function PartnersBand() {
+    const loopedPartners = [...partners, ...partners];
+
     return (
         <div
             className="py-12 px-4 sm:px-6 overflow-hidden backdrop-blur-sm relative"

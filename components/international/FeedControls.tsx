@@ -1,7 +1,7 @@
 "use client";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import type { ActivityCategory } from "@/types/internationalType";
+import { FILTERS, type ActivityCategory } from "@/types/internationalType";
 import {
     Pagination,
     PaginationContent,
@@ -11,13 +11,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-
-const FILTERS: { id: "all" | ActivityCategory; label: string }[] = [
-    { id: "all", label: "Toutes" },
-    { id: "audience", label: "Audiences" },
-    { id: "delegation", label: "Délégations" },
-    { id: "international", label: "Déplacements" },
-];
+import { getPaginationItems } from "@/utils/international";
 
 export function FilterButtons({
     currentFilter,
@@ -35,48 +29,23 @@ export function FilterButtons({
             }}
             className="flex flex-wrap items-center gap-2"
         >
-            {FILTERS.map((f) => (
+            {FILTERS.map((filter) => (
                 <ToggleGroupItem
-                    key={f.id}
-                    value={f.id}
+                    key={filter.id}
+                    value={filter.id}
                     variant="outline"
                     size="sm"
                     className={
-                        currentFilter === f.id
+                        currentFilter === filter.id
                             ? "bg-cyan-500 text-white hover:bg-cyan-600 border-cyan-500 h-8 px-3 text-xs data-[state=on]:bg-cyan-500 data-[state=on]:text-white"
                             : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-gray-200 border-white/10 h-8 px-3 text-xs"
                     }
                 >
-                    {f.label}
+                    {filter.label}
                 </ToggleGroupItem>
             ))}
         </ToggleGroup>
     );
-}
-
-// Fonction utilitaire pour générer les numéros de page avec ellipsis (max 7 affichés)
-function getPaginationItems(current: number, total: number): (number | string)[] {
-    const items: (number | string)[] = [];
-    if (total <= 7) {
-        for (let i = 1; i <= total; i++) items.push(i);
-        return items;
-    }
-    // Toujours afficher la première page
-    items.push(1);
-    // Calculer la plage autour de la page courante
-    let start = Math.max(2, current - 2);
-    let end = Math.min(total - 1, current + 2);
-    // Ajuster pour avoir au moins 5 pages affichées (hors 1 et total)
-    if (end - start < 4) {
-        if (start === 2) end = Math.min(total - 1, start + 4);
-        else if (end === total - 1) start = Math.max(2, end - 4);
-    }
-    if (start > 2) items.push("...");
-    for (let i = start; i <= end; i++) items.push(i);
-    if (end < total - 1) items.push("...");
-    // Toujours afficher la dernière page
-    if (total > 1) items.push(total);
-    return items;
 }
 
 export function PaginationControls({

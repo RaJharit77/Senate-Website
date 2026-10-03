@@ -20,11 +20,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-
-interface ExtendedPost extends WpPost {
-    isFeatured: boolean;
-    imageUrl: string | null;
-}
+import { ExtendedPost } from "@/types/pressAreaType";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -128,7 +124,6 @@ export default function PressClient() {
         currentPage * perPage
     );
 
-    // Génération des numéros de page avec ellipsis
     const getPageNumbers = (): Array<number | string> => {
         const delta = 3;
         const range: number[] = [];
@@ -201,7 +196,6 @@ export default function PressClient() {
                     </p>
                 </motion.div>
 
-                {/* Barre de recherche */}
                 <motion.form
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -223,7 +217,6 @@ export default function PressClient() {
                     </Button>
                 </motion.form>
 
-                {/* Section À la une */}
                 <section className="mb-16">
                     <motion.h2
                         initial={{ opacity: 0, x: -20 }}
@@ -255,7 +248,6 @@ export default function PressClient() {
                     )}
                 </section>
 
-                {/* Section Toutes les actualités */}
                 <section className="mb-12">
                     <motion.h2
                         initial={{ opacity: 0, x: -20 }}
@@ -293,7 +285,6 @@ export default function PressClient() {
                     )}
                 </section>
 
-                {/* Pagination */}
                 {totalPages > 1 && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

@@ -35,13 +35,7 @@ import {
     CAT_VIDEO,
     perPage,
 } from "@/constants/constants";
-
-// Slugs des catégories pour les activités des Sénateurs
-const SENATOR_CATEGORY_SLUGS = [
-    "audience_sen",
-    "deplacement_sen",
-    "delegation_sen",
-];
+import { SENATOR_CATEGORY_SLUGS } from "@/types/other";
 
 export default function OthersClient() {
     const [allPosts, setAllPosts] = useState<WpPost[]>([]);
@@ -55,7 +49,6 @@ export default function OthersClient() {
         const loadData = async () => {
             setLoading(true);
             try {
-                // 1. Posts standards (exclure les vidéos)
                 const posts = await getPosts({ per_page: 100, _embed: true });
                 const postsMap = new Map<number, WpPost>();
                 posts.forEach((post) => {
@@ -72,7 +65,6 @@ export default function OthersClient() {
                 );
                 setAllPosts(uniquePosts);
 
-                // 2. Récupération des autres sources pour la galerie (exclure les vidéos)
                 const [alaune, actualite, presidentActivities, senatorResults] =
                     await Promise.all([
                         getAlaune({ per_page: 100, _embed: true }).catch(() => []),
@@ -88,13 +80,10 @@ export default function OthersClient() {
                         ),
                     ]);
 
-                // Extraire les posts des activités du Président
                 const presidentPosts = presidentActivities.map((act) => act.post);
 
-                // Extraire les posts des activités des Sénateurs (aplatir le tableau)
                 const senatorPosts = senatorResults.flat();
 
-                // Fusionner toutes les sources (exclure les vidéos)
                 const allGallerySources = [
                     ...uniquePosts,
                     ...alaune.filter((p) => !p.categories?.includes(CAT_VIDEO)),
@@ -103,7 +92,6 @@ export default function OthersClient() {
                     ...senatorPosts.filter((p) => !p.categories?.includes(CAT_VIDEO)),
                 ];
 
-                // Dédoublonner par id et garder uniquement ceux qui ont une image mise en avant
                 const galleryMap = new Map<number, WpPost>();
                 allGallerySources.forEach((post) => {
                     if (
@@ -129,12 +117,10 @@ export default function OthersClient() {
         loadData();
     }, []);
 
-    // Filtrer par catégorie pour les posts standards
     const filteredByCategory = useMemo(() => {
         if (filter === "tous") return allPosts;
 
         if (filter === "autres") {
-            // Exclure les articles avec image, les vidéos déjà exclues, et les catégories Divers/Publication
             return allPosts.filter(
                 (post) =>
                     !post.categories?.includes(CAT_DIVERS) &&
@@ -159,7 +145,6 @@ export default function OthersClient() {
         return allPosts.filter((post) => post.categories?.includes(targetId));
     }, [allPosts, galleryPosts, filter]);
 
-    // Recherche textuelle
     const filteredBySearch = useMemo(() => {
         if (!searchTerm.trim()) return filteredByCategory;
         const term = searchTerm.trim().toLowerCase();
@@ -188,7 +173,6 @@ export default function OthersClient() {
         setCurrentPage(page);
     };
 
-    // Fonction pour déterminer le label du badge
     const getCategoryLabel = (post: WpPost): string => {
         if (post.categories?.includes(CAT_DIVERS)) return "Divers";
         if (post.categories?.includes(CAT_PUBLICATION)) return "Publication";
@@ -196,19 +180,15 @@ export default function OthersClient() {
         return "Autre";
     };
 
-    // Fonction pour générer les numéros de page avec ellipsis (max 7 affichés)
     const getPaginationItems = (current: number, total: number) => {
         const items: (number | string)[] = [];
         if (total <= 7) {
             for (let i = 1; i <= total; i++) items.push(i);
             return items;
         }
-        // Toujours afficher la première page
         items.push(1);
-        // Calculer la plage autour de la page courante
         let start = Math.max(2, current - 2);
         let end = Math.min(total - 1, current + 2);
-        // Ajuster pour avoir au moins 5 pages affichées (hors 1 et total)
         if (end - start < 4) {
             if (start === 2) end = Math.min(total - 1, start + 4);
             else if (end === total - 1) start = Math.max(2, end - 4);
@@ -216,7 +196,6 @@ export default function OthersClient() {
         if (start > 2) items.push("...");
         for (let i = start; i <= end; i++) items.push(i);
         if (end < total - 1) items.push("...");
-        // Toujours afficher la dernière page
         if (total > 1) items.push(total);
         return items;
     };
@@ -331,7 +310,7 @@ export default function OthersClient() {
                                 const cleanTitle = cleanText(post.title.rendered);
 
                                 const categoryLabel = getCategoryLabel(post);
-                                const isVideo = categoryLabel === "Vidéo"; // ne sera jamais vrai ici
+                                const isVideo = categoryLabel === "Vidéo";
 
                                 const downloadLink =
                                     (post.acf as Record<string, unknown>)?.file ||

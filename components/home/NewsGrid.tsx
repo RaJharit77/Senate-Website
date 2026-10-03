@@ -12,9 +12,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { cleanText } from "@/utils/utility";
-
-const PLACEHOLDER_IMAGE =
-  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
+import { Article, NewsGridProps } from "@/types/homeType";
+import { PLACEHOLDER_IMAGE } from "@/utils/home";
 
 const iconMap: Record<string, LucideIcon> = {
   Diplomatie: Globe2,
@@ -25,19 +24,6 @@ const iconMap: Record<string, LucideIcon> = {
   "Droits de la femme": Users,
 };
 
-interface Article {
-  id: number;
-  category: string;
-  categoryColor: string;
-  date: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  featured?: boolean;
-  link?: string;
-}
-
-// ─── Animations framer-motion typées ──────────────────────
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
@@ -51,7 +37,6 @@ const staggerContainer: Variants = {
   },
 };
 
-// ─── Carrousel principal (articles "À la une") ────────────
 function FeaturedCarousel({ articles }: { articles: Article[] }) {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -280,11 +265,6 @@ function CompactCard({ article }: { article: Article }) {
       </Card>
     </motion.article>
   );
-}
-
-interface NewsGridProps {
-  featuredArticles: Article[];
-  sideArticles: Article[];
 }
 
 export function NewsGrid({ featuredArticles, sideArticles }: NewsGridProps) {

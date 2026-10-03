@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { FileText, Calendar, BookOpen, ArrowRight, Globe, Users, User, UsersRound, Loader2 } from "lucide-react";
+import { FileText, ArrowRight, Loader2 } from "lucide-react";
 import { CYAN, EMERALD, GREEN, RED, SKY_BLUE, WHITE } from "@/utils/colors";
 import { getPostsByCategory } from "@/lib/api";
 import { CAT_ORDRE_JOUR, CAT_LOIS } from "@/constants/constants";
@@ -13,69 +13,8 @@ import type { WpPost } from "@/lib/wp-types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { infoCards } from "@/utils/data/parliamentaryWork";
-
-interface WorkItem {
-  ref: string;
-  title: string;
-  status: string;
-  date: string;
-  statusColor: string;
-  link: string;
-  iconName?: keyof typeof iconMap;
-}
-
-interface TabData {
-  id: string;
-  iconName: keyof typeof iconMap;
-  label: string;
-  color: string;
-  path: string;
-  items: WorkItem[];
-}
-
-const iconMap = {
-  FileText,
-  Calendar,
-  BookOpen,
-  Globe,
-  Users,
-  User,
-  UsersRound,
-};
-
-function getAcfString(item: WpPost, key: string, fallback: string): string {
-  const acf = item.acf as Record<string, unknown> | undefined;
-  const value = acf?.[key];
-  return typeof value === "string" ? value : fallback;
-}
-
-/**
- * Détermine le statut d'un article en fonction de sa date par rapport à aujourd'hui.
- * Pour les lois, on adapte le libellé : "Terminé" devient "Adopté".
- */
-function getStatusFromDate(dateStr: string, type: "agenda" | "legislation" = "agenda"): { status: string; color: string } {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const date = new Date(dateStr);
-  date.setHours(0, 0, 0, 0);
-
-  let status: string;
-  let color: string;
-
-  if (date < today) {
-    status = type === "legislation" ? "Adopté" : "Terminé";
-    color = RED;
-  } else if (date.getTime() === today.getTime()) {
-    status = "Aujourd'hui";
-    color = SKY_BLUE;
-  } else {
-    status = "À venir";
-    color = SKY_BLUE;
-  }
-
-  return { status, color };
-}
+import { iconMap, TabData, WorkItem } from "@/types/homeType";
+import { getAcfString, getStatusFromDate } from "@/utils/home";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -98,19 +37,19 @@ export function ParliamentaryWork() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // 1. Agenda (Ordre du jour)
+        // Agenda (Ordre du jour)
         const agendaItems = (await getPostsByCategory(CAT_ORDRE_JOUR, {
           per_page: 4,
           _embed: true,
         })) as WpPost[];
 
-        // 2. Travaux législatifs (Lois)
+        // Travaux législatifs (Lois)
         const loisItems = (await getPostsByCategory(CAT_LOIS, {
           per_page: 4,
           _embed: true,
         })) as WpPost[];
 
-        // 3. International (Activités parlementaires internationales)
+        // International (Activités parlementaires internationales)
         const internationalItems: WorkItem[] = [
           {
             ref: "Groupe d'amitié",
@@ -253,7 +192,7 @@ export function ParliamentaryWork() {
           </h2>
         </motion.div>
 
-        {/* Cartes d'information (statiques) */}
+        {/* Cartes d'information */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8 mb-16">
           {infoCards.map((item) => (
             <motion.div

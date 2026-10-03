@@ -1,11 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { InternationalPageSkeletonProps } from "@/types/internationalType";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-
-interface InternationalPageSkeletonProps {
-    showFilters?: boolean;
-    showPagination?: boolean;
-    cardCount?: number;
-}
 
 export function InternationalPageSkeleton({
     showFilters = true,
@@ -15,7 +10,6 @@ export function InternationalPageSkeleton({
     return (
         <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
             <div className="max-w-7xl mx-auto">
-                {/* Barre colorée */}
                 <div className="mb-12">
                     <div className="flex gap-1 mb-4" style={{ height: 3 }}>
                         <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
@@ -26,7 +20,6 @@ export function InternationalPageSkeleton({
                     <Skeleton className="h-6 w-1/2 max-w-sm mt-2" />
                 </div>
 
-                {/* Filtres (optionnels) */}
                 {showFilters && (
                     <div className="mb-6 flex flex-wrap gap-2">
                         {Array.from({ length: 4 }).map((_, i) => (
@@ -35,7 +28,6 @@ export function InternationalPageSkeleton({
                     </div>
                 )}
 
-                {/* Grille de cartes */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {Array.from({ length: cardCount }).map((_, i) => (
                         <div key={i} className="border border-white/10 bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden">
@@ -49,7 +41,6 @@ export function InternationalPageSkeleton({
                     ))}
                 </div>
 
-                {/* Pagination (optionnelle) */}
                 {showPagination && (
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5">
                         {Array.from({ length: 3 }).map((_, i) => (

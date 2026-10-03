@@ -5,23 +5,10 @@ import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import type { ActivityCategory } from "@/types/internationalType";
+import { SECTION_ORDER, type ActivityCategory, type ActivityItem } from "@/types/internationalType";
 import { PER_PAGE_ACTIVITIES_FEED } from "@/constants/constants";
 import { ActivityCard, ActivityCardSkeleton } from "./ActivityCard";
 import { FilterButtons, PaginationControls } from "./FeedControls";
-
-export interface ActivityItem {
-    id: number;
-    slug: string;
-    category: ActivityCategory;
-    title: string;
-    date: string;
-    dateValue: number;
-    imageUrl: string;
-    link: string;
-}
-
-const SECTION_ORDER: ActivityCategory[] = ["audience", "delegation", "international"];
 
 export function ActivitiesFeed({
     items,

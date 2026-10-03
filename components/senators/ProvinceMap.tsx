@@ -73,7 +73,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                             </linearGradient>
                         </defs>
 
-                        {/* Fond sombre pour faire ressortir la carte */}
                         <rect
                             x="0"
                             y="0"
@@ -83,7 +82,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                             fill="url(#mapBg)"
                         />
 
-                        {/* Provinces */}
                         <g filter="url(#provinceShadow)">
                             {REGIONS.map((region) => {
                                 const key = normalizeProvince(region.name);
@@ -125,7 +123,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                             })}
                         </g>
 
-                        {/* Labels */}
                         {REGIONS.map((region) => (
                             <text
                                 key={`label-${region.name}`}
@@ -150,7 +147,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                     </svg>
                 </div>
 
-                {/* Légende */}
                 <div className="mt-5 flex flex-wrap justify-center gap-2 w-full">
                     {REGIONS.map((region) => {
                         const key = normalizeProvince(region.name);
@@ -185,7 +181,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                 </div>
             </div>
 
-            {/* ============ COLONNE DROITE : SÉNATEURS ============ */}
             <div className="min-w-0">
                 {selectedProvince ? (
                     <Card className="bg-white/5 backdrop-blur-md border-white/10 overflow-hidden">

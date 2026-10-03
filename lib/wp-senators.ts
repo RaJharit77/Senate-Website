@@ -491,7 +491,8 @@ export function isPresident(s: Senateur): boolean {
     return /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(s.fonction);
 }
 
-/*export function isVicePresident(s: Senateur): boolean {
+/* Décommente si nécessaire pour filtrer les rôles spécifiques du Bureau Permanent
+export function isVicePresident(s: Senateur): boolean {
     return /Vice[-\s]?Président\s+du\s+Sénat/i.test(s.fonction);
 }
 
@@ -501,4 +502,5 @@ export function isQuesteur(s: Senateur): boolean {
 
 export function isRapporteurGeneral(s: Senateur): boolean {
     return /Rapporteur\s+Général/i.test(s.fonction);
-}*/
+}
+*/

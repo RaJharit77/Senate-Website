@@ -7,13 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-
-const EMPTY_FORM: FormState = {
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-};
+import { EMPTY_FORM } from "@/utils/contact";
 
 export default function ContactForm() {
     const [form, setForm] = useState<FormState>(EMPTY_FORM);

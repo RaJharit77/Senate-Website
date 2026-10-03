@@ -26,20 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { CYAN, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 import { ITEMS_PER_PAGES } from "@/constants/constants";
-
-interface LawItem {
-    id: number;
-    slug: string;
-    title: string;
-    excerpt: string;
-    link: string;
-    date: string;
-}
-
-interface TextAndLawsClientProps {
-    laws: LawItem[];
-    pageContent?: string;
-}
+import { TextAndLawsClientProps } from "@/types/textsAndLaws";
 
 export function TextAndLawsClient({ laws, pageContent }: TextAndLawsClientProps) {
     const [searchTerm, setSearchTerm] = useState("");
