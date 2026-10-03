@@ -4,16 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, Inbox, Search, SearchX, Undo2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-interface DeliberationTableProps {
-    tableHtml: string;
-    showPagination?: boolean;
-}
-
-interface TableState {
-    rows: string[];
-    isLoading: boolean;
-}
+import { DeliberationTableProps, TableState } from "@/types/parliamentaryType";
 
 export function DeliberationTable({ tableHtml, showPagination = true }: DeliberationTableProps) {
     const [tableState, setTableState] = useState<TableState>({ rows: [], isLoading: true });
@@ -22,12 +13,10 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
     const [searchTerm, setSearchTerm] = useState("");
     const rowsPerPage = 6;
 
-    // Historique du terme de recherche précédent pour permettre l'annulation
     const previousSearchTermRef = useRef<string>("");
     const [canUndoSearch, setCanUndoSearch] = useState(false);
     const hasInitializedRef = useRef(false);
 
-    // Parser le HTML une fois que le composant est monté côté client
     useEffect(() => {
         if (hasInitializedRef.current) return;
 
@@ -40,14 +29,12 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
             const rowsEl = tbody ? tbody.querySelectorAll("tr") : table.querySelectorAll("tr:not(:first-child)");
             rowList = Array.from(rowsEl).map((tr) => tr.outerHTML);
         }
-        // Mise à jour en une seule fois (évite les rendus en cascade)
         setTableState({ rows: rowList, isLoading: false });
         hasInitializedRef.current = true;
     }, [tableHtml]);
 
     const { rows, isLoading } = tableState;
 
-    // Filtrage des lignes selon le terme de recherche
     const filteredRows = useMemo(() => {
         if (!searchTerm.trim()) return rows;
         const term = searchTerm.toLowerCase().trim();
@@ -83,7 +70,6 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
         if (value && showAll) setShowAll(false);
     };
 
-    // Annule la dernière modification et revient au terme de recherche précédent
     const undoSearch = () => {
         setSearchTerm(previousSearchTermRef.current);
         setCurrentPage(1);
@@ -97,7 +83,6 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
         setCurrentPage(1);
     };
 
-    // Affichage pendant le chargement (identique serveur et client)
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-12">
@@ -125,7 +110,6 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
 
     return (
         <div className="space-y-6 font-poppins">
-            {/* Barre de recherche et contrôles */}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex min-w-[220px] flex-1 items-center gap-2">
                     <div className="relative min-w-0 flex-1">
@@ -188,7 +172,6 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
                 </div>
             </div>
 
-            {/* Navigation de pagination */}
             {showPagination && !showAll && totalPages > 1 && (
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex gap-2">
@@ -225,7 +208,6 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
                 </div>
             )}
 
-            {/* Tableau */}
             <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-lg backdrop-blur-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[800px] border-collapse text-sm text-white/90 [&_td]:align-top [&_td]:leading-relaxed">

@@ -1,12 +1,13 @@
 import { getPostsByCategorySlug, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
-import { ActivitiesFeed, type ActivityItem } from "@/components/international/ActivitiesFeed";
+import { ActivitiesFeed} from "@/components/international/ActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/wp-types";
 import { formatDate } from "@/utils/utility";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { delay } from "@/lib/delay";
+import { ActivityItem } from "@/types/internationalType";
 
 const CATEGORY_MAP: Record<string, "audience" | "delegation" | "international"> = {
     "audience_sen": "audience",

@@ -1,11 +1,6 @@
 'use client';
 
-import { MediaItem } from '@/types/media';
-
-interface VideoPlayerProps {
-    video: MediaItem;
-    className?: string;
-}
+import { VideoPlayerProps } from "@/types/media";
 
 export default function VideoPlayer({ video, className = '' }: VideoPlayerProps) {
     const renderVideo = () => {

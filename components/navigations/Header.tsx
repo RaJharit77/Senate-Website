@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
+import { ChevronDown, X, Search, Phone, Calendar as CalendarIcon, Mail } from "lucide-react";
+import { HiMenuAlt2 } from "react-icons/hi";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -453,7 +454,7 @@ export function Header() {
               onClick={() => setMobileOpen(!mobileOpen)}
               style={{ color: COLOURS.cyan }}
             >
-              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileOpen ? <X size={24} /> : <HiMenuAlt2 size={24} />}
             </button>
           </div>
         </div>

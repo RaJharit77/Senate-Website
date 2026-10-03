@@ -7,21 +7,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SenatorCard from "./SenatorCard";
 import CommissionAccordion from "./CommissionAccordion";
 import ProvinceMap from "./ProvinceMap";
-import { TABS } from "@/types/senatorsType";
-import type { Senateur, Commission, Province } from "@/types/senatorsType";
-
-interface Props {
-    introHtml: string;
-    senateurs: Senateur[];
-    bureau: Senateur[];
-    commissions: Commission[];
-    provinces: Province[];
-}
-
-/** Détecte le Président du Sénat (en titre ou par intérim) */
-function isPresident(s: Senateur): boolean {
-    return /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(s.fonction);
-}
+import { Props, TABS } from "@/types/senatorsType";
+import { isPresident} from "@/lib/wp-senators";
 
 export default function YourSenatorsClient({
     introHtml,

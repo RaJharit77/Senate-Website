@@ -12,7 +12,6 @@ import { nameToSlug, normalizeProvince, toSvgPoints } from "@/utils/province";
 export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
     const [selected, setSelected] = useState<string | null>(null);
 
-    // Index normalisé province.name → Province
     const provinceIndex = useMemo(() => {
         const map = new Map<string, Province>();
         for (const p of provinces) {
@@ -21,7 +20,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
         return map;
     }, [provinces]);
 
-    // Sélection effective : celle de l'utilisateur, sinon la 1ère province dispo
     const effectiveSelected =
         selected ?? provinces[0]?.name ?? null;
 
@@ -75,7 +73,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                             </linearGradient>
                         </defs>
 
-                        {/* Fond sombre pour faire ressortir la carte */}
                         <rect
                             x="0"
                             y="0"
@@ -85,7 +82,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                             fill="url(#mapBg)"
                         />
 
-                        {/* Provinces */}
                         <g filter="url(#provinceShadow)">
                             {REGIONS.map((region) => {
                                 const key = normalizeProvince(region.name);
@@ -127,7 +123,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                             })}
                         </g>
 
-                        {/* Labels */}
                         {REGIONS.map((region) => (
                             <text
                                 key={`label-${region.name}`}
@@ -152,7 +147,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                     </svg>
                 </div>
 
-                {/* Légende */}
                 <div className="mt-5 flex flex-wrap justify-center gap-2 w-full">
                     {REGIONS.map((region) => {
                         const key = normalizeProvince(region.name);
@@ -187,7 +181,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
                 </div>
             </div>
 
-            {/* ============ COLONNE DROITE : SÉNATEURS ============ */}
             <div className="min-w-0">
                 {selectedProvince ? (
                     <Card className="bg-white/5 backdrop-blur-md border-white/10 overflow-hidden">

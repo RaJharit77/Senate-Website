@@ -1,4 +1,4 @@
-import type { TabConfig } from "@/components/history/HistoryTabs";
+import { TabConfig } from "@/types/historyType";
 import { CYAN, EMERALD, RED } from "../colors";
 
 export const TABS: TabConfig[] = [

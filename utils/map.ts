@@ -5,7 +5,6 @@ export interface RegionDef {
     name: string;
     coords: string;
     color: string;
-    /** Position du texte au centre de la région */
     labelX: number;
     labelY: number;
 }

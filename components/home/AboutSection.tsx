@@ -17,7 +17,6 @@ const dividerBar = {
   gap: "0.25rem",
 };
 
-// ---- Animations ----
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: {
@@ -51,7 +50,6 @@ export function AboutSection() {
           </p>
         </div>
 
-        {/* Missions section */}
         <section id="missions" className="mb-16">
           <h2 className="section-title">Missions et attributions</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -84,7 +82,6 @@ export function AboutSection() {
           </div>
         </section>
 
-        {/* Structures section */}
         <section id="structures" className="mb-16">
           <h2 className="section-title">Structures</h2>
           <Card className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl shadow-sm p-8">
@@ -145,7 +142,6 @@ export function AboutSection() {
           </Card>
         </section>
 
-        {/* Textes de référence section */}
         <section id="textes" className="mb-16">
           <h2 className="section-title">Textes de référence</h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -185,7 +181,6 @@ export function AboutSection() {
           </div>
         </section>
 
-        {/* Bureau du Sénat */}
         <section id="bureau" className="mt-16">
           <motion.div
             initial="hidden"

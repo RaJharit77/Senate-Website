@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { Language } from '@/types/chatbotType';
-interface Message {
-    role: 'user' | 'assistant';
-    content: string;
-}
+import { Message } from '@/types/chatbot';
 
 export function useChatbot(initialMessages: Message[] = []) {
     const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -13,9 +10,6 @@ export function useChatbot(initialMessages: Message[] = []) {
         if (!content.trim()) return;
         const userMessage: Message = { role: 'user', content };
 
-        // On capture l'historique AVANT d'ajouter le nouveau message,
-        // pour l'envoyer tel quel au backend (qui y ajoutera lui-même
-        // le nouveau message utilisateur dans le bon ordre).
         const historyToSend = messages;
 
         setMessages(prev => [...prev, userMessage]);

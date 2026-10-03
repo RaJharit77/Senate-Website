@@ -33,3 +33,18 @@ export interface PresidentActivity {
     category: ActivityCategory;
     post: WpPost;
 }
+
+export const SECTION_ORDER: ActivityCategory[] = ["audience", "delegation", "international"];
+
+export const FILTERS: { id: "all" | ActivityCategory; label: string }[] = [
+    { id: "all", label: "Toutes" },
+    { id: "audience", label: "Audiences" },
+    { id: "delegation", label: "Délégations" },
+    { id: "international", label: "Déplacements" },
+];
+
+export interface InternationalPageSkeletonProps {
+    showFilters?: boolean;
+    showPagination?: boolean;
+    cardCount?: number;
+}

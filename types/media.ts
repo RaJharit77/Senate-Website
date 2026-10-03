@@ -28,3 +28,22 @@ export interface LiveStatus {
     sourceType: 'url' | 'youtube';
     startedAt?: string;
 }
+
+export interface AudioPlayerProps {
+    tracks: MediaItem[];
+    initialTrackIndex?: number;
+    className?: string;
+}
+
+export interface MediaListProps {
+    items: MediaItem[];
+    type: 'video' | 'audio';
+    title?: string;
+    className?: string;
+    onSelect?: (item: MediaItem) => void;
+}
+
+export interface VideoPlayerProps {
+    video: MediaItem;
+    className?: string;
+}

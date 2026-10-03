@@ -4,10 +4,10 @@ import { useState, useEffect, useMemo } from "react";
 import { getAllChannelAndRadioMedia } from "@/lib/api";
 import { extractMediaItem } from "@/lib/media-mapper";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { Calendar, Search, PlayCircle, Music2, Clapperboard } from "lucide-react";
+import { Calendar, Search, PlayCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { type ChannelFilter, type MediaItem, type MediaType } from "@/types/media";
+import type { ChannelFilter, MediaItem } from "@/types/media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -25,12 +25,7 @@ import { cleanText } from "@/utils/utility";
 import { MdArrowRightAlt } from "react-icons/md";
 import { perPage } from "@/constants/constants";
 import { detailHref, FILTER_LABELS, FILTER_OPTIONS } from "@/utils/media";
-
-function mediaIcon(type: MediaType) {
-    if (type === "audio") return Music2;
-    if (type === "montage") return Clapperboard;
-    return PlayCircle;
-}
+import { mediaIcon } from "@/lib/media";
 
 export default function ChannelAndRadioClient() {
     const [allItems, setAllItems] = useState<MediaItem[]>([]);

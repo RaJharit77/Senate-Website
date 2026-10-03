@@ -29,6 +29,14 @@ export interface SenatorsApiPayload {
     provinces: Province[];
 }
 
+export interface Props {
+    introHtml: string;
+    senateurs: Senateur[];
+    bureau: Senateur[];
+    commissions: Commission[];
+    provinces: Province[];
+}
+
 export interface SenatorsApiResponse {
     success: boolean;
     data?: SenatorsApiPayload;

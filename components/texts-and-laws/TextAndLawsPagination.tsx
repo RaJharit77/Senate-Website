@@ -2,12 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
-interface PaginationProps {
-    currentPage: number;
-    totalPages: number;
-    basePath: string;
-}
+import { PaginationProps } from "@/types/textsAndLaws";
 
 export function TextAndLawsPagination({ currentPage, totalPages, basePath }: PaginationProps) {
     const router = useRouter();

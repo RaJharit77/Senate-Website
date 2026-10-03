@@ -4,74 +4,15 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import {
-    getRepubliqueI,
-    getRepubliqueII,
-    getRepubliqueIII,
-    getRepubliqueIV,
-    getHistoryIntro,
-} from "@/lib/api";
-import type { WpPost } from "@/lib/wp-types";
-import { splitTransitionBlock, stripLeadingH2 } from "@/lib/sanitizeWpContent";
+import {getHistoryIntro} from "@/lib/api";
 import { RED, WHITE, EMERALD } from "@/utils/colors";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
-import { TabId } from "@/types/tabId";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
 import { TABS } from "@/utils/data/historical";
 import { cleanText } from "@/utils/utility";
-
-type RepublicId = Exclude<TabId, "transition">;
-type ContentMap = Record<TabId, string>;
-
-// L'API utilise la numérotation romaine (I-IV), les clés internes des
-// ordinaux anglais : cette table fait le lien.
-const REPUBLIC_IDS: RepublicId[] = ["first", "second", "third", "fourth"];
-
-const REPUBLIC_FETCHERS: Record<RepublicId, () => Promise<WpPost[]>> = {
-    first: getRepubliqueI,
-    second: getRepubliqueII,
-    third: getRepubliqueIII,
-    fourth: getRepubliqueIV,
-};
-
-const EMPTY_CONTENT: ContentMap = {
-    first: "",
-    second: "",
-    third: "",
-    fourth: "",
-    transition: "",
-};
-
-/**
- * Construit la ContentMap depuis les résultats de Promise.allSettled, en
- * regroupant tous les blocs de transition dans un seul onglet "transition".
- */
-function buildContentMap(
-    ids: RepublicId[],
-    results: PromiseSettledResult<WpPost[]>[]
-): ContentMap {
-    const next: ContentMap = { ...EMPTY_CONTENT };
-    const transitionParts: string[] = [];
-
-    results.forEach((result, index) => {
-        const id = ids[index];
-        if (result.status === "fulfilled" && result.value[0]) {
-            const rawHtml = result.value[0].content.rendered;
-            const { before, transition } = splitTransitionBlock(rawHtml);
-            if (transition) transitionParts.push(transition);
-            next[id] = stripLeadingH2(before);
-        } else if (result.status === "rejected") {
-            console.error(`[HistoryPage] Erreur chargement ${id}:`, result.reason);
-        }
-    });
-
-    next.transition = transitionParts
-        .map((block) => stripLeadingH2(block))
-        .join('<hr class="history-hr" />');
-
-    return next;
-}
+import { ContentMap} from "@/types/historyType";
+import { buildContentMap, EMPTY_CONTENT, REPUBLIC_FETCHERS, REPUBLIC_IDS } from "@/utils/history";
 
 export default function HistoricalClient() {
     const [contents, setContents] = useState<ContentMap>(EMPTY_CONTENT);

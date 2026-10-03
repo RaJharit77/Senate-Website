@@ -1,4 +1,9 @@
-import { MAX_PAGES, PER_PAGES, REVALIDATE, WP_INTRO_POST_ID } from "@/constants/constants";
+import {
+    MAX_PAGES,
+    PER_PAGES,
+    REVALIDATE,
+    WP_INTRO_POST_ID
+} from "@/constants/constants";
 import { API_BASE } from "./wordpress";
 import type {
     Senateur,
@@ -6,78 +11,14 @@ import type {
     Province,
     SenatorsApiPayload,
 } from "@/types/senatorsType";
+import { WPPage } from "@/types/wp-senators-types";
+import { cleanTitle, stripHtmls } from "@/utils/utility";
 
 const EXCLUDED_SLUGS = new Set<string>([
     "rakotondrazafy-lalatiana",
     "ravalomanana-richard",
     "raharinirina-sidonie",
 ]);
-
-
-function decodeEntities(s: string): string {
-    return s
-        .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&")
-        .replace(/&#8217;|&rsquo;/g, "'")
-        .replace(/&#8211;|&ndash;/g, "–")
-        .replace(/&hellip;/g, "…")
-        .replace(/&quot;/g, '"')
-        .replace(/&eacute;/g, "é")
-        .replace(/&egrave;/g, "è")
-        .replace(/&agrave;/g, "à")
-        .replace(/&ccedil;/g, "ç")
-        .replace(/&ecirc;/g, "ê")
-        .replace(/&ocirc;/g, "ô")
-        .replace(/&icirc;/g, "î")
-        .replace(/&ucirc;/g, "û")
-        .replace(/&ugrave;/g, "ù")
-        .replace(/\u00a0/g, " ");
-}
-
-function stripHtml(s: string): string {
-    return s
-        .replace(/<br\s*\/?>/gi, "\n")
-        .replace(/<\/p>/gi, "\n")
-        .replace(/<\/div>/gi, "\n")
-        .replace(/<[^>]*>/g, " ")
-        .replace(/\u00a0/g, " ")
-        .replace(/[^\S\n]+/g, " ")
-        .replace(/\n[ \t]*\n+/g, "\n")
-        .replace(/[ \t]*\n[ \t]*/g, "\n")
-        .trim();
-}
-
-function cleanText(s: string): string {
-    return decodeEntities(s.replace(/<[^>]*>/g, " "))
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-function cleanTitle(title: string): string {
-    return cleanText(title)
-        .replace(/\s*[-–—|]\s*(Antenimierandoholona|Sénat.*|Senat.*)$/i, "")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-/* ------------------------------------------------------------------ */
-/* Types WP                                                            */
-/* ------------------------------------------------------------------ */
-
-interface WPPage {
-    id: number;
-    slug: string;
-    link: string;
-    modified?: string;
-    date?: string;
-    title: { rendered: string };
-    content: { rendered: string };
-    categories?: number[];
-}
-
-/* ------------------------------------------------------------------ */
-/* Fetch WordPress                                                     */
-/* ------------------------------------------------------------------ */
 
 async function fetchAllPages(): Promise<WPPage[]> {
     const pages: WPPage[] = [];
@@ -140,20 +81,17 @@ async function fetchIntroHtml(): Promise<string> {
     }
 }
 
-/* ------------------------------------------------------------------ */
-/* Détection des fiches sénateur                                       */
-/* ------------------------------------------------------------------ */
-
+/* Détection des fiches sénateur */
 /** Un sénateur = page avec Nom, Prénoms, Age, Province */
 function isSenatorPage(page: WPPage): boolean {
-    const text = stripHtml(page.content?.rendered ?? "");
+    const text = stripHtmls(page.content?.rendered ?? "");
     if (!text || text.length < 40) return false;
 
-    // 1) Marqueur obligatoire : "Nom :"
+    // Marqueur obligatoire : "Nom :"
     const hasNom = /Nom\s*[:：]/i.test(text);
     if (!hasNom) return false;
 
-    // 2) Marqueurs secondaires (2 sur 3 suffisent)
+    // Marqueurs secondaires (2 sur 3 suffisent)
     const hasPrenoms = /Pr[ée]?noms\s*[:：]/i.test(text);
     const hasAge = /[ÂA]ges?\s*[:：]\s*\d+/i.test(text);
     const hasProvince = /Province\s*[:：]/i.test(text);
@@ -201,9 +139,7 @@ function hasActiveMandate(s: Senateur): boolean {
     return patterns.some((re) => re.test(blob));
 }
 
-/* ------------------------------------------------------------------ */
-/* Parsing d'une fiche sénateur                                        */
-/* ------------------------------------------------------------------ */
+/* Parsing d'une fiche sénateur */
 
 function pickLine(text: string, labels: string[]): string {
     for (const label of labels) {
@@ -286,7 +222,7 @@ function parseSenatorPage(page: WPPage): Senateur | null {
 
     const image = extractMainImage(html);
 
-    const text = stripHtml(html)
+    const text = stripHtmls(html)
         .split("\n")
         .map((l) => l.replace(/[ \t]+/g, " ").trim())
         .filter(Boolean)
@@ -320,10 +256,7 @@ function parseSenatorPage(page: WPPage): Senateur | null {
     };
 }
 
-/* ------------------------------------------------------------------ */
-/* Tri hiérarchique                                                    */
-/* ------------------------------------------------------------------ */
-
+/* Tri hiérarchique */
 /**
  * Rang d'affichage :
  *   0 = Président du Sénat (par intérim)
@@ -332,7 +265,7 @@ function parseSenatorPage(page: WPPage): Senateur | null {
  *   3 = Rapporteur Général
  *   100 = autres sénateurs
  *
- * ⚠️ Ordre IMPORTANT : "Vice-Président du Sénat" contient la sous-chaîne
+ * Ordre IMPORTANT : "Vice-Président du Sénat" contient la sous-chaîne
  * "Président du Sénat". On doit donc :
  *   1. D'abord tester "Vice-Président du Sénat" → rank 1
  *   2. Puis retirer ce mot du texte avant de chercher "Président du Sénat"
@@ -363,10 +296,7 @@ function compareSenateurs(a: Senateur, b: Senateur): number {
     return a.name.localeCompare(b.name, "fr", { sensitivity: "base" });
 }
 
-/* ------------------------------------------------------------------ */
-/* Builders                                                            */
-/* ------------------------------------------------------------------ */
-
+/* Builders */
 function buildBureau(senateurs: Senateur[]): Senateur[] {
     const BUREAU_ROLES: RegExp[] = [
         /Vice[-\s]*Président\s+du\s+Sénat/i,
@@ -435,10 +365,7 @@ function buildProvinces(senateurs: Senateur[]): Province[] {
         .sort((a, b) => a.name.localeCompare(b.name, "fr"));
 }
 
-/* ------------------------------------------------------------------ */
-/* Point d'entrée public                                               */
-/* ------------------------------------------------------------------ */
-
+/* Point d'entrée public */
 export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
     const [allPages, introHtml] = await Promise.all([
         fetchAllPages(),
@@ -447,7 +374,7 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
 
     if (process.env.NODE_ENV === "development") {
         const nearMisses = allPages.filter((p) => {
-            const text = stripHtml(p.content?.rendered ?? "");
+            const text = stripHtmls(p.content?.rendered ?? "");
             return /Nom\s*[:：]/i.test(text) && !isSenatorPage(p);
         });
         if (nearMisses.length > 0) {
@@ -455,7 +382,7 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
                 `[wp-senators] ${nearMisses.length} fiche(s) proche(s) mais rejetée(s) :`
             );
             nearMisses.forEach((p) => {
-                const text = stripHtml(p.content?.rendered ?? "");
+                const text = stripHtmls(p.content?.rendered ?? "");
                 const hasPrenoms = /Pr[ée]?noms\s*[:：]/i.test(text);
                 const hasAge = /[ÂA]ges?\s*[:：]\s*\d+/i.test(text);
                 const hasProvince = /Province\s*[:：]/i.test(text);
@@ -509,10 +436,7 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
     return { introHtml, senateurs, bureau, commissions, provinces };
 }
 
-/* ------------------------------------------------------------------ */
-/* Détail d'un sénateur                                                */
-/* ------------------------------------------------------------------ */
-
+/* Détail d'un sénateur */
 export interface SenatorDetailData {
     senator: Senateur;
     bioText: string;
@@ -557,7 +481,7 @@ export async function getSenatorDetail(
 }
 
 function extractBioText(html: string): string {
-    const plain = stripHtml(html).replace(/\s+/g, " ").trim();
+    const plain = stripHtmls(html).replace(/\s+/g, " ").trim();
     const match = plain.match(/Biographie\s*:?\s*([\s\S]*)$/i);
     if (!match) return "";
     return match[1].replace(/\s+/g, " ").trim();
@@ -567,7 +491,8 @@ export function isPresident(s: Senateur): boolean {
     return /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(s.fonction);
 }
 
-/*export function isVicePresident(s: Senateur): boolean {
+/* Décommente si nécessaire pour filtrer les rôles spécifiques du Bureau Permanent
+export function isVicePresident(s: Senateur): boolean {
     return /Vice[-\s]?Président\s+du\s+Sénat/i.test(s.fonction);
 }
 
@@ -577,4 +502,5 @@ export function isQuesteur(s: Senateur): boolean {
 
 export function isRapporteurGeneral(s: Senateur): boolean {
     return /Rapporteur\s+Général/i.test(s.fonction);
-}*/
+}
+*/

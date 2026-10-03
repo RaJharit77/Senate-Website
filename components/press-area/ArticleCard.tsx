@@ -1,18 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { WpPost } from "@/lib/wp-types";
 import Image from "next/image";
 import { Calendar, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { MdArrowRightAlt } from "react-icons/md";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-export interface ExtendedPost extends WpPost {
-    isFeatured: boolean;
-    imageUrl: string | null;
-}
+import { ExtendedPost } from "@/types/pressAreaType";
 
 const cardVariants = {
     hidden: { opacity: 0, y: 30 },

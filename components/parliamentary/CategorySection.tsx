@@ -1,14 +1,7 @@
 import Link from "next/link";
 import { Calendar, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { WpPost } from "@/lib/wp-types";
-
-interface CategorySectionProps {
-    title: string;
-    posts: WpPost[];
-    slug?: string;
-    isDeliberation?: boolean;
-}
+import { CategorySectionProps } from "@/types/parliamentaryType";
 
 export function CategorySection({ title, posts, isDeliberation }: CategorySectionProps) {
     if (isDeliberation) {

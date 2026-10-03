@@ -1,16 +1,8 @@
 'use client';
 
-import { MediaItem } from '@/types/media';
 import Image from 'next/image';
 import { PlayCircle, Music2, Clapperboard } from 'lucide-react';
-
-interface MediaListProps {
-    items: MediaItem[];
-    type: 'video' | 'audio';
-    title?: string;
-    className?: string;
-    onSelect?: (item: MediaItem) => void;
-}
+import { MediaListProps } from '@/types/media';
 
 export default function MediaList({ items, type, title, className = '', onSelect }: MediaListProps) {
     if (items.length === 0) {

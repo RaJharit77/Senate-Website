@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { WHITE, RED, EMERALD } from "@/utils/colors";
-
-interface PageHeaderProps {
-    title: string;
-    subtitle?: string;
-    breadcrumb?: { label: string; href: string }[];
-    className?: string;
-}
+import { PageHeaderProps } from "@/types/aboutType";
 
 export function PageHeader({ title, subtitle, breadcrumb, className = "" }: PageHeaderProps) {
     return (

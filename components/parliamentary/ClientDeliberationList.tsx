@@ -18,16 +18,7 @@ import { Input } from "@/components/ui/input";
 import { DeliberationTable } from "./DeliberationTable";
 import { cleanText } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-
-interface ClientDeliberationListProps {
-  posts: Array<{
-    title: { rendered: string };
-    content: { rendered: string };
-    slug: string;
-  }>;
-  initialIndex?: number;
-  useRouterNavigation?: boolean;
-}
+import { ClientDeliberationListProps } from "@/types/parliamentaryType";
 
 export function ClientDeliberationList({
   posts,
@@ -38,11 +29,9 @@ export function ClientDeliberationList({
   const [searchQuery, setSearchQuery] = useState("");
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
-  // Historique de la recherche précédente pour permettre l'annulation
   const previousSearchRef = useRef<string>("");
   const [canUndo, setCanUndo] = useState(false);
 
-  // Filtrer les articles en fonction de la recherche
   const filteredPosts = useMemo(() => {
     if (!searchQuery.trim()) return posts;
     const term = searchQuery.toLowerCase().trim();
@@ -55,7 +44,6 @@ export function ClientDeliberationList({
 
   const total = filteredPosts.length;
 
-  // Réinitialiser l'index lorsque la recherche change
   const handleSearchChange = (value: string) => {
     previousSearchRef.current = searchQuery;
     setCanUndo(searchQuery.trim() !== "");
@@ -63,7 +51,6 @@ export function ClientDeliberationList({
     setCurrentIndex(0);
   };
 
-  // Annule la dernière modification et revient à la recherche précédente
   const undoSearch = () => {
     setSearchQuery(previousSearchRef.current);
     setCurrentIndex(0);
@@ -77,7 +64,6 @@ export function ClientDeliberationList({
     setCurrentIndex(0);
   };
 
-  // Assurer que l'index reste dans les limites
   const safeIndex = Math.min(Math.max(currentIndex, 0), total - 1);
   if (currentIndex !== safeIndex) {
     setCurrentIndex(safeIndex);
@@ -159,7 +145,6 @@ export function ClientDeliberationList({
     </div>
   );
 
-  // Si aucun article ne correspond à la recherche
   if (total === 0 || !currentPost) {
     return (
       <div className="font-poppins">
@@ -189,7 +174,6 @@ export function ClientDeliberationList({
     <div className="font-poppins">
       {searchPanel}
 
-      {/* Contenu de la délibération courante */}
       <div className="mb-8">
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
           <h2 className="flex items-center gap-3 text-xl font-bold leading-snug text-white sm:text-2xl">
@@ -208,7 +192,6 @@ export function ClientDeliberationList({
           </Link>
         </div>
         <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 shadow-2xl backdrop-blur-md">
-          {/* Liseré tricolore : marque ce contenu comme un document officiel du Sénat */}
           <div className="flex h-[3px] w-full" aria-hidden="true">
             <div className="flex-1" style={{ backgroundColor: WHITE }} />
             <div className="flex-1" style={{ backgroundColor: RED }} />
@@ -227,7 +210,6 @@ export function ClientDeliberationList({
         </Card>
       </div>
 
-      {/* Navigation (précédent/suivant) */}
       {total > 1 && (
         <div className="mt-8 flex items-center justify-center gap-4 sm:gap-5">
           <Button

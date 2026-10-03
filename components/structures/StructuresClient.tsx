@@ -1,14 +1,9 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { StructuresClientProps } from "@/types/structureType";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText } from "@/utils/utility";
-
-interface StructuresClientProps {
-    content: string;
-    title: string;
-    updatedAt?: string;
-}
 
 export default function StructuresClient({
     content,

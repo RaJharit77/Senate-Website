@@ -1,9 +1,7 @@
-
-// utils/senators-parser.ts
 import { cleanText } from "@/utils/utility";
 import { Commission, Province, Senateur } from "@/types/senatorsType";
 
-/* ---------- Extraction depuis une page sénateur individuelle ---------- */
+/* Extraction depuis une page sénateur individuelle */
 
 export interface SenatorListItem {
     id: string;
@@ -116,8 +114,7 @@ function emptyDetail(image: string | null): SenatorDetail {
     };
 }
 
-/* ---------- Parseurs du contenu agrégé "Vos Sénateurs" ---------- */
-
+/* Parseurs du contenu agrégé "Vos Sénateurs" */
 /** Parse une carte de sénateur (div.card avec id commençant par "sen"). */
 export function parseCard(card: Element): Senateur | null {
     const id = card.id;
