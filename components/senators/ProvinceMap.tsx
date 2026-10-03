@@ -12,7 +12,6 @@ import { nameToSlug, normalizeProvince, toSvgPoints } from "@/utils/province";
 export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
     const [selected, setSelected] = useState<string | null>(null);
 
-    // Index normalisé province.name → Province
     const provinceIndex = useMemo(() => {
         const map = new Map<string, Province>();
         for (const p of provinces) {
@@ -21,7 +20,6 @@ export default function ProvinceMap({ provinces }: { provinces: Province[] }) {
         return map;
     }, [provinces]);
 
-    // Sélection effective : celle de l'utilisateur, sinon la 1ère province dispo
     const effectiveSelected =
         selected ?? provinces[0]?.name ?? null;
 

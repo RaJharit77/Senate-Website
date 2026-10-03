@@ -54,7 +54,7 @@ export function cleanText(text: string): string {
         .replace("&#8221;", '"')
         .replace("&amp;#8211;", "–")
         .replace("&amp;#8217;", "'");
-        //.trim();
+    //.trim();
 }
 
 export function formatDate(dateStr: string): string {
@@ -79,3 +79,49 @@ export const getYouTubeThumbnail = (html: string): string | null => {
     if (match3) return `https://img.youtube.com/vi/${match3[1]}/hqdefault.jpg`;
     return null;
 };
+
+export function cleanTexts(s: string): string {
+    return decodeEntities(s.replace(/<[^>]*>/g, " "))
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+export function cleanTitle(title: string): string {
+    return cleanTexts(title)
+        .replace(/\s*[-–—|]\s*(Antenimierandoholona|Sénat.*|Senat.*)$/i, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+export function decodeEntities(s: string): string {
+    return s
+        .replace(/&nbsp;/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&#8217;|&rsquo;/g, "'")
+        .replace(/&#8211;|&ndash;/g, "–")
+        .replace(/&hellip;/g, "…")
+        .replace(/&quot;/g, '"')
+        .replace(/&eacute;/g, "é")
+        .replace(/&egrave;/g, "è")
+        .replace(/&agrave;/g, "à")
+        .replace(/&ccedil;/g, "ç")
+        .replace(/&ecirc;/g, "ê")
+        .replace(/&ocirc;/g, "ô")
+        .replace(/&icirc;/g, "î")
+        .replace(/&ucirc;/g, "û")
+        .replace(/&ugrave;/g, "ù")
+        .replace(/\u00a0/g, " ");
+}
+
+export function stripHtmls(s: string): string {
+    return s
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<\/p>/gi, "\n")
+        .replace(/<\/div>/gi, "\n")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\u00a0/g, " ")
+        .replace(/[^\S\n]+/g, " ")
+        .replace(/\n[ \t]*\n+/g, "\n")
+        .replace(/[ \t]*\n[ \t]*/g, "\n")
+        .trim();
+}

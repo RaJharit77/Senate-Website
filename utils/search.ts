@@ -1,17 +1,6 @@
-
-/* -------------------------------------------------------------------------- */
-/*  Configuration                                                              */
-/* -------------------------------------------------------------------------- */
-
 export const MAX_QUERY_LENGTH = 100;
 export const PER_SOURCE = 15;
 export const MAX_RESULTS = 60;
-
-// Catégories WP non exposées dans constants.ts.
-// Attention : constants.ts nomme CAT_LOIS = 42, alors que api.ts documente
-// 42 comme la catégorie "structures" : on suit api.ts.
-export const CAT_STRUCTURES = 42;
-export const CAT_GOUVERNEMENT = 7;
 
 /**
  * Cas particuliers : un slug WP précis → une page Next précise.
@@ -26,15 +15,16 @@ export const SLUG_ROUTES: Record<string, { path: string; source: string }> = {
     "textes-sur-les-services": { path: "/about/reference-texts", source: "Textes de référence" },
     "vos-senateurs": { path: "/your-senators", source: "Page" },
     // Page WP "Les Sénateurs durant la deuxième Législature de la Quatrième République".
-    // TODO : remplacer par /historical?tab=<clé> une fois la clé d'onglet de la
-    // Quatrième République connue (voir app/historical/history/page.tsx).
-    "historique-v2": { path: "/historical", source: "Historique" },
+    // Onglet "fourth" : clé utilisée par HistoryClient.tsx (REPUBLIC_IDS) et
+    // HistoryTabs.tsx (?tab=<clé>) pour la République IV.
+    "historique-v2": { path: "/historical?tab=fourth", source: "Historique" },
     // Pages WP du menu de l'ancien site (slugs relevés sur senat.mg) → routes Next.
     "historique": { path: "/about", source: "À propos du Sénat" },
     "nature-et-missions-2": { path: "/about/missions-and-responsibilities", source: "Missions et attributions" },
     "structures": { path: "/about/structures", source: "Structures" },
     "textes-de-reference": { path: "/about/reference-texts", source: "Textes de référence" },
-    "historique-2": { path: "/historical?tab=first", source: "Historique" },
+    //"historique-2": { path: "/historical?tab=first", source: "Historique" },
+    "historique-2": { path: "/historical/history", source: "Historique" },
     "travaux-parlementaires": { path: "/parliamentary-proceedings", source: "Travaux parlementaires" },
     "travaux-legislatifs-2": {
         path: "/parliamentary-proceedings/legislative-proceedings",
