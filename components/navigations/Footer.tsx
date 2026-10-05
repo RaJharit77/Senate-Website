@@ -66,6 +66,7 @@ export function Footer() {
                 href="https://web.facebook.com/SenatdeMadagascar"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Facebook du Sénat de Madagascar"
                 className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white/50 hover:border-cyan-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300"
               >
                 <FaFacebook size={15} />
@@ -74,12 +75,16 @@ export function Footer() {
                 href="https://www.youtube.com/@antenimierandoholona"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Chaîne YouTube du Sénat de Madagascar"
                 className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white/50 hover:border-cyan-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300"
               >
                 <FaYoutube size={15} />
               </Link>
               <Link
                 href="/contact"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Contactez le Sénat"
                 className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white/50 hover:border-cyan-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300"
               >
                 <Mail size={15} />

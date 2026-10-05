@@ -77,7 +77,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="fr - mg - en"
+      lang="fr"
       className={cn("h-full", "antialiased", poppins.className, inter.className, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">

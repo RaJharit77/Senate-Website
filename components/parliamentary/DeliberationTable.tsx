@@ -178,6 +178,7 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
                         <Button
                             variant="outline"
                             size="sm"
+                            aria-label="Page précédente"
                             onClick={handlePrev}
                             disabled={currentPage === 1}
                             className="rounded-xl border-white/20 bg-transparent text-white/80 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
@@ -187,6 +188,7 @@ export function DeliberationTable({ tableHtml, showPagination = true }: Delibera
                         <Button
                             variant="outline"
                             size="sm"
+                            aria-label="Page suivante" 
                             onClick={handleNext}
                             disabled={currentPage === totalPages}
                             className="rounded-xl border-white/20 bg-transparent text-white/80 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"

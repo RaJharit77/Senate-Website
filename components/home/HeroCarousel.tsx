@@ -166,6 +166,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         <Button
           variant="outline"
           size="icon"
+          aria-label="Slide précédente"
           className="w-10 h-10 rounded-full border-2 border-white/50 bg-transparent text-white/70 hover:bg-white/10 hover:text-white backdrop-blur-sm transition-all"
           onClick={() => go(current - 1)}
         >
@@ -176,6 +177,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           {slides.map((_, i) => (
             <button
               key={i}
+              aria-label={`Aller à la slide ${i + 1}`}
               onClick={() => go(i)}
               className="rounded-full transition-all"
               style={{
@@ -190,6 +192,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         <Button
           variant="outline"
           size="icon"
+          aria-label="Slide suivante"
           className="w-10 h-10 rounded-full border-2 border-white/50 bg-transparent text-white/70 hover:bg-white/10 hover:text-white backdrop-blur-sm transition-all"
           onClick={() => go(current + 1)}
         >
