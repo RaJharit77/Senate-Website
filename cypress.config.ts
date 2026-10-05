@@ -11,11 +11,11 @@ export default defineConfig({
         video: false,
         screenshotOnRunFailure: true,
         manageBrowserMemory: true,
-        numTestsKeptInMemory: 1,
+        numTestsKeptInMemory: 0,
         chromeWebSecurity: false,
         videoCompression: false,
         retries: {
-            runMode: 2,
+            runMode: 0,
             openMode: 0,
         },
     },
