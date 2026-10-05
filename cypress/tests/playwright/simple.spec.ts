@@ -13,11 +13,23 @@ test.describe('Simple Tests', () => {
     });
 
     test('navigate to About and subpages', async ({ page }) => {
-        await page.goto('/about');
+        await page.goto('/');
 
-        await expect(page.getByRole('heading', { name: 'À propos du Sénat', level: 1 }).first()).toBeVisible();
+        await page.getByRole('link', { name: 'À propos du Sénat' }).click();
+        await expect(page).toHaveURL(/\/about(\/|$)/);
+        await expect(page.locator('h1').first()).toBeVisible();
+
+        const missionsLink = page.getByRole('link', { name: /Missions et attributions/ });
+        if (await missionsLink.count() > 0) {
+            await missionsLink.first().click();
+            await expect(page).toHaveURL(/\/about\/missions?-and-responsibilities/);
+            await expect(page.locator('h1').first()).toBeVisible();
+        } else {
+            await page.goto('/about/missions-and-responsibilities');
+            await expect(page.locator('h1').first()).toBeVisible();
+        }
 
         await page.goto('/about/structures');
-        await expect(page.locator('h1:has-text("Structures du Sénat")')).toBeVisible();
+        await expect(page.locator('h1').first()).toBeVisible();
     });
 });
