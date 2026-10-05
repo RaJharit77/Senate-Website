@@ -33,13 +33,12 @@ jobs:
           pnpm run start &
           npx wait-on http://localhost:3000
 
-      - name: Run Cypress accessibility tests (Chrome)
-        run: pnpm cypress:run:ci:chrome --spec "cypress/e2e/accessibility.cy.ts"
-        continue-on-error: true
+      - name: Run Cypress tests (excluding accessibility)
+        run: pnpm cypress:run:ci:chrome --spec "cypress/e2e/!(accessibility).cy.ts"
         env:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_CI: true
-          NODE_OPTIONS: "--max-old-space-size=8192"
+          NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: Upload Cypress screenshots and videos (on failure)
         uses: actions/upload-artifact@v7

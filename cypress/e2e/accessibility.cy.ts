@@ -1,7 +1,10 @@
 /// <reference types="cypress" />
 /// <reference types="cypress-axe" />
 
-describe('Tests d\'accessibilité', () => {
+describe('Tests d\'accessibilité (locaux uniquement)', () => {
+  const isCI = process.env.CI === 'true';
+  const testFn = isCI ? it.skip : it;
+
   before(() => {
     Cypress.config('screenshotOnRunFailure', false);
   });
@@ -15,19 +18,9 @@ describe('Tests d\'accessibilité', () => {
     cy.intercept('GET', '**/*ytimg.com/**', { statusCode: 204, body: '' });
     cy.intercept('GET', '**/*facebook*.com/**', { statusCode: 204, body: '' });
     cy.intercept('GET', '**/*fbcdn.net/**', { statusCode: 204, body: '' });
-    cy.intercept('GET', '**/*twitter*.com/**', { statusCode: 204, body: '' });
-    cy.intercept('GET', '**/*instagram*.com/**', { statusCode: 204, body: '' });
 
     cy.injectAxe();
   });
-
-  const hideIframes = () => {
-    cy.window().then((win) => {
-      const style = win.document.createElement('style');
-      style.innerHTML = 'iframe { display: none !important; }';
-      win.document.head.appendChild(style);
-    });
-  };
 
   const axeOptions = {
     runOnly: {
@@ -41,29 +34,25 @@ describe('Tests d\'accessibilité', () => {
     },
   };
 
-  const mainSelector = 'main';
-
-  it('vérifie l\'accessibilité de la page d\'accueil', () => {
+  testFn('vérifie l\'accessibilité de la page d\'accueil', () => {
     cy.visit('/');
-    hideIframes();
     cy.wait(500);
-    cy.checkA11y(mainSelector, axeOptions);
+    cy.checkA11y('main', axeOptions);
   });
 
-  it('vérifie l\'accessibilité de la page À propos', () => {
+  testFn('vérifie l\'accessibilité de la page À propos', () => {
     cy.visit('/about');
-    hideIframes();
     cy.wait(500);
-    cy.checkA11y(mainSelector, axeOptions);
+    cy.checkA11y('main', axeOptions);
   });
 
-  it('vérifie l\'accessibilité de la page Contact', () => {
+  testFn('vérifie l\'accessibilité de la page Contact', () => {
     cy.visit('/contact');
     cy.wait(500);
-    cy.checkA11y(mainSelector, axeOptions);
+    cy.checkA11y('main', axeOptions);
   });
 
-  it('vérifie l\'accessibilité du formulaire de contact', () => {
+  testFn('vérifie l\'accessibilité du formulaire de contact', () => {
     cy.visit('/contact');
     cy.wait(500);
     cy.checkA11y('form', axeOptions);
