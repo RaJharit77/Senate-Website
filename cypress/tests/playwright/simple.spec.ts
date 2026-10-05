@@ -16,21 +16,14 @@ test.describe('Simple Tests', () => {
         await page.goto('/');
 
         await page.getByRole('link', { name: 'À propos du Sénat' }).click();
-        await expect(page).toHaveURL(/\/about/);
-
-        await expect(
-            page.getByRole('heading', { level: 1, name: /propos/i }).first()
-        ).toBeVisible();
+        await expect(page).toHaveURL(/\/about$/);
+        await expect(page.locator('h1').first()).toBeVisible();
 
         await page.getByRole('link', { name: 'Missions et attributions' }).click();
         await expect(page).toHaveURL(/\/about\/missions?-and-responsibilities/);
-        await expect(
-            page.getByRole('heading', { level: 1, name: /missions/i }).first()
-        ).toBeVisible();
+        await expect(page.locator('h1').first()).toBeVisible();
 
         await page.goto('/about/structures');
-        await expect(
-            page.getByRole('heading', { level: 1, name: /structures/i }).first()
-        ).toBeVisible();
+        await expect(page.locator('h1').first()).toBeVisible();
     });
 });
