@@ -46,6 +46,8 @@ Senate-Website/
 ├── .github/                      # Workflows CI/CD & actions GitHub
 ├── app/                          # Next.js App Router (Pages & Routes)
 │   ├── about/                    # Présentation de l'institution
+|   |   ├── administrative-structures/
+|   |   ├── functionning/
 │   │   ├── missions-and-responsibilities/
 │   │   ├── president-message/
 │   │   ├── reference-texts/
@@ -57,17 +59,18 @@ Senate-Website/
 |   |   ├── live/
 |   |   ├── media/
 |   |   ├── proxy/
+|   |   |   └── [...path]/
 │   │   ├── release/
-│   │   └── search/
+│   │   ├── search/
+│   │   └── senators/
 │   ├── channel-tv-and-radio/     # Vidéos youtube, live, podcast,...
 |   |   ├── audio/
 |   |   |   └── [slug]/
 |   |   ├── live/
 |   |   |   ├──  radio/
 |   |   |   └── tv/
-|   |   ├── montage/
+|   |   ├── editing/
 |   |   |   └── [slug]/
-|   |   ├── proxy/
 │   │   └── video/
 │   │       └── [slug]/
 │   ├── contact/                  # Formulaire de contact et coordonnées
@@ -76,10 +79,16 @@ Senate-Website/
 │   │   └── [slug]/
 │   ├── international/            # Groupes d'amitié & diplomatie parlementaire
 │   │   ├── inter-parliamentary-friendship-group/
+|   |   |   └── [slug]/
 │   │   ├── presidents-activities/
+|   |   |   └── [slug]/
 │   │   └── senators-activities/
+|   |       └── [slug]/
+│   ├── others/                   # Contenus annexes et autres
+|   |   └── [slug]/
 │   ├── parliamentary-proceedings/  # Travaux et démarches parlementaires
-|   |   ├── [slug]/
+|   |   ├── written-questions/
+|   |   |   └── [slug]/
 │   │   └── legislative-proceedings/
 │   │       ├── deliberation-and-agenda/
 │   │       └── [slug]/
@@ -89,7 +98,7 @@ Senate-Website/
 │   ├── search/                   # Moteur de recherche interne
 │   ├── texts-and-laws/           # Textes législatifs et lois
 |   |   └── [slug]/
-│   ├── others/                   # Contenus annexes
+│   ├── your-senators/            # Votre sénateurs
 |   |   └── [slug]/
 │   ├── error.tsx                 # Gestionnaire d'erreurs global
 │   ├── layout.tsx                # Structure principale du site
@@ -99,17 +108,24 @@ Senate-Website/
 │   ├── robot.ts                  # Fichier robots.txt dynamique
 │   └── sitemap.ts                # Génération dynamique du sitemap SEO
 ├── components/                   # Composants UI modulaires
+│   ├── about/
+│   ├── agenda/
+│   ├── chatbot/
 │   ├── contact/
 │   ├── figma/
 │   ├── history/
 │   ├── home/
 │   ├── international/
 │   ├── lenis/                   # Défilement fluide (Smooth Scroll)
+│   ├── media/
 │   ├── navigations/             # En-têtes, pieds de page et menus
 │   ├── others/
 │   ├── parliamentary/
 │   ├── press-area/
+│   ├── questions/
+│   ├── senators/
 |   ├── shared/
+│   ├── structures/
 │   ├── texts-and-laws/
 │   └── ui/                      # Composants génériques Shadcn UI
 ├── constants/                    # Constantes globales
@@ -122,16 +138,24 @@ Senate-Website/
 ├── types/                        # Définitions TypeScript
 ├── utils/                        # Fonctions utilitaires transversales
 ├── .env.example                  # Exemple des variables d'environnement
+├── .eslintrc.json                # eslintrc
+├── .gitignore
+├── .npmrc
+├── ATTRIBUTIONS.md
 ├── components.json               # Configuration des composants Shadcn
 ├── cypress.config.ts             # Configuration de Cypress
+├── default_shadcn_theme.css
 ├── eslint.config.mjs             # Configuration ESLint
+├── global.d.ts                   
+├── LICENSE                       # LICENCE
 ├── next.config.ts                # Configuration Next.js (optimisation images, etc.)
-├── LICENSE                       # LICENCE MIT
 ├── package.json                  # Scripts et dépendances du projet
 ├── playwright.config.ts          # Configuration de Playwright
 ├── pnpm-lock.yaml                # Dépéndances pnpm
 ├── pnpm-workspace.yaml           # workspace pnpm
 ├── postcss.config.mjs            # Configuration de postcss
+├── README.md                     # This README
+├── SECURITY.md
 └── tsconfig.json                 # Configuration TypeScript
 ```
 
