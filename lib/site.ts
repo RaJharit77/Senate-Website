@@ -1,1 +1,1 @@
-export const SITE_URL = process.env.VERCEL_URL || 'https://senat-de-madagascar.vercel.app';
+export const SITE_URL = process.env.SENATE_SITE_URL || 'https://senat-de-madagascar.vercel.app';
