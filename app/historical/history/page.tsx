@@ -7,8 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getPageBySlug } from "@/lib/api";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { FaArrowAltCircleDown, FaArrowAltCircleRight } from "react-icons/fa";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';
 

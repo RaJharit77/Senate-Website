@@ -5,8 +5,9 @@ import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { getPostBySlugNoCache } from "@/lib/api";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { cleanText } from "@/utils/utility";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';
 

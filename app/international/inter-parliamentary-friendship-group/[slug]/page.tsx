@@ -6,7 +6,8 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import Image from "next/image";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

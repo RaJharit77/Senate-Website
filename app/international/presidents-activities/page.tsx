@@ -3,10 +3,11 @@ import { resolvePostImage } from "@/lib/extractImage";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { formatDate } from "@/utils/utility";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { ActivityItem } from "@/types/internationalType";
 import { PresidentActivitiesFeed } from "@/components/international/PresidentActivitiesFeed";
 import { delay } from "@/lib/delay";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = buildMetadata({
     title: "Activités du Président du Sénat",

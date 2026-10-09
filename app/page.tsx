@@ -9,7 +9,8 @@ import type { WpPost } from "@/lib/wp-types";
 import { formatDate } from "@/utils/utility";
 import { GREENS, REDS } from "@/utils/colors";
 import JsonLd from '@/components/JsonLd';
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from '@/lib/seo';
+import { buildMetadata, buildBreadcrumbJsonLd } from '@/lib/seo';
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: 'Accueil – Sénat de Madagascar',

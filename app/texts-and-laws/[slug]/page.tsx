@@ -5,8 +5,9 @@ import { ChevronLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import Image from "next/image";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';
 

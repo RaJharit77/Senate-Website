@@ -2,8 +2,9 @@ import { getPageBySlug, getLawsExcerpts } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import NotFoundPage from "../not-found";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { TextAndLawsClient } from "@/components/texts-and-laws/TextsAndLawsClient";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';
 
