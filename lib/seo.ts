@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
+import { SITE_URL } from './site';
 
 const SITE_NAME = 'Sénat de Madagascar';
-export const SITE_URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'https://senat-de-madagascar.vercel.app';
 const DEFAULT_DESCRIPTION = 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 

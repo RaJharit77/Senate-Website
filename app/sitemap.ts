@@ -1,10 +1,8 @@
 import { getAllRepubliques, getPages, getActualite, getAlaune, getAudiences, getDelegations, getInternational, getPosts, getVideos, getAudios, getMontages } from '@/lib/api';
+import { SITE_URL } from '@/lib/site';
 import type { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'https://senat-de-madagascar.vercel.app';
 
     const staticPages = [
         '',
@@ -40,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/texts-and-laws',
         '/your-senators',
     ].map(route => ({
-        url: `${baseUrl}${route}`,
+        url: `${SITE_URL}${route}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: route === '' ? 1 : 0.8,
@@ -82,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     const postUrls = allPosts.map(post => ({
-        url: `${baseUrl}/actualite/${post.slug}`,
+        url: `${SITE_URL}/actualite/${post.slug}`,
         lastModified: new Date(post.date),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
@@ -90,19 +88,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const mediaUrls = [
         ...videos.map(post => ({
-            url: `${baseUrl}/channel-tv-and-radio/video/${post.slug}`,
+            url: `${SITE_URL}/channel-tv-and-radio/video/${post.slug}`,
             lastModified: new Date(post.date),
             changeFrequency: 'monthly' as const,
             priority: 0.6,
         })),
         ...audios.map(post => ({
-            url: `${baseUrl}/channel-tv-and-radio/audio/${post.slug}`,
+            url: `${SITE_URL}/channel-tv-and-radio/audio/${post.slug}`,
             lastModified: new Date(post.date),
             changeFrequency: 'monthly' as const,
             priority: 0.6,
         })),
         ...montages.map(post => ({
-            url: `${baseUrl}/channel-tv-and-radio/editing/${post.slug}`,
+            url: `${SITE_URL}/channel-tv-and-radio/editing/${post.slug}`,
             lastModified: new Date(post.date),
             changeFrequency: 'monthly' as const,
             priority: 0.6,
