@@ -36,6 +36,10 @@ import {
     perPage,
 } from "@/constants/constants";
 import { SENATOR_CATEGORY_SLUGS } from "@/types/other";
+import JsonLd from "@/components/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
+
 
 export default function OthersClient() {
     const [allPosts, setAllPosts] = useState<WpPost[]>([]);
@@ -44,6 +48,26 @@ export default function OthersClient() {
     const [filter, setFilter] = useState<CategoryType>("tous");
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+
+    const breadcrumb = buildBreadcrumbJsonLd([
+        { name: "Accueil", url: SITE_URL },
+        { name: "Autres activités", url: `${SITE_URL}/others` },
+    ]);
+
+    const webPageJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "Autres activités — Sénat de Madagascar",
+        description:
+            "Découvrez les actualités diverses, les publications, les galeries photos et les autres activités du Sénat de Madagascar.",
+        url: `${SITE_URL}/others`,
+        inLanguage: "fr-FR",
+        isPartOf: {
+            "@type": "WebSite",
+            name: "Sénat de Madagascar",
+            url: SITE_URL,
+        },
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -201,255 +225,259 @@ export default function OthersClient() {
     };
 
     return (
-        <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <div className="mb-12">
-                    <div className="flex gap-1 mb-4" style={{ height: 3 }}>
-                        <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
-                    </div>
-                    <h1
-                        className="text-white text-4xl font-bold"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
-                        Autres activités
-                    </h1>
-                    <p className="text-gray-300 text-lg mt-2 max-w-2xl">
-                        Découvrez les actualités diverses, les publications, les galeries
-                        photos et les autres activités du Sénat.
-                    </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4 mb-8">
-                    <div className="flex gap-2">
-                        {(
-                            [
-                                "tous",
-                                "divers",
-                                "publication",
-                                "galeries",
-                                "autres",
-                            ] as const
-                        ).map((cat) => (
-                            <Button
-                                key={cat}
-                                variant={filter === cat ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => setFilter(cat)}
-                                className={
-                                    filter === cat
-                                        ? "bg-cyan-500 text-white hover:bg-cyan-600 shadow-lg shadow-cyan-500/30"
-                                        : "bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:text-white"
-                                }
-                            >
-                                {cat === "tous"
-                                    ? "Tous"
-                                    : cat === "divers"
-                                        ? "Divers"
-                                        : cat === "publication"
-                                            ? "Publications"
-                                            : cat === "galeries"
-                                                ? "Galeries"
-                                                : "Autres"}
-                            </Button>
-                        ))}
-                    </div>
-                    <form onSubmit={handleSearch} className="flex gap-3 ml-auto">
-                        <Input
-                            type="text"
-                            placeholder="Rechercher..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-56 bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus:ring-cyan-400/50"
-                        />
-                        <Button
-                            type="submit"
-                            variant="default"
-                            className="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30"
-                        >
-                            <Search className="w-4 h-4 mr-2" />
-                            Rechercher
-                        </Button>
-                    </form>
-                </div>
-
-                {loading ? (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {Array.from({ length: 6 }).map((_, i) => (
-                            <Card key={i} className="bg-white/10 border-white/10">
-                                <Skeleton className="w-full aspect-video" />
-                                <CardContent className="p-5">
-                                    <Skeleton className="h-6 w-3/4 mb-2" />
-                                    <Skeleton className="h-4 w-full" />
-                                    <Skeleton className="h-4 w-2/3 mt-2" />
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                ) : paginatedPosts.length === 0 ? (
-                    <p className="text-gray-400">Aucune activité ne correspond à vos critères.</p>
-                ) : (
-                    <>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {paginatedPosts.map((post) => {
-                                const featuredImage =
-                                    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
-                                const youtubeThumb = getYouTubeThumbnail(
-                                    post.content.rendered
-                                );
-                                const imageUrl = featuredImage || youtubeThumb || null;
-                                const date = new Date(post.date).toLocaleDateString(
-                                    "fr-FR",
-                                    {
-                                        day: "numeric",
-                                        month: "long",
-                                        year: "numeric",
-                                    }
-                                );
-                                const cleanTitle = cleanText(post.title.rendered);
-
-                                const categoryLabel = getCategoryLabel(post);
-                                const isVideo = categoryLabel === "Vidéo";
-
-                                const downloadLink =
-                                    (post.acf as Record<string, unknown>)?.file ||
-                                    (post.acf as Record<string, unknown>)?.download_link ||
-                                    null;
-
-                                return (
-                                    <Card
-                                        key={post.id}
-                                        className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col"
-                                    >
-                                        {imageUrl ? (
-                                            <div className="relative w-full aspect-video overflow-hidden">
-                                                <Image
-                                                    src={imageUrl}
-                                                    alt={cleanTitle}
-                                                    fill
-                                                    priority
-                                                    className="object-cover"
-                                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                                    loading="eager"
-                                                />
-                                                {isVideo && (
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                                                        <PlayCircle className="w-16 h-16 text-white/80 drop-shadow-lg" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <div className="w-full aspect-video bg-white/5 flex items-center justify-center">
-                                                <span className="text-gray-500 text-sm">
-                                                    Image non disponible
-                                                </span>
-                                            </div>
-                                        )}
-                                        <CardContent className="p-5 flex flex-col flex-1">
-                                            <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                                                <Badge
-                                                    variant="secondary"
-                                                    className="text-xs bg-cyan-500/20 text-cyan-300 border-none"
-                                                >
-                                                    {categoryLabel}
-                                                </Badge>
-                                                <Calendar className="w-4 h-4" />
-                                                <span>{date}</span>
-                                            </div>
-                                            <h3
-                                                className="text-white text-xl font-bold mb-2 line-clamp-2"
-                                                style={{ fontFamily: "'Poppins', sans-serif" }}
-                                            >
-                                                {cleanTitle}
-                                            </h3>
-                                            {post.excerpt?.rendered && (
-                                                <p
-                                                    className="text-gray-300 text-sm line-clamp-3 flex-1"
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: cleanText(post.excerpt.rendered),
-                                                    }}
-                                                />
-                                            )}
-                                            <div className="flex items-center gap-3 mt-4">
-                                                <Link
-                                                    href={`/others/${post.slug}`}
-                                                    className="inline-block text-cyan-300 hover:text-cyan-200 text-sm font-medium transition"
-                                                >
-                                                    Lire la suite{" "}
-                                                    <MdArrowRightAlt className="inline-block" />
-                                                </Link>
-                                                {downloadLink && (
-                                                    <Link
-                                                        href={downloadLink}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1 text-sm text-emerald-300 hover:text-emerald-200 transition"
-                                                    >
-                                                        <Download className="w-4 h-4" />
-                                                        Télécharger
-                                                    </Link>
-                                                )}
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                );
-                            })}
+        <>
+            <JsonLd data={breadcrumb} />
+            <JsonLd data={webPageJsonLd} />
+            <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
+                <div className="max-w-7xl mx-auto">
+                    <div className="mb-12">
+                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                            <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
                         </div>
+                        <h1
+                            className="text-white text-4xl font-bold"
+                            style={{ fontFamily: "'Poppins', sans-serif" }}
+                        >
+                            Autres activités
+                        </h1>
+                        <p className="text-gray-300 text-lg mt-2 max-w-2xl">
+                            Découvrez les actualités diverses, les publications, les galeries
+                            photos et les autres activités du Sénat.
+                        </p>
+                    </div>
 
-                        {totalPages > 1 && (
-                            <Pagination className="mt-10">
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious
-                                            onClick={() => handlePageChange(currentPage - 1)}
-                                            text="Précédent"
-                                            className={
-                                                currentPage === 1
-                                                    ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
-                                                    : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
-                                            }
-                                        />
-                                    </PaginationItem>
+                    <div className="flex flex-wrap items-center gap-4 mb-8">
+                        <div className="flex gap-2">
+                            {(
+                                [
+                                    "tous",
+                                    "divers",
+                                    "publication",
+                                    "galeries",
+                                    "autres",
+                                ] as const
+                            ).map((cat) => (
+                                <Button
+                                    key={cat}
+                                    variant={filter === cat ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => setFilter(cat)}
+                                    className={
+                                        filter === cat
+                                            ? "bg-cyan-500 text-white hover:bg-cyan-600 shadow-lg shadow-cyan-500/30"
+                                            : "bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:text-white"
+                                    }
+                                >
+                                    {cat === "tous"
+                                        ? "Tous"
+                                        : cat === "divers"
+                                            ? "Divers"
+                                            : cat === "publication"
+                                                ? "Publications"
+                                                : cat === "galeries"
+                                                    ? "Galeries"
+                                                    : "Autres"}
+                                </Button>
+                            ))}
+                        </div>
+                        <form onSubmit={handleSearch} className="flex gap-3 ml-auto">
+                            <Input
+                                type="text"
+                                placeholder="Rechercher..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-56 bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus:ring-cyan-400/50"
+                            />
+                            <Button
+                                type="submit"
+                                variant="default"
+                                className="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30"
+                            >
+                                <Search className="w-4 h-4 mr-2" />
+                                Rechercher
+                            </Button>
+                        </form>
+                    </div>
 
-                                    {getPaginationItems(currentPage, totalPages).map((item, index) =>
-                                        item === "..." ? (
-                                            <PaginationItem key={`ellipsis-${index}`}>
-                                                <span className="px-2 text-white/40">…</span>
-                                            </PaginationItem>
-                                        ) : (
-                                            <PaginationItem key={item}>
-                                                <PaginationLink
-                                                    isActive={item === currentPage}
-                                                    onClick={() => handlePageChange(item as number)}
-                                                    className={`cursor-pointer ${item === currentPage
+                    {loading ? (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <Card key={i} className="bg-white/10 border-white/10">
+                                    <Skeleton className="w-full aspect-video" />
+                                    <CardContent className="p-5">
+                                        <Skeleton className="h-6 w-3/4 mb-2" />
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-2/3 mt-2" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : paginatedPosts.length === 0 ? (
+                        <p className="text-gray-400">Aucune activité ne correspond à vos critères.</p>
+                    ) : (
+                        <>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {paginatedPosts.map((post) => {
+                                    const featuredImage =
+                                        post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
+                                    const youtubeThumb = getYouTubeThumbnail(
+                                        post.content.rendered
+                                    );
+                                    const imageUrl = featuredImage || youtubeThumb || null;
+                                    const date = new Date(post.date).toLocaleDateString(
+                                        "fr-FR",
+                                        {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                        }
+                                    );
+                                    const cleanTitle = cleanText(post.title.rendered);
+
+                                    const categoryLabel = getCategoryLabel(post);
+                                    const isVideo = categoryLabel === "Vidéo";
+
+                                    const downloadLink =
+                                        (post.acf as Record<string, unknown>)?.file ||
+                                        (post.acf as Record<string, unknown>)?.download_link ||
+                                        null;
+
+                                    return (
+                                        <Card
+                                            key={post.id}
+                                            className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden hover:shadow-2xl transition-shadow flex flex-col"
+                                        >
+                                            {imageUrl ? (
+                                                <div className="relative w-full aspect-video overflow-hidden">
+                                                    <Image
+                                                        src={imageUrl}
+                                                        alt={cleanTitle}
+                                                        fill
+                                                        priority
+                                                        className="object-cover"
+                                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                                        loading="eager"
+                                                    />
+                                                    {isVideo && (
+                                                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                                            <PlayCircle className="w-16 h-16 text-white/80 drop-shadow-lg" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="w-full aspect-video bg-white/5 flex items-center justify-center">
+                                                    <span className="text-gray-500 text-sm">
+                                                        Image non disponible
+                                                    </span>
+                                                </div>
+                                            )}
+                                            <CardContent className="p-5 flex flex-col flex-1">
+                                                <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                                                    <Badge
+                                                        variant="secondary"
+                                                        className="text-xs bg-cyan-500/20 text-cyan-300 border-none"
+                                                    >
+                                                        {categoryLabel}
+                                                    </Badge>
+                                                    <Calendar className="w-4 h-4" />
+                                                    <span>{date}</span>
+                                                </div>
+                                                <h3
+                                                    className="text-white text-xl font-bold mb-2 line-clamp-2"
+                                                    style={{ fontFamily: "'Poppins', sans-serif" }}
+                                                >
+                                                    {cleanTitle}
+                                                </h3>
+                                                {post.excerpt?.rendered && (
+                                                    <p
+                                                        className="text-gray-300 text-sm line-clamp-3 flex-1"
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: cleanText(post.excerpt.rendered),
+                                                        }}
+                                                    />
+                                                )}
+                                                <div className="flex items-center gap-3 mt-4">
+                                                    <Link
+                                                        href={`/others/${post.slug}`}
+                                                        className="inline-block text-cyan-300 hover:text-cyan-200 text-sm font-medium transition"
+                                                    >
+                                                        Lire la suite{" "}
+                                                        <MdArrowRightAlt className="inline-block" />
+                                                    </Link>
+                                                    {downloadLink && (
+                                                        <Link
+                                                            href={downloadLink}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-1 text-sm text-emerald-300 hover:text-emerald-200 transition"
+                                                        >
+                                                            <Download className="w-4 h-4" />
+                                                            Télécharger
+                                                        </Link>
+                                                    )}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    );
+                                })}
+                            </div>
+
+                            {totalPages > 1 && (
+                                <Pagination className="mt-10">
+                                    <PaginationContent>
+                                        <PaginationItem>
+                                            <PaginationPrevious
+                                                onClick={() => handlePageChange(currentPage - 1)}
+                                                text="Précédent"
+                                                className={
+                                                    currentPage === 1
+                                                        ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
+                                                        : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                                }
+                                            />
+                                        </PaginationItem>
+
+                                        {getPaginationItems(currentPage, totalPages).map((item, index) =>
+                                            item === "..." ? (
+                                                <PaginationItem key={`ellipsis-${index}`}>
+                                                    <span className="px-2 text-white/40">…</span>
+                                                </PaginationItem>
+                                            ) : (
+                                                <PaginationItem key={item}>
+                                                    <PaginationLink
+                                                        isActive={item === currentPage}
+                                                        onClick={() => handlePageChange(item as number)}
+                                                        className={`cursor-pointer ${item === currentPage
                                                             ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30 border-transparent hover:bg-cyan-600"
                                                             : "text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20"
-                                                        }`}
-                                                >
-                                                    {item}
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        )
-                                    )}
+                                                            }`}
+                                                    >
+                                                        {item}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            )
+                                        )}
 
-                                    <PaginationItem>
-                                        <PaginationNext
-                                            onClick={() => handlePageChange(currentPage + 1)}
-                                            text="Suivant"
-                                            className={
-                                                currentPage === totalPages
-                                                    ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
-                                                    : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
-                                            }
-                                        />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
-                        )}
-                    </>
-                )}
+                                        <PaginationItem>
+                                            <PaginationNext
+                                                onClick={() => handlePageChange(currentPage + 1)}
+                                                text="Suivant"
+                                                className={
+                                                    currentPage === totalPages
+                                                        ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
+                                                        : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                                }
+                                            />
+                                        </PaginationItem>
+                                    </PaginationContent>
+                                </Pagination>
+                            )}
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

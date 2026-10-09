@@ -21,6 +21,9 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ExtendedPost } from "@/types/pressAreaType";
+import JsonLd from "@/components/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,6 +59,26 @@ export default function PressClient() {
         }
 
         return { ...post, isFeatured, imageUrl };
+    };
+
+    const breadcrumb = buildBreadcrumbJsonLd([
+        { name: "Accueil", url: SITE_URL },
+        { name: "Espace de Presse", url: `${SITE_URL}/press-area` },
+    ]);
+
+    const webPageJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "Espace de Presse — Sénat de Madagascar",
+        description:
+            "Retrouvez tous les communiqués et actualités officielles du Sénat de Madagascar.",
+        url: `${SITE_URL}/press-area`,
+        inLanguage: "fr-FR",
+        isPartOf: {
+            "@type": "WebSite",
+            name: "Sénat de Madagascar",
+            url: SITE_URL,
+        },
     };
 
     useEffect(() => {
@@ -175,175 +198,179 @@ export default function PressClient() {
     };
 
     return (
-        <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="mb-12"
-                >
-                    <div className="flex gap-1 mb-4" style={{ height: 3 }}>
-                        <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
-                    </div>
-                    <h1 className="text-white text-4xl font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                        Espace de Presse
-                    </h1>
-                    <p className="text-gray-300 text-lg mt-2 max-w-2xl">
-                        Retrouvez tous les communiqués et actualités officielles du Sénat.
-                    </p>
-                </motion.div>
-
-                <motion.form
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    onSubmit={handleSearch}
-                    className="flex flex-col sm:flex-row gap-3 mb-8 max-w-md"
-                >
-                    <Input
-                        type="text"
-                        placeholder="Rechercher dans toutes les actualités..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus-visible:ring-cyan-400/50"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                    />
-                    <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition flex items-center gap-2">
-                        <Search size={18} />
-                        Rechercher
-                    </Button>
-                </motion.form>
-
-                <section className="mb-16">
-                    <motion.h2
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="text-2xl font-bold mb-6 flex items-center gap-3"
-                        style={{ color: EMERALD, fontFamily: "'Poppins', sans-serif" }}
-                    >
-                        <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
-                        À la une
-                    </motion.h2>
-                    {loadingFeatured ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {renderSkeletons()}
-                        </div>
-                    ) : paginatedFeatured.length === 0 ? (
-                        <p className="text-gray-400">Aucun article à la une.</p>
-                    ) : (
-                        <motion.div
-                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate="visible"
-                        >
-                            {paginatedFeatured.map((post) => (
-                                <ArticleCard key={post.id} post={post} />
-                            ))}
-                        </motion.div>
-                    )}
-                </section>
-
-                <section className="mb-12">
-                    <motion.h2
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        className="text-2xl font-bold mb-6 flex items-center gap-3"
-                        style={{ color: EMERALD, fontFamily: "'Poppins', sans-serif" }}
-                    >
-                        <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
-                        Toutes les actualités
-                        {!loadingRegular && (
-                            <span className="text-sm font-normal text-gray-400 ml-2">
-                                ({filteredRegular.length} article{filteredRegular.length > 1 ? 's' : ''})
-                            </span>
-                        )}
-                    </motion.h2>
-
-                    {loadingRegular ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {renderSkeletons()}
-                        </div>
-                    ) : paginatedRegular.length === 0 ? (
-                        <p className="text-gray-400">Aucune actualité.</p>
-                    ) : (
-                        <motion.div
-                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate="visible"
-                        >
-                            {paginatedRegular.map((post) => (
-                                <ArticleCard key={post.id} post={post} />
-                            ))}
-                        </motion.div>
-                    )}
-                </section>
-
-                {totalPages > 1 && (
+        <>
+            <JsonLd data={breadcrumb} />
+            <JsonLd data={webPageJsonLd} />
+            <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
+                <div className="max-w-7xl mx-auto">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.5 }}
-                        className="mt-8"
+                        transition={{ duration: 0.6 }}
+                        className="mb-12"
                     >
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious
-                                        onClick={handlePrev}
-                                        text="Précédent"
-                                        className={
-                                            currentPage === 1
-                                                ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
-                                                : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
-                                        }
-                                    />
-                                </PaginationItem>
-
-                                {getPageNumbers().map((page, index) => (
-                                    page === "..." ? (
-                                        <PaginationItem key={`ellipsis-${index}`}>
-                                            <PaginationEllipsis className="text-white/40" />
-                                        </PaginationItem>
-                                    ) : (
-                                        <PaginationItem key={index}>
-                                            <PaginationLink
-                                                isActive={page === currentPage}
-                                                onClick={() => goToPage(page)}
-                                                className={
-                                                    page === currentPage
-                                                        ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30 border-transparent hover:bg-cyan-600"
-                                                        : "text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
-                                                }
-                                            >
-                                                {page}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    )
-                                ))}
-
-                                <PaginationItem>
-                                    <PaginationNext
-                                        onClick={handleNext}
-                                        text="Suivant"
-                                        className={
-                                            currentPage === totalPages
-                                                ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
-                                                : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
-                                        }
-                                    />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                            <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+                        </div>
+                        <h1 className="text-white text-4xl font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                            Espace de Presse
+                        </h1>
+                        <p className="text-gray-300 text-lg mt-2 max-w-2xl">
+                            Retrouvez tous les communiqués et actualités officielles du Sénat.
+                        </p>
                     </motion.div>
-                )}
+
+                    <motion.form
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        onSubmit={handleSearch}
+                        className="flex flex-col sm:flex-row gap-3 mb-8 max-w-md"
+                    >
+                        <Input
+                            type="text"
+                            placeholder="Rechercher dans toutes les actualités..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-300 focus-visible:ring-cyan-400/50"
+                            style={{ fontFamily: "'Poppins', sans-serif" }}
+                        />
+                        <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition flex items-center gap-2">
+                            <Search size={18} />
+                            Rechercher
+                        </Button>
+                    </motion.form>
+
+                    <section className="mb-16">
+                        <motion.h2
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="text-2xl font-bold mb-6 flex items-center gap-3"
+                            style={{ color: EMERALD, fontFamily: "'Poppins', sans-serif" }}
+                        >
+                            <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
+                            À la une
+                        </motion.h2>
+                        {loadingFeatured ? (
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {renderSkeletons()}
+                            </div>
+                        ) : paginatedFeatured.length === 0 ? (
+                            <p className="text-gray-400">Aucun article à la une.</p>
+                        ) : (
+                            <motion.div
+                                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="visible"
+                            >
+                                {paginatedFeatured.map((post) => (
+                                    <ArticleCard key={post.id} post={post} />
+                                ))}
+                            </motion.div>
+                        )}
+                    </section>
+
+                    <section className="mb-12">
+                        <motion.h2
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                            className="text-2xl font-bold mb-6 flex items-center gap-3"
+                            style={{ color: EMERALD, fontFamily: "'Poppins', sans-serif" }}
+                        >
+                            <span className="inline-block w-1 h-6 bg-emerald-500 rounded-full" />
+                            Toutes les actualités
+                            {!loadingRegular && (
+                                <span className="text-sm font-normal text-gray-400 ml-2">
+                                    ({filteredRegular.length} article{filteredRegular.length > 1 ? 's' : ''})
+                                </span>
+                            )}
+                        </motion.h2>
+
+                        {loadingRegular ? (
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {renderSkeletons()}
+                            </div>
+                        ) : paginatedRegular.length === 0 ? (
+                            <p className="text-gray-400">Aucune actualité.</p>
+                        ) : (
+                            <motion.div
+                                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="visible"
+                            >
+                                {paginatedRegular.map((post) => (
+                                    <ArticleCard key={post.id} post={post} />
+                                ))}
+                            </motion.div>
+                        )}
+                    </section>
+
+                    {totalPages > 1 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.5 }}
+                            className="mt-8"
+                        >
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            onClick={handlePrev}
+                                            text="Précédent"
+                                            className={
+                                                currentPage === 1
+                                                    ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
+                                                    : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                            }
+                                        />
+                                    </PaginationItem>
+
+                                    {getPageNumbers().map((page, index) => (
+                                        page === "..." ? (
+                                            <PaginationItem key={`ellipsis-${index}`}>
+                                                <PaginationEllipsis className="text-white/40" />
+                                            </PaginationItem>
+                                        ) : (
+                                            <PaginationItem key={index}>
+                                                <PaginationLink
+                                                    isActive={page === currentPage}
+                                                    onClick={() => goToPage(page)}
+                                                    className={
+                                                        page === currentPage
+                                                            ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30 border-transparent hover:bg-cyan-600"
+                                                            : "text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                                    }
+                                                >
+                                                    {page}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        )
+                                    ))}
+
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            onClick={handleNext}
+                                            text="Suivant"
+                                            className={
+                                                currentPage === totalPages
+                                                    ? "pointer-events-none opacity-50 text-gray-400 border-gray-400 bg-transparent"
+                                                    : "cursor-pointer text-gray-300 hover:text-white border border-gray-400 hover:border-cyan-400 hover:bg-cyan-500/20 bg-transparent"
+                                            }
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
+                        </motion.div>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText, formatDate } from "@/utils/utility";
 import { FileText, ArrowRight, Calendar } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 interface QuestionItem {
     id: number;
@@ -52,8 +55,30 @@ export default function QuestionsClient({
     const cleanContent = content ? cleanText(content) : "";
     const hasContent = cleanContent.trim().length > 0;
 
+    const breadcrumb = buildBreadcrumbJsonLd([
+        { name: "Accueil", url: SITE_URL },
+        { name: "Travaux parlementaires", url: `${SITE_URL}/parliamentary-proceedings` },
+        {
+            name: "Questions écrites",
+            url: `${SITE_URL}/parliamentary-proceedings/written-questions`,
+        },
+    ]);
+
+    const webPageJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: `${cleanTitle || "Questions écrites"} — Sénat de Madagascar`,
+        description:
+            "Questions adressées au Gouvernement par les Sénateurs de Madagascar.",
+        url: `${SITE_URL}/parliamentary-proceedings/written-questions`,
+        inLanguage: "fr-FR",
+        isPartOf: { "@type": "WebSite", name: "Sénat de Madagascar", url: SITE_URL },
+    };
+
     return (
         <>
+            <JsonLd data={breadcrumb} />
+            <JsonLd data={webPageJsonLd} />
             <Card className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden shadow-2xl mb-8">
                 <CardContent className="p-6 md:p-10">
                     <div className="mb-6">
