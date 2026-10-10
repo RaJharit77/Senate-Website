@@ -13,21 +13,7 @@ import { FileText, ArrowRight, Calendar } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
-
-interface QuestionItem {
-    id: number;
-    slug: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    link: string;
-}
-
-interface QuestionsEcritesClientProps {
-    content: string;
-    title: string;
-    questions: QuestionItem[];
-}
+import { QuestionsEcritesClientProps } from "@/types/questionsType";
 
 const containerVariants = {
     hidden: { opacity: 0 },
