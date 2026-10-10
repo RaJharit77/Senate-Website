@@ -3,8 +3,9 @@ import Image from "next/image";
 import { presidentMeta } from "@/utils/data/president";
 import { PageHeader } from "@/components/about/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import NotFoundPage from "@/app/not-found";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';
 

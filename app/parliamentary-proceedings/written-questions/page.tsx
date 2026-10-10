@@ -1,10 +1,11 @@
 import { getWrittenQuestions, getGouvernementPosts } from "@/lib/api";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText } from "@/utils/utility";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import QuestionsEcritesClient from "@/components/questions/QuestionsClient";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 

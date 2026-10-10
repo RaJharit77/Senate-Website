@@ -4,6 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { StructuresClientProps } from "@/types/structureType";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText } from "@/utils/utility";
+import JsonLd from "@/components/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export default function StructuresClient({
     content,
@@ -13,30 +16,50 @@ export default function StructuresClient({
     const cleanTitle = cleanText(title);
     const cleanContent = content ? cleanText(content) : "";
 
-    return (
-        <Card className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden shadow-2xl">
-            <CardContent className="p-6 md:p-10">
-                <div className="mb-8 pb-6 border-b border-white/10">
-                    <div className="flex gap-1 mb-4" style={{ height: 3 }}>
-                        <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
-                        <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
-                    </div>
-                    <h2
-                        className="text-white text-2xl md:text-3xl font-bold font-poppins leading-tight"
-                    >
-                        {cleanTitle || "Structure administrative"}
-                    </h2>
-                    {updatedAt && (
-                        <p className="text-white/40 text-sm mt-2 font-poppins">
-                            Mis à jour le {updatedAt}
-                        </p>
-                    )}
-                </div>
+    const breadcrumb = buildBreadcrumbJsonLd([
+        { name: "Accueil", url: SITE_URL },
+        { name: "À propos du Sénat", url: `${SITE_URL}/about` },
+        { name: "Structures", url: `${SITE_URL}/about/structures` },
+    ]);
 
-                {cleanContent ? (
-                    <div
-                        className="
+    const webPageJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: `${cleanTitle || "Structure administrative"} — Sénat de Madagascar`,
+        description:
+            "Organisation administrative et structures internes du Sénat de Madagascar.",
+        url: `${SITE_URL}/about/structures`,
+        inLanguage: "fr-FR",
+        isPartOf: { "@type": "WebSite", name: "Sénat de Madagascar", url: SITE_URL },
+    };
+
+    return (
+        <>
+            <JsonLd data={breadcrumb} />
+            <JsonLd data={webPageJsonLd} />
+            <Card className="bg-white/10 backdrop-blur-sm border-white/10 overflow-hidden shadow-2xl">
+                <CardContent className="p-6 md:p-10">
+                    <div className="mb-8 pb-6 border-b border-white/10">
+                        <div className="flex gap-1 mb-4" style={{ height: 3 }}>
+                            <div className="w-8 rounded-full" style={{ backgroundColor: WHITE }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: RED }} />
+                            <div className="w-8 rounded-full" style={{ backgroundColor: EMERALD }} />
+                        </div>
+                        <h2
+                            className="text-white text-2xl md:text-3xl font-bold font-poppins leading-tight"
+                        >
+                            {cleanTitle || "Structure administrative"}
+                        </h2>
+                        {updatedAt && (
+                            <p className="text-white/40 text-sm mt-2 font-poppins">
+                                Mis à jour le {updatedAt}
+                            </p>
+                        )}
+                    </div>
+
+                    {cleanContent ? (
+                        <div
+                            className="
                             wp-senate-content font-poppins prose prose-invert max-w-none
                             [&_h1]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-4
                             [&_h2]:text-cyan-300 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4
@@ -58,17 +81,18 @@ export default function StructuresClient({
                             [&_hr]:border-white/10 [&_hr]:my-8
                             [&_blockquote]:border-l-4 [&_blockquote]:border-l-cyan-400 [&_blockquote]:pl-4
                             [&_blockquote]:italic [&_blockquote]:text-gray-400"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                        dangerouslySetInnerHTML={{ __html: cleanContent }}
-                    />
-                ) : (
-                    <div className="py-16 text-center">
-                        <p className="text-white/40 italic font-poppins">
-                            Aucun contenu n&apos;est disponible pour le moment.
-                        </p>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                            style={{ fontFamily: "'Poppins', sans-serif" }}
+                            dangerouslySetInnerHTML={{ __html: cleanContent }}
+                        />
+                    ) : (
+                        <div className="py-16 text-center">
+                            <p className="text-white/40 italic font-poppins">
+                                Aucun contenu n&apos;est disponible pour le moment.
+                            </p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </>
     );
 }

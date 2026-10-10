@@ -5,9 +5,10 @@ import type { WpPost } from "@/lib/wp-types";
 import { formatDate } from "@/utils/utility";
 import type { ActivityCategory, SimpleActivityItem } from "@/types/internationalType";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { SimpleActivityGrid } from "@/components/international/SimpleActivityGrid";
 import { delay } from "@/lib/delay";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = buildMetadata({
     title: "Groupe Interparlementaire d'Amitié du Sénat",

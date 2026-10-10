@@ -1,11 +1,12 @@
 import { getStructureAdministrative } from "@/lib/api";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText } from "@/utils/utility";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import StructuresClient from "@/components/structures/StructuresClient";
 import { Building2, Users, Briefcase } from "lucide-react";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 

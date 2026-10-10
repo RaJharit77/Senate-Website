@@ -8,11 +8,12 @@ import {getHistoryIntro} from "@/lib/api";
 import { RED, WHITE, EMERALD } from "@/utils/colors";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 import JsonLd from "@/components/JsonLd";
-import { buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
 import { TABS } from "@/utils/data/historical";
 import { cleanText } from "@/utils/utility";
 import { ContentMap} from "@/types/historyType";
 import { buildContentMap, EMPTY_CONTENT, REPUBLIC_FETCHERS, REPUBLIC_IDS } from "@/utils/history";
+import { SITE_URL } from "@/lib/site";
 
 export default function HistoricalClient() {
     const [contents, setContents] = useState<ContentMap>(EMPTY_CONTENT);

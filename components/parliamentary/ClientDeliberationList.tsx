@@ -19,6 +19,9 @@ import { DeliberationTable } from "./DeliberationTable";
 import { cleanText } from "@/utils/utility";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { ClientDeliberationListProps } from "@/types/parliamentaryType";
+import JsonLd from "@/components/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export function ClientDeliberationList({
   posts,
@@ -43,6 +46,33 @@ export function ClientDeliberationList({
   }, [posts, searchQuery]);
 
   const total = filteredPosts.length;
+
+  const breadcrumb = buildBreadcrumbJsonLd([
+    { name: "Accueil", url: SITE_URL },
+    {
+      name: "Travaux parlementaires",
+      url: `${SITE_URL}/parliamentary-proceedings`,
+    },
+    {
+      name: "Délibérations et ordres du jour",
+      url: `${SITE_URL}/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda`,
+    },
+  ]);
+
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Délibérations et ordres du jour — Sénat de Madagascar",
+    description:
+      "Retrouvez les délibérations et ordres du jour des travaux parlementaires du Sénat de Madagascar.",
+    url: `${SITE_URL}/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda`,
+    inLanguage: "fr-FR",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Sénat de Madagascar",
+      url: SITE_URL,
+    },
+  };
 
   const handleSearchChange = (value: string) => {
     previousSearchRef.current = searchQuery;
@@ -147,23 +177,27 @@ export function ClientDeliberationList({
 
   if (total === 0 || !currentPost) {
     return (
-      <div className="font-poppins">
-        {searchPanel}
-        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-md sm:p-16">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5">
-            <SearchX className="h-5 w-5 text-white/40" />
+      <>
+        <JsonLd data={breadcrumb} />
+        <JsonLd data={webPageJsonLd} />
+        <div className="font-poppins">
+          {searchPanel}
+          <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-md sm:p-16">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5">
+              <SearchX className="h-5 w-5 text-white/40" />
+            </div>
+            <p className="max-w-sm text-white/50">
+              Aucune délibération ne correspond à votre recherche.
+            </p>
+            <button
+              onClick={clearSearch}
+              className="rounded text-sm text-cyan-300 underline underline-offset-4 transition-colors hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50"
+            >
+              Réinitialiser la recherche
+            </button>
           </div>
-          <p className="max-w-sm text-white/50">
-            Aucune délibération ne correspond à votre recherche.
-          </p>
-          <button
-            onClick={clearSearch}
-            className="rounded text-sm text-cyan-300 underline underline-offset-4 transition-colors hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50"
-          >
-            Réinitialiser la recherche
-          </button>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -171,82 +205,86 @@ export function ClientDeliberationList({
   const hasTable = currentPost.content.rendered.includes("<table");
 
   return (
-    <div className="font-poppins">
-      {searchPanel}
+    <>
+      <JsonLd data={breadcrumb} />
+      <JsonLd data={webPageJsonLd} />
+      <div className="font-poppins">
+        {searchPanel}
 
-      <div className="mb-8">
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <h2 className="flex items-center gap-3 text-xl font-bold leading-snug text-white sm:text-2xl">
-            <span className="inline-block h-6 w-1 shrink-0 rounded-full bg-emerald-400 sm:h-7" />
-            {cleanTitle}
-          </h2>
-          <Link
-            href={`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${currentPost.slug}`}
-            onClick={() => {
-              setSearchQuery("");
-              setCanUndo(false);
-            }}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-cyan-300 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </Link>
-        </div>
-        <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 shadow-2xl backdrop-blur-md">
-          <div className="flex h-[3px] w-full" aria-hidden="true">
-            <div className="flex-1" style={{ backgroundColor: WHITE }} />
-            <div className="flex-1" style={{ backgroundColor: RED }} />
-            <div className="flex-1" style={{ backgroundColor: EMERALD }} />
+        <div className="mb-8">
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+            <h2 className="flex items-center gap-3 text-xl font-bold leading-snug text-white sm:text-2xl">
+              <span className="inline-block h-6 w-1 shrink-0 rounded-full bg-emerald-400 sm:h-7" />
+              {cleanTitle}
+            </h2>
+            <Link
+              href={`/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${currentPost.slug}`}
+              onClick={() => {
+                setSearchQuery("");
+                setCanUndo(false);
+              }}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-cyan-300 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Link>
           </div>
-          <CardContent className="p-4 md:p-8">
-            {hasTable ? (
-              <DeliberationTable tableHtml={currentPost.content.rendered} showPagination={true} />
-            ) : (
-              <div
-                className="prose prose-invert max-w-none text-white/80 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-cyan-300 [&_em]:text-cyan-200"
-                dangerouslySetInnerHTML={{ __html: currentPost.content.rendered }}
-              />
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {total > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-4 sm:gap-5">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrev}
-            disabled={safeIndex === 0}
-            className="group rounded-xl border-white/15 bg-transparent text-cyan-300/90 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 disabled:opacity-30"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            Précédent
-          </Button>
-
-          <div className="flex shrink-0 flex-col items-center gap-1.5">
-            <span className="text-sm tabular-nums text-white/60">
-              {safeIndex + 1} / {total}
-            </span>
-            <div className="h-1 w-20 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-              <div
-                className="h-full rounded-full bg-linear-to-r from-cyan-400 to-emerald-400 transition-[width] duration-300"
-                style={{ width: `${progress}%` }}
-              />
+          <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 shadow-2xl backdrop-blur-md">
+            <div className="flex h-[3px] w-full" aria-hidden="true">
+              <div className="flex-1" style={{ backgroundColor: WHITE }} />
+              <div className="flex-1" style={{ backgroundColor: RED }} />
+              <div className="flex-1" style={{ backgroundColor: EMERALD }} />
             </div>
-          </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleNext}
-            disabled={safeIndex === total - 1}
-            className="group rounded-xl border-white/15 bg-transparent text-cyan-300/90 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 disabled:opacity-30"
-          >
-            Suivant
-            <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Button>
+            <CardContent className="p-4 md:p-8">
+              {hasTable ? (
+                <DeliberationTable tableHtml={currentPost.content.rendered} showPagination={true} />
+              ) : (
+                <div
+                  className="prose prose-invert max-w-none text-white/80 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-cyan-300 [&_em]:text-cyan-200"
+                  dangerouslySetInnerHTML={{ __html: currentPost.content.rendered }}
+                />
+              )}
+            </CardContent>
+          </Card>
         </div>
-      )}
-    </div>
+
+        {total > 1 && (
+          <div className="mt-8 flex items-center justify-center gap-4 sm:gap-5">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrev}
+              disabled={safeIndex === 0}
+              className="group rounded-xl border-white/15 bg-transparent text-cyan-300/90 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 disabled:opacity-30"
+            >
+              <ChevronLeft className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+              Précédent
+            </Button>
+
+            <div className="flex shrink-0 flex-col items-center gap-1.5">
+              <span className="text-sm tabular-nums text-white/60">
+                {safeIndex + 1} / {total}
+              </span>
+              <div className="h-1 w-20 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
+                <div
+                  className="h-full rounded-full bg-linear-to-r from-cyan-400 to-emerald-400 transition-[width] duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNext}
+              disabled={safeIndex === total - 1}
+              className="group rounded-xl border-white/15 bg-transparent text-cyan-300/90 transition-colors hover:border-cyan-400/30 hover:bg-white/10 hover:text-cyan-200 disabled:opacity-30"
+            >
+              Suivant
+              <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Button>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

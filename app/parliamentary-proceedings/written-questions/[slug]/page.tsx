@@ -1,5 +1,5 @@
 import { getGouvernementPosts } from "@/lib/api";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { cleanText, formatDate } from "@/utils/utility";
 import NotFoundPage from "@/app/not-found";
@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 

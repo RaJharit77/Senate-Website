@@ -8,7 +8,8 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { PARENT_CATEGORY_ID } from "@/constants/constants";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = buildMetadata({
     title: "Travaux législatifs du Sénat",

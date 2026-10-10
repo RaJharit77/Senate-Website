@@ -3,7 +3,8 @@ import { FunctioningSection } from "@/components/about/FunctioningSection";
 import { getPageBySlug } from "@/lib/api";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 

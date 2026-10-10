@@ -4,7 +4,8 @@ import { TextesSection } from "@/components/about/TextesSection";
 import { getPageBySlug } from "@/lib/api";
 import { PageHeader } from "@/components/about/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';
 

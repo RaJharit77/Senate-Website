@@ -2,8 +2,9 @@ import { CYAN, EMERALD, RED, WHITE } from "@/utils/colors";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
 import JsonLd from "@/components/JsonLd";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = buildMetadata({
     title: "Contact – Sénat de Madagascar",

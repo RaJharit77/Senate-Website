@@ -12,10 +12,11 @@ import {
     Briefcase,
     Users,
 } from "lucide-react";
-import { buildMetadata, buildBreadcrumbJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import JsonLd from "@/components/JsonLd";
 import { getSenatorDetail } from "@/lib/wp-senators";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
