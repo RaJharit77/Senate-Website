@@ -3,19 +3,8 @@
 import { useState } from "react";
 import { Phone } from "lucide-react";
 import Link from "next/link";
+import { HiddenPhoneNumberProps } from "@/types/hiddenPhoneNumber";
 
-interface HiddenPhoneNumberProps {
-    fullNumber: string;
-    maskedNumber: string;
-    accentColor: string;
-    variant: "header" | "card";
-}
-
-/**
- * Numéro de téléphone masqué par défaut (protection anti-scraping), révélé
- * au survol. Deux variantes : "header" (lien WhatsApp cliquable) et "card"
- * (affichage simple, non cliquable).
- */
 export default function HiddenPhoneNumber({
     fullNumber,
     maskedNumber,
@@ -24,9 +13,7 @@ export default function HiddenPhoneNumber({
 }: HiddenPhoneNumberProps) {
     const [isHovered, setIsHovered] = useState(false);
 
-    // Variante barre d'en-tête : lien cliquable vers WhatsApp.
     if (variant === "header") {
-        // wa.me attend un numéro E.164 sans le "+" de tête.
         const digitsOnly = fullNumber.replace(/[^\d+]/g, "");
         return (
             <Link
@@ -58,7 +45,6 @@ export default function HiddenPhoneNumber({
         );
     }
 
-    // Variante carte : affichage simple, non cliquable.
     return (
         <div
             className="hidden lg:flex items-start gap-4"

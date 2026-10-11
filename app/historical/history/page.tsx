@@ -10,6 +10,7 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { FaArrowAltCircleDown, FaArrowAltCircleRight } from "react-icons/fa";
 import { SITE_URL } from "@/lib/site";
+import { HERO_IMAGE } from "@/constants/image";
 
 export const dynamic = 'force-dynamic';
 
@@ -18,8 +19,6 @@ export const metadata = buildMetadata({
     description: "L'histoire détaillée du Sénat de Madagascar, de sa création à nos jours : évolutions institutionnelles, législatures et personnalités marquantes.",
     path: "/historical/history",
 });
-
-const HERO_IMAGE = "https://senat.mg/wp-content/uploads/2023/05/le-senat-1.jpg";
 
 export default async function HistoricalStoryPage() {
     const page = await getPageBySlug("historique-2");

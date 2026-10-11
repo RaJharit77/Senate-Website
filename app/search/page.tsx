@@ -4,16 +4,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { searchSite } from "@/lib/api";
 import Link from "next/link";
-import { cleanText, stripHtml } from "@/utils/utility";
-
-interface SearchResult {
-    id: string;
-    title: string;
-    excerpt: string;
-    date: string | null;
-    path: string;
-    source: string;
-}
+import { cleanText, stripHtml } from "@/utils/utilities";
+import { SearchResult } from "@/types/searchTypes";
 
 export const dynamic = 'force-dynamic';
 

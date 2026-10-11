@@ -37,3 +37,12 @@ export interface SearchSource {
     load: (params: Params) => Promise<WpPost[]>;
     resolve: (post: WpPostWithCategories) => ResolvedRoute | null;
 }
+
+export interface SearchResult {
+    id: string;
+    title: string;
+    excerpt: string;
+    date: string | null;
+    path: string;
+    source: string;
+}

@@ -1,3 +1,8 @@
+import { footerLinks } from "@/lib/navigations/footerLinks";
+import { navItems } from "@/lib/navigations/navigation";
+import { SiteMapEntry } from "@/types/chatbot";
+import { flattenNavItems, formatSiteMap, mergeFooterEntries } from "@/utils/utilities";
+
 // Autres
 export const CAT_VIDEO = 32;
 export const CAT_DIVERS = 33;
@@ -101,3 +106,21 @@ export const CAT_GOUVERNEMENT = 7;
 /*  Extrait & score de pertinence */
 export const SNIPPET_BEFORE = 100;
 export const SNIPPET_AFTER = 160;
+
+// Recherche interne du site (cf. searchSite() dans lib/api.ts).
+export const SEARCH_PATH = '/search?q=';
+export const SEARCH_API_PATH = '/api/search';
+
+export const CONTENT_SEARCH_TIMEOUT_MS = 3000;
+export const MAX_SNIPPETS = 5;
+export const MAX_EXCERPT_CHARS = 500;
+
+// Tours d'historique conservés pour le modèle.
+export const MAX_HISTORY_TURNS = 6;
+
+export const MIN_KEYWORD_LENGTH = 3;
+
+export const SITE_MAP_ENTRIES: SiteMapEntry[] = flattenNavItems(navItems);
+SITE_MAP_ENTRIES.push(...mergeFooterEntries(SITE_MAP_ENTRIES, footerLinks));
+export const SITE_MAP = formatSiteMap(SITE_MAP_ENTRIES);
+export const CONTENT_SOURCES_EXCLUDED = new Set(['Navigation du site']);

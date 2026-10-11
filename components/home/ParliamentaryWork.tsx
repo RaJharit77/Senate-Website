@@ -8,7 +8,7 @@ import { FileText, ArrowRight, Loader2 } from "lucide-react";
 import { CYAN, EMERALD, GREEN, RED, SKY_BLUE, WHITE } from "@/utils/colors";
 import { getPostsByCategory } from "@/lib/api";
 import { CAT_ORDRE_JOUR, CAT_LOIS } from "@/constants/constants";
-import { formatDate } from "@/utils/utility";
+import { formatDate } from "@/utils/utilities";
 import type { WpPost } from "@/lib/wp-types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

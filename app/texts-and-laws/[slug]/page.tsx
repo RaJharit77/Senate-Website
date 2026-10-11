@@ -1,6 +1,6 @@
 import { getTextAndLawBySlug } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { formatDate, cleanText } from "@/utils/utility";
+import { formatDate, cleanText } from "@/utils/utilities";
 import { ChevronLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +8,7 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import Image from "next/image";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `${title} – Textes et Lois du Sénat`,
         description,
         path: `/texts-and-laws/${slug}`,
-        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || LOGO_IMAGE,
     });
 }
 
@@ -48,7 +49,7 @@ export default async function TextAndLawDetailPage({ params }: { params: Promise
         title: cleanTitle,
         description: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || `Texte et loi du Sénat.`,
         url: `${SITE_URL}/texts-and-laws/${slug}`,
-        image: imageUrl || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: imageUrl || LOGO_IMAGE,
         datePublished: post.date,
         dateModified: post.modified ?? post.date,
         author: "Sénat de Madagascar",

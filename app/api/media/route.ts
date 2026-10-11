@@ -3,12 +3,6 @@ import { getAllChannelAndRadioMedia } from '@/lib/api';
 import { extractMediaItem } from '@/lib/media-mapper';
 import type { MediaItem } from '@/types/media';
 
-// GET /api/media                -> tous les types, triés par date décroissante
-// GET /api/media?type=youtube   -> uniquement les vidéos YouTube (CAT_VIDEO)
-// GET /api/media?type=video     -> uniquement les vidéos hébergées
-// GET /api/media?type=audio     -> uniquement les podcasts
-// GET /api/media?type=montage   -> uniquement les montages ("mise en boîte")
-// GET /api/media?per_page=20    -> transmis tel quel à WordPress pour chaque catégorie
 export async function GET(req: NextRequest) {
     const typeFilter = req.nextUrl.searchParams.get('type');
     const perPageParam = req.nextUrl.searchParams.get('per_page');

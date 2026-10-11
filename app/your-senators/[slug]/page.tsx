@@ -17,10 +17,9 @@ import { EMERALD, RED, WHITE } from "@/utils/colors";
 import JsonLd from "@/components/JsonLd";
 import { getSenatorDetail } from "@/lib/wp-senators";
 import { SITE_URL } from "@/lib/site";
+import { PageParams } from "@/types/senatorsType";
 
 export const dynamic = "force-dynamic";
-
-type PageParams = Promise<{ slug: string }>;
 
 export async function generateMetadata({
     params,

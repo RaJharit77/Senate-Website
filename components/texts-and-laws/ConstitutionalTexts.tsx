@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Scale, Calendar, ChevronRight } from "lucide-react";
 import { CYAN, WHITE } from "@/utils/colors";
-import { formatDate } from "@/utils/utility";
+import { formatDate } from "@/utils/utilities";
 import { ConstitutionalTextsProps } from "@/types/textsAndLaws";
 
 export function ConstitutionalTexts({ republiques, showAllLink = true }: ConstitutionalTextsProps) {

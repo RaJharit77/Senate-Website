@@ -23,9 +23,6 @@ describe('Chaîne TV / Radio', () => {
     it('/channel-tv-and-radio/live/tv charge sans erreur, quel que soit le statut', () => {
         cy.visit('/channel-tv-and-radio/live/tv');
         cy.contains('h1', 'Sénat TV – Direct').should('be.visible');
-        // Le message d'erreur réseau ne doit jamais apparaître juste parce
-        // qu'aucun direct n'est configuré : ce n'est pas une erreur, c'est
-        // un état normal.
         cy.contains('momentanément indisponible').should('not.exist');
     });
 
@@ -55,9 +52,7 @@ describe('Chaîne TV / Radio', () => {
 
         const labels = ['Chaîne YouTube', 'Vidéos', 'Podcasts', 'Mise en boîte', 'Tous'];
         labels.forEach((label) => {
-            // On cherche le bouton par son texte exact, avec un timeout réduit pour éviter les longues attentes
             cy.contains('button', label, { timeout: 3000 }).click();
-            // On vérifie que le titre de la page est toujours visible après le clic
             cy.contains('h1', 'Chaîne TV / Radio').should('be.visible');
         });
     });

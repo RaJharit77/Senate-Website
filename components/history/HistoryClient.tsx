@@ -10,7 +10,7 @@ import { HistoryTabs } from "@/components/history/HistoryTabs";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/seo";
 import { TABS } from "@/utils/data/historical";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { ContentMap} from "@/types/historyType";
 import { buildContentMap, EMPTY_CONTENT, REPUBLIC_FETCHERS, REPUBLIC_IDS } from "@/utils/history";
 import { SITE_URL } from "@/lib/site";

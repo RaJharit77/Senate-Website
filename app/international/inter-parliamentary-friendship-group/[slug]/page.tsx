@@ -1,5 +1,5 @@
 import { getPosts } from "@/lib/api";
-import { formatDate, cleanText } from "@/utils/utility";
+import { formatDate, cleanText } from "@/utils/utilities";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
@@ -8,6 +8,7 @@ import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `${title} – Groupe d'Amitié du Sénat`,
         description,
         path: `/international/inter-parliamentary-friendship-group/${slug}`,
-        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || LOGO_IMAGE,
     });
 }
 
@@ -51,7 +52,7 @@ export default async function FriendshipGroupArticlePage({ params }: { params: P
         title: cleanTitle,
         description: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || `Activité du Groupe d'Amitié.`,
         url: `${SITE_URL}/international/inter-parliamentary-friendship-group/${slug}`,
-        image: imageUrl || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: imageUrl || LOGO_IMAGE,
         datePublished: post.date,
         dateModified: post.modified ?? post.date,
         author: "Sénat de Madagascar",

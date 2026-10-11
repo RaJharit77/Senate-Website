@@ -12,7 +12,6 @@ describe('Tests de performance', () => {
             win.performance.measure('load', 'start', 'end');
             const measure = win.performance.getEntriesByName('load')[0];
             cy.log(`Temps de chargement : ${measure.duration.toFixed(0)}ms`);
-            // Seuil augmenté pour le développement local
             expect(measure.duration).to.be.lessThan(30000);
         });
     });

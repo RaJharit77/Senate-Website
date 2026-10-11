@@ -5,11 +5,12 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClientDeliberationList } from "@/components/parliamentary/ClientDeliberationList";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `${title} – Délibération du Sénat`,
         description,
         path: `/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${slug}`,
-        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || LOGO_IMAGE,
     });
 }
 
@@ -55,8 +56,7 @@ export default async function DeliberationArticlePage({
         { name: cleanTitle, url: `${SITE_URL}/parliamentary-proceedings/legislative-proceedings/deliberation-and-agenda/${slug}` },
     ]);
 
-    const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-        "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png";
+    const imageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || LOGO_IMAGE;
 
     const articleJsonLd = buildArticleJsonLd({
         title: cleanTitle,

@@ -674,13 +674,7 @@ export async function getPostsByCategorySlug(
         );
         return [];
     }
-    console.log(
-        `[getPostsByCategorySlug] "${slug}" → category id=${category.id}, count=${category.count}`,
-    );
-    const posts = await getPostsByCategory(category.id, params);
-    console.log(
-        `[getPostsByCategorySlug] "${slug}" (id=${category.id}) → ${posts.length} posts trouvés`,
-    );
+    const posts = await getPostsByCategory(category.id, params)
     return posts;
 }
 
@@ -817,7 +811,6 @@ export async function getPostBySlug(
 export async function getPostBySlugNoCache(
     slug: string,
 ): Promise<WpPost | null> {
-    console.log("[getPostBySlugNoCache] slug reçu :", slug);
 
     const endpoints = ["alaune", "actualite"];
     for (const type of endpoints) {
@@ -825,7 +818,6 @@ export async function getPostBySlugNoCache(
             const url = new URL(`${API_BASE}/${type}`);
             url.searchParams.set("slug", slug);
             url.searchParams.set("_embed", "true");
-            console.log(`[getPostBySlugNoCache] requête ${type} :`, url.toString());
 
             const res = await fetch(url.toString(), {
                 headers: {
@@ -837,12 +829,10 @@ export async function getPostBySlugNoCache(
             });
 
             if (!res.ok) {
-                console.log(`[getPostBySlugNoCache] ${type} status :`, res.status);
                 continue;
             }
 
             const data = await res.json();
-            console.log(`[getPostBySlugNoCache] ${type} trouvés :`, data.length);
             if (data.length > 0) {
                 return data[0];
             }

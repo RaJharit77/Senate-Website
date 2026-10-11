@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StructuresClientProps } from "@/types/structureType";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";

@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { DeliberationTable } from "./DeliberationTable";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import { ClientDeliberationListProps } from "@/types/parliamentaryType";
 import JsonLd from "@/components/JsonLd";

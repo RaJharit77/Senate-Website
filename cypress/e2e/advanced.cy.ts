@@ -16,7 +16,6 @@ describe('Advanced Tests – API Mocking, Edge Cases, Structured Data', () => {
 
     it('handles loading state for client-side components', () => {
         cy.visit('/historical');
-        // Attendre que le contenu soit chargé
         cy.get('.bg-white\\/10, .prose, .flex.flex-wrap.gap-3.mb-10', { timeout: 15000 }).should('be.visible');
     });
 
@@ -33,8 +32,8 @@ describe('Advanced Tests – API Mocking, Edge Cases, Structured Data', () => {
                         found = true;
                         break;
                     }
-                } catch {
-                    // ignore
+                } catch (error) {
+                    console.error('Invalid structured data JSON on script tag:', error);
                 }
             }
             expect(found).to.equal(true);

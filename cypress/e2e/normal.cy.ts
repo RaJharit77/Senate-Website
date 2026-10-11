@@ -9,21 +9,24 @@ describe('Normal Tests – Interactions & Dynamic Content', () => {
     });
 
     it('performs search and shows results', () => {
+        cy.viewport(1280, 800);
+
         cy.visit('/');
 
-        // Étape 1 : Ouvrir la barre de recherche en cliquant sur le bouton contenant "Rechercher"
-        cy.contains('button', /Rechercher/).first().click({ force: true });
+        cy.scrollTo('top');
 
-        // Étape 2 : Trouver l'input de recherche par son placeholder (plus fiable que data-testid)
-        cy.get('input[type="search"], input[placeholder*="Rechercher"]').first()
-            .should('be.visible', { timeout: 10000 })
-            .type('Sénat{enter}'); // Taper le texte + valider avec Entrée
+        cy.wait(200);
 
-        // Vérifications finales
+        cy.contains('button', /Rechercher/).first().trigger('click');
+
+        cy.get('[data-testid="search-input"]')
+            .filter(':visible')
+            .should('be.visible')
+            .type('Sénat{enter}');
+
         cy.url().should('include', '/search');
         cy.contains('Sénat').should('be.visible');
 
-        // Vérification de l'URL encodée (si vous voulez absolument garder votre regex)
         cy.url().then((url) => {
             expect(decodeURIComponent(url)).to.match(/\/search\?q=.*Sénat/);
         });

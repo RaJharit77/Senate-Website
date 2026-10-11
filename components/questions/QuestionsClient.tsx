@@ -8,26 +8,12 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { cleanText, formatDate } from "@/utils/utility";
+import { cleanText, formatDate } from "@/utils/utilities";
 import { FileText, ArrowRight, Calendar } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
-
-interface QuestionItem {
-    id: number;
-    slug: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    link: string;
-}
-
-interface QuestionsEcritesClientProps {
-    content: string;
-    title: string;
-    questions: QuestionItem[];
-}
+import { QuestionsEcritesClientProps } from "@/types/questionsType";
 
 const containerVariants = {
     hidden: { opacity: 0 },
