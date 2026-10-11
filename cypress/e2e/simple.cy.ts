@@ -16,13 +16,10 @@ describe('Simple Tests – Core Pages & Navigation', () => {
     });
 
     it('navigates to About and its subpages', () => {
-        // Déclencher le survol (ou le clic) pour ouvrir le menu déroulant
         cy.contains('À propos du Sénat').trigger('mouseover');
 
-        // Cliquer sur le premier sous-lien qui mène à la page À propos
         cy.contains('Missions et attributions').click();
 
-        // Vérification de la navigation
         cy.url().should('include', '/about');
         cy.contains('Missions et attributions').should('exist');
         cy.contains('Structures').should('exist');
