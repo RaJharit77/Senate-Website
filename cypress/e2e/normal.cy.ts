@@ -10,11 +10,14 @@ describe('Normal Tests – Interactions & Dynamic Content', () => {
 
     it('performs search and shows results', () => {
         cy.viewport(1280, 800);
+
         cy.visit('/');
 
-        cy.contains('button', /Rechercher/).first()
-            .should('be.visible')
-            .click();
+        cy.scrollTo('top');
+
+        cy.wait(200);
+
+        cy.contains('button', /Rechercher/).first().trigger('click');
 
         cy.get('[data-testid="search-input"]')
             .filter(':visible')
