@@ -8,6 +8,7 @@ import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `${title} – Activité du Président du Sénat`,
         description,
         path: `/international/presidents-activities/${slug}`,
-        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || LOGO_IMAGE,
     });
 }
 
@@ -33,7 +34,7 @@ async function getPostBySlug(slug: string) {
             if (result && result.length > 0) {
                 return result[0];
             }
-        } catch(error) {
+        } catch (error) {
             console.warn(`[PresidentActivityDetailPage] Échec du fetcher pour le slug "${slug}":`, error);
         }
     }
@@ -61,7 +62,7 @@ export default async function PresidentActivityDetailPage({ params }: { params: 
         title: cleanTitle,
         description: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || `Activité du Président du Sénat.`,
         url: `${SITE_URL}/international/presidents-activities/${slug}`,
-        image: imageUrl || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: imageUrl || LOGO_IMAGE,
         datePublished: post.date,
         dateModified: post.modified ?? post.date,
         author: "Président du Sénat de Madagascar",

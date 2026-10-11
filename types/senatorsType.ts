@@ -1,3 +1,5 @@
+export type PageParams = Promise<{ slug: string }>;
+
 export interface Senateur {
     id: string;
     name: string;

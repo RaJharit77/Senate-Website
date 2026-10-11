@@ -10,6 +10,7 @@ import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `${title} – Autres activités du Sénat`,
         description,
         path: `/others/${slug}`,
-        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || LOGO_IMAGE,
     });
 }
 
@@ -59,7 +60,7 @@ export default async function OtherArticlePage({ params }: { params: Promise<{ s
         title: cleanTitle,
         description: post.excerpt?.rendered?.replace(/<[^>]+>/g, '') || `Activité du Sénat.`,
         url: `${SITE_URL}/others/${slug}`,
-        image: imageUrl || "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: imageUrl || LOGO_IMAGE,
         datePublished: post.date,
         dateModified: post.modified ?? post.date,
         author: "Sénat de Madagascar",

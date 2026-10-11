@@ -6,6 +6,7 @@ import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import QuestionsEcritesClient from "@/components/questions/QuestionsClient";
 import { SITE_URL } from "@/lib/site";
+import { QuestionItem } from "@/types/questionsType";
 
 export const dynamic = "force-dynamic";
 
@@ -15,15 +16,6 @@ export const metadata = buildMetadata({
         "Questions écrites adressées au Gouvernement par les Sénateurs de Madagascar.",
     path: "/parliamentary-proceedings/written-questions",
 });
-
-interface QuestionItem {
-    id: number;
-    slug: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    link: string;
-}
 
 export default async function WrittenQuestionsPage() {
     const post = await getWrittenQuestions();

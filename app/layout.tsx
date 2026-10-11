@@ -9,18 +9,14 @@ import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next"
 import JsonLd from '@/components/JsonLd';
 import { LenisProvider } from '@/components/lenis/LenisProvider';
+import { SITE_URL } from '@/lib/site';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
-
 const inter = Inter({ subsets: ['latin'] });
-
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const siteName = 'Sénat de Madagascar';
 const title = 'Antenimierandoholona - Site web du Sénat de Madagascar';
-const siteUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'https://senat-de-madagascar.vercel.app';
 const defaultDescription = 'Site officiel du Sénat de Madagascar. Retrouvez les actualités, les travaux parlementaires, l\'histoire et les institutions de la République.';
 
 export const metadata: Metadata = {
@@ -29,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteName}`,
   },
   description: defaultDescription,
-  applicationName: 'Sénat de Madagascar',
+  applicationName: siteName,
   keywords: ['Sénat de Madagascar', 'Antenimierandoholona', 'Actualités', 'Travaux parlementaires', 'Histoire', 'Institutions', 'Législation', 'Contact'],
   icons: {
     icon: '/ico/favicon.jpeg',
@@ -40,10 +36,10 @@ export const metadata: Metadata = {
     siteName,
     title: title,
     description: defaultDescription,
-    url: siteUrl,
+    url: SITE_URL,
     images: [
       {
-        url: `${siteUrl}/og-image.jpg`,
+        url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: siteName,
@@ -56,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteName,
     description: defaultDescription,
-    images: [`${siteUrl}/og-image.jpg`],
+    images: [`${SITE_URL}/og-image.jpg`],
   },
   robots: {
     index: true,
@@ -70,7 +66,7 @@ export const metadata: Metadata = {
     google: process.env.GOOGLE_SITE_VERIFICATION || '',
   },
   alternates: {
-    canonical: siteUrl,
+    canonical: SITE_URL,
   },
 };
 
@@ -94,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             '@context': 'https://schema.org',
             '@type': 'GovernmentOrganization',
             name: 'Sénat de Madagascar',
-            url: siteUrl,
+            url: SITE_URL,
             logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
             contactPoint: {
               '@type': 'ContactPoint',
@@ -115,12 +111,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             '@context': 'https://schema.org',
             '@type': 'WebSite',
             name: 'Sénat de Madagascar',
-            url: siteUrl,
+            url: SITE_URL,
             potentialAction: {
               '@type': 'SearchAction',
               target: {
                 '@type': 'EntryPoint',
-                urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+                urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
               },
               'query-input': 'required name=search_term_string',
             },
@@ -131,7 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             '@context': 'https://schema.org',
             '@type': 'InstitutionalWebSite',
             name: 'Sénat de Madagascar',
-            url: siteUrl,
+            url: SITE_URL,
             logo: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
             contactPoint: {
               '@type': 'ContactPoint',
