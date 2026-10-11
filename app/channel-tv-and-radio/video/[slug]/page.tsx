@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { MdArrowBackIos } from 'react-icons/md';
 import { Metadata } from 'next';
 import { EMERALD, RED, WHITE } from '@/utils/colors';
-import { cleanText } from '@/utils/utility';
+import { cleanText } from '@/utils/utilities';
 import { notFound } from 'next/navigation';
 
 interface PageProps {

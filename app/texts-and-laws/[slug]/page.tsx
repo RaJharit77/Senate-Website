@@ -1,6 +1,6 @@
 import { getTextAndLawBySlug } from "@/lib/api";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { formatDate, cleanText } from "@/utils/utility";
+import { formatDate, cleanText } from "@/utils/utilities";
 import { ChevronLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

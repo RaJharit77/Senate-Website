@@ -1,7 +1,7 @@
 import { getPresidentActivities, getMedia } from "@/lib/api";
 import { resolvePostImage } from "@/lib/extractImage";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { formatDate } from "@/utils/utility";
+import { formatDate } from "@/utils/utilities";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { ActivityItem } from "@/types/internationalType";

@@ -5,7 +5,7 @@ import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getPosts } from "@/lib/api";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";

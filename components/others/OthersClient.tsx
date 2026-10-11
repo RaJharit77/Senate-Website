@@ -27,7 +27,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { CategoryType } from "@/types/categoryType";
-import { cleanText, getYouTubeThumbnail } from "@/utils/utility";
+import { cleanText, getYouTubeThumbnail } from "@/utils/utilities";
 import { MdArrowRightAlt } from "react-icons/md";
 import {
     CAT_DIVERS,

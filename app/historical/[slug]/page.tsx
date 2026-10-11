@@ -4,7 +4,7 @@ import { WHITE, RED, EMERALD } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSenatorBySlug } from "@/lib/api";
-import { formatDate, cleanText } from "@/utils/utility";
+import { formatDate, cleanText } from "@/utils/utilities";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { CYAN, EMERALD, GRAY, GREEN, RED, WHITE } from "@/utils/colors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { Slide } from "@/types/homeType";
 import { PLACEHOLDER_IMAGE, truncateExcerpt } from "@/utils/home";
 

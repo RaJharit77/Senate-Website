@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX } from 'lucide-react';
-import { cleanText } from '@/utils/utility';
+import { cleanText } from '@/utils/utilities';
 import { AudioPlayerProps } from '@/types/media';
 
 export default function AudioPlayer({ tracks, initialTrackIndex = 0, className = '' }: AudioPlayerProps) {

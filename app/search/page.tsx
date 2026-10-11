@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { searchSite } from "@/lib/api";
 import Link from "next/link";
-import { cleanText, stripHtml } from "@/utils/utility";
+import { cleanText, stripHtml } from "@/utils/utilities";
 
 interface SearchResult {
     id: string;

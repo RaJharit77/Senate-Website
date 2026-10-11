@@ -1,7 +1,7 @@
 import { getStructureAdministrative } from "@/lib/api";
 import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import StructuresClient from "@/components/structures/StructuresClient";

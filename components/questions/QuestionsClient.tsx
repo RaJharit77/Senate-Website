@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { cleanText, formatDate } from "@/utils/utility";
+import { cleanText, formatDate } from "@/utils/utilities";
 import { FileText, ArrowRight, Calendar } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/seo";

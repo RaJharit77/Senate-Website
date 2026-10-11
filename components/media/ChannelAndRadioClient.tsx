@@ -21,7 +21,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { MdArrowRightAlt } from "react-icons/md";
 import { perPage } from "@/constants/constants";
 import { detailHref, FILTER_LABELS, FILTER_OPTIONS } from "@/utils/media";

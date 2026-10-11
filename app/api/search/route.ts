@@ -5,7 +5,7 @@ import { MAX_RESULTS } from "@/constants/constants";
 import { ScoredResult, UnifiedSearchResult, WpPostWithCategories } from "@/types/searchTypes";
 import { MAX_QUERY_LENGTH, PER_SOURCE } from "@/utils/search";
 import { buildExcerpt, computeScore, getStaticNavResults, normalize, SOURCES, tokenize } from "@/utils/category";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 
 export const dynamic = "force-dynamic";
 

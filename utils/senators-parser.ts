@@ -1,4 +1,4 @@
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { Commission, Province, Senateur } from "@/types/senatorsType";
 
 /* Extraction depuis une page sénateur individuelle */

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { Article, NewsGridProps } from "@/types/homeType";
 import { PLACEHOLDER_IMAGE } from "@/utils/home";
 

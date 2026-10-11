@@ -3,7 +3,7 @@ import { resolvePostImage } from "@/lib/extractImage";
 import { ActivitiesFeed} from "@/components/international/ActivitiesFeed";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import type { WpPost } from "@/lib/wp-types";
-import { formatDate } from "@/utils/utility";
+import { formatDate } from "@/utils/utilities";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { delay } from "@/lib/delay";

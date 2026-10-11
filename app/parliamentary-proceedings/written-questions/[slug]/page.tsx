@@ -1,7 +1,7 @@
 import { getGouvernementPosts } from "@/lib/api";
 import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
-import { cleanText, formatDate } from "@/utils/utility";
+import { cleanText, formatDate } from "@/utils/utilities";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { Card, CardContent } from "@/components/ui/card";

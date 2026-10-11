@@ -7,3 +7,36 @@ export interface Message {
     role: 'user' | 'assistant';
     content: string;
 }
+
+export interface ChatMessage {
+    role: 'user' | 'assistant';
+    content: string;
+}
+
+export interface SiteMapEntry {
+    label: string;
+    path: string;
+    level: number;
+}
+
+/* ------------------------------------------------------------------------ */
+/* CONTENU RÉEL                                                             */
+/* ------------------------------------------------------------------------ */
+
+// Forme renvoyée par /api/search (UnifiedSearchResult), excerpt déjà nettoyé.
+export interface SearchApiResult {
+    id: string;
+    title: string;
+    excerpt: string;
+    date: string | null;
+    path: string;
+    source: string;
+}
+
+export interface ContentSnippet {
+    title: string;
+    path: string;
+    excerpt: string;
+    date: string | null;
+    source: string;
+}

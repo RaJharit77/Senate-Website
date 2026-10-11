@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClientDeliberationList } from "@/components/parliamentary/ClientDeliberationList";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";

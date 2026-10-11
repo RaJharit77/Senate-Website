@@ -12,7 +12,7 @@ import type {
     SenatorsApiPayload,
 } from "@/types/senatorsType";
 import { WPPage } from "@/types/wp-senators-types";
-import { cleanTitle, stripHtmls } from "@/utils/utility";
+import { cleanTitle, stripHtmls } from "@/utils/utilities";
 
 const EXCLUDED_SLUGS = new Set<string>([
     "rakotondrazafy-lalatiana",

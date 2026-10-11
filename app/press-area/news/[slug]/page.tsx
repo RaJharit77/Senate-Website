@@ -6,7 +6,7 @@ import { getPostBySlugNoCache } from "@/lib/api";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamic = 'force-dynamic';

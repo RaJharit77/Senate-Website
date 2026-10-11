@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { CYAN, WHITE } from "@/utils/colors";
-import { formatDate } from "@/utils/utility";
+import { formatDate } from "@/utils/utilities";
 import { ITEMS_PER_PAGES } from "@/constants/constants";
 import { TextAndLawsClientProps } from "@/types/textsAndLaws";
 import JsonLd from "@/components/JsonLd";

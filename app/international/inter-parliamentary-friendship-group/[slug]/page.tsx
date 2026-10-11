@@ -1,5 +1,5 @@
 import { getPosts } from "@/lib/api";
-import { formatDate, cleanText } from "@/utils/utility";
+import { formatDate, cleanText } from "@/utils/utilities";
 import { EMERALD, RED, WHITE } from "@/utils/colors";
 import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";

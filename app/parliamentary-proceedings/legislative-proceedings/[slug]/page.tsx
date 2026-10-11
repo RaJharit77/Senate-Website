@@ -5,7 +5,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DeliberationTable } from "@/components/parliamentary/DeliberationTable";
-import { cleanText } from "@/utils/utility";
+import { cleanText } from "@/utils/utilities";
 import { CAT_DELIBERATION, CAT_ORDRE_JOUR } from "@/constants/constants";
 import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
