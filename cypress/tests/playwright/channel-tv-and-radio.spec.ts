@@ -23,8 +23,6 @@ test.describe('Chaîne TV / Radio', () => {
         expect(response?.status()).toBe(200);
         await expect(page.getByRole('heading', { name: 'Sénat TV – Direct' })).toBeVisible();
 
-        // Jamais les deux messages en même temps ; le message d'erreur réseau
-        // ne doit jamais apparaître juste parce qu'aucun direct n'est configuré.
         await expect(page.getByText(/momentanément indisponible/)).not.toBeVisible();
     });
 
@@ -51,15 +49,12 @@ test.describe('Chaîne TV / Radio', () => {
         expect(body.sourceType).toBe('url');
     });
 
-    // ── Catalogue (filtres / recherche / détail) — inchangé sur le fond,
-    // seule la route a été corrigée. Libellés à reconfirmer, cf. avertissement en tête de fichier. ──
-
     test('les boutons de filtre ne cassent pas la page', async ({ page }) => {
         await page.goto('/channel-tv-and-radio');
 
         for (const label of ['Chaîne YouTube', 'Vidéos', 'Podcasts', 'Mise en boîte', 'Tous']) {
             const button = page.getByRole('button', { name: label, exact: true });
-            if ((await button.count()) === 0) continue; // libellé peut-être différent désormais
+            if ((await button.count()) === 0) continue;
             await button.click();
             await expect(page.getByRole('heading', { name: 'Chaîne TV / Radio' })).toBeVisible();
         }

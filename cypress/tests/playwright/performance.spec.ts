@@ -52,6 +52,6 @@ test.describe('Performance avec Playwright', () => {
         await page.goto('/');
         const loadTime = Date.now() - start;
         console.log(`Temps de chargement (3G) : ${loadTime}ms`);
-        expect(loadTime).toBeLessThan(25000); // 25s au lieu de 8s
+        expect(loadTime).toBeLessThan(25000);
     });
 });

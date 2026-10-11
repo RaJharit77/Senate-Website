@@ -10,12 +10,10 @@ test.describe('User Journey Simulation', () => {
         await expect(page).toHaveURL(/\/(actualite|press-area\/news)\/.+/);
         await page.goBack();
 
-        // Navigation À propos
         await page.getByRole('link', { name: 'À propos du Sénat' }).hover();
         await page.getByRole('link', { name: 'Missions et attributions' }).click();
         await expect(page).toHaveURL(/\/about/);
 
-        // Recherche
         await page.getByRole('button', { name: 'Rechercher…' }).click();
         const searchInput = page.getByTestId('search-input').first();
         await searchInput.waitFor({ state: 'visible' });
@@ -26,19 +24,16 @@ test.describe('User Journey Simulation', () => {
         await firstResult.click();
         await expect(page).not.toHaveURL(/\/search/);
 
-        // Espace Presse
         await page.getByRole('navigation').getByRole('link', { name: 'Espace Presse' }).click();
         await expect(page).toHaveURL(/\/press-area/);
 
-        // Historique
         await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
         await page.getByRole('navigation').getByRole('link', { name: 'Historique' }).click();
         await expect(page).toHaveURL(/\/historical/);
 
-        // Chatbot
         await page.click('button.fixed.bottom-4.right-4');
         await expect(page.locator('.fixed.bottom-20, [class*="chatbot-window"]')).toBeVisible();
-        // Le champ est un input, pas textarea
+
         const chatInput = page.locator('input[placeholder*="question"], input[placeholder*="Posez"]');
         await chatInput.fill('Bonjour');
         await chatInput.press('Enter');
