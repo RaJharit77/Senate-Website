@@ -1,0 +1,105 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-10-12T13:21:09.737Z",
+    "end": "2026-10-12T13:21:21.824Z",
+    "duration": 12087,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "2ccfe566-1a70-466a-8e11-9ed54b4cf2f2",
+      "title": "",
+      "fullFile": "cypress/e2e/user-journey.cy.ts",
+      "file": "cypress/e2e/user-journey.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "15b5e17a-935a-42c8-a891-ae5e8bcc675f",
+          "title": "User Journey – Full visitor simulation",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "simulates a visitor exploring the site",
+              "fullTitle": "User Journey – Full visitor simulation simulates a visitor exploring the site",
+              "timedOut": null,
+              "duration": 11946,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\ncy.get('section.relative.overflow-hidden').should('be.visible');\ncy.get('.grid a, .card a').first().click({ force: true });\ncy.url().should('match', /\\/(actualite|press-area\\/news)\\/.+/);\ncy.get('h1').should('exist');\ncy.go('back');\ncy.url().should('eq', 'http://localhost:3000/');\ncy.get('header, nav').should('be.visible');\ncy.contains('À propos du Sénat').trigger('mouseover');\ncy.contains('Missions et attributions').click();\ncy.url().should('include', '/about');\ncy.contains('Missions et attributions').should('exist');\ncy.contains('Structures').should('exist');\ncy.contains('Textes de référence').should('exist');\ncy.get('body').then(($body) => {\n    if ($body.find('[data-testid=\"search-button\"]').length) {\n        cy.get('[data-testid=\"search-button\"]').first().click({ force: true });\n    }\n    else {\n        cy.contains('button', /Rechercher/).first().click({ force: true });\n    }\n});\ncy.get('input[type=\"search\"], input[placeholder*=\"Rechercher\"]').first()\n    .should('be.visible', { timeout: 10000 })\n    .type('loi{enter}');\ncy.url().should('match', /\\/search\\?q=.*loi/);\ncy.get('.grid a, .card a', { timeout: 10000 }).should('exist');\ncy.get('.grid a, .card a').first().click();\ncy.url().should('not.contain', '/search');\ncy.get('h1').should('exist');\ncy.get('a').contains('Espace Presse').click();\ncy.url().should('include', '/press-area');\ncy.get('h1').contains('Espace de Presse').should('be.visible');\ncy.scrollTo('bottom');\ncy.get('footer a').contains('Historique').click();\ncy.url().should('include', '/historical');\ncy.contains('Chargement en cours...').should('not.exist', { timeout: 15000 });\ncy.get('h1').contains('Histoire du Sénat').should('be.visible');\ncy.get('body').then(($body) => {\n    if ($body.find('[data-testid=\"chatbot-toggle\"]').length) {\n        cy.get('[data-testid=\"chatbot-toggle\"]').first().click({ force: true });\n    }\n    else {\n        cy.get('button.fixed.bottom-4.right-4').first().click({ force: true });\n    }\n});\ncy.get('.fixed.bottom-20, [class*=\"chatbot-window\"]').should('be.visible');\ncy.get('input[placeholder*=\"question\"], input[placeholder*=\"Posez\"]')\n    .should('be.visible')\n    .click({ force: true })\n    .type('Bonjour{enter}');\ncy.get('[class*=\"message\"], [class*=\"chat\"], .flex', { timeout: 15000 })\n    .should('have.length.at.least', 2);",
+              "err": {},
+              "uuid": "8d2e0b54-6a0b-4139-80c6-9b47c19da948",
+              "parentUUID": "15b5e17a-935a-42c8-a891-ae5e8bcc675f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "8d2e0b54-6a0b-4139-80c6-9b47c19da948"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 11946,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
