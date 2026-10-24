@@ -10,7 +10,7 @@
 
 ---
 
-## 🚀 Technologies & Écosystème
+## Technologies & Écosystème
 
 Le projet s'appuie sur une stack front-end moderne orientée composants, alliant performance, accessibilité et animations fluides.
 
@@ -39,7 +39,7 @@ Le projet s'appuie sur une stack front-end moderne orientée composants, alliant
 
 ---
 
-## 📂 Structure du Projet
+## Structure du Projet
 
 ```text
 Senate-Website/
