@@ -59,7 +59,8 @@ export function cleanText(text: string): string {
         .replace("&#8220;", '"')
         .replace("&#8221;", '"')
         .replace("&amp;#8211;", "–")
-        .replace("&amp;#8217;", "'");
+        .replace("&amp;#8217;", "'")
+        .replace(/&hellip;/g, "…");
     //.trim();
 }
 
