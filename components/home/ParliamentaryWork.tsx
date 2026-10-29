@@ -188,7 +188,15 @@ export function ParliamentaryWork() {
             }}
           >
             L&apos;activité législative{" "}
-            <em style={{ fontWeight: 700, color: WHITE }}>du Sénat</em>
+            <em 
+            style={{ 
+              fontStyle: "normal",
+              fontWeight: 700, 
+              color: WHITE 
+            }}
+            >
+              du Sénat
+              </em>
           </h2>
         </motion.div>
 

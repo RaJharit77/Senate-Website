@@ -211,7 +211,7 @@ export function AboutSection() {
                     fontSize: "clamp(1.5rem, 2.5vw, 2.1rem)",
                   }}
                 >
-                  Dirigeants & <em className="font-bold text-white">Histoires</em>
+                  Dirigeants & <em className="not-italic font-bold text-white">Histoires</em>
                 </h2>
               </div>
               <Button
