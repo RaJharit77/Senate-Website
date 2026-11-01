@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { cleanText } from "@/utils/utilities";
 import { Article, NewsGridProps } from "@/types/homeType";
-import { PLACEHOLDER_IMAGE } from "@/utils/home";
+import { PLACEHOLDER_IMAGE } from "@/constants/image";
 
 const iconMap: Record<string, LucideIcon> = {
   Diplomatie: Globe2,
