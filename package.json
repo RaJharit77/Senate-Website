@@ -61,7 +61,7 @@
     "date-fns": "4.4.0",
     "embla-carousel-react": "8.6.0",
     "framer-motion": "^14.9.0",
-    "glob": "14.0.3",
+    "glob": "14.0.4",
     "groq-sdk": "^1.6.0",
     "gsap": "^3.15.0",
     "har-validator": "5.1.5",
