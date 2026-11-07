@@ -1,0 +1,162 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-07T10:37:01.684Z",
+    "end": "2026-11-07T10:37:20.298Z",
+    "duration": 18614,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "2f18f70c-6e9a-4a5c-b30b-8bf939a63e0b",
+      "title": "",
+      "fullFile": "cypress/e2e/normal.cy.ts",
+      "file": "cypress/e2e/normal.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "5cf9b36b-88be-450e-8b55-431e6ca825ec",
+          "title": "Normal Tests – Interactions & Dynamic Content",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "displays President message",
+              "fullTitle": "Normal Tests – Interactions & Dynamic Content displays President message",
+              "timedOut": null,
+              "duration": 1910,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/about/president-message');\ncy.get('h1').should('contain', 'Président');\ncy.get('.relative.w-48.h-48 img, .rounded-full img').should('be.visible');\ncy.get('.president-content p').should('have.length.at.least', 1);",
+              "err": {},
+              "uuid": "b18deb96-d794-4cd5-b53d-41bfddf27eea",
+              "parentUUID": "5cf9b36b-88be-450e-8b55-431e6ca825ec",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "performs search and shows results",
+              "fullTitle": "Normal Tests – Interactions & Dynamic Content performs search and shows results",
+              "timedOut": null,
+              "duration": 2209,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.viewport(1280, 800);\ncy.visit('/');\ncy.scrollTo('top');\ncy.wait(200);\ncy.contains('button', /Rechercher/).first().trigger('click');\ncy.get('[data-testid=\"search-input\"]')\n    .filter(':visible')\n    .should('be.visible')\n    .type('Sénat{enter}');\ncy.url().should('include', '/search');\ncy.contains('Sénat').should('be.visible');\ncy.url().then((url) => {\n    expect(decodeURIComponent(url)).to.match(/\\/search\\?q=.*Sénat/);\n});",
+              "err": {},
+              "uuid": "3ff8a359-f4c3-44b2-bd66-d236f772da17",
+              "parentUUID": "5cf9b36b-88be-450e-8b55-431e6ca825ec",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "submits contact form with validation",
+              "fullTitle": "Normal Tests – Interactions & Dynamic Content submits contact form with validation",
+              "timedOut": null,
+              "duration": 12013,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('POST', '**/wp-json/contact-form-7/v1/contact-forms/*/feedback', {\n    statusCode: 200,\n    body: { status: 'mail_sent', message: 'Votre message a bien été envoyé.' },\n}).as('contactSubmit');\ncy.visit('/contact');\ncy.get('[data-testid=\"contact-submit\"], button[type=\"submit\"]').first().click();\ncy.get('[class*=\"text-red\"], [class*=\"error\"]', { timeout: 5000 }).should('be.visible');\ncy.get('[data-testid=\"contact-name\"], input[name=\"name\"]').first().type('John Doe');\ncy.get('[data-testid=\"contact-email\"], input[name=\"email\"]').first().type('john@example.com');\ncy.get('[data-testid=\"contact-message\"], textarea[name=\"message\"]').first().type('Test message');\ncy.get('[data-testid=\"contact-submit\"], button[type=\"submit\"]').first().click();\ncy.wait('@contactSubmit');\ncy.get('[class*=\"text-green\"], [class*=\"success\"]', { timeout: 10000 }).should('be.visible');",
+              "err": {},
+              "uuid": "4ded3d22-da00-419b-9b2e-450bd851de8b",
+              "parentUUID": "5cf9b36b-88be-450e-8b55-431e6ca825ec",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "loads agenda list and detail",
+              "fullTitle": "Normal Tests – Interactions & Dynamic Content loads agenda list and detail",
+              "timedOut": null,
+              "duration": 2284,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/agenda');\ncy.get('h1').contains('Ordre du Jour').should('be.visible');\ncy.get('.bg-white\\\\/10 a, .card a').should('have.length.at.least', 1);\ncy.get('.bg-white\\\\/10 a, .card a').first().click();\ncy.url().should('include', '/agenda/');\ncy.get('h1').should('be.visible');\ncy.get('.prose').should('exist');",
+              "err": {},
+              "uuid": "c7dfefe6-aa73-4dca-8ab1-2091de0d86b5",
+              "parentUUID": "5cf9b36b-88be-450e-8b55-431e6ca825ec",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "b18deb96-d794-4cd5-b53d-41bfddf27eea",
+            "3ff8a359-f4c3-44b2-bd66-d236f772da17",
+            "4ded3d22-da00-419b-9b2e-450bd851de8b",
+            "c7dfefe6-aa73-4dca-8ab1-2091de0d86b5"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 18416,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

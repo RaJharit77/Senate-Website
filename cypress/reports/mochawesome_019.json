@@ -1,0 +1,105 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-07T10:25:46.188Z",
+    "end": "2026-11-07T10:25:48.084Z",
+    "duration": 1896,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "39705917-f45e-4ae6-a918-acaa59a3ebaa",
+      "title": "",
+      "fullFile": "cypress/e2e/smoke.cy.ts",
+      "file": "cypress/e2e/smoke.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "67a074fe-2e15-425d-a883-94e28157b093",
+          "title": "Vérifications Smoke",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "vérifie que les data-testid sont présents",
+              "fullTitle": "Vérifications Smoke vérifie que les data-testid sont présents",
+              "timedOut": null,
+              "duration": 1851,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\ncy.get('body').then(($body) => {\n    if ($body.find('[data-testid=\"search-button\"]').length) {\n        cy.get('[data-testid=\"search-button\"]').should('exist');\n    }\n    else {\n        cy.contains('button', /Rechercher/).should('exist');\n    }\n});",
+              "err": {},
+              "uuid": "d8b72de1-94fc-4d9b-b58f-90b2b47b54f4",
+              "parentUUID": "67a074fe-2e15-425d-a883-94e28157b093",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d8b72de1-94fc-4d9b-b58f-90b2b47b54f4"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 1851,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
