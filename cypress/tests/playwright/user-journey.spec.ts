@@ -15,10 +15,12 @@ test.describe('User Journey Simulation', () => {
         await expect(page).toHaveURL(/\/about/);
 
         await page.getByRole('button', { name: 'Rechercher…' }).click();
-        const searchInput = page.getByTestId('search-input').first();
-        await searchInput.waitFor({ state: 'visible' });
+
+        const searchInput = page.locator('input[type="search"], input[placeholder*="Rechercher" i]').first();
+        await searchInput.waitFor({ state: 'visible', timeout: 10000 });
         await searchInput.fill('loi');
         await searchInput.press('Enter');
+
         await expect(page).toHaveURL(/\/search\?q=loi/);
         const firstResult = page.locator('.grid a, .card a').first();
         await firstResult.click();
@@ -31,12 +33,14 @@ test.describe('User Journey Simulation', () => {
         await page.getByRole('navigation').getByRole('link', { name: 'Historique' }).click();
         await expect(page).toHaveURL(/\/historical/);
 
-        await page.click('button.fixed.bottom-4.right-4');
-        await expect(page.locator('.fixed.bottom-20, [class*="chatbot-window"]')).toBeVisible();
+        await page.getByRole('button', { name: /assistant/i }).click();
 
-        const chatInput = page.locator('input[placeholder*="question"], input[placeholder*="Posez"]');
+        const chatInput = page.locator('input[placeholder*="question"], input[placeholder*="Posez"]').first();
+        await chatInput.waitFor({ state: 'visible', timeout: 10000 });
+
         await chatInput.fill('Bonjour');
         await chatInput.press('Enter');
+
         await expect(page.locator('.overflow-y-auto .flex')).toHaveCount(3, { timeout: 15000 });
     });
 });
