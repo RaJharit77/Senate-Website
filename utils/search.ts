@@ -12,7 +12,7 @@ export const SLUG_ROUTES: Record<string, { path: string; source: string }> = {
     // Page WP "Les Sénateurs durant la deuxième Législature de la Quatrième République".
     // Onglet "fourth" : clé utilisée par HistoryClient.tsx (REPUBLIC_IDS) et
     // HistoryTabs.tsx (?tab=<clé>) pour la République IV.
-    "historique-v2": { path: "/historical?tab=fourth", source: "Historique" },
+    "historique-v2": { path: "/historical/historique-v2", source: "Historique" },
     // Pages WP du menu de l'ancien site (slugs relevés sur senat.mg) → routes Next.
     "historique": { path: "/about", source: "À propos du Sénat" },
     "nature-et-missions-2": { path: "/about/missions-and-responsibilities", source: "Missions et attributions" },
@@ -43,3 +43,10 @@ export const SLUG_ROUTES: Record<string, { path: string; source: string }> = {
         source: "Questions écrites",
     },
 };
+
+/** Ajoute ?hl=<requête> (ou &hl=) au chemin, en conservant un éventuel #ancre. */
+export function withHighlight(path: string, query: string): string {
+    const [base, hash] = path.split("#");
+    const sep = base.includes("?") ? "&" : "?";
+    return `${base}${sep}hl=${encodeURIComponent(query)}${hash ? `#${hash}` : ""}`;
+}
