@@ -92,11 +92,11 @@ export function looksLikePersonName(title: string): boolean {
 
 /** Résolution générique pour les pages et articles standards. */
 export function resolveByContent(post: WpPostWithCategories): ResolvedRoute | null {
-    // 1. Slug connu
+    // 1. Slug connu (ex: "historique-v2" ou "vos-senateurs")
     const bySlug = SLUG_ROUTES[post.slug];
     if (bySlug) return { ...bySlug, detail: true };
 
-    // 2. Catégorie avec page de détail (ex. textes de loi, délibérations)
+    // 2. Catégorie avec page de détail (ex: Lois, Délibérations)
     const categories = post.categories ?? [];
     const matches = CATEGORY_ROUTES.filter((rule) => rule.ids.some((id) => categories.includes(id)));
     const withDetail = matches.find((rule) => rule.detail);
@@ -104,7 +104,7 @@ export function resolveByContent(post: WpPostWithCategories): ResolvedRoute | nu
         return { path: withDetail.path(post.slug), source: withDetail.source, detail: true };
     }
 
-    // 3. Titre identique à un libellé du menu (ex. "Travaux législatifs")
+    // 3. Titre identique à un libellé du menu
     const navPath = NAV_BY_TITLE.get(normalize(cleanText(post.title?.rendered)));
     if (navPath) return { path: navPath, source: "Page", detail: true };
 
@@ -112,15 +112,25 @@ export function resolveByContent(post: WpPostWithCategories): ResolvedRoute | nu
     const section = matches[0];
     if (section) return { path: section.path(post.slug), source: section.source, detail: false };
 
-    // 5. Fiche de sénateur : page WP (sans catégorie) titrée "NOM Prénom(s)".
-    //    Rendue par app/your-senators/[slug] (getSenatorBySlug lit d'abord les pages).
-    //    Heuristique sur le titre ; si les fiches partagent un `parent` ou un
-    //    `template` WP, remplacer par un test sur ce champ (visible avec &debug=1).
+    // 5. Fiche de sénateur (Nom Prénom)
     if (post.type === "page" && looksLikePersonName(cleanText(post.title?.rendered))) {
         return { path: `/your-senators/${post.slug}`, source: "Sénateur", detail: true };
     }
 
-    return null;
+    // 6. FALLBACK POUR TOUTES LES PAGES STANDARD (ex: historique-v2, structures, etc.)
+    if (post.type === "page") {
+        // Redirige par défaut vers la page générique "historique" qui sait afficher du contenu
+        return { path: `/historical/${post.slug}`, source: "Page institutionnelle", detail: true };
+    }
+
+    // 7. FALLBACK POUR TOUS LES ARTICLES STANDARD (Posts)
+    if (post.type === "post") {
+        // Redirige par défaut vers la page d'actualités/presse
+        return { path: `/press-area/news/${post.slug}`, source: "Actualité", detail: true };
+    }
+
+    // Si c'est un type de contenu personnalisé (CPT) inconnu, on l'envoie sur la page d'accueil par défaut
+    return { path: "/", source: "Page", detail: false };
 }
 
 /** Résolution pour les types de contenu dont la route Next est fixe. */

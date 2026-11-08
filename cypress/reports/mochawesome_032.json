@@ -1,0 +1,162 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-07T10:41:59.261Z",
+    "end": "2026-11-07T10:42:06.637Z",
+    "duration": 7376,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "a3503bf9-4494-48ae-91bb-17a34042fcd0",
+      "title": "",
+      "fullFile": "cypress/e2e/simple.cy.ts",
+      "file": "cypress/e2e/simple.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "5956f85f-ac3c-4f3d-a1ae-d45967ceb987",
+          "title": "Simple Tests – Core Pages & Navigation",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "loads homepage with main sections",
+              "fullTitle": "Simple Tests – Core Pages & Navigation loads homepage with main sections",
+              "timedOut": null,
+              "duration": 2654,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.checkLayout();\ncy.get('section.relative.overflow-hidden').should('exist');\ncy.get('.grid, [class*=\"news\"]').should('exist');\ncy.get('h2, h1').contains('À propos du Sénat').should('exist');\ncy.contains('p', 'Travaux Parlementaires').should('exist');\ncy.get('[class*=\"partner\"], .flex.gap-4 img').should('exist');",
+              "err": {},
+              "uuid": "a1841799-0e09-40be-88b1-7448dd4d2263",
+              "parentUUID": "5956f85f-ac3c-4f3d-a1ae-d45967ceb987",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "navigates to About and its subpages",
+              "fullTitle": "Simple Tests – Core Pages & Navigation navigates to About and its subpages",
+              "timedOut": null,
+              "duration": 1639,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('À propos du Sénat').trigger('mouseover');\ncy.contains('Missions et attributions').click();\ncy.url().should('include', '/about');\ncy.contains('Missions et attributions').should('exist');\ncy.contains('Structures').should('exist');\ncy.contains('Textes de référence').should('exist');",
+              "err": {},
+              "uuid": "9768628b-76ea-4c3f-9693-409a1f5edfc2",
+              "parentUUID": "5956f85f-ac3c-4f3d-a1ae-d45967ceb987",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "loads Contact page with form",
+              "fullTitle": "Simple Tests – Core Pages & Navigation loads Contact page with form",
+              "timedOut": null,
+              "duration": 1602,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('a').contains('Contact').click();\ncy.url().should('include', '/contact');\ncy.get('h1').contains('Contact').should('be.visible');\ncy.get('form').should('exist');\ncy.get('[data-testid=\"contact-name\"], input[name=\"name\"]').should('exist');",
+              "err": {},
+              "uuid": "79b2e045-2adc-43f3-8a1f-9e6aceac80f8",
+              "parentUUID": "5956f85f-ac3c-4f3d-a1ae-d45967ceb987",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "loads Historical page",
+              "fullTitle": "Simple Tests – Core Pages & Navigation loads Historical page",
+              "timedOut": null,
+              "duration": 1262,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('a').contains('Historique').click();\ncy.url().should('include', '/historical');\ncy.get('h1').contains('Histoire du Sénat').should('be.visible');\ncy.get('.flex.flex-wrap.gap-3.mb-10 button').should('exist');",
+              "err": {},
+              "uuid": "efa5fa98-7d75-478d-95d6-67bd9f1ffa14",
+              "parentUUID": "5956f85f-ac3c-4f3d-a1ae-d45967ceb987",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a1841799-0e09-40be-88b1-7448dd4d2263",
+            "9768628b-76ea-4c3f-9693-409a1f5edfc2",
+            "79b2e045-2adc-43f3-8a1f-9e6aceac80f8",
+            "efa5fa98-7d75-478d-95d6-67bd9f1ffa14"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 7157,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

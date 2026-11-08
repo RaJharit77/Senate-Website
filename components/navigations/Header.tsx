@@ -14,6 +14,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { navItems } from "@/lib/navigations/navigation";
+import { useSearchHistory } from "@/hooks/useSearchHistory";
+import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 
 const itemVariants = {
   open: {
@@ -49,6 +51,8 @@ export function Header() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const { history, add, remove, clear } = useSearchHistory();
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -86,13 +90,19 @@ export function Header() {
     }
   }, [searchOpen]);
 
+  const runSearch = (term: string) => {
+    const t = term.trim();
+    if (!t) return;
+    add(t);
+    router.push(`/search?q=${encodeURIComponent(t)}`);
+    setSearchOpen(false);
+    setSearchQuery("");
+    setShowSuggestions(false);
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-      setSearchQuery("");
-    }
+    runSearch(searchQuery);
   };
 
   const isActive = (path: string) => {
@@ -400,8 +410,12 @@ export function Header() {
                     data-testid="search-input"
                     ref={searchInputRef}
                     type="text"
+                    autoComplete="off"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => { setSearchQuery(e.target.value); setShowSuggestions(true); }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setShowSuggestions(false)}
+                    onKeyDown={(e) => { if (e.key === "Escape") setShowSuggestions(false); }}
                     placeholder="Rechercher…"
                     className="px-5 py-2.5 pr-12 rounded-full border-2 border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400/50 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md caret-cyan-800"
                     style={{
@@ -417,6 +431,15 @@ export function Header() {
                   >
                     <Search size={18} />
                   </button>
+                  {showSuggestions && (
+                    <SearchSuggestions
+                      query={searchQuery}
+                      history={history}
+                      onPick={runSearch}
+                      onRemove={remove}
+                      onClear={clear}
+                    />
+                  )}
                 </form>
               ) : (
                 <button
@@ -494,6 +517,15 @@ export function Header() {
               >
                 <X size={18} />
               </button>
+              {showSuggestions && (
+                <SearchSuggestions
+                  query={searchQuery}
+                  history={history}
+                  onPick={runSearch}
+                  onRemove={remove}
+                  onClear={clear}
+                />
+              )}
             </form>
           </div>
         )}

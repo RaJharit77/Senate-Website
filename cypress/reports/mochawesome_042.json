@@ -1,0 +1,181 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 5,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-07T10:59:44.771Z",
+    "end": "2026-11-07T10:59:50.089Z",
+    "duration": 5318,
+    "testsRegistered": 5,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "e037ba27-d30e-40af-bbaf-60f38e6516d6",
+      "title": "",
+      "fullFile": "cypress/e2e/advanced.cy.ts",
+      "file": "cypress/e2e/advanced.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0e9e97d0-2cc6-4683-aba9-3d22316e18cb",
+          "title": "Advanced Tests – API Mocking, Edge Cases, Structured Data",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "shows 404 for non-existent route",
+              "fullTitle": "Advanced Tests – API Mocking, Edge Cases, Structured Data shows 404 for non-existent route",
+              "timedOut": null,
+              "duration": 2740,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/non-existent-route', { failOnStatusCode: false });\ncy.get('h1').contains('Page non trouvée').should('be.visible');\ncy.get('a').contains(\"Retour à l'accueil\").should('be.visible');",
+              "err": {},
+              "uuid": "a012d4d9-7e5c-4243-bcbc-f9ee7e7acfe0",
+              "parentUUID": "0e9e97d0-2cc6-4683-aba9-3d22316e18cb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "handles loading state for client-side components",
+              "fullTitle": "Advanced Tests – API Mocking, Edge Cases, Structured Data handles loading state for client-side components",
+              "timedOut": null,
+              "duration": 436,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/historical');\ncy.get('.bg-white\\\\/10, .prose, .flex.flex-wrap.gap-3.mb-10', { timeout: 15000 }).should('be.visible');",
+              "err": {},
+              "uuid": "1f205fe9-6f9d-4748-9ff5-37251857c322",
+              "parentUUID": "0e9e97d0-2cc6-4683-aba9-3d22316e18cb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "verifies JSON-LD structured data on homepage",
+              "fullTitle": "Advanced Tests – API Mocking, Edge Cases, Structured Data verifies JSON-LD structured data on homepage",
+              "timedOut": null,
+              "duration": 1280,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\ncy.wait(500);\ncy.get('script[type=\"application/ld+json\"]').should('exist');\ncy.get('script[type=\"application/ld+json\"]').then(($scripts) => {\n    let found = false;\n    for (let i = 0; i < $scripts.length; i++) {\n        try {\n            const json = JSON.parse($scripts[i].innerHTML);\n            if (json['@type'] === 'WebPage' || json['@type'] === 'GovernmentOrganization') {\n                found = true;\n                break;\n            }\n        }\n        catch (error) {\n            console.error('Invalid structured data JSON on script tag:', error);\n        }\n    }\n    expect(found).to.equal(true);\n});",
+              "err": {},
+              "uuid": "1064dff1-094d-4e6d-8073-54d9cd9536e3",
+              "parentUUID": "0e9e97d0-2cc6-4683-aba9-3d22316e18cb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "checks images have alt attributes",
+              "fullTitle": "Advanced Tests – API Mocking, Edge Cases, Structured Data checks images have alt attributes",
+              "timedOut": null,
+              "duration": 642,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\ncy.get('img').each(($img) => {\n    cy.wrap($img).should('have.attr', 'alt').and('not.be.empty');\n});",
+              "err": {},
+              "uuid": "ce6166d4-1044-4d91-b92c-21fb17ba4589",
+              "parentUUID": "0e9e97d0-2cc6-4683-aba9-3d22316e18cb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "tests the search API endpoint directly",
+              "fullTitle": "Advanced Tests – API Mocking, Edge Cases, Structured Data tests the search API endpoint directly",
+              "timedOut": null,
+              "duration": 47,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request('/api/search?q=senat').then((response) => {\n    expect(response.status).to.eq(200);\n    expect(response.body).to.be.an('array');\n});",
+              "err": {},
+              "uuid": "42311959-3c8d-4cf2-8812-cdc165ed5777",
+              "parentUUID": "0e9e97d0-2cc6-4683-aba9-3d22316e18cb",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a012d4d9-7e5c-4243-bcbc-f9ee7e7acfe0",
+            "1f205fe9-6f9d-4748-9ff5-37251857c322",
+            "1064dff1-094d-4e6d-8073-54d9cd9536e3",
+            "ce6166d4-1044-4d91-b92c-21fb17ba4589",
+            "42311959-3c8d-4cf2-8812-cdc165ed5777"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 5145,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

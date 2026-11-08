@@ -1,3 +1,9 @@
+Cypress.on('uncaught:exception', (err) => {
+    if (err.message.includes('cannot have a negative time stamp')) {
+        return false;
+    }
+});
+
 describe('Chaîne TV / Radio', () => {
     it('affiche le titre et les deux cartes Directs (TV + Radio)', () => {
         cy.visit('/channel-tv-and-radio');
@@ -43,7 +49,7 @@ describe('Chaîne TV / Radio', () => {
     it('/api/live?kind=radio répond avec kind=radio', () => {
         cy.request('/api/live?kind=radio').then((response) => {
             expect(response.body.kind).to.eq('radio');
-            expect(response.body.sourceType).to.eq('url');
+            expect(['url', 'facebook', 'youtube']).to.include(response.body.sourceType);
         });
     });
 

@@ -4,6 +4,7 @@
 @import 'lenis/dist/lenis.css';
 @import './historyTabs.css';
 @import './senators.css';
+@import './historySlug.css';
 
 .font-poppins {
     font-family: 'Poppins', sans-serif;
@@ -466,6 +467,14 @@ html {
     font-size: 0.62rem;
     font-weight: 600;
     letter-spacing: 0.06em;
+}
+
+mark.search-hit {
+    background: #fde047;
+    color: #111;
+    padding: 0 2px;
+    border-radius: 3px;
+    scroll-margin-top: 140px; /* hauteur du header sticky */
 }
 
 /* ---- About Page Styles ---- */

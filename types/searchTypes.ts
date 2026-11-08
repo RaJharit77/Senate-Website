@@ -46,3 +46,11 @@ export interface SearchResult {
     path: string;
     source: string;
 }
+
+export type Props = {
+    query: string;
+    history: string[];
+    onPick: (term: string) => void;
+    onRemove: (term: string) => void;
+    onClear: () => void;
+};

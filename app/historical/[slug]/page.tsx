@@ -64,7 +64,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
             <JsonLd data={breadcrumb} />
             <JsonLd data={articleJsonLd} />
             <div className="py-12 px-4 sm:px-6 bg-black/30 backdrop-blur-sm min-h-screen">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     <Button
                         variant="ghost"
                         className="text-gray-400 hover:text-white hover:bg-white/10 mb-6"
@@ -94,22 +94,7 @@ export default async function SenatorProfilePage({ params }: { params: Promise<{
                             </div>
 
                             <div
-                                className="prose prose-lg prose-invert max-w-none text-gray-300
-                                    [&_p]:text-gray-300
-                                    [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-white
-                                    [&_a]:text-cyan-300 [&_a:hover]:text-cyan-200
-                                    [&_figure]:flex [&_figure]:flex-col [&_figure]:items-center [&_figure]:justify-start
-                                    [&_figure]:my-6 [&_figure]:p-2 [&_figure]:bg-white/5 [&_figure]:rounded-2xl
-                                    [&_figure]:backdrop-blur-sm [&_figure]:border [&_figure]:border-white/10
-                                    [&_figcaption]:text-center [&_figcaption]:text-gray-400 [&_figcaption]:text-sm
-                                    [&_figcaption]:italic [&_figcaption]:mt-2
-                                    [&_img]:rounded-2xl [&_img]:shadow-2xl [&_img]:border-2 [&_img]:border-white/15
-                                    [&_img]:max-w-full [&_img]:h-auto [&_img]:max-h-[500px] [&_img]:object-contain
-                                    [&_img]:transition-all [&_img]:duration-200 [&_img]:hover:scale-105
-                                    [&_img]:hover:shadow-[0_20px_50px_rgba(0,0,0,0.7)]
-                                    [&_ul]:list-disc [&_ul]:pl-6
-                                    [&_ol]:list-decimal [&_ol]:pl-6
-                                    [&_li]:text-gray-300 [&_li]:mb-1"
+                                className="wp-senate-content"
                                 style={{ fontFamily: "'Poppins', sans-serif" }}
                                 dangerouslySetInnerHTML={{ __html: post.content.rendered }}
                             />

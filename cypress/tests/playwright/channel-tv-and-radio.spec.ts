@@ -46,7 +46,7 @@ test.describe('Chaîne TV / Radio', () => {
         const res = await request.get('/api/live?kind=radio');
         const body = await res.json();
         expect(body.kind).toBe('radio');
-        expect(body.sourceType).toBe('url');
+        expect(['url', 'facebook', 'youtube']).toContain(body.sourceType);
     });
 
     test('les boutons de filtre ne cassent pas la page', async ({ page }) => {

@@ -1,0 +1,162 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-07T11:00:09.686Z",
+    "end": "2026-11-07T11:00:17.042Z",
+    "duration": 7356,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "65948163-f89b-47c9-a432-11e8e42cb3e5",
+      "title": "",
+      "fullFile": "cypress/e2e/performance.cy.ts",
+      "file": "cypress/e2e/performance.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "b122d876-7535-465e-b271-961eac2d187c",
+          "title": "Tests de performance",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "mesure le temps de chargement de la page d'accueil",
+              "fullTitle": "Tests de performance mesure le temps de chargement de la page d'accueil",
+              "timedOut": null,
+              "duration": 2470,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/', {\n    onBeforeLoad: (win) => {\n        win.performance.mark('start');\n    },\n});\ncy.window().then((win) => {\n    win.performance.mark('end');\n    win.performance.measure('load', 'start', 'end');\n    const measure = win.performance.getEntriesByName('load')[0];\n    cy.log(`Temps de chargement : ${measure.duration.toFixed(0)}ms`);\n    expect(measure.duration).to.be.lessThan(30000);\n});",
+              "err": {},
+              "uuid": "99285876-3629-477d-8bcb-b2073367a0f4",
+              "parentUUID": "b122d876-7535-465e-b271-961eac2d187c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "mesure le temps d'apparition du premier contenu (FCP) avec Performance API",
+              "fullTitle": "Tests de performance mesure le temps d'apparition du premier contenu (FCP) avec Performance API",
+              "timedOut": null,
+              "duration": 598,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\ncy.window().then((win) => {\n    const fcp = win.performance.getEntriesByType('paint').find(p => p.name === 'first-contentful-paint');\n    if (fcp) {\n        cy.log(`FCP : ${fcp.startTime.toFixed(0)}ms`);\n        expect(fcp.startTime).to.be.lessThan(5000);\n    }\n});",
+              "err": {},
+              "uuid": "c5e6ebb8-94a6-40fd-822b-89f3c201930c",
+              "parentUUID": "b122d876-7535-465e-b271-961eac2d187c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "vérifie les métriques Web Vitals (LCP, FID, CLS) via l'API PerformanceObserver",
+              "fullTitle": "Tests de performance vérifie les métriques Web Vitals (LCP, FID, CLS) via l'API PerformanceObserver",
+              "timedOut": null,
+              "duration": 3540,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/', {\n    onBeforeLoad: (win) => {\n        let lcpValue = 0;\n        const observer = new win.PerformanceObserver((list) => {\n            const entries = list.getEntries();\n            entries.forEach((entry) => {\n                if (entry.entryType === 'largest-contentful-paint') {\n                    lcpValue = entry.startTime;\n                }\n            });\n        });\n        observer.observe({ type: 'largest-contentful-paint', buffered: true });\n        win.__lcp = lcpValue;\n    },\n});\ncy.wait(3000);\ncy.window().then((win) => {\n    const lcp = win.__lcp || 0;\n    cy.log(`LCP : ${lcp.toFixed(0)}ms`);\n    expect(lcp).to.be.lessThan(10000);\n});",
+              "err": {},
+              "uuid": "1af80288-995a-4dbf-a28e-5a9db3915140",
+              "parentUUID": "b122d876-7535-465e-b271-961eac2d187c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "simule une connexion lente (3G) et mesure le temps de chargement",
+              "fullTitle": "Tests de performance simule une connexion lente (3G) et mesure le temps de chargement",
+              "timedOut": null,
+              "duration": 580,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('**/wp-json/**', (req) => {\n    req.on('response', (res) => {\n        res.setDelay(1000);\n    });\n}).as('slowApi');\ncy.visit('/', {\n    onBeforeLoad: (win) => {\n        win.performance.mark('start');\n    },\n});\ncy.window().then((win) => {\n    win.performance.mark('end');\n    win.performance.measure('loadSlow', 'start', 'end');\n    const measure = win.performance.getEntriesByName('loadSlow')[0];\n    cy.log(`Temps de chargement avec réseau lent : ${measure.duration.toFixed(0)}ms`);\n    expect(measure.duration).to.be.lessThan(30000);\n});",
+              "err": {},
+              "uuid": "46e047c6-0d6c-4be0-add4-17c444350efe",
+              "parentUUID": "b122d876-7535-465e-b271-961eac2d187c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "99285876-3629-477d-8bcb-b2073367a0f4",
+            "c5e6ebb8-94a6-40fd-822b-89f3c201930c",
+            "1af80288-995a-4dbf-a28e-5a9db3915140",
+            "46e047c6-0d6c-4be0-add4-17c444350efe"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 7188,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

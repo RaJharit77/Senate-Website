@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cleanText } from "@/utils/utilities";
 import { Slide } from "@/types/homeType";
-import { PLACEHOLDER_IMAGE, truncateExcerpt } from "@/utils/home";
+import { truncateExcerpt } from "@/utils/home";
+import { PLACEHOLDER_IMAGE } from "@/constants/image";
 
 export function HeroCarousel({ slides }: { slides: Slide[] }) {
   const [current, setCurrent] = useState(0);
