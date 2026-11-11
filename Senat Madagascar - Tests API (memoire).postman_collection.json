@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "e5e08781-d74c-441c-a8ec-d0c3c1d33a85",
+		"name": "Senat Madagascar - Tests API (memoire)",
+		"description": "Tests des routes API internes du portail https://senat-de-madagascar.vercel.app (Next.js). Utilise la variable {{baseUrl}}.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37405262"
+	},
+	"item": [
+		{
+			"name": "T01 GET /senators",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 + JSON', function () { pm.response.to.have.status(200); pm.response.to.be.json; });",
+							"const j = pm.response.json();",
+							"pm.test('success = true', function () { pm.expect(j.success).to.eql(true); });",
+							"pm.test('data contient senateurs, bureau, commissions, provinces', function () {",
+							"  ['senateurs','bureau','commissions','provinces'].forEach(k => pm.expect(j.data).to.have.property(k));",
+							"});",
+							"pm.test('meta.count = nombre de senateurs', function () { pm.expect(j.meta.count).to.eql(j.data.senateurs.length); });",
+							"pm.test('Cache-Control public s-maxage=3600', function () { pm.expect(pm.response.headers.get('Cache-Control')).to.include('s-maxage=3600'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/senators",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"senators"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T02 GET /live?kind=radio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 + JSON', function () { pm.response.to.have.status(200); pm.response.to.be.json; });",
+							"const j = pm.response.json();",
+							"pm.test('kind = radio', function () { pm.expect(j.kind).to.eql('radio'); });",
+							"pm.test('isLive est un booleen', function () { pm.expect(j.isLive).to.be.a('boolean'); });",
+							"pm.test('Cache-Control no-store', function () { pm.expect(pm.response.headers.get('Cache-Control')).to.include('no-store'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/live?kind=radio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"live"
+					],
+					"query": [
+						{
+							"key": "kind",
+							"value": "radio"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T03 GET /live (defaut = tv)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200', function () { pm.response.to.have.status(200); });",
+							"pm.test('kind par defaut = tv', function () { pm.expect(pm.response.json().kind).to.eql('tv'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/live",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"live"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T04 GET /search?q=senat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 + tableau JSON', function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an('array'); });",
+							"const r = pm.response.json();",
+							"pm.test('au moins un resultat', function () { pm.expect(r.length).to.be.above(0); });",
+							"pm.test('champs id,title,excerpt,date,path,source', function () {",
+							"  ['id','title','excerpt','date','path','source'].forEach(k => pm.expect(r[0]).to.have.property(k));",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/search?q=senat",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "senat"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T05 GET /search?q= (vide)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 et tableau vide', function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.eql([]); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/search?q=",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T06 GET /media",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 + tableau', function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an('array'); });",
+							"const m = pm.response.json();",
+							"pm.test('champs id,title,slug,date,mediaType', function () { if (m.length) ['id','title','slug','date','mediaType'].forEach(k => pm.expect(m[0]).to.have.property(k)); });",
+							"pm.test('tri par date decroissante', function () {",
+							"  for (let i = 1; i < m.length; i++) pm.expect(new Date(m[i-1].date) >= new Date(m[i].date)).to.eql(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/media",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"media"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T07 GET /media?type=audio&per_page=5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 + tableau', function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an('array'); });",
+							"pm.test('filtre : tous les items sont de type audio', function () { pm.response.json().forEach(i => pm.expect(i.mediaType).to.eql('audio')); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/media?type=audio&per_page=5",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"media"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "audio"
+						},
+						{
+							"key": "per_page",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T08 GET /proxy/posts (WordPress)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 + JSON', function () { pm.response.to.have.status(200); pm.response.to.be.json; });",
+							"pm.test('1 article avec id et date', function () { const p = pm.response.json(); pm.expect(p).to.have.lengthOf(1); pm.expect(p[0]).to.have.property('id'); pm.expect(p[0]).to.have.property('date'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/proxy/posts?per_page=1&_fields=id,slug,date",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"proxy",
+						"posts"
+					],
+					"query": [
+						{
+							"key": "per_page",
+							"value": "1"
+						},
+						{
+							"key": "_fields",
+							"value": "id,slug,date"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T09 GET /proxy/route-inexistante (erreur relayee)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('erreur WordPress relayee (404)', function () { pm.response.to.have.status(404); });",
+							"pm.test('corps JSON avec error', function () { pm.expect(pm.response.json()).to.have.property('error'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/proxy/route-inexistante",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"proxy",
+						"route-inexistante"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T10 POST /proxy/posts (methode refusee)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('405 Method not allowed', function () { pm.response.to.have.status(405); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/proxy/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"proxy",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T11 GET /chat (methode non prevue)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('405 : la route chat n accepte que POST', function () { pm.response.to.have.status(405); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/chat",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T12 POST /chat (message vide)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('400 Message requis', function () { pm.response.to.have.status(400); pm.expect(pm.response.json().error).to.eql('Message requis'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"message\":\"\",\"language\":\"fr\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/chat",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "T13 POST /chat (question valide)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('200 (la route renvoie toujours 200)', function () { pm.response.to.have.status(200); });",
+							"pm.test('corps JSON non vide', function () { pm.expect(pm.response.json()).to.be.an('object'); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"message\":\"Quelles sont les missions du Senat ?\",\"language\":\"fr\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/chat",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"chat"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test('Temps de reponse < maxResponseMs', function () {",
+					"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.variables.get('maxResponseMs')));",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://senat-de-madagascar.vercel.app/api"
+		},
+		{
+			"key": "maxResponseMs",
+			"value": "3000"
+		}
+	]
+}
