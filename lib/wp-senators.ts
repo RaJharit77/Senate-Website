@@ -6,7 +6,7 @@ import {
 } from "@/constants/constants";
 import { API_BASE } from "./wordpress";
 import type {
-    Senateur,
+    Senator,
     Commission,
     Province,
     SenatorsApiPayload,
@@ -119,7 +119,7 @@ function isSenatorPage(page: WPPage): boolean {
  *      - Commission suivie d'un chiffre romain (I, II, III, IV)
  *      - Président du Groupe Parlementaire / d'Amitié
  */
-function hasActiveMandate(s: Senateur): boolean {
+function hasActiveMandate(s: Senator): boolean {
     if (EXCLUDED_SLUGS.has(s.id)) return false;
 
     const blob = `${s.fonction} ${s.commissions.join(" ")}`;
@@ -213,7 +213,7 @@ function extractCommissions(fonction: string): string[] {
     return commissions;
 }
 
-function parseSenatorPage(page: WPPage): Senateur | null {
+function parseSenatorPage(page: WPPage): Senator | null {
     const html = page.content?.rendered ?? "";
     if (!html) return null;
 
@@ -270,7 +270,7 @@ function parseSenatorPage(page: WPPage): Senateur | null {
  *   1. D'abord tester "Vice-Président du Sénat" → rank 1
  *   2. Puis retirer ce mot du texte avant de chercher "Président du Sénat"
  */
-function senatorRank(s: Senateur): number {
+function senatorRank(s: Senator): number {
     let f = s.fonction || "";
 
     // 1) Vice-Président → rank 1 (testé en premier)
@@ -289,7 +289,7 @@ function senatorRank(s: Senateur): number {
     return 100;
 }
 
-function compareSenateurs(a: Senateur, b: Senateur): number {
+function compareSenateurs(a: Senator, b: Senator): number {
     const ra = senatorRank(a);
     const rb = senatorRank(b);
     if (ra !== rb) return ra - rb;
@@ -297,7 +297,7 @@ function compareSenateurs(a: Senateur, b: Senateur): number {
 }
 
 /* Builders */
-function buildBureau(senateurs: Senateur[]): Senateur[] {
+function buildBureau(senateurs: Senator[]): Senator[] {
     const BUREAU_ROLES: RegExp[] = [
         /Vice[-\s]*Président\s+du\s+Sénat/i,
         /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i,
@@ -309,7 +309,7 @@ function buildBureau(senateurs: Senateur[]): Senateur[] {
     );
 }
 
-function buildCommissions(senateurs: Senateur[]): Commission[] {
+function buildCommissions(senateurs: Senator[]): Commission[] {
     const map = new Map<string, Commission>();
 
     for (const s of senateurs) {
@@ -343,7 +343,7 @@ function buildCommissions(senateurs: Senateur[]): Commission[] {
     );
 }
 
-function buildProvinces(senateurs: Senateur[]): Province[] {
+function buildProvinces(senateurs: Senator[]): Province[] {
     const map = new Map<string, Province>();
 
     for (const s of senateurs) {
@@ -397,7 +397,7 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
 
     const parsed = senatorPages
         .map(parseSenatorPage)
-        .filter((s): s is Senateur => s !== null && !!s.name);
+        .filter((s): s is Senator => s !== null && !!s.name);
 
     const senateurs = parsed
         .filter(hasActiveMandate)
@@ -438,7 +438,7 @@ export async function getSenatorsPayload(): Promise<SenatorsApiPayload> {
 
 /* Détail d'un sénateur */
 export interface SenatorDetailData {
-    senator: Senateur;
+    senator: Senator;
     bioText: string;
     rawHtml: string;
 }
@@ -487,20 +487,20 @@ function extractBioText(html: string): string {
     return match[1].replace(/\s+/g, " ").trim();
 }
 
-export function isPresident(s: Senateur): boolean {
+export function isPresident(s: Senator): boolean {
     return /Président\s+du\s+Sénat(?:\s+par\s+intérim)?/i.test(s.fonction);
 }
 
 /* Décommente si nécessaire pour filtrer les rôles spécifiques du Bureau Permanent
-export function isVicePresident(s: Senateur): boolean {
+export function isVicePresident(s: Senator): boolean {
     return /Vice[-\s]?Président\s+du\s+Sénat/i.test(s.fonction);
 }
 
-export function isQuesteur(s: Senateur): boolean {
+export function isQuesteur(s: Senator): boolean {
     return /(?:^|\s)Questeur(?:\s|$|,)/i.test(s.fonction);
 }
 
-export function isRapporteurGeneral(s: Senateur): boolean {
+export function isRapporteurGeneral(s: Senator): boolean {
     return /Rapporteur\s+Général/i.test(s.fonction);
 }
 */
