@@ -23,8 +23,8 @@ export default async function AboutPage() {
     ]);
 
     const breadcrumb = buildBreadcrumbJsonLd([
-        { name: "Accueil", url: SITE_URL || "https://senat-de-madagascar.vercel.app" },
-        { name: "À propos du Sénat", url: `${SITE_URL || "https://senat-de-madagascar.vercel.app"}/about` },
+        { name: "Accueil", url: SITE_URL },
+        { name: "À propos du Sénat", url: `${SITE_URL}/about` },
     ]);
 
     const webPageJsonLd = {
