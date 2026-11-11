@@ -6612,7 +6612,6 @@ snapshots:
 
   '@eslint/object-schema@2.1.7': {}
 
-
   '@eslint/plugin-kit@0.4.1':
     dependencies:
       '@eslint/core': 0.17.0
