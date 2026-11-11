@@ -121,6 +121,7 @@
     "mochawesome": "^8.1.1",
     "mochawesome-merge": "^5.1.1",
     "mochawesome-report-generator": "^6.3.2",
+    "newman": "^6.2.3",
     "postcss": "8.5.32",
     "shard": "1.1.0",
     "tailwindcss": "^4.3.5",
