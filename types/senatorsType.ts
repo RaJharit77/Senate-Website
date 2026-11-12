@@ -1,6 +1,6 @@
 export type PageParams = Promise<{ slug: string }>;
 
-export interface Senateur {
+export interface Senator {
     id: string;
     name: string;
     image: string | null;
@@ -25,16 +25,16 @@ export interface Province {
 /** Payload renvoyé par /api/senateurs */
 export interface SenatorsApiPayload {
     introHtml: string;
-    senateurs: Senateur[];
-    bureau: Senateur[];
+    senateurs: Senator[];
+    bureau: Senator[];
     commissions: Commission[];
     provinces: Province[];
 }
 
 export interface Props {
     introHtml: string;
-    senateurs: Senateur[];
-    bureau: Senateur[];
+    senateurs: Senator[];
+    bureau: Senator[];
     commissions: Commission[];
     provinces: Province[];
 }

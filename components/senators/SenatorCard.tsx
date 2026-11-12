@@ -12,10 +12,10 @@ import {
     Landmark,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Senateur } from "@/types/senatorsType";
+import { Senator } from "@/types/senatorsType";
 import { isPresident } from "@/lib/wp-senators";
 
-export default function SenatorCard({ senator }: { senator: Senateur }) {
+export default function SenatorCard({ senator }: { senator: Senator }) {
     const president = isPresident(senator);
 
     const infoRows = [

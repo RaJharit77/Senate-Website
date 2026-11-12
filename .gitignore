@@ -53,3 +53,7 @@ test-results/*
 # IDE 
 .idea/
 .vscode/
+
+accueil-bureau
+*.html
+*.json

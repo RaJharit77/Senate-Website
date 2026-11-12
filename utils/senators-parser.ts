@@ -1,5 +1,5 @@
 import { cleanText } from "@/utils/utilities";
-import { Commission, Province, Senateur } from "@/types/senatorsType";
+import { Commission, Province, Senator } from "@/types/senatorsType";
 
 /* Extraction depuis une page sénateur individuelle */
 
@@ -116,7 +116,7 @@ function emptyDetail(image: string | null): SenatorDetail {
 
 /* Parseurs du contenu agrégé "Vos Sénateurs" */
 /** Parse une carte de sénateur (div.card avec id commençant par "sen"). */
-export function parseCard(card: Element): Senateur | null {
+export function parseCard(card: Element): Senator | null {
     const id = card.id;
     const img = card.querySelector("img.card-img-top") as HTMLImageElement | null;
     const titleEl = card.querySelector("h4.card-title") as HTMLElement | null;
@@ -163,12 +163,12 @@ export function parseCard(card: Element): Senateur | null {
 }
 
 /** Parse toutes les cartes de sénateurs du HTML. */
-export function parseSenateurs(html: string): Senateur[] {
+export function parseSenateurs(html: string): Senator[] {
     if (!html || typeof window === "undefined") return [];
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
     const cards = doc.querySelectorAll('[id^="sen"]');
-    const senateurs: Senateur[] = [];
+    const senateurs: Senator[] = [];
     const seen = new Set<string>();
 
     cards.forEach((card) => {

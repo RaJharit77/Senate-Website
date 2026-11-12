@@ -6,6 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd } from "@/lib/seo";
 import NotFoundPage from "@/app/not-found";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export const dynamic = 'force-dynamic';
 
@@ -51,7 +52,7 @@ export default async function PresidentMessagePage() {
             name: 'Sénat de Madagascar',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://senat.mg/wp-content/themes/senat13/images/logo-senat.png',
+                url: LOGO_IMAGE,
             },
         },
         datePublished: page.date,
