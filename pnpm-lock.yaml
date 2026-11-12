@@ -377,8 +377,8 @@ importers:
         specifier: ^3.4.0
         version: 3.4.0(@svta/cml-cta@1.0.9(@svta/cml-structured-field-values@1.1.6(@svta/cml-utils@1.6.1))(@svta/cml-utils@1.6.1))(@svta/cml-structured-field-values@1.1.6(@svta/cml-utils@1.6.1))(@svta/cml-utils@1.6.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-resizable-panels:
-        specifier: 4.19.1
-        version: 4.19.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 4.21.0
+        version: 4.21.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-responsive-masonry:
         specifier: 2.9.0
         version: 2.9.0(react@19.3.1)
@@ -5280,8 +5280,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable-panels@4.19.1:
-    resolution: {integrity: sha512-nXhB03Lt0fKzVy4wJyv83cWt1sx05/oWkfIXaZQ6FBka5FsnYGqX32hTLo8BIANNojLGXnadzJTspTa1Um5P2w==}
+  react-resizable-panels@4.21.0:
+    resolution: {integrity: sha512-SzNEQNH/xIn3aKKLSdv48h0eu1gF1bkvozIVStow2hRmh/d9jkyoZR7dF8GUx39Wc2TAJTmfSUr4y/wwtvMoRQ==}
     peerDependencies:
       '@types/react': ^18.2.6 || ^19.0.0
       react: ^18.0.0 || ^19.0.0
@@ -11309,7 +11309,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
 
-  react-resizable-panels@4.19.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  react-resizable-panels@4.21.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
