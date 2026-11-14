@@ -1,6 +1,7 @@
 allowBuilds:
   code-to-figma: false
   cypress: true
+  esbuild: true
   sharp: true
   unrs-resolver: true
 sideEffectsCache: false
