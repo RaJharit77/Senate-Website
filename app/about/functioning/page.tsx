@@ -5,6 +5,7 @@ import NotFoundPage from "@/app/not-found";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import { LOGO_IMAGE } from "@/constants/image";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function FunctionningPage() {
         title: "Fonctionnement du Sénat",
         description: "Nature, missions et fonctionnement du Sénat de Madagascar.",
         url: `${SITE_URL}/about/functioning`,
-        image: "https://senat.mg/wp-content/themes/senat13/images/logo-senat.png",
+        image: LOGO_IMAGE,
         datePublished: page.date,
         dateModified: page.modified ?? page.date,
         author: "Sénat de Madagascar",

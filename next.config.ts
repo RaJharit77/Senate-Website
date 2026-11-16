@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { buildLegacyRedirects } from './utils/redirects';
 
 const nextConfig: NextConfig = {
   images: {
@@ -23,6 +24,7 @@ const nextConfig: NextConfig = {
     ],
     qualities: [100, 30, 75, 90],
   },
+  redirects: async () => buildLegacyRedirects(),
   headers: async () => [
     {
       source: '/:path*',
